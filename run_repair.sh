@@ -83,25 +83,25 @@ echo "✅ Neo4j connection successful."
 # Step 1: Knowledge Graph-based Bug Location
 echo -e "\n--- Step 1: KG-based Bug Location ---"
 # Assumes fl.py writes its output to {location_dir}/{instance_id}.json
-python3 dev/fl.py "$INSTANCE_ID" "$REPO_IDENTIFIER" "$KG_LOCATIONS_DIR"
+python3 kgcompass/fl.py "$INSTANCE_ID" "$REPO_IDENTIFIER" "$KG_LOCATIONS_DIR"
 echo "✅ KG location saved to ${KG_LOCATIONS_DIR}/${INSTANCE_ID}.json"
 
 # Step 2: LLM-based Bug Location
 echo -e "\n--- Step 2: LLM-based Bug Location ---"
 # Assumes llm_loc.py can take --instance_id to process a single instance
-python3 dev/llm_loc.py "$MODEL_NAME" "$NUM_WORKERS" "$LLM_LOCATIONS_DIR" --instance_id "$INSTANCE_ID"
+python3 kgcompass/llm_loc.py "$MODEL_NAME" "$NUM_WORKERS" "$LLM_LOCATIONS_DIR" --instance_id "$INSTANCE_ID"
 echo "✅ LLM location saved to ${LLM_LOCATIONS_DIR}/${INSTANCE_ID}.json"
 
 # Step 3: Fix/Merge Bug Location
 echo -e "\n--- Step 3: Merge and Fix Bug Locations ---"
 # Assumes fix_fl_line.py is adapted to work on single instances from specific dirs
-python3 dev/fix_fl_line.py "$LLM_LOCATIONS_DIR" "$FINAL_LOCATIONS_DIR" --instance_id "$INSTANCE_ID"
+python3 kgcompass/fix_fl_line.py "$LLM_LOCATIONS_DIR" "$FINAL_LOCATIONS_DIR" --instance_id "$INSTANCE_ID"
 echo "✅ Final location saved to ${FINAL_LOCATIONS_DIR}/${INSTANCE_ID}.json"
 
 # Step 4: Final Patch Generation
 echo -e "\n--- Step 4: Final Patch Generation ---"
 # Assumes repair.py uses the final location file to generate the patch
-python3 dev/repair.py "$REPAIR_MODEL_NAME" "$NUM_WORKERS" "$MODEL_PROVIDER" "$TEMPERATURE" "$FINAL_LOCATIONS_DIR" "20" \
+python3 kgcompass/repair.py "$REPAIR_MODEL_NAME" "$NUM_WORKERS" "$MODEL_PROVIDER" "$TEMPERATURE" "$FINAL_LOCATIONS_DIR" "20" \
     --instance_id "$INSTANCE_ID" \
     --output_dir "$PATCH_DIR"
 echo "✅ Final patch generated in $PATCH_DIR"

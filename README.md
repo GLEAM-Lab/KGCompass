@@ -45,25 +45,25 @@ For developers who wish to inspect the intermediate steps, the manual process is
 #### 1. Knowledge Graph-based Bug Location
 ```bash
 # This step uses the KG to find potentially relevant functions.
-python3 dev/fl.py {instance_id} {repo_name} {kg_locations_dir}
+python3 kgcompass/fl.py {instance_id} {repo_name} {kg_locations_dir}
 ```
 
 #### 2. LLM-based Bug Location
 ```bash
 # This step uses an LLM to identify buggy locations.
 # Supported models: deepseek, qwen, yi
-python3 dev/llm_loc.py {model_name} {num_workers} {llm_locations_dir} --instance_id {instance_id}
+python3 kgcompass/llm_loc.py {model_name} {num_workers} {llm_locations_dir} --instance_id {instance_id}
 ```
 
 #### 3. Merge and Fix Bug Locations
 ```bash
 # This step merges the results from the KG and LLM, creating a final location file.
-python3 dev/fix_fl_line.py {llm_locations_dir} {final_locations_dir} --instance_id {instance_id}
+python3 kgcompass/fix_fl_line.py {llm_locations_dir} {final_locations_dir} --instance_id {instance_id}
 ```
 
 #### 4. Patch Generation
 ```bash
 # This command generates the final patch based on the merged location file.
 # The model provider is implicitly 'bailian'.
-python3 dev/repair.py {model_name} {num_workers} {temperature} {final_locations_dir} {n_results} --instance_id {instance_id} --output_dir {patch_dir}
+python3 kgcompass/repair.py {model_name} {num_workers} {temperature} {final_locations_dir} {n_results} --instance_id {instance_id} --output_dir {patch_dir}
 ```
