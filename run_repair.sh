@@ -16,39 +16,38 @@ fi
 
 # --- Repository Cloning ---
 declare -A REPO_URL_MAP
-REPO_URL_MAP["astropy--astropy"]="https://github.com/astropy/astropy.git"
-REPO_URL_MAP["django--django"]="https://github.com/django/django.git"
-REPO_URL_MAP["matplotlib--matplotlib"]="https://github.com/matplotlib/matplotlib.git"
-REPO_URL_MAP["mwaskom--seaborn"]="https://github.com/mwaskom/seaborn.git"
-REPO_URL_MAP["psf--requests"]="https://github.com/psf/requests.git"
-REPO_URL_MAP["pylint-dev--pylint"]="https://github.com/pylint-dev/pylint.git"
-REPO_URL_MAP["pytest-dev--pytest"]="https://github.com/pytest-dev/pytest.git"
-REPO_URL_MAP["scikit-learn--scikit-learn"]="https://github.com/scikit-learn/scikit-learn.git"
-REPO_URL_MAP["sphinx-doc--sphinx"]="https://github.com/sphinx-doc/sphinx.git"
-REPO_URL_MAP["sympy--sympy"]="https://github.com/sympy/sympy.git"
+REPO_URL_MAP["astropy__astropy"]="https://github.com/astropy/astropy.git"
+REPO_URL_MAP["django__django"]="https://github.com/django/django.git"
+REPO_URL_MAP["matplotlib__matplotlib"]="https://github.com/matplotlib/matplotlib.git"
+REPO_URL_MAP["mwaskom__seaborn"]="https://github.com/mwaskom/seaborn.git"
+REPO_URL_MAP["psf__requests"]="https://github.com/psf/requests.git"
+REPO_URL_MAP["pylint-dev__pylint"]="https://github.com/pylint-dev/pylint.git"
+REPO_URL_MAP["pytest-dev__pytest"]="https://github.com/pytest-dev/pytest.git"
+REPO_URL_MAP["scikit-learn__scikit-learn"]="https://github.com/scikit-learn/scikit-learn.git"
+REPO_URL_MAP["sphinx-doc__sphinx"]="https://github.com/sphinx-doc/sphinx.git"
+REPO_URL_MAP["sympy__sympy"]="https://github.com/sympy/sympy.git"
 
-REPO_NAME_PREFIX=$(echo "$INSTANCE_ID" | cut -d'-' -f1,2)
-CLONE_URL=${REPO_URL_MAP[$REPO_NAME_PREFIX]}
+REPO_IDENTIFIER=${INSTANCE_ID%-*}
+CLONE_URL=${REPO_URL_MAP[$REPO_IDENTIFIER]}
 REPOS_DIR="../swe_bench_repos" # A directory outside the project to store all cloned repos
-REPO_PATH="${REPOS_DIR}/${REPO_NAME_PREFIX}"
+REPO_PATH="${REPOS_DIR}/${REPO_IDENTIFIER}"
 
 if [ -z "$CLONE_URL" ]; then
-  echo "ERROR: Repository for '$REPO_NAME_PREFIX' not found in the script's map." >&2
+  echo "ERROR: Repository for '$REPO_IDENTIFIER' not found in the script's map." >&2
   echo "Please add the git clone URL for this repository to run_repair.sh" >&2
   exit 1
 fi
 
 if [ ! -d "$REPO_PATH" ]; then
-  echo "--- Repository '$REPO_NAME_PREFIX' not found. Cloning... ---"
+  echo "--- Repository '$REPO_IDENTIFIER' not found. Cloning... ---"
   mkdir -p "$REPOS_DIR"
   git clone "$CLONE_URL" "$REPO_PATH"
   echo "✅ Repository cloned to $REPO_PATH"
 else
-  echo "✅ Repository '$REPO_NAME_PREFIX' already exists at $REPO_PATH."
+  echo "✅ Repository '$REPO_IDENTIFIER' already exists at $REPO_PATH."
 fi
 
 # --- Derived variables ---
-REPO_NAME=$(echo "$INSTANCE_ID" | cut -d'-' -f1,2)
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 RUN_DIR="runs/${INSTANCE_ID}_${MODEL_NAME}_${TIMESTAMP}"
 REPAIR_MODEL_NAME="${MODEL_NAME}_0" # Default repair config
@@ -84,7 +83,7 @@ echo "✅ Neo4j connection successful."
 # Step 1: Knowledge Graph-based Bug Location
 echo -e "\n--- Step 1: KG-based Bug Location ---"
 # Assumes fl.py writes its output to {location_dir}/{instance_id}.json
-python3 dev/fl.py "$INSTANCE_ID" "$REPO_NAME" "$KG_LOCATIONS_DIR"
+python3 dev/fl.py "$INSTANCE_ID" "$REPO_IDENTIFIER" "$KG_LOCATIONS_DIR"
 echo "✅ KG location saved to ${KG_LOCATIONS_DIR}/${INSTANCE_ID}.json"
 
 # Step 2: LLM-based Bug Location
