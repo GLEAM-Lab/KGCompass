@@ -80,14 +80,15 @@ For developers who wish to inspect the intermediate steps, the manual process is
 #### 1. Knowledge Graph-based Bug Location
 ```bash
 # This step uses the KG to find potentially relevant functions.
-python3 kgcompass/fl.py {instance_id} {repo_name} {kg_locations_dir}
+# repo_identifier follows the pattern owner__repo (e.g. astropy__astropy)
+python3 kgcompass/fl.py {instance_id} {repo_identifier} {kg_locations_dir}
 ```
 
 #### 2. LLM-based Bug Location
 ```bash
 # This step uses an LLM to identify buggy locations.
-# Supported models: deepseek, qwen, yi
-python3 kgcompass/llm_loc.py {model_name} {num_workers} {llm_locations_dir} --instance_id {instance_id}
+# The model to use is configured in kgcompass/config.py (MODEL_NAME).
+python3 kgcompass/llm_loc.py {llm_locations_dir} --instance_id {instance_id}
 ```
 
 #### 3. Merge and Fix Bug Locations
@@ -98,7 +99,11 @@ python3 kgcompass/fix_fl_line.py {llm_locations_dir} {final_locations_dir} --ins
 
 #### 4. Patch Generation
 ```bash
-# This command generates the final patch based on the merged location file.
-# The model provider is implicitly 'bailian'.
-python3 kgcompass/repair.py {model_name} {num_workers} {temperature} {final_locations_dir} {n_results} --instance_id {instance_id} --output_dir {patch_dir}
+# This command generates the final patch based on the merged location file and applies it to the local clone.
+# playground_dir is where all repositories are cloned (e.g. ./playground)
+# repo_identifier is the same value used in step 1.
+python3 kgcompass/repair.py {final_locations_dir} \
+    --instance_id {instance_id} \
+    --playground_dir {playground_dir} \
+    --repo_identifier {repo_identifier}
 ```
