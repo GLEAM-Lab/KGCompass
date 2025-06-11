@@ -4,15 +4,16 @@ FROM kgcompass-base:latest
 # Set the working directory in the container
 WORKDIR /opt/KGCompass
 
-# First, install PyTorch and its related packages for CUDA 12.1
-# This ensures we get a compatible version for the GPU
-RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-
-# Copy the requirements file into the container
+# First, install torch and torchvision from the official index to ensure GPU compatibility.
+# We specify versions to prevent pip from trying to resolve multiple versions.
 COPY requirements.txt .
+RUN pip install torch==2.3.1+cu121 torchvision==0.18.1+cu121 torchaudio --index-url https://download.pytorch.org/whl/cu121
 
-# Install the rest of the packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Second, install the remaining requirements.
+# The `--no-deps` flag could be used if there are irresolvable conflicts,
+# but for now, we let pip handle the dependencies, which should be fine
+# now that torch is pinned.
+RUN pip install -r requirements.txt
 
 # Copy the rest of the application's code into the container
 COPY . .

@@ -18,6 +18,10 @@ services:
       # Mount named volumes for data persistence
       - neo4j-data:/data
       - neo4j-logs:/logs
+    environment:
+      - http_proxy=http://172.27.16.1:7890
+      - https_proxy=http://172.27.16.1:7890
+      - no_proxy=localhost,127.0.0.1
     restart: unless-stopped
 
   app:
@@ -31,7 +35,7 @@ services:
     # Mount the local directory to the container for development
     volumes:
       - .:/opt/KGCompass
-      - ../swe_bench_repos:/opt/swe_bench_repos
+      - ./playground:/opt/KGCompass/playground
     # Load environment variables from a .env file
     env_file:
       - .env
@@ -46,10 +50,6 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
-    # Depends on other services to ensure correct startup order
-    depends_on:
-      - neo4j
-      - base
     # Keep the container running
     stdin_open: true
     tty: true

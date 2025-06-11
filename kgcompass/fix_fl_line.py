@@ -2,6 +2,7 @@ import json
 import os
 from github import Github
 import sys
+import argparse
 from utils import get_commit_file, get_class_and_method_from_content
 from datasets import load_dataset
 from pathlib import Path
@@ -36,10 +37,11 @@ def find_entity_in_content(entity_type, entity, content, repo_name):
                 break
     return found, start_line, end_line, source_code
 
-def fix_line_numbers(result_file, output_dir):
+def fix_line_numbers(result_file, output_dir, instance_id):
     with open(result_file, 'r') as f:
         result = json.load(f)
-    instance_id = os.path.basename(result_file).replace('-result.json', '')
+
+    # instance_id is now passed as an argument
     instance_parts = instance_id.split('-')
     repo_name = '-'.join(instance_parts[:-1]).replace('__', '/')
     repo = g.get_repo(repo_name)
@@ -70,7 +72,7 @@ def fix_line_numbers(result_file, output_dir):
         for entity in entities:
             try:
                 file_path = entity['file_path']
-                if file_path.startswith('../'):
+                if file_path.startswith('playground/'):
                     file_path = '/'.join(file_path.split('/')[2:])
                 
                 file_content = get_commit_file(repo, repo.get_commit(base_commit), file_path)
@@ -121,40 +123,38 @@ def fix_line_numbers(result_file, output_dir):
         
         result['related_entities'][entity_type] = valid_entities
     
-    output_file = os.path.join(output_dir, os.path.basename(result_file))
+    output_file = os.path.join(output_dir, f"{instance_id}.json")
     with open(output_file, 'w') as f:
         json.dump(result, f, indent=2)
     
     print(f"Saved processed results to: {output_file}")
 
-def process_all_results():
-    input_dir = sys.argv[1]
-    output_dir = sys.argv[2]
-    os.makedirs(output_dir, exist_ok=True)
-    result_files = list(Path(input_dir).glob('*-result.json'))
-    unprocessed_files = [
-        f for f in result_files 
-        if not os.path.exists(os.path.join(output_dir, os.path.basename(f)))
-    ]
-    total_files = len(unprocessed_files)
-    print(f"Found {len(result_files)} result files, of which {total_files} need to be processed")
-
-    instance_ids = set([item['instance_id'] for item in ds['test']])
-    print(f"Found {len(instance_ids)} instances")
-    
-    for i, result_file in enumerate(unprocessed_files, 1):
-        instance_id = str(result_file).split('/')[1][:-12]
-        if instance_id not in instance_ids:
-            continue
-        print(f"\n[{i}/{total_files}] Processing file: {result_file}")
-        try:
-            fix_line_numbers(str(result_file), output_dir)
-        except Exception as e:
-            print(f"Error processing file {result_file}:")
-            print(traceback.format_exc())
-            continue
-    
-    print("\nAll files processed!")
-
 if __name__ == "__main__":
-    process_all_results()
+    parser = argparse.ArgumentParser(description="Fix line numbers and other info in an LLM-generated location file for a specific instance.")
+    parser.add_argument("input_dir", type=str, help="Directory containing the LLM-generated location file.")
+    parser.add_argument("output_dir", type=str, help="Directory to save the fixed location file.")
+    parser.add_argument("--instance_id", type=str, required=True, help="The instance_id to process.")
+    args = parser.parse_args()
+
+    os.makedirs(args.output_dir, exist_ok=True)
+    
+    input_file = Path(args.input_dir) / f"{args.instance_id}.json"
+    if not input_file.exists():
+        # Fallback for old format
+        old_format_file = Path(args.input_dir) / f"{args.instance_id}-result.json"
+        if old_format_file.exists():
+            input_file = old_format_file
+        else:
+            print(f"Error: Input file for instance '{args.instance_id}' not found at '{input_file}' or as '*-result.json'.")
+            sys.exit(1)
+
+    print(f"Processing file: {input_file}")
+    
+    try:
+        fix_line_numbers(input_file, args.output_dir, args.instance_id)
+    except Exception as e:
+        print(f"An error occurred while processing {input_file}:")
+        print(traceback.format_exc())
+        sys.exit(1)
+    
+    print(f"\n✅ Final location saved to {Path(args.output_dir) / f'{args.instance_id}.json'}")

@@ -5,11 +5,13 @@ FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04
 # Set environment variables to prevent interactive prompts during installation
 ENV DEBIAN_FRONTEND=noninteractive
 
-# The base image comes with Python 3.10. We install pip, git, and build tools.
+# The base image comes with Python 3.10. We install pip, git, and other tools.
 # python3.10-dev is required for building C++ extensions that need Python.h
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pip \
     git \
     build-essential \
     python3.10-dev \
+    openssh-client \
+    iputils-ping \
     && rm -rf /var/lib/apt/lists/* 

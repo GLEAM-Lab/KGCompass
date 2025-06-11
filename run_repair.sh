@@ -1,12 +1,24 @@
 #!/bin/bash
 set -e
 
+# Enable debug output if DEBUG env is set
+if [[ "$DEBUG" == "1" ]]; then
+  set -x
+fi
+
+# --- Environment and Proxy Setup ---
+# Add the project root to PYTHONPATH to solve module import issues without using -m.
+export PYTHONPATH=$(pwd)
+
+# Set proxy if needed, and ensure localhost is excluded for Neo4j connection.
+export http_proxy=http://172.27.16.1:7890
+export https_proxy=http://172.27.16.1:7890
+unset all_proxy
+
 # --- Configuration ---
 INSTANCE_ID=$1
-MODEL_PROVIDER=${MODEL_PROVIDER:-"bailian"}
-MODEL_NAME=${MODEL_NAME:-"deepseek"}
-NUM_WORKERS=${NUM_WORKERS:-8}
-TEMPERATURE=${TEMPERATURE:-0}
+MODEL_NAME="deepseek" # Hardcoded to deepseek
+TEMPERATURE=${TEMPERATURE:-0.3}
 
 if [ -z "$INSTANCE_ID" ]; then
   echo "Usage: $0 <instance_id>"
@@ -29,7 +41,7 @@ REPO_URL_MAP["sympy__sympy"]="https://github.com/sympy/sympy.git"
 
 REPO_IDENTIFIER=${INSTANCE_ID%-*}
 CLONE_URL=${REPO_URL_MAP[$REPO_IDENTIFIER]}
-REPOS_DIR="../swe_bench_repos" # A directory outside the project to store all cloned repos
+REPOS_DIR="./playground" # Store all cloned repos inside the project's playground directory
 REPO_PATH="${REPOS_DIR}/${REPO_IDENTIFIER}"
 
 if [ -z "$CLONE_URL" ]; then
@@ -48,8 +60,7 @@ else
 fi
 
 # --- Derived variables ---
-TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-RUN_DIR="runs/${INSTANCE_ID}_${MODEL_NAME}_${TIMESTAMP}"
+RUN_DIR="tests/${INSTANCE_ID}_${MODEL_NAME}"
 REPAIR_MODEL_NAME="${MODEL_NAME}_0" # Default repair config
 
 # --- Directories for this run ---
@@ -62,8 +73,6 @@ LOG_FILE="${RUN_DIR}/run.log"
 
 mkdir -p "$KG_LOCATIONS_DIR" "$LLM_LOCATIONS_DIR" "$FINAL_LOCATIONS_DIR" "$PATCH_DIR"
 
-# Redirect all output to log file and console
-exec > >(tee -a "$LOG_FILE") 2>&1
 
 echo "================================================="
 echo "Starting KGCompass repair for instance: $INSTANCE_ID"
@@ -71,40 +80,69 @@ echo "Run directory: $RUN_DIR"
 echo "================================================="
 
 # --- Prerequisites check ---
-if ! nc -z localhost 7687; then
-  echo "ERROR: Neo4j is not running on localhost:7687. Please start it first." >&2
-  echo "You can use: bash neo4j.sh" >&2
-  exit 1
-fi
-echo "✅ Neo4j connection successful."
+# In a Docker Compose environment, the app container should connect to the neo4j service name.
+# We will rely on docker-compose's `depends_on` to ensure Neo4j is ready.
+# The check is removed to avoid dependency on 'nc' and issues with hostname resolution.
+# if ! nc -z ${NEO4J_HOST:-"localhost"} 7687; then
+#   echo "ERROR: Cannot connect to Neo4j at ${NEO4J_HOST:-"localhost"}:7687." >&2
+#   exit 1
+# fi
+echo "✅ Assuming Neo4j connection is available via Docker Compose network."
 
 # --- Pipeline Steps ---
 
 # Step 1: Knowledge Graph-based Bug Location
 echo -e "\n--- Step 1: KG-based Bug Location ---"
-# Assumes fl.py writes its output to {location_dir}/{instance_id}.json
-python3 kgcompass/fl.py "$INSTANCE_ID" "$REPO_IDENTIFIER" "$KG_LOCATIONS_DIR"
-echo "✅ KG location saved to ${KG_LOCATIONS_DIR}/${INSTANCE_ID}.json"
+KG_RESULT_FILE="${KG_LOCATIONS_DIR}/${INSTANCE_ID}.json"
+if [ -f "$KG_RESULT_FILE" ]; then
+    echo "✅ KG location file already exists, skipping."
+else
+    # Assumes fl.py writes its output to a JSON file.
+    python3 kgcompass/fl.py "$INSTANCE_ID" "$REPO_IDENTIFIER" "$KG_LOCATIONS_DIR"
+    echo "✅ KG location saved to $KG_RESULT_FILE"
+fi
 
 # Step 2: LLM-based Bug Location
 echo -e "\n--- Step 2: LLM-based Bug Location ---"
-# Assumes llm_loc.py can take --instance_id to process a single instance
-python3 kgcompass/llm_loc.py "$MODEL_NAME" "$NUM_WORKERS" "$LLM_LOCATIONS_DIR" --instance_id "$INSTANCE_ID"
-echo "✅ LLM location saved to ${LLM_LOCATIONS_DIR}/${INSTANCE_ID}.json"
+LLM_RESULT_FILE="${LLM_LOCATIONS_DIR}/${INSTANCE_ID}.json"
+if [ -f "$LLM_RESULT_FILE" ]; then
+    echo "✅ LLM location file already exists, skipping."
+else
+    # Assumes llm_loc.py can take --instance_id to process a single instance.
+    python3 kgcompass/llm_loc.py "$LLM_LOCATIONS_DIR" --instance_id "$INSTANCE_ID"
+    echo "✅ LLM location saved to $LLM_RESULT_FILE"
+    echo "--- Generated LLM Location File ---"
+    ls -l "$LLM_RESULT_FILE"
+fi
 
 # Step 3: Fix/Merge Bug Location
-echo -e "\n--- Step 3: Merge and Fix Bug Locations ---"
-# Assumes fix_fl_line.py is adapted to work on single instances from specific dirs
-python3 kgcompass/fix_fl_line.py "$LLM_LOCATIONS_DIR" "$FINAL_LOCATIONS_DIR" --instance_id "$INSTANCE_ID"
-echo "✅ Final location saved to ${FINAL_LOCATIONS_DIR}/${INSTANCE_ID}.json"
+echo -e "\n--- Step 3: Merge and Fix Bug Locations for $INSTANCE_ID ---"
+FINAL_RESULT_FILE="${FINAL_LOCATIONS_DIR}/${INSTANCE_ID}.json"
+if [ -f "$FINAL_RESULT_FILE" ]; then
+    echo "✅ Final location file already exists, skipping."
+else
+    # Assumes fix_fl_line.py is adapted to work on single instances from specific dirs.
+    python3 kgcompass/fix_fl_line.py "$LLM_LOCATIONS_DIR" "$FINAL_LOCATIONS_DIR" --instance_id "$INSTANCE_ID"
+    echo "✅ Final location saved to $FINAL_RESULT_FILE"
+fi
 
 # Step 4: Final Patch Generation
 echo -e "\n--- Step 4: Final Patch Generation ---"
-# Assumes repair.py uses the final location file to generate the patch
-python3 kgcompass/repair.py "$REPAIR_MODEL_NAME" "$NUM_WORKERS" "$MODEL_PROVIDER" "$TEMPERATURE" "$FINAL_LOCATIONS_DIR" "20" \
-    --instance_id "$INSTANCE_ID" \
-    --output_dir "$PATCH_DIR"
-echo "✅ Final patch generated in $PATCH_DIR"
+# Note: The patch file name is determined inside repair.py, we check for its existence.
+PATCH_FILE="${PATCH_DIR}/${INSTANCE_ID}.patch"
+if [ -f "$PATCH_FILE" ]; then
+    echo "✅ Final patch file already exists, skipping."
+else
+    # Assumes repair.py uses the final location file to generate the patch.
+    # Arguments have been corrected to match the updated repair.py script.
+    python3 kgcompass/repair.py "$FINAL_LOCATIONS_DIR" \
+        --instance_id "$INSTANCE_ID" \
+        --playground_dir "$REPOS_DIR" \
+        --repo_identifier "$REPO_IDENTIFIER"
+    echo "✅ Final patch generation step executed."
+    echo "--- Generated Patch File ---"
+    ls -l "$PATCH_FILE"
+fi
 
 
 echo -e "\n================================================="

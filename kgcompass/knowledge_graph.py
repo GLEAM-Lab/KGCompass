@@ -154,7 +154,8 @@ class KnowledgeGraph:
     def _create_directory_structure(tx, base_path, weight=1):
         for root, dirs, files in os.walk(base_path):
             # Create current directory
-            current_dir_path = root.replace('\\', '/')
+            abs_dir_path = root.replace('\\', '/')
+            rel_dir_path = relative_path(abs_dir_path)
             if os.path.basename(root).startswith('.'):
                 continue
             # Create current directory node
@@ -163,13 +164,14 @@ class KnowledgeGraph:
                 "SET d.name = $name"
             )
             tx.run(query, 
-                dir_path=current_dir_path or '/', 
+                dir_path=rel_dir_path or '/', 
                 name=os.path.basename(root) or '/'
             )
             file_paths = []
             # If not root directory, create relationship with parent directory
-            if current_dir_path:
-                parent_dir_path = os.path.dirname(current_dir_path)
+            if rel_dir_path:
+                parent_dir_abs = os.path.dirname(abs_dir_path)
+                parent_dir_path = relative_path(parent_dir_abs)
                 query = (
                     "MATCH (parent:Directory {path: $parent_path}) "
                     "MATCH (child:Directory {path: $child_path}) "
@@ -178,7 +180,7 @@ class KnowledgeGraph:
                 )
                 tx.run(query, 
                     parent_path=parent_dir_path or '/',
-                    child_path=current_dir_path,
+                    child_path=rel_dir_path,
                     weight=weight
                 )
             
@@ -187,7 +189,8 @@ class KnowledgeGraph:
             total_files = len(py_files)
             for idx, file in enumerate(py_files, 1):
                 print(f'\nProcessing file [{idx}/{total_files}] ({(idx/total_files*100):.1f}%): {file}')
-                file_path = os.path.join(current_dir_path, file)
+                file_abs_path = os.path.join(abs_dir_path, file)
+                rel_file_path = relative_path(file_abs_path)
                 
                 # Create file node
                 query = (
@@ -195,8 +198,8 @@ class KnowledgeGraph:
                     "SET f.name = $name"
                 )
                 tx.run(query, 
-                    file_path=file_path,
-                    name=relative_path(file_path)
+                    file_path=rel_file_path,
+                    name=rel_file_path
                 )
                 
                 # Create directory-file relationship
@@ -206,10 +209,10 @@ class KnowledgeGraph:
                     "MERGE (d)-[:RELATED {description: 'contains file', weight: $weight}]->(f)"
                     "MERGE (f)-[:RELATED {description: 'contained in directory', weight: $weight}]->(d)"
                 )
-                file_paths.append(file_path)
+                file_paths.append(file_abs_path)
                 tx.run(query,
-                    dir_path=current_dir_path or '/',
-                    file_path=file_path,
+                    dir_path=rel_dir_path or '/',
+                    file_path=rel_file_path,
                     weight=weight
                 )
         return file_paths

@@ -35,20 +35,26 @@ This project uses Docker and Docker Compose to provide a fully reproducible envi
     && sudo nvidia-ctk runtime configure --runtime=docker \
     && sudo systemctl restart docker
     ```
-3.  **Docker & Docker Compose**: Ensure you have a modern version of Docker and Docker Compose installed (the `compose` command should be available).
+3.  **Docker & Docker Compose**: This project uses Docker Compose V1.
+    *   Ensure Docker is installed on your system.
+    *   Install Docker Compose V1 (if not already present) by running:
+    ```bash
+    LATEST_COMPOSE_V1="1.29.2"
+    sudo curl -L "https://github.com/docker/compose/releases/download/${LATEST_COMPOSE_V1}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
+    ```
 4.  **API Keys**: Create a `.env` file in the project root by copying the example:
     ```bash
     cp .env.example .env
     ```
-    Then, edit the `.env` file and fill in your `GITHUB_TOKEN`, `BAILIAN_API_KEY`, and `BAILIAN_AGENT_KEY`.
+    Then, edit the `.env` file and fill in your `GITHUB_TOKEN`, and `BAILIAN_API_KEY`.
 
 **Step 1: Build and Start All Services**
 
 This single command will build the base CUDA image, the Neo4j image, and the final application image, then start all services in the background.
 
 ```bash
-# Use `docker compose` (with a space) for GPU support
-docker compose up -d --build
+docker-compose up -d --build
 ```
 
 **Step 2: Run the Repair Pipeline**
@@ -56,15 +62,15 @@ docker compose up -d --build
 Execute the repair script *inside* the application container. The container will have access to the GPU.
 
 ```bash
-docker compose exec app bash run_repair.sh <instance_id>
+docker-compose exec app bash run_repair.sh <instance_id>
 
 # Example:
-docker compose exec app bash run_repair.sh astropy__astropy-12907
+docker-compose exec app bash run_repair.sh astropy__astropy-12907
 ```
 
 **Step 3: Stopping the Environment**
 ```bash
-docker compose down -v
+docker-compose down -v
 ```
 
 ## Manual Step-by-Step Reproduction (For Developers)
