@@ -335,6 +335,19 @@ class PythonParser(BaseParser):
     def __init__(self):
         super().__init__('python')
 
+    def _clean_path(self, file_path: str) -> str:
+        """Removes 'playground/' prefix and the project directory from a path."""
+        rel_path = os.path.relpath(file_path)
+        prefix = 'playground' + os.sep
+        if rel_path.startswith(prefix):
+            path_after_playground = rel_path[len(prefix):]
+            parts = path_after_playground.split(os.sep)
+            if len(parts) > 1:
+                return os.sep.join(parts[1:])
+            else:
+                return path_after_playground
+        return rel_path
+
     def get_compilation_unit(self, file_path: str):
         if file_path in self._file_ast_cache:
             return self._file_ast_cache[file_path]
@@ -357,26 +370,33 @@ class PythonParser(BaseParser):
             
     def extract_classes(self, file_path):
         tree, content = self.parse_file(file_path)
+        clean_file_path = self._clean_path(file_path)
+        module_path = clean_file_path.replace(os.sep, '.').replace('.py', '')
         classes = []
-        for node in ast.walk(tree):
+        for node in tree.body:
             if isinstance(node, ast.ClassDef):
+                qualified_class_name = f"{module_path}.{node.name}"
                 classes.append({
-                    'name': node.name,
+                    'name': qualified_class_name,
+                    'file_path': clean_file_path,
                     'start_line': node.lineno,
                     'end_line': node.end_lineno,
                     'source_code': ast.get_source_segment(content, node) if hasattr(ast, 'get_source_segment') else ast.unparse(node),
                     'doc_string': ast.get_docstring(node) or '',
-                    'methods': self._extract_class_methods(node, content)
+                    'methods': self._extract_class_methods(node, content, qualified_class_name, clean_file_path)
                 })
         return classes
         
-    def _extract_class_methods(self, class_node, content):
+    def _extract_class_methods(self, class_node, content, qualified_class_name, clean_file_path):
         methods = []
         for node in class_node.body:
             if isinstance(node, ast.FunctionDef):
+                params = [a.arg for a in node.args.args]
+                method_signature = f"{qualified_class_name}.{node.name}({', '.join(params)})"
                 methods.append({
-                    'name': node.name,
-                    'signature': ast.unparse(node.args),
+                    'name': f"{qualified_class_name}.{node.name}",
+                    'signature': method_signature,
+                    'file_path': clean_file_path,
                     'start_line': node.lineno,
                     'end_line': node.end_lineno,
                     'source_code': ast.get_source_segment(content, node) if hasattr(ast, 'get_source_segment') else ast.unparse(node),
@@ -386,12 +406,18 @@ class PythonParser(BaseParser):
         
     def extract_methods(self, file_path):
         tree, content = self.parse_file(file_path)
+        clean_file_path = self._clean_path(file_path)
+        module_path = clean_file_path.replace(os.sep, '.').replace('.py', '')
         methods = []
-        for node in ast.walk(tree):
+        for node in tree.body:
             if isinstance(node, ast.FunctionDef):
+                params = [a.arg for a in node.args.args]
+                qualified_name = f"{module_path}.{node.name}"
+                method_signature = f"{qualified_name}({', '.join(params)})"
                 methods.append({
-                    'name': node.name,
-                    'signature': ast.unparse(node.args),
+                    'name': qualified_name,
+                    'signature': method_signature,
+                    'file_path': clean_file_path,
                     'start_line': node.lineno,
                     'end_line': node.end_lineno,
                     'source_code': ast.get_source_segment(content, node) if hasattr(ast, 'get_source_segment') else ast.unparse(node),
@@ -427,12 +453,10 @@ class PythonParser(BaseParser):
     def get_global_methods(self, file_path, repo_name):
         content = self._read_file(file_path)
         tree = ast.parse(content)
-        path_parts = file_path.split(os.sep)
-        try:
-            repo_root_index = len(path_parts) - 1 - path_parts[::-1].index(repo_name)
-            module_path = '.'.join(path_parts[repo_root_index:]).replace('.py', '')
-        except ValueError:
-            module_path = os.path.relpath(file_path).replace('/', '.').replace('\\', '.').replace('.py', '')
+        
+        clean_file_path = self._clean_path(file_path)
+        module_path = clean_file_path.replace(os.sep, '.').replace('.py', '')
+
         methods = []
         for node in tree.body:
             if isinstance(node, ast.FunctionDef):
@@ -443,7 +467,7 @@ class PythonParser(BaseParser):
                 methods.append({
                     "name": f"{module_path}.{method_name}",
                     "signature": method_signature,
-                    'file_path': file_path,
+                    'file_path': clean_file_path,
                     "start_line": node.lineno,
                     "source_code": ast.get_source_segment(content, node),
                     "end_line": node.end_lineno if hasattr(node, 'end_lineno') else None,
@@ -454,12 +478,10 @@ class PythonParser(BaseParser):
     def get_global_variables(self, file_path, repo_name):
         content = self._read_file(file_path)
         tree = ast.parse(content)
-        path_parts = file_path.split(os.sep)
-        try:
-            repo_root_index = len(path_parts) - 1 - path_parts[::-1].index(repo_name)
-            module_path = '.'.join(path_parts[repo_root_index:]).replace('.py', '')
-        except ValueError:
-            module_path = os.path.relpath(file_path).replace('/', '.').replace('\\', '.').replace('.py', '')
+
+        clean_file_path = self._clean_path(file_path)
+        module_path = clean_file_path.replace(os.sep, '.').replace('.py', '')
+
         variables = []
         for node in tree.body:
             if isinstance(node, ast.Assign):
@@ -472,7 +494,7 @@ class PythonParser(BaseParser):
                         variables.append({
                             "name": f"{module_path}.{target.id}",
                             "signature": f"{module_path}.{target.id} = {value}",
-                            "file_path": file_path,
+                            "file_path": clean_file_path,
                             "start_line": node.lineno,
                             "end_line": node.end_lineno if hasattr(node, 'end_lineno') else None,
                             "source_code": ast.get_source_segment(content, node),

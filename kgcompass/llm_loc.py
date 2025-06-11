@@ -1,103 +1,83 @@
 import json
 import os
-import sys
+import argparse
 from datasets import load_dataset
 import openai
 from utils import get_commit_method_by_signature, extract_json_code
 from config import (
     DATASET_NAME,
-    LLM_MODELS,
     DEEPSEEK_BASE_URL,
-    DEEPSEEK_API_KEY,
-    QWEN_API_KEY,
-    QWEN_BASE_URL,
-    CLAUDE_API_KEY,
     GITHUB_TOKEN,
-    MAX_TOKENS,
-    DIVERSE_TEMPERATURE,
+    TEMPERATURE,
+    TOP_P,
     LLM_LOC_MAX,
     BAILIAN_API_KEY,
-    BAILIAN_AGENT_KEY,
-    MODEL_MAP,
-    NEO4J_CONFIG,
-    MAX_INPUT_LENGTH,
+    MODEL_NAME,
+    CANDIDATE_LOCATIONS_MAX,
 )
-from concurrent.futures import ThreadPoolExecutor, as_completed
-import neo4j
-import http
-import dashscope
+from utils import format_entity_content
+from github import Github
 
 class PreFaultLocalization:
-    def __init__(self, instance_id, api_type, dataset_name: str | None = None):
-        # Initialize API client
-        if api_type == "openai":
-            self.client = openai.OpenAI(api_key=os.environ["OPENAI_API_KEY"])
-        elif api_type == "anthropic":
-            self.client = openai.OpenAI(api_key=CLAUDE_API_KEY)
-        elif api_type in "deepseek":
-            self.client = openai.OpenAI(api_key=DEEPSEEK_API_KEY, base_url=DEEPSEEK_BASE_URL)
-        elif api_type == "qwen":
-            self.client = openai.OpenAI(api_key=QWEN_API_KEY, base_url=QWEN_BASE_URL)
-        elif api_type == "deepseek-r1":
-            self.client = None
-        
-        self.api_type = api_type
+    def __init__(self, instance_id: str):
         self.instance_id = instance_id
+        self.dataset_name = DATASET_NAME
+        self.target_sample = self._load_target_sample()
+        if self.target_sample:
+            self.language = self.target_sample.get('language', 'python').lower()
         
-        # Allow overriding dataset name (e.g., Daoguang/Multi-SWE-bench)
-        self.dataset_name = dataset_name or DATASET_NAME
+        self.model_name = MODEL_NAME
+        # Create a client instance pointing to the OpenAI-compatible endpoint
+        self.client = openai.OpenAI(api_key=BAILIAN_API_KEY, base_url=DEEPSEEK_BASE_URL)
 
-        # Determine proper split based on dataset
+    def _load_target_sample(self):
         split_name = 'test'
         if 'multi-swe-bench' in self.dataset_name.lower():
             split_name = 'java_verified'
 
-        ds = load_dataset(self.dataset_name)
-        if split_name not in ds:
-            # Fallback: first available split
-            split_name = list(ds.keys())[0]
+        ds = load_dataset(self.dataset_name, split=split_name)
+        self.dataset = {item['instance_id']: item for item in ds}
+        return self.dataset.get(self.instance_id)
 
-        self.dataset = {item['instance_id']: item for item in ds[split_name]}
-        self.target_sample = self.dataset.get(self.instance_id)
-
-        # Very simple language detection
-        self.language = 'java' if 'multi-swe-bench' in self.dataset_name.lower() else 'python'
-
-    def generate(self, prompt):
-        """Unified interface for generating responses"""
-        messages = [{"role": "user", "content": prompt}]
-        
-        if self.api_type in ['openai', 'deepseek', 'qwen']:
+    def generate(self, prompt, stream=False):
+        """Unified interface for generating responses via OpenAI-compatible endpoint"""
+        messages = [{'role': 'user', 'content': prompt}]
+        try:
             response = self.client.chat.completions.create(
-                model=LLM_MODELS[self.api_type],
+                model=self.model_name,
                 messages=messages,
-                temperature=DIVERSE_TEMPERATURE,
+                temperature=TEMPERATURE,
+                top_p=TOP_P,
+                stream=stream
             )
-            return response.choices[0].message.content
-        elif self.api_type == 'anthropic':
-            response = self.client.messages.create(
-                model=LLM_MODELS[self.api_type],
-                max_tokens=MAX_TOKENS,
-                messages=messages,
-                temperature=DIVERSE_TEMPERATURE
-            )
-            return response.content[0].text
 
-    def pre_locate(self, updated_description):
-        """Preliminary fault localization"""
-        if self.language == 'python':
-            prompt = f"""Based on the following bug description, predict potential relevant code locations:
+            if stream:
+                collected_content = ""
+                for chunk in response:
+                    content = chunk.choices[0].delta.content or ""
+                    print(content, end='', flush=True)
+                    collected_content += content
+                print() # for a newline
+                return collected_content
+            else:
+                return response.choices[0].message.content
+        except Exception as e:
+            print(f"An error occurred while calling the LLM API: {e}")
+            return None
 
-Description:
+    def pre_locate(self, updated_description, stream=False):
+        # This prompt is now universal and will be enhanced by KG context
+        prompt_template = """Based on the following bug description and context from a Knowledge Graph, predict potential relevant code locations.
+The Knowledge Graph has provided potentially related issues and functions. Use this information to improve your prediction.
+
+Bug Description and Knowledge Graph Context:
 {updated_description}
 
-Please provide a JSON array containing the predicted locations where the bug fix is needed. Each location should include the full file path and the full method name.
+Please provide a JSON array containing the predicted locations where the bug fix is needed. Each location should include the full file path and the full method/function name.
 
 The method field should be one of these formats:
-- `package.module.Class.method_name`           # For class methods
-- `package.module.function_name`               # For standalone functions
-- `package.module.Class.class_level_attribute` # For class-level attributes (defined outside of functions)
-- `package.module.MODULE_LEVEL_VALUE`          # For module-level variables
+- `package.module.Class.method_name`
+- `package.module.function_name`
 
 Format:
 ```json
@@ -105,365 +85,170 @@ Format:
     {{
         "file_path": "package/submodule/file.py",
         "method": "package.module.Class.method_name"
-    }},
-    {{
-        "file_path": "package/other/file.py",
-        "method": "package.module.MODULE_LEVEL_VALUE"
     }}
 ]
 ```
 
 Note:
-- Consider code elements defined outside of functions:
-  * Class-level attributes and members
-  * Module-level variables and values
-  * Function and method definitions
-- Predict logical locations even if not explicitly mentioned
-- Focus on core functionality rather than test files
-- When names are not clear, provide multiple reasonable guesses based on common naming conventions
-- List the most likely locations first (primary location should be the first item)
-- Include both primary and related locations (up to 10 total)
+- Focus on core functionality rather than test files.
+- List the most likely locations first.
+- Include up to {LLM_LOC_MAX} primary and related locations.
+- Use the provided context to make informed predictions about file paths and method names.
 """
-        else:
-            # Java version (concise – follows same structure but Java-specific examples)
-            prompt = f"""Based on the following bug description, predict potential relevant code locations:
+        prompt = prompt_template.format(
+            updated_description=updated_description,
+            LLM_LOC_MAX=LLM_LOC_MAX
+        )
+        return self.generate(prompt, stream=stream)
 
-Description:
-{updated_description}
 
-Please provide a JSON array containing the predicted locations where the bug fix is needed. Each location should include the full file path and the full method name.
+def process_instance(directory, instance_id):
+    """
+    Reads a KG location file, uses it to prompt an LLM for more specific locations,
+    and enriches the original KG file with the LLM's findings.
+    """
+    pre_fl = PreFaultLocalization(instance_id)
+    if pre_fl.target_sample is None:
+        return f"Error: Could not find instance {instance_id} in dataset"
 
-The method field should be one of these formats for Java:
-- `com.package.Class#methodName`           # For class methods
-- `com.package.Class.FIELD_NAME`           # For static / constant fields
-- `com.package.Class`                      # For entire class when unsure
-
-Format:
-```json
-[
-    {{
-        "file_path": "src/main/java/com/example/MyClass.java",
-        "method": "com.example.MyClass#myMethod"
-    }}
-]
-```
-
-Keep the rest of the instructions identical to the Python prompt (ordering, note section, limit {LLM_LOC_MAX}).
-"""
-
-        result = self.generate(prompt)
-        return result
-
-class LlmLoc:
-    def __init__(self, api_type, num_workers):
-        self.api_type = api_type
-        self.num_workers = num_workers
-        self.model = MODEL_MAP.get(self.api_type, self.api_type)
-        if self.api_type in ["deepseek", "qwen", "yi"]:
-            self.api_key = BAILIAN_API_KEY
-            self.agent_key = BAILIAN_AGENT_KEY
-        else:
-            raise ValueError(f"Unsupported API type: {self.api_type}")
-        self.MAX_INPUT_LENGTH = MAX_INPUT_LENGTH['bailian']
-
-    def get_completion(self, prompt, retries=5, delay=10):
-        if self.api_type in ["deepseek", "qwen", "yi"]:
-            dashscope.api_key = self.api_key
-            try:
-                response = dashscope.Generation.call(
-                    model=self.model,
-                    prompt=prompt,
-                    api_key=self.api_key,
-                    agent_key=self.agent_key,
-                )
-                if response.status_code == http.HTTPStatus.OK:
-                    return response.output['text']
-                else:
-                    print(f"Error: {response.code} - {response.message}")
-                    return ""
-            except Exception as e:
-                print(f"An error occurred: {e}")
-                return ""
-        else:
-            raise ValueError(f"Unsupported API type: {self.api_type}")
-
-if __name__ == "__main__":
-    # Support optional --no-kg flag to skip using kg_locations
-    use_kg = '--no-kg' not in sys.argv
-
-    # Remove flag for easier positional parsing
-    argv_clean = [a for a in sys.argv[1:] if a != '--no-kg']
-
-    if len(argv_clean) < 2:
-        print("Usage: python llm_loc.py <api_type> [num_threads] <directory> [dataset_name] [--no-kg]")
-        sys.exit(1)
+    # --- KG-dependent workflow ---
+    kg_location_file = os.path.join(os.path.dirname(directory), 'kg_locations', f"{instance_id}.json")
+    if not os.path.exists(kg_location_file):
+        print(f"Error: KG Location file does not exist at {kg_location_file}")
+        return f"Skipping {instance_id}."
     
-    api_type = argv_clean[0]
-
-    # Determine if second arg is num_threads (int) or directory
-    arg2 = argv_clean[1]
-    if arg2.isdigit():
-        num_threads = int(arg2)
-        directory_arg_index = 2
-    else:
-        num_threads = 1
-        directory_arg_index = 1
-
-    # directory path
-    directory = argv_clean[directory_arg_index]
-
-    dataset_name_cli = argv_clean[directory_arg_index + 1] if len(argv_clean) > directory_arg_index + 1 else DATASET_NAME
+    with open(kg_location_file, 'r') as f:
+        locate_result = json.load(f)
     
-    from concurrent.futures import ThreadPoolExecutor
-    from tqdm import tqdm
+    # Build a hint for the LLM using the problem statement and related issues/methods from the KG
+    hint_parts = []
     
-    # Load dataset once to get all instance IDs for progress bar
-    ds_main = load_dataset(dataset_name_cli)
-    main_split = 'test'
-    if 'multi-swe-bench' in dataset_name_cli.lower():
-        main_split = 'java_verified'
-    if main_split not in ds_main:
-        main_split = list(ds_main.keys())[0]
+    problem_statement = pre_fl.target_sample.get('problem_statement', '') or pre_fl.target_sample.get('text', '')
+    if problem_statement:
+        hint_parts.append(f"## Problem Statement\n{problem_statement}")
 
-    instance_ids = sorted(ds_main[main_split]['instance_id']) if isinstance(ds_main[main_split], list) else sorted([item['instance_id'] for item in ds_main[main_split]])
+    # Add related issues from KG
+    if locate_result.get('related_entities', {}).get('issues'):
+        sorted_issues = sorted(
+            locate_result['related_entities']['issues'],
+            key=lambda x: x.get('similarity', 0),
+            reverse=True
+        )
+        if sorted_issues:
+            issue_texts = []
+            # Add the top issue and up to 2 related issues
+            for issue in sorted_issues[:3]:
+                title = issue.get('title', 'N/A')
+                content = issue.get('content', 'N/A')
+                issue_texts.append(f"### Issue: {title}\n\n{content}")
+            if issue_texts:
+                hint_parts.append("## Potentially Related Issues from Knowledge Graph\n\n" + "\n\n".join(issue_texts))
 
-    def process_instance(instance_id):
-        # Determine the output path based on use_kg
-        if not use_kg:
-            output_file_path = os.path.join(directory, f"{instance_id}-llm_loc.json")
-        else:
-            # This is the file that llm_loc.py generates as its final output in the KG path
-            output_file_path = os.path.join(directory, f"{instance_id}-result.json")
+    # Add related methods from KG
+    if locate_result.get('related_entities', {}).get('methods'):
+        method_texts = []
+        # Sort methods by similarity if available, and take top 5
+        sorted_methods = sorted(
+            locate_result['related_entities']['methods'],
+            key=lambda x: x.get('similarity', 0),
+            reverse=True
+        )[:CANDIDATE_LOCATIONS_MAX]
+        
+        methods_content = ""
+        for method in sorted_methods:
+            methods_content += format_entity_content(method)
+        if methods_content:
+            hint_parts.append("## Potentially Related Functions from Knowledge Graph\n\n" + methods_content)
 
-        # Check if the determined output file already exists
-        if os.path.exists(output_file_path):
-            message = f"Skipping {instance_id}: Output file {output_file_path} already exists."
-            return message
+    hint = "\n\n".join(hint_parts).replace('\\n', '\n')
+    
+    print("--- Sending hint to LLM ---")
+    print(hint)
+    print("--------------------------")
 
-        print(f"Processing {instance_id}")
-        pre_fl = PreFaultLocalization(instance_id, api_type, dataset_name_cli)
-        if pre_fl.target_sample is None:
-            return f"Error: Could not find instance {instance_id} in dataset"
+    print("--- LLM raw output ---")
+    raw_llm_output = pre_fl.pre_locate(hint, stream=True)
+    print("----------------------")
 
-        # If not using KG results, directly call LLM and save predictions
-        if not use_kg:
-            problem_statement = pre_fl.target_sample.get('problem_statement', '') or pre_fl.target_sample.get('text', '')
-            raw_llm_output = pre_fl.pre_locate(problem_statement)
-            
-            print(f"DEBUG: Raw LLM output for {instance_id} (--no-kg) PRE-EXTRACTION:\\n{raw_llm_output}")
-            json_string_extracted = extract_json_code(raw_llm_output)
-            print(f"DEBUG: Extracted JSON string for {instance_id} (--no-kg) POST-EXTRACTION:\\n{json_string_extracted}")
+    if raw_llm_output is None:
+        print(f"Error: Did not receive a valid response from the LLM for {instance_id}. Skipping.")
+        # To avoid breaking the chain, we can create an empty/error JSON or just skip.
+        # Skipping seems safer to not pollute results.
+        return f"LLM call failed for {instance_id}, skipping file generation."
 
-            llm_predictions_list = []
-            try:
-                llm_predictions_list = json.loads(json_string_extracted)
-                if not isinstance(llm_predictions_list, list): # Ensure it's a list as expected
-                    print(f"Warning: LLM output for {instance_id} (--no-kg) was not a list after parsing. Got: {type(llm_predictions_list)}")
-                    llm_predictions_list = [] # Default to empty list to avoid iteration errors
-            except json.JSONDecodeError as e:
-                print(f"Error: Failed to parse JSON from LLM output for {instance_id} (--no-kg). Error: {e}")
-                # Save an error structure 
-                error_output = {
-                    "error": "Failed to parse JSON from LLM output.",
-                    "json_decode_error_details": str(e),
-                    "extracted_json_string": json_string_extracted,
-                    "raw_llm_output": raw_llm_output,
-                    "instance_id": pre_fl.instance_id,
-                    "processed_with_no_kg": True,
-                    "llm_api_type": pre_fl.api_type,
-                }
-                with open(output_file_path, 'w') as f_out:
-                    json.dump(error_output, f_out, indent=2)
-                return f"Saved error log for {instance_id} due to JSON parsing failure."
+    json_str = extract_json_code(raw_llm_output)
 
-            # Initialize GitHub connection (similar to KG path)
+    try:
+        llm_hint_list = json.loads(json_str)
+        if not isinstance(llm_hint_list, list):
+            llm_hint_list = []
+    except json.JSONDecodeError:
+        print(f"Error: Failed to parse JSON from LLM output for {instance_id}.")
+        llm_hint_list = []
+    
+    # Get repository information to fetch code snippets
+    repo_name = pre_fl.target_sample.get('repo')
+    commit_id = pre_fl.target_sample.get('base_commit')
+    
+    github_repo = None
+    commit = None
+    if repo_name and commit_id and GITHUB_TOKEN:
+        try:
             g = Github(GITHUB_TOKEN)
-            github_repo = None
-            commit = None
-            if pre_fl.target_sample and 'repo' in pre_fl.target_sample and 'base_commit' in pre_fl.target_sample:
-                try:
-                    github_repo = g.get_repo(pre_fl.target_sample['repo'])
-                    commit = github_repo.get_commit(pre_fl.target_sample['base_commit'])
-                except Exception as e:
-                    print(f"Warning: Could not get GitHub repo/commit for {instance_id}: {e}")
-            
-            final_result_no_kg = {
-                "instance_id": pre_fl.instance_id,
-                "repo": pre_fl.target_sample.get('repo'),
-                "base_commit": pre_fl.target_sample.get('base_commit'),
-                "problem_statement_used": problem_statement,
-                "processed_with_no_kg": True,
-                "llm_api_type": pre_fl.api_type,
-                "related_entities": {
-                    "methods": [],
-                    "issues": [],
-                    "pull_requests": [],
-                    "commits": [],
-                    "source_files": []
-                }
-            }
+            github_repo = g.get_repo(repo_name)
+            commit = github_repo.get_commit(commit_id)
+        except Exception as e:
+            print(f"Warning: Could not get GitHub repo/commit for {instance_id}: {e}")
 
-            cnt = 0
-            if isinstance(llm_predictions_list, list): # Double check it's a list
-                for item in llm_predictions_list:
-                    if not isinstance(item, dict) or 'file_path' not in item or 'method' not in item:
-                        print(f"Warning: Skipping invalid item in LLM prediction list for {instance_id}: {item}")
-                        continue
+    # Add detailed information for each method identified by the LLM to the locate_result
+    cnt = 0
+    if isinstance(llm_hint_list, list):
+        for item in llm_hint_list:
+            if not isinstance(item, dict) or 'file_path' not in item or 'method' not in item:
+                continue
 
-                    method_signature_from_llm = item['method']
-                    file_path_from_llm = item['file_path']
-                    
-                    method_detail_from_github = None
-                    if pre_fl.language == 'python' and github_repo and commit:
-                        try:
-                            method_detail_from_github = get_commit_method_by_signature(github_repo, commit, file_path_from_llm, method_signature_from_llm)
-                        except Exception as e:
-                            print(f"Warning: get_commit_method_by_signature failed for {method_signature_from_llm} in {file_path_from_llm}: {e}")
-                            method_detail_from_github = None
-                    
-                    method_entry = {
-                        "original_signature": method_signature_from_llm,
-                        "file_path": file_path_from_llm, # Retain LLM's file_path reference
-                        "type": "method",
-                        "similarity": 1.0 # Default similarity for direct LLM prediction
-                    }
-
-                    if method_detail_from_github:
-                        method_entry.update(method_detail_from_github) # Adds name, start_line, end_line, code_snippet etc.
-                        method_entry["path"] = [{
-                            "start_node": "root",
-                            "description": "points to method",
-                            "type": "INFERENCE",
-                            "end_node": method_detail_from_github.get('name', method_signature_from_llm) # Use GitHub name if available
-                        }]
-                    else:
-                        # Fallback if GitHub details couldn't be fetched
-                        method_entry["name"] = method_signature_from_llm
-                        method_entry["start_line"] = None
-                        method_entry["end_line"] = None
-                        method_entry["code_snippet"] = None
-                        method_entry["path"] = [{
-                            "start_node": "root",
-                            "description": "points to method",
-                            "type": "INFERENCE",
-                            "end_node": method_signature_from_llm
-                        }]
-                    
-                    final_result_no_kg['related_entities']['methods'].append(method_entry)
-                    cnt += 1
-                    if cnt >= LLM_LOC_MAX:
-                        break
-            
-            with open(output_file_path, 'w') as f_out:
-                json.dump(final_result_no_kg, f_out, indent=2)
-            return f"Saved structured predictions without KG for {instance_id}"
-
-        # --- original KG-dependent workflow ---
-        if not os.path.exists('kg_locations/' + instance_id + '-result.json'):
-            print('Location file does not exist')
-            return f"Skip {instance_id}"
-        locate_result = json.load(open('kg_locations/' + instance_id + '-result.json', 'r'))
-        
-        # Check for existing llm_hint.txt
-        llm_hint_path = f'swe_bench_samples/{instance_id}/llm_hint.txt'
-        if os.path.exists(llm_hint_path):
-            print(f"Loading existing llm_hint.txt for {instance_id}")
-            with open(llm_hint_path, 'r') as f:
-                result = f.read()
-                
-            # Try parsing JSON, regenerate if fails
-            try:
-                json_str = extract_json_code(result)
-                llm_hint = json.loads(json_str)
-            except:
-                print(f"Failed to parse existing llm_hint.txt, regenerating...")
-                hint = pre_fl.target_sample['problem_statement']
-                
-                if locate_result['related_entities'].get('issues'):
-                    sorted_issues = sorted(
-                        locate_result['related_entities']['issues'],
-                        key=lambda x: x['similarity'],
-                        reverse=True
-                    )
-                    hint = f"\n### {sorted_issues[0]['title']}\n{sorted_issues[0]['content']}\n\n## Related Issues"
-                    for issue in sorted_issues[1:3]:
-                        hint += f"\n### {issue['title']}\n{issue['content']}"
-                else:
-                    hint = pre_fl.target_sample['problem_statement']
-                print(hint)
-                result = pre_fl.pre_locate(hint)
-                print(result)
-                json_str = extract_json_code(result)
-                llm_hint = json.loads(json_str)
-        else:
-            hint = pre_fl.target_sample['problem_statement']
-            
-            # If there are related issues, add descriptions of top 3 most similar issues
-            if locate_result['related_entities'].get('issues'):
-                sorted_issues = sorted(
-                    locate_result['related_entities']['issues'],
-                    key=lambda x: x['similarity'],
-                    reverse=True
-                )
-                hint = f"\n### {sorted_issues[0]['title']}\n{sorted_issues[0]['content']}\n\n## Related Issues"
-                for issue in sorted_issues[1:3]:
-                    hint += f"\n### {issue['title']}\n{issue['content']}"
-            else:
-                hint = pre_fl.target_sample['problem_statement']
-            print(hint)
-            result = pre_fl.pre_locate(hint)
-            print(result)
-            json_str = extract_json_code(result)
-            llm_hint = json.loads(json_str)
-                
-        # Get repository information
-        repo = pre_fl.target_sample['repo']
-        commit_id = pre_fl.target_sample['base_commit']
-        g = Github(GITHUB_TOKEN)
-        github_repo = g.get_repo(repo)
-        commit = github_repo.get_commit(commit_id)
-        
-        # Get detailed information for each method and add to locate_result
-        cnt = 0
-        for item in llm_hint:
-            method_signature = item['method']
+            qualified_name_from_llm = item['method']
             file_path = item['file_path']
-            # get_commit_method_by_signature 目前仅支持 Python
-            if pre_fl.language != 'python':
-                method = None
-            else:
+            
+            method_details = None
+            if pre_fl.language == 'python' and github_repo and commit:
                 try:
-                    method = get_commit_method_by_signature(github_repo, commit, file_path, method_signature)
-                except Exception:
-                    method = None
-            if method is not None:
+                    method_details = get_commit_method_by_signature(github_repo, commit, file_path, qualified_name_from_llm)
+                except Exception as e:
+                    print(f"Warning: get_commit_method_by_signature failed for {qualified_name_from_llm} in {file_path}: {e}")
+            
+            if method_details is not None:
                 cnt += 1
                 if cnt > LLM_LOC_MAX:
                     break
-                method['path'] = [{
-                    "start_node": "root",
-                    "description": "points to method",
-                    "type": "INFERENCE",
-                    "end_node": method['name']
-                }]
-                method['type'] = 'method'
-                method['similarity'] = 1.0
-                locate_result['related_entities']['methods'].append(method)
-        
-        # Save updated locate_result
-        with open(output_file_path, 'w') as f:
-            json.dump(locate_result, f, indent=2)
-        
-        return f"Successfully processed {instance_id}"
+                
+                method_details['path'] = [{"start_node": "root", "description": "points to method", "type": "INFERENCE", "end_node": method_details['name']}]
+                method_details['type'] = 'method'
+                method_details['similarity'] = 1.0
+                locate_result.setdefault('related_entities', {}).setdefault('methods', []).append(method_details)
     
-    # Use thread pool to process instances
-    with ThreadPoolExecutor(max_workers=num_threads) as executor:
-        results = list(tqdm(
-            executor.map(process_instance, instance_ids),
-            total=len(instance_ids),
-            desc="Processing instances"
-        ))
+    # Save the augmented locate_result object, overwriting the file in the llm_locations dir
+    output_path = os.path.join(directory, f"{instance_id}.json")
+    with open(output_path, 'w') as f:
+        json.dump(locate_result, f, indent=4)
     
-    # Print result summary
-    for result in results:
-        print(result)
+    return f"LLM location saved to {output_path}"
+
+
+def main():
+    parser = argparse.ArgumentParser(description="LLM-based Fault Localization using KG context.")
+    parser.add_argument("directory", type=str, help="Directory to save the results")
+    parser.add_argument("--instance_id", type=str, help="The instance_id to process.", required=True)
+    args = parser.parse_args()
+
+    # Create the directory if it doesn't exist
+    if not os.path.exists(args.directory):
+        os.makedirs(args.directory)
+
+    print(f"Processing a single specified instance: {args.instance_id}")
+    result = process_instance(args.directory, args.instance_id)
+    print(result)
+
+
+if __name__ == '__main__':
+    main()

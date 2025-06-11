@@ -17,12 +17,22 @@ from collections import defaultdict
 import subprocess
 import io
 import tokenize
+from config import SEARCH_SPACE
 
-WEAK_CONNECTION = 1.00
-NORMAL_CONNECTION = 0.50
-STRONG_CONNECTION = 0.25
-MAX_LIMIT = 50
 repo_locks = defaultdict(threading.Lock)
+
+def _clean_path(file_path: str) -> str:
+    """Removes 'playground/' prefix and the project directory from a path."""
+    rel_path = os.path.relpath(file_path)
+    prefix = 'playground' + os.sep
+    if rel_path.startswith(prefix):
+        path_after_playground = rel_path[len(prefix):]
+        parts = path_after_playground.split(os.sep)
+        if len(parts) > 1:
+            return os.sep.join(parts[1:])
+        else:
+            return path_after_playground
+    return rel_path
 
 class TextAnalyzer:
     def __init__(self, github_token):
@@ -120,28 +130,41 @@ def get_pr_file_line_belongs(pull_request, repo_root, file_path, start_line, end
                 classes = get_classes_from_file(temp_file, repo.name.split('/')[-1])
                 methods = get_global_methods_from_file(temp_file, repo.name.split('/')[-1])
                 methods.extend(get_global_variables_from_file(temp_file, repo.name.split('/')[-1]))
-            module_path = f"{relative_path.replace('/', '.').replace('.py', '')}"
-            print(f"Module path: {module_path}")            
+            
+            clean_file_path = _clean_path(file_path)
+            module_path = clean_file_path.replace(os.sep, '.').replace('.py', '')
+            
             for class_info in classes:
                 if (class_info['start_line'] <= end_line and 
                     class_info['end_line'] >= start_line):
-                    class_name = f"{module_path}.{class_info['name'].split('.')[-1]}"
+                    
+                    simple_class_name = class_info['name'].split('.')[-1]
+                    qualified_class_name = f"{module_path}.{simple_class_name}"
+
                     belongs_to['classes'].append({
-                        'name': class_name,
-                        'file_path': file_path,
+                        'name': qualified_class_name,
+                        'file_path': clean_file_path,
                         'start_line': class_info['start_line'],
                         'end_line': class_info['end_line'],
                         'source_code': class_info['source_code'],
                         'doc_string': class_info['doc_string'],
                     })
-                    for method in class_info['methods']:
+                    for method in class_info.get('methods', []):
                         if (method['start_line'] <= end_line and 
                             method['end_line'] >= start_line):
-                            method_name = f"{class_name}.{method['name'].split('.')[-1]}"
+                            
+                            simple_method_name = method['name'].split('.')[-1]
+                            qualified_method_name = f"{qualified_class_name}.{simple_method_name}"
+
+                            # Reconstruct signature with the correct qualified name
+                            params = re.search(r'\((.*)\)', method['signature'])
+                            param_str = params.group(1) if params else ''
+                            new_signature = f"{qualified_method_name}({param_str})"
+
                             belongs_to['methods'].append({
-                                'name': method_name,
-                                'file_path': file_path,
-                                'signature': method['signature'].replace(method['name'], method_name),
+                                'name': qualified_method_name,
+                                'file_path': clean_file_path,
+                                'signature': new_signature,
                                 'start_line': method['start_line'],
                                 'end_line': method['end_line'],
                                 'source_code': method['source_code'],
@@ -150,11 +173,24 @@ def get_pr_file_line_belongs(pull_request, repo_root, file_path, start_line, end
             for method in methods:
                 if (method['start_line'] <= end_line and 
                     method['end_line'] >= start_line):
-                    method_name = f"{module_path}.{method['name'].split('.')[-1]}"
+                    
+                    simple_method_name = method['name'].split('.')[-1]
+                    qualified_method_name = f"{module_path}.{simple_method_name}"
+
+                    params = re.search(r'\((.*)\)', method['signature'])
+                    param_str = params.group(1) if params else ''
+                    
+                    new_signature = f"{qualified_method_name}({param_str})"
+                    
+                    # Special handling for global variables where signature is an assignment
+                    if '=' in method['signature']:
+                        value_part = method['signature'].split('=', 1)[1].strip()
+                        new_signature = f"{qualified_method_name} = {value_part}"
+
                     belongs_to['methods'].append({
-                        'name': method_name,
-                        'file_path': file_path,
-                        'signature': method['signature'].replace(method['name'], method_name),
+                        'name': qualified_method_name,
+                        'file_path': clean_file_path,
+                        'signature': new_signature,
                         'start_line': method['start_line'],
                         'end_line': method['end_line'],
                         'source_code': method['source_code'],
@@ -240,17 +276,13 @@ def get_python_files_from_content(repo_path, content, repo_name):
         for possible_path in possible_paths:
             if os.path.exists(possible_path):
                 related_files.add(possible_path)
-    return list(related_files)[:MAX_LIMIT]
+    return list(related_files)[:SEARCH_SPACE]
 
 def get_global_methods_from_file(file_path, repo_name):
+    clean_file_path = _clean_path(file_path)
     content = read_file(file_path)
     tree = ast.parse(content)
-    path_parts = file_path.split(os.sep)
-    try:
-        repo_root_index = len(path_parts) - 1 - path_parts[::-1].index(repo_name)
-        module_path = '.'.join(path_parts[repo_root_index:]).replace('.py', '')
-    except ValueError:
-        module_path = os.path.relpath(file_path).replace('/', '.').replace('\\', '.').replace('.py', '')
+    module_path = clean_file_path.replace(os.sep, '.').replace('.py', '')
     methods = []
     for node in tree.body:
         if isinstance(node, ast.FunctionDef):
@@ -261,7 +293,7 @@ def get_global_methods_from_file(file_path, repo_name):
             methods.append({
                 "name": f"{module_path}.{method_name}",
                 "signature": method_signature,
-                'file_path': file_path,
+                'file_path': clean_file_path,
                 "start_line": node.lineno,
                 "source_code": ast.get_source_segment(content, node),
                 "end_line": node.end_lineno if hasattr(node, 'end_lineno') else None,
@@ -269,15 +301,44 @@ def get_global_methods_from_file(file_path, repo_name):
             })
     return methods
 
+def format_path_info(item):
+        if 'path' not in item:
+            return ''
+        path_info = '- path_info : '
+        first = True
+        for path in reversed(item['path']):
+            if first:
+                path_info += f"{path['end_node']}"
+                first = False
+            path_info += f" -> {path['description']} -> {path['start_node']}"
+        return path_info
+
+def format_entity_content(item, show_path=False):
+    """
+    Format complete content for a single entity
+    """
+    # simplified from reference, can be expanded if path_info is needed
+    path_info = format_path_info(item)
+    if not show_path:
+        return (f"### {item['file_path']}\n"
+                f"- signature : {item['signature']}\n"
+                f"- start_line : {item['start_line']}\n"
+                f"- end_line : {item['end_line']}\n"
+                f"...\n{item['source_code']}\n...\n\n")
+    else:
+        return (f"### {item['file_path']}\n"
+                f"- signature : {item['signature']}\n"
+                f"{path_info}\n"
+                f"- start_line : {item['start_line']}\n"
+                f"- end_line : {item['end_line']}\n"
+                f"...\n{item['source_code']}\n...\n\n")
+
+
 def get_global_variables_from_file(file_path, repo_name):
+    clean_file_path = _clean_path(file_path)
     content = read_file(file_path)
     tree = ast.parse(content)
-    path_parts = file_path.split(os.sep)
-    try:
-        repo_root_index = len(path_parts) - 1 - path_parts[::-1].index(repo_name)
-        module_path = '.'.join(path_parts[repo_root_index:]).replace('.py', '')
-    except ValueError:
-        module_path = os.path.relpath(file_path).replace('/', '.').replace('\\', '.').replace('.py', '')
+    module_path = clean_file_path.replace(os.sep, '.').replace('.py', '')
     variables = []
     for node in tree.body:
         if isinstance(node, ast.Assign):
@@ -290,7 +351,7 @@ def get_global_variables_from_file(file_path, repo_name):
                     variables.append({
                         "name": f"{module_path}.{target.id}",
                         "signature": f"{module_path}.{target.id} = {value}",
-                        "file_path": file_path,
+                        "file_path": clean_file_path,
                         "start_line": node.lineno,
                         "end_line": node.end_lineno if hasattr(node, 'end_lineno') else None,
                         "source_code": ast.get_source_segment(content, node),
@@ -300,7 +361,7 @@ def get_global_variables_from_file(file_path, repo_name):
 
 def get_class_and_method_from_content(content, file_path, repo_name):
     repo_name = repo_name.split('/')[-1]
-    temp_file = f'../{repo_name}/{file_path}'
+    temp_file = f'playground/{repo_name}/{file_path}'
     if not os.path.exists(temp_file):
         os.makedirs(os.path.dirname(temp_file), exist_ok=True)
     with open(temp_file, 'w') as f:
@@ -318,6 +379,7 @@ def get_class_and_method_from_content(content, file_path, repo_name):
 
 def get_classes_from_file(file_path, repo_name):
     try:
+        clean_file_path = _clean_path(file_path)
         content = read_file(file_path)
         comments_map = {}
         current_comments = []
@@ -366,7 +428,7 @@ def get_classes_from_file(file_path, repo_name):
                         full_method_name = f"{full_class_name}.{item.name}"
                         method_info = {
                             'name': full_method_name,
-                            'file_path': file_path,
+                            'file_path': clean_file_path,
                             'start_line': item.lineno,
                             'end_line': item.end_lineno,
                             'source_code': function_source_code,
@@ -384,7 +446,7 @@ def get_classes_from_file(file_path, repo_name):
                                 full_var_name = f"{full_class_name}.{target.id}"
                                 var_info = {
                                     'name': full_var_name,
-                                    'file_path': file_path,
+                                    'file_path': clean_file_path,
                                     'start_line': item.lineno,
                                     'end_line': item.end_lineno if hasattr(item, 'end_lineno') else None,
                                     'source_code': ast.get_source_segment(content, item),
@@ -394,6 +456,7 @@ def get_classes_from_file(file_path, repo_name):
                                 methods.append(var_info)
                 class_info = {
                     'name': full_class_name,
+                    'file_path': clean_file_path,
                     'start_line': node.lineno,
                     'end_line': node.end_lineno,
                     'doc_string': class_doc,
@@ -506,7 +569,7 @@ def get_reference_functions_from_text(repo_name, text, parser, exclude_set=set()
     except Exception as e:
         print(f"Error while parsing module references: {e}")
         print(traceback.format_exc())
-    return list(sorted(set(code_references), key=lambda x: len(x[1]) + x[1].count('.') * 5 + x[1].count('.py') * 10, reverse=True))[:MAX_LIMIT]
+    return list(sorted(set(code_references), key=lambda x: len(x[1]) + x[1].count('.') * 5 + x[1].count('.py') * 10, reverse=True))[:SEARCH_SPACE]
 
 def extract_methods_from_traceback(working_tree_dir, repo_root, content, kg, parser=None):
     methods = []
@@ -637,9 +700,10 @@ def extract_methods_from_traceback(working_tree_dir, repo_root, content, kg, par
                 
                 if found_method_details:
                     line_num = int(line_number_str) if line_number_str and line_number_str.isdigit() else found_method_details['start_line']
+                    clean_actual_file_path = _clean_path(actual_file_path)
                     method_info_to_add = {
                         'name': found_method_details['name'], 
-                        'file_path': actual_file_path,
+                        'file_path': clean_actual_file_path,
                         'signature': found_method_details['signature'],
                         'start_line': found_method_details['start_line'], 
                         'end_line': found_method_details['end_line'],   
@@ -648,7 +712,7 @@ def extract_methods_from_traceback(working_tree_dir, repo_root, content, kg, par
                         'doc_string': found_method_details.get('doc_string', '')
                     }
                     methods.append(method_info_to_add)
-                    print(f"Extracted method from trace: {method_info_to_add['name']} in {actual_file_path}")
+                    print(f"Extracted method from trace: {method_info_to_add['name']} in {clean_actual_file_path}")
                 else:
                     print(f"Could not find details for method '{target_method_simple_name}' in parsed file {actual_file_path}")
 
@@ -693,7 +757,7 @@ def legal_patch(patch_content):
 
 def applable_patch(patch_content, repo_name, commit_id):
     try:
-        repo_path = f"../{repo_name.split('/')[-1]}"
+        repo_path = f"playground/{repo_name.split('/')[-1]}"
         with repo_locks[repo_path]:
             current_ref = os.popen(f'git -C "{repo_path}" rev-parse HEAD').read().strip()
             checkout_cmd = f'git -C "{repo_path}" checkout -f {commit_id} -q'
@@ -767,8 +831,8 @@ def fake_git_repo(repo_playground, file_path, old_content, new_content) -> str:
     assert not os.path.exists(repo_playground), f"{repo_playground} already exists"
     os.makedirs(repo_playground)
     normalized_path = os.path.normpath(file_path)
-    if normalized_path.startswith('../'):
-        normalized_path = normalized_path.replace('../', '', 1)
+    if normalized_path.startswith('playground/'):
+        normalized_path = normalized_path.replace('playground/', '', 1)
     subprocess.run(f"cd {repo_playground} && git init", shell=True)
     subprocess.run(
         f"mkdir -p {repo_playground}/{os.path.dirname(normalized_path)}", shell=True

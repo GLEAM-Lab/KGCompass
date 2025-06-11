@@ -1,0 +1,59 @@
+services:
+  base:
+    build:
+      context: .
+      dockerfile: docker/base/Dockerfile
+    image: kgcompass-base:latest
+
+  neo4j:
+    # Build the image from the Dockerfile in the current directory
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: kgcompass-neo4j
+    ports:
+      - "7474:7474" # HTTP
+      - "7687:7687" # Bolt
+    volumes:
+      # Mount named volumes for data persistence
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+    environment:
+      - http_proxy=http://172.27.16.1:7890
+      - https_proxy=http://172.27.16.1:7890
+      - no_proxy=localhost,127.0.0.1
+    restart: unless-stopped
+
+  app:
+    # Build the image from the app.Dockerfile, which depends on the base image
+    build:
+      context: .
+      dockerfile: app.Dockerfile
+    image: kgcompass-app:latest
+    container_name: kgcompass-app
+    working_dir: /opt/KGCompass
+    # Mount the local directory to the container for development
+    volumes:
+      - .:/opt/KGCompass
+      - ./playground:/opt/KGCompass/playground
+    # Load environment variables from a .env file
+    env_file:
+      - .env
+    # Set the Neo4j URI for the app to connect to the neo4j service
+    environment:
+      - NEO4J_URI=bolt://neo4j:7687
+    # Request GPU access for this service
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    # Keep the container running
+    stdin_open: true
+    tty: true
+
+volumes:
+  neo4j-data:
+  neo4j-logs: 

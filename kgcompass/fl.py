@@ -25,7 +25,6 @@ from utils import (
 from links import PatchLinkExpander
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
-from utils import WEAK_CONNECTION, NORMAL_CONNECTION, STRONG_CONNECTION
 from config import (
     GITHUB_TOKEN,
     NEO4J_URI, 
@@ -33,7 +32,11 @@ from config import (
     NEO4J_PASSWORD,
     MAX_CANDIDATE_METHODS,
     MAX_SEARCH_DEPTH,
-    DATASET_NAME
+    DATASET_NAME,
+    SEARCH_SPACE,
+    WEAK_CONNECTION,
+    NORMAL_CONNECTION,
+    STRONG_CONNECTION,
 )
 from language_factory import LanguageConfigFactory, ParserFactory, language_by_extension, EXT_LANG_MAP
 from functools import lru_cache
@@ -69,6 +72,31 @@ class CodeAnalyzer:
         self.counted_valid_artifact_ids = set()
         self.counted_skipped_artifact_ids = set()
 
+    def _clean_path(self, file_path: str) -> str:
+        """Return a normalized absolute path with forward slashes.
+        此函数曾经去掉 'playground/' 前缀，导致同一文件在 KG 中出现两种 path 表示
+        （绝对路径 vs. 相对路径），从而使 Issue-File 与 File-Method 无法连通。
+
+        为保持一致性，改为简单地规范化路径分隔符，并返回绝对路径。
+        """
+        # 统一为 Linux 风格分隔符
+        path = os.path.normpath(file_path).replace('\\', '/')
+
+        # 去掉 'playground/' 前缀
+        prefix = 'playground/'
+        if path.startswith(prefix):
+            path_after_playground = path[len(prefix):]
+        else:
+            path_after_playground = path
+
+        # 去掉仓库顶层目录（如 astropy__astropy）
+        repo_dir = os.path.basename(os.path.normpath(self.config['repo_path'].rstrip('/')))
+        parts = path_after_playground.split('/')
+        if parts and parts[0] == repo_dir:
+            path_after_playground = '/'.join(parts[1:]) if len(parts) > 1 else ''
+
+        return path_after_playground
+
     def _check_and_count_artifact_time(self, artifact_timestamp, artifact_unique_id: str) -> bool:
         """
         Checks if artifact_timestamp is not later than self.created_at.
@@ -102,7 +130,7 @@ class CodeAnalyzer:
             self._process_repository(target_sample)
             
             # Get related entities
-            related_entities = self.kg.get_all_similarities_to_root(limit=50, max_hops=4, sort=True)
+            related_entities = self.kg.get_all_similarities_to_root(limit=SEARCH_SPACE, max_hops=4, sort=True)
 
             if 'methods' in related_entities:
                 related_entities['methods'].sort(key=lambda x: x.get('similarity', 0), reverse=True)
@@ -412,23 +440,23 @@ class CodeAnalyzer:
             # 创建类实体
             self.kg.create_class_entity(
                 class_name,
-                file_path,
+                class_info['file_path'],
                 class_info['start_line'],
                 class_info['end_line'],
                 class_info.get('source_code', ''),
                 class_info.get('doc_string', ''),
                 STRONG_CONNECTION
             )
-            self.kg.link_class_to_file(class_name, file_path, STRONG_CONNECTION)
+            self.kg.link_class_to_file(class_name, class_info['file_path'], STRONG_CONNECTION)
             
             # 处理方法
-            for method in class_info['methods']:
+            for method in class_info.get('methods', []):
                 method_name = f"{method['name']}"
                 
                 self.kg.create_method_entity(
                     method_name,
                     method['signature'],
-                    file_path,
+                    method['file_path'],
                     method['start_line'],
                     method['end_line'],
                     method['source_code'],
@@ -438,7 +466,7 @@ class CodeAnalyzer:
                 
                 self.kg.link_class_to_method(
                     class_name,
-                    file_path,
+                    class_info['file_path'],
                     method_name,
                     method['signature'],
                     STRONG_CONNECTION
@@ -488,7 +516,7 @@ class CodeAnalyzer:
                 continue
             
             # Create file entity
-            self.kg.create_file_entity(file_path)
+            self.kg.create_file_entity(self._clean_path(file_path))
             
             # Get modified line number range
             patch = file.patch
@@ -529,29 +557,30 @@ class CodeAnalyzer:
                 belongs = get_pr_file_line_belongs(pull, self.config['repo_path'], file_path, start_line, end_line, parser)
                 for item in belongs['classes']:
                     print(f"Line {start_line}-{end_line} belongs to class: {item['name']}")
-                    self.kg.create_class_entity(item['name'], file_path, item['start_line'], item['end_line'], item.get('source_code', ''), item.get('doc_string', ''), STRONG_CONNECTION)
-                    self.kg.link_class_to_issue(item['name'], file_path, issue_id, STRONG_CONNECTION)
-                    self.kg.link_class_to_file(item['name'], file_path, STRONG_CONNECTION)
+                    self.kg.create_class_entity(item['name'], item['file_path'], item['start_line'], item['end_line'], item.get('source_code', ''), item.get('doc_string', ''), STRONG_CONNECTION)
+                    self.kg.link_class_to_issue(item['name'], item['file_path'], issue_id, STRONG_CONNECTION)
+                    self.kg.link_class_to_file(item['name'], item['file_path'], STRONG_CONNECTION)
                 for item in belongs['methods']:
                     print(f"Line {start_line}-{end_line} belongs to method: {item['name']}")
-                    self.kg.create_method_entity(item['name'], item['signature'], file_path, item['start_line'], item['end_line'], item['source_code'], item.get('doc_string', ''), STRONG_CONNECTION)
-                    self.kg.link_method_to_issue(item['name'], item['signature'], file_path, issue_id, STRONG_CONNECTION)
-                    self.kg.link_method_to_file(item['name'], item['signature'], file_path, STRONG_CONNECTION)
+                    self.kg.create_method_entity(item['name'], item['signature'], item['file_path'], item['start_line'], item['end_line'], item['source_code'], item.get('doc_string', ''), STRONG_CONNECTION)
+                    self.kg.link_method_to_issue(item['name'], item['signature'], item['file_path'], issue_id, STRONG_CONNECTION)
+                    self.kg.link_method_to_file(item['name'], item['signature'], item['file_path'], STRONG_CONNECTION)
                 # 如果未找到任何类或方法，则回退到整体文件级解析
                 if not belongs['classes'] and not belongs['methods']:
                     print(f"No class/method matched lines {start_line}-{end_line}, fallback to whole file")
                     # 解析并创建整个文件的类与方法实体，再全部关联到该 PR
+                    clean_file_path = self._clean_path(file_path)
                     self._build_file_class_methods(file_path)
                     # 建立文件与 PR 的关系
-                    self.kg.link_issue_to_file(issue_id, file_path, STRONG_CONNECTION)
+                    self.kg.link_issue_to_file(issue_id, clean_file_path, STRONG_CONNECTION)
                     # 获取刚刚写入 KG 的类/方法节点评估
                     all_classes = parser.extract_classes(file_path)
                     all_methods = parser.get_global_methods(file_path, self.config['repo_root'])
                     all_methods.extend(parser.get_global_variables(file_path, self.config['repo_root']))
                     for cls in all_classes:
-                        self.kg.link_class_to_issue(cls['name'], file_path, issue_id, NORMAL_CONNECTION)
+                        self.kg.link_class_to_issue(cls['name'], cls['file_path'], issue_id, NORMAL_CONNECTION)
                     for m in all_methods:
-                        self.kg.link_method_to_issue(m['name'], m['signature'], file_path, issue_id, NORMAL_CONNECTION)
+                        self.kg.link_method_to_issue(m['name'], m['signature'], m['file_path'], issue_id, NORMAL_CONNECTION)
                     # 跳过后续按 belongs 处理的逻辑
                     continue
         print(f"Completed processing PR #{issue_id} modified methods")
@@ -618,8 +647,9 @@ class CodeAnalyzer:
                             dir_file_path = os.path.join(file_path_candidate, item_name)
                             if os.path.isfile(dir_file_path) and dir_file_path not in processed_files_for_this_ref:
                                 print(f"Associated directory file: {dir_file_path}")
-                                self.kg.create_file_entity(dir_file_path)
-                                self.kg.link_issue_to_file(issue_id, dir_file_path, multipler * NORMAL_CONNECTION)
+                                clean_dir_file_path = self._clean_path(dir_file_path)
+                                self.kg.create_file_entity(clean_dir_file_path)
+                                self.kg.link_issue_to_file(issue_id, clean_dir_file_path, multipler * NORMAL_CONNECTION)
                                 self._build_file_class_methods(dir_file_path)
                                 processed_files_for_this_ref.add(dir_file_path)
                 continue 
@@ -628,11 +658,12 @@ class CodeAnalyzer:
                 continue
 
             print(f"Processing file candidate for reference '{full_path}': {file_path_candidate} using {actual_parser.language_config.language} parser")
+            clean_file_path_candidate = self._clean_path(file_path_candidate)
             classes = actual_parser.extract_classes(file_path_candidate)
             methods = actual_parser.get_global_methods(file_path_candidate, self.config['repo_root'])
             methods.extend(actual_parser.get_global_variables(file_path_candidate, self.config['repo_root']))
 
-            self.kg.link_issue_to_file(issue_id, file_path_candidate, multipler * STRONG_CONNECTION)
+            self.kg.link_issue_to_file(issue_id, clean_file_path_candidate, multipler * STRONG_CONNECTION)
             self._build_file_class_methods(file_path_candidate)
             processed_files_for_this_ref.add(file_path_candidate)
             # Marking found_specific_entity = True here because we successfully processed a directly resolved file path.
@@ -643,18 +674,18 @@ class CodeAnalyzer:
             for class_info in classes:
                 if class_info['name'] == target_name: 
                     print(f"Matched class by target_name: {class_info['name']}")
-                    self.kg.link_class_to_issue(class_info['name'], file_path_candidate, issue_id, multipler * NORMAL_CONNECTION)
+                    self.kg.link_class_to_issue(class_info['name'], class_info['file_path'], issue_id, multipler * NORMAL_CONNECTION)
                     entity_linked_in_file = True
-                for method_info in class_info['methods']:
+                for method_info in class_info.get('methods', []):
                     if method_info['name'] == target_name:
                         print(f"Matched method by target_name: {method_info['name']}")
-                        self.kg.link_method_to_issue(method_info['name'], method_info['signature'], file_path_candidate, issue_id, multipler * NORMAL_CONNECTION)
+                        self.kg.link_method_to_issue(method_info['name'], method_info['signature'], method_info['file_path'], issue_id, multipler * NORMAL_CONNECTION)
                         entity_linked_in_file = True
             
             for method_info in methods:
                 if method_info['name'] == target_name:
                     print(f"Matched global method/variable by target_name: {method_info['name']}")
-                    self.kg.link_method_to_issue(method_info['name'], method_info['signature'], file_path_candidate, issue_id, multipler * NORMAL_CONNECTION)
+                    self.kg.link_method_to_issue(method_info['name'], method_info['signature'], method_info['file_path'], issue_id, multipler * NORMAL_CONNECTION)
                     entity_linked_in_file = True
             
             # No need to set found_specific_entity again if entity_linked_in_file is true, as it's already true from file processing.
@@ -675,7 +706,8 @@ class CodeAnalyzer:
                     continue
 
                 print(f"Found '{target_name}' via name search in file: {file_path_from_search} (match type: {match_type_from_search})")
-                self.kg.link_issue_to_file(issue_id, file_path_from_search, multipler * WEAK_CONNECTION)
+                clean_file_path_from_search = self._clean_path(file_path_from_search)
+                self.kg.link_issue_to_file(issue_id, clean_file_path_from_search, multipler * WEAK_CONNECTION)
                 self._build_file_class_methods(file_path_from_search)
                 processed_files_for_this_ref.add(file_path_from_search)
                 found_specific_entity = True 
@@ -686,13 +718,13 @@ class CodeAnalyzer:
 
                 for class_info in s_classes:
                     if class_info['name'] == target_name: 
-                        self.kg.link_class_to_issue(class_info['name'], file_path_from_search, issue_id, multipler * WEAK_CONNECTION)
-                    for method_info in class_info['methods']:
+                        self.kg.link_class_to_issue(class_info['name'], class_info['file_path'], issue_id, multipler * WEAK_CONNECTION)
+                    for method_info in class_info.get('methods', []):
                         if method_info['name'] == target_name:
-                            self.kg.link_method_to_issue(method_info['name'], method_info['signature'], file_path_from_search, issue_id, multipler * WEAK_CONNECTION)
+                            self.kg.link_method_to_issue(method_info['name'], method_info['signature'], method_info['file_path'], issue_id, multipler * WEAK_CONNECTION)
                 for method_info in s_methods:
                     if method_info['name'] == target_name:
-                        self.kg.link_method_to_issue(method_info['name'], method_info['signature'], file_path_from_search, issue_id, multipler * WEAK_CONNECTION)
+                        self.kg.link_method_to_issue(method_info['name'], method_info['signature'], method_info['file_path'], issue_id, multipler * WEAK_CONNECTION)
 
         if not found_specific_entity:
             # Use double quotes for the main f-string to allow single quotes inside for variable values
@@ -730,8 +762,28 @@ class CodeAnalyzer:
         # Extract method information from stack trace
         stack_methods = extract_methods_from_traceback(self.repo.working_tree_dir, self.config['repo_root'], issue_content, self.kg, self.parser)
         for method_info in stack_methods:
+            # method_info['file_path'] is now cleaned by the extractor
+            full_path_for_check = os.path.join(self.config['repo_path'], os.path.normpath(method_info['file_path']))
+            # A simpler way to reconstruct, assuming repo_path is like 'playground/repo_name'
+            full_path_for_check_alt = os.path.join('playground', self._clean_path(method_info['file_path']))
+
             print(f"Found method from stack trace: {method_info}")
-            if os.path.exists(method_info['file_path']):
+
+            # Reconstruct the full path to check for existence
+            # This is necessary because method_info['file_path'] is now the cleaned, relative path.
+            # self.repo_path is 'playground/<repo_name>/'
+            full_path_for_check = os.path.join(self.config['repo_path'], os.path.normpath(method_info['file_path']))
+
+            # A simpler way might be to join 'playground' with the cleaned path if the structure is fixed
+            # For now, let's trust that the parser gives a path relative to repo root (without repo name)
+            # And self.repo_path is the full path to the checkout dir.
+            
+            # The previous logic in `_clean_path` makes it relative to cwd.
+            # A better way to reconstruct:
+            # The cleaned path is relative to 'playground'. So we join 'playground' and the cleaned path.
+            reconstructed_path = os.path.join('playground', method_info['file_path'])
+
+            if os.path.exists(reconstructed_path):
                 # Create method entity
                 self.kg.create_method_entity(
                     method_info['name'],
@@ -802,10 +854,11 @@ class CodeAnalyzer:
         for file_path_ref in source_files:
             if any(file_path_ref.endswith(ext) for ext in current_lang_extensions):
                 if os.path.exists(file_path_ref):
-                    print(f"Found file reference in Issue #{issue_id}: {file_path_ref}")
+                    clean_file_path = self._clean_path(file_path_ref)
+                    print(f"Found file reference in Issue #{issue_id}: {clean_file_path}")
                     # Create file entity and establish association
-                    self.kg.create_file_entity(file_path_ref)
-                    self.kg.link_issue_to_file(issue_id, file_path_ref)
+                    self.kg.create_file_entity(clean_file_path)
+                    self.kg.link_issue_to_file(issue_id, clean_file_path)
                     self._build_file_class_methods(file_path_ref) # This uses self.parser
                     linked_files_count += 1
 
@@ -1472,7 +1525,7 @@ if __name__ == "__main__":
         repo_name = repo_part.replace('__', '/')
 
     config = {
-        'repo_path': f'../{repo_path_arg}/',
+        'repo_path': f'playground/{repo_path_arg}/',
         'repo_name': repo_name, 
         'repo_root': repo_name.split('/')[-1],
         'instance_id': instance_id_arg,
@@ -1491,7 +1544,7 @@ if __name__ == "__main__":
         print(f"Analysis returned no result for {instance_id_arg}. Exiting with error status.")
         sys.exit(1) # 以非零状态码退出
     
-    output_file_path = os.path.join(fl_location_dir_arg, f"{instance_id_arg}-result.json")
+    output_file_path = os.path.join(fl_location_dir_arg, f"{instance_id_arg}.json")
     with open(output_file_path, 'w') as f:
         json.dump(result, f, indent=4)
     print(f"Results saved to: {output_file_path}")
