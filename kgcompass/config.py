@@ -7,10 +7,14 @@ load_dotenv()
 # GitHub Configuration
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
-# Neo4j Configuration
-NEO4J_URI = "bolt://localhost:7687"
-NEO4J_USER = "neo4j"
-NEO4J_PASSWORD = "neo4jpassword"
+# Bailian
+BAILIAN_API_KEY = os.getenv("BAILIAN_API_KEY")
+
+# Neo4j - Use environment variable if available, otherwise default to localhost
+# This makes the application compatible with both Docker and local execution
+NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "neo4jpassword")
 
 # Knowledge Graph Configuration
 MAX_CANDIDATE_METHODS = 500
@@ -49,9 +53,6 @@ MAX_INPUT_LENGTH = {
     'bailian': 32000,
 }
 LLM_LOC_MAX = 5
-
-BAILIAN_API_KEY = os.getenv("BAILIAN_API_KEY")
-BAILIAN_AGENT_KEY = os.getenv("BAILIAN_AGENT_KEY")
 
 MODEL_MAP = {
     'deepseek': 'deepseek-coder',
