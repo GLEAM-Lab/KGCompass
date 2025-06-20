@@ -85,5 +85,3 @@ If you use **KGCompass** in your research, please cite the following paper:
   year={2025}
 }
 ```
-
-A machine-readable citation file (`CITATION.cff`) is included in the repository for use with GitHub's citation feature.
