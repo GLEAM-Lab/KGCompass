@@ -12,7 +12,7 @@ KGCompass is a novel approach for repository-level software repair that accurate
 
 Paper link: https://arxiv.org/abs/2503.21710
 
-![KGCompass Trajectory Visualization](https://gcdnb.pbrd.co/images/pXnwAe3e5YlQ.png?o=1)
+![KGCompass Trajectory Visualization](workflow.png)
 
 ## Fully Containerized Workflow with GPU Support
 
@@ -72,3 +72,18 @@ docker-compose exec app bash run_repair.sh astropy__astropy-12907
 ```bash
 docker-compose down -v
 ```
+
+## Citation
+
+If you use **KGCompass** in your research, please cite the following paper:
+
+```bibtex
+@article{yang2025enhancing,
+  title={Enhancing Repository-Level Software Repair via Repository-Aware Knowledge Graphs},
+  author={Yang, Boyang and Tian, Haoye and Ren, Jiadong and Jin, Shunfu and Liu, Yang and Liu, Feng and Le, Bach},
+  journal={arXiv preprint arXiv:2503.21710},
+  year={2025}
+}
+```
+
+A machine-readable citation file (`CITATION.cff`) is included in the repository for use with GitHub's citation feature.
