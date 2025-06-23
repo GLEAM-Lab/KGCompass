@@ -36,12 +36,15 @@ services:
     volumes:
       - .:/opt/KGCompass
       - ./playground:/opt/KGCompass/playground
+      - /home/barty/.cache/huggingface:/root/.cache/huggingface
     # Load environment variables from a .env file
     env_file:
       - .env
     # Set the Neo4j URI for the app to connect to the neo4j service
     environment:
       - NEO4J_URI=bolt://neo4j:7687
+      - HF_DATASETS_OFFLINE=1
+      - TRANSFORMERS_OFFLINE=1
     # Request GPU access for this service
     deploy:
       resources:
@@ -53,6 +56,7 @@ services:
     # Keep the container running
     stdin_open: true
     tty: true
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
 
 volumes:
   neo4j-data:

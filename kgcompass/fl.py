@@ -9,6 +9,7 @@ import re
 import pylcs
 from github import Github
 from datetime import datetime, timedelta, timezone
+from dateutil import parser as date_parser
 from datasets import load_dataset
 import html2text
 from knowledge_graph import KnowledgeGraph
@@ -1208,10 +1209,15 @@ class CodeAnalyzer:
                 issue_title_clean = row['Summary'].lower().replace('.', '').replace(' ', '')
                 same_length = pylcs.lcs(title_clean, issue_title_clean)
                 similarity = same_length / max(len(title_clean), len(issue_title_clean))
+                created_at = datetime.strptime(row['Created'].split()[0], "%Y年%m月%d日").timestamp()
+                if created_at > self.created_at:
+                    continue
                 # Update best match
                 if similarity > max_similarity:
+                    print(f"New best match: {row['id']} with similarity {similarity}, max_similarity: {max_similarity}")
                     # Potential best match, fetch to check time
                     potential_issue = self._get_issues('django/django', issue_id=row['id'])
+                    print('potential_issue', potential_issue)
                     if potential_issue: # _get_issues for Django already does time check and counting
                         max_similarity = similarity
                         best_id = row['id'] # Keep track of ID

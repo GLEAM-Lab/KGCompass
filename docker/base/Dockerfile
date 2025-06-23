@@ -14,4 +14,5 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3.10-dev \
     openssh-client \
     iputils-ping \
+    jq \
     && rm -rf /var/lib/apt/lists/* 
