@@ -366,6 +366,12 @@ def get_class_and_method_from_content(content, file_path, repo_name):
         os.makedirs(os.path.dirname(temp_file), exist_ok=True)
     with open(temp_file, 'w') as f:
         f.write(content)
+    
+    # Check if it's a Java file - if so, skip AST parsing to avoid syntax errors
+    if file_path.endswith('.java'):
+        print(f"⚠️ Skipping AST parsing for Java file: {file_path}")
+        return [[], []]  # Return empty classes and methods for Java files
+    
     classes = get_classes_from_file(temp_file, repo_name)
     methods = []
     for class_info in classes:
@@ -757,7 +763,9 @@ def legal_patch(patch_content):
 
 def applable_patch(patch_content, repo_name, commit_id):
     try:
-        repo_path = f"playground/{repo_name.split('/')[-1]}"
+        # 将 repo_name 从 "apache/dubbo" 转换为 "apache__dubbo"
+        repo_dir_name = repo_name.replace('/', '__') if repo_name else ''
+        repo_path = f"playground/{repo_dir_name}"
         with repo_locks[repo_path]:
             current_ref = os.popen(f'git -C "{repo_path}" rev-parse HEAD').read().strip()
             checkout_cmd = f'git -C "{repo_path}" checkout -f {commit_id} -q'
@@ -772,7 +780,7 @@ def applable_patch(patch_content, repo_name, commit_id):
                 try:
                     cmd = f'git -C "{repo_path}" apply --check "{patch_file}"'
                     result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-                    return result == 0
+                    return result.returncode == 0
                     
                 finally:
                     os.system(f'git -C "{repo_path}" checkout -f {current_ref} -q')

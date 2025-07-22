@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+from pathlib import Path
 from bs4 import BeautifulSoup
 import requests
 import traceback
@@ -222,15 +223,52 @@ class CodeAnalyzer:
 
         if benchmark_name == 'multi-swe-bench':
             try:
-                print("Loading Daoguang/Multi-SWE-bench (java_verified)...")
-                ds = load_dataset("Daoguang/Multi-SWE-bench", split='java_verified')
-                
+                # 首先尝试从本地 swe-bench_java 目录加载
+                local_data_dir = Path("swe-bench_java")
                 found_item = None
-                for item in ds:
-                    if (item.get('repo') == self.config['repo_name'] and
-                        item.get('instance_id') == self.config['instance_id']):
-                        found_item = item
-                        break
+                
+                if local_data_dir.exists():
+                    print(f"Loading from local directory: {local_data_dir}")
+                    jsonl_files = list(local_data_dir.glob("*_dataset.jsonl"))
+                    
+                    for jsonl_file in jsonl_files:
+                        try:
+                            with open(jsonl_file, 'r', encoding='utf-8') as f:
+                                for line in f:
+                                    try:
+                                        item = json.loads(line.strip())
+                                        # 生成 instance_id（如果没有的话）
+                                        if 'instance_id' not in item:
+                                            org = item.get('org', '')
+                                            repo = item.get('repo', '')
+                                            number = item.get('number', '')
+                                            item['instance_id'] = f"{org}__{repo}-{number}"
+                                        
+                                        # 检查是否匹配
+                                        if (item.get('repo') == self.config['repo_name'] and
+                                            item.get('instance_id') == self.config['instance_id']):
+                                            found_item = item
+                                            print(f"Found matching item in {jsonl_file.name}")
+                                            break
+                                    except json.JSONDecodeError:
+                                        continue
+                            if found_item:
+                                break
+                        except Exception as e:
+                            print(f"Error reading {jsonl_file}: {e}")
+                            continue
+                
+                # 如果本地没找到，回退到 Hugging Face
+                if not found_item:
+                    print("Local data not found, falling back to Hugging Face...")
+                    print("Loading Daoguang/Multi-SWE-bench (java_verified)...")
+                    ds = load_dataset("Daoguang/Multi-SWE-bench", split='java_verified')
+                    
+                    for item in ds:
+                        if (item.get('repo') == self.config['repo_name'] and
+                            item.get('instance_id') == self.config['instance_id']):
+                            found_item = item
+                            break
                 
                 if found_item:
                     target_sample_from_dataset = found_item

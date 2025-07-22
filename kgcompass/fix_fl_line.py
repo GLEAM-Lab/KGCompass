@@ -8,15 +8,80 @@ from datasets import load_dataset
 from pathlib import Path
 import traceback
 from config import GITHUB_TOKEN, DATASET_NAME
+from benchmark import create_benchmark_manager
 
 g = Github(GITHUB_TOKEN)
-ds = load_dataset(DATASET_NAME)
+
+def load_dataset_for_instance(instance_id, benchmark_type="swe-bench"):
+    """使用 benchmark 管理器加载数据集"""
+    try:
+        benchmark_manager = create_benchmark_manager(benchmark_type)
+        instances = benchmark_manager.load_dataset_instances()
+        
+        for instance in instances:
+            if instance.get('instance_id') == instance_id:
+                print(f"Found instance {instance_id} using benchmark manager")
+                return {'test': [instance]}
+        
+        print(f"Instance {instance_id} not found in benchmark dataset")
+        return None
+        
+    except Exception as e:
+        print(f"Error loading dataset using benchmark manager: {e}")
+        
+        # 回退到原有逻辑
+        # 首先尝试从本地 swe-bench_java 目录加载（针对 Java 实例）
+        local_data_dir = Path("swe-bench_java")
+        
+        if local_data_dir.exists() and instance_id:
+            # 提取仓库名称
+            repo_name = instance_id.rsplit('-', 1)[0]
+            
+            # 查找对应的 JSONL 文件
+            for jsonl_file in local_data_dir.glob("*.jsonl"):
+                if repo_name in jsonl_file.name:
+                    print(f"Loading from local JSONL file: {jsonl_file}")
+                    try:
+                        with open(jsonl_file, 'r') as f:
+                            for line in f:
+                                item = json.loads(line.strip())
+                                if item.get('instance_id') == instance_id:
+                                    print(f"Found instance {instance_id} in local file")
+                                    return {'test': [item]}
+                    except Exception as e:
+                        print(f"Error reading local file {jsonl_file}: {e}")
+                        continue
+        
+        # 如果本地没找到，尝试从 Hugging Face 加载
+        try:
+            return load_dataset(DATASET_NAME)
+        except Exception as e:
+            print(f"Error loading from Hugging Face: {e}")
+            return None
 
 def find_entity_in_content(entity_type, entity, content, repo_name):
     found = False
     start_line = end_line = None
     source_code = None
     
+    # 对于Java文件，直接使用已有的位置信息，不重新解析
+    if entity['file_path'].endswith('.java'):
+        print(f"🔧 Using existing location info for Java file: {entity['file_path']}")
+        # 验证行号是否在文件范围内
+        content_lines = content.splitlines()
+        if (entity.get('start_line', 1) > 0 and 
+            entity.get('end_line', 1) <= len(content_lines) and
+            entity.get('start_line', 1) <= entity.get('end_line', 1)):
+            start_line = entity['start_line']
+            end_line = entity['end_line']
+            source_code = '\n'.join(content_lines[start_line-1:end_line])
+            found = True
+            print(f"✅ Validated Java entity {entity['name']} at lines {start_line}-{end_line}")
+        else:
+            print(f"⚠️ Invalid line numbers for {entity['name']}: {entity.get('start_line')}-{entity.get('end_line')} (file has {len(content_lines)} lines)")
+        return found, start_line, end_line, source_code
+    
+    # 对于非Java文件，使用原有的AST解析逻辑
     classes, methods = get_class_and_method_from_content(content, entity['file_path'], repo_name.split('/')[-1])
     
     if entity_type == 'classes':
@@ -37,7 +102,7 @@ def find_entity_in_content(entity_type, entity, content, repo_name):
                 break
     return found, start_line, end_line, source_code
 
-def fix_line_numbers(result_file, output_dir, instance_id):
+def fix_line_numbers(result_file, output_dir, instance_id, benchmark_type="swe-bench"):
     with open(result_file, 'r') as f:
         result = json.load(f)
 
@@ -45,10 +110,21 @@ def fix_line_numbers(result_file, output_dir, instance_id):
     instance_parts = instance_id.split('-')
     repo_name = '-'.join(instance_parts[:-1]).replace('__', '/')
     repo = g.get_repo(repo_name)
+    
+    # 加载数据集来获取 base_commit
+    ds = load_dataset_for_instance(instance_id, benchmark_type)
+    if not ds:
+        print(f"Could not load dataset for instance {instance_id}")
+        return
+        
     base_commit = None
     for item in ds['test']:
         if item['instance_id'] == instance_id:
-            base_commit = item['base_commit']
+            # 支持不同的字段名格式
+            if 'base_commit' in item:
+                base_commit = item['base_commit']
+            elif 'base' in item and isinstance(item['base'], dict) and 'sha' in item['base']:
+                base_commit = item['base']['sha']
             break
     if not base_commit:
         print(f"Not found base_commit of instance {instance_id}")
@@ -134,6 +210,8 @@ if __name__ == "__main__":
     parser.add_argument("input_dir", type=str, help="Directory containing the LLM-generated location file.")
     parser.add_argument("output_dir", type=str, help="Directory to save the fixed location file.")
     parser.add_argument("--instance_id", type=str, required=True, help="The instance_id to process.")
+    parser.add_argument("--benchmark", type=str, default="swe-bench", 
+                        help="Benchmark type (swe-bench or multi-swe-bench)")
     args = parser.parse_args()
 
     os.makedirs(args.output_dir, exist_ok=True)
@@ -149,9 +227,10 @@ if __name__ == "__main__":
             sys.exit(1)
 
     print(f"Processing file: {input_file}")
+    print(f"Using benchmark: {args.benchmark}")
     
     try:
-        fix_line_numbers(input_file, args.output_dir, args.instance_id)
+        fix_line_numbers(input_file, args.output_dir, args.instance_id, args.benchmark)
     except Exception as e:
         print(f"An error occurred while processing {input_file}:")
         print(traceback.format_exc())

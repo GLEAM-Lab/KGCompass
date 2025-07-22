@@ -1251,10 +1251,10 @@ class JavaParser(BaseParser):
                            m_info['name'].endswith('.' + callee_name_str): # Heuristic for simple name match to FQN
                             
                             kg.link_method_calls(
-                                caller_method_name=local_method_info['name'],
-                                caller_method_signature=local_method_info.get('signature', local_method_info['name']),
-                                callee_method_name=m_info['name'],
-                                callee_method_signature=m_info.get('signature', m_info['name'])
+                                local_method_info['name'],
+                                local_method_info.get('signature', local_method_info['name']),
+                                m_info['name'],
+                                m_info.get('signature', m_info['name'])
                             )
                             # Found a match, ideally break if we are sure, but multiple overloads might exist.
                             # For simplicity, link first match. More advanced would check signature.

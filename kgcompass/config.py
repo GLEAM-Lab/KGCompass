@@ -26,7 +26,7 @@ NORMAL_CONNECTION = WEAK_CONNECTION * CONNECTION_FACTOR
 STRONG_CONNECTION = NORMAL_CONNECTION * CONNECTION_FACTOR
 
 # Dataset Configuration
-DATASET_NAME = "princeton-nlp/SWE-bench_Lite"
+DATASET_NAME = "princeton-nlp/SWE-bench_Verified"
 
 # Graph Configuration
 DECAY_FACTOR = 0.6

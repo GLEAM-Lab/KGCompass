@@ -1,6 +1,7 @@
 import json
 import os
 import argparse
+from pathlib import Path
 from datasets import load_dataset
 import openai
 from utils import get_commit_method_by_signature, extract_json_code
@@ -17,27 +18,78 @@ from config import (
 )
 from utils import format_entity_content
 from github import Github
+from benchmark import create_benchmark_manager
 
 class PreFaultLocalization:
-    def __init__(self, instance_id: str):
+    def __init__(self, instance_id: str, benchmark_type: str = "swe-bench"):
         self.instance_id = instance_id
+        self.benchmark_type = benchmark_type
+        self.benchmark_manager = create_benchmark_manager(benchmark_type)
         self.dataset_name = DATASET_NAME
         self.target_sample = self._load_target_sample()
+        
+        # 使用 benchmark 管理器获取语言配置
+        language_config = self.benchmark_manager.get_language_config()
         if self.target_sample:
-            self.language = self.target_sample.get('language', 'python').lower()
+            self.language = self.target_sample.get('language', language_config.get('language', 'python')).lower()
+        else:
+            self.language = language_config.get('language', 'python').lower()
         
         self.model_name = MODEL_NAME
         # Create a client instance pointing to the OpenAI-compatible endpoint
         self.client = openai.OpenAI(api_key=BAILIAN_API_KEY, base_url=DEEPSEEK_BASE_URL)
 
     def _load_target_sample(self):
-        split_name = 'test'
-        if 'multi-swe-bench' in self.dataset_name.lower():
-            split_name = 'java_verified'
+        # 使用 benchmark 管理器加载数据集实例
+        try:
+            instances = self.benchmark_manager.load_dataset_instances()
+            for instance in instances:
+                if instance.get('instance_id') == self.instance_id:
+                    print(f"Found instance {self.instance_id} using benchmark manager")
+                    return instance
+            
+            print(f"Instance {self.instance_id} not found in benchmark dataset")
+            return None
+            
+        except Exception as e:
+            print(f"Error loading dataset using benchmark manager: {e}")
+            
+            # 回退到原有逻辑
+            # 首先尝试从本地 swe-bench_java 目录加载（针对 Java 实例）
+            local_data_dir = Path("swe-bench_java")
+            
+            if local_data_dir.exists() and self.instance_id:
+                # 提取仓库名称
+                repo_name = self.instance_id.rsplit('-', 1)[0]
+                
+                # 查找对应的 JSONL 文件
+                for jsonl_file in local_data_dir.glob("*.jsonl"):
+                    if repo_name in jsonl_file.name:
+                        print(f"Loading from local JSONL file: {jsonl_file}")
+                        try:
+                            with open(jsonl_file, 'r') as f:
+                                for line in f:
+                                    item = json.loads(line.strip())
+                                    if item.get('instance_id') == self.instance_id:
+                                        print(f"Found instance {self.instance_id} in local file")
+                                        return item
+                        except Exception as e:
+                            print(f"Error reading local file {jsonl_file}: {e}")
+                            continue
+            
+            # 如果本地没找到，尝试从 Hugging Face 加载
+            try:
+                split_name = 'test'
+                if 'multi-swe-bench' in self.dataset_name.lower():
+                    split_name = 'java_verified'
 
-        ds = load_dataset(self.dataset_name, split=split_name)
-        self.dataset = {item['instance_id']: item for item in ds}
-        return self.dataset.get(self.instance_id)
+                ds = load_dataset(self.dataset_name, split=split_name)
+                self.dataset = {item['instance_id']: item for item in ds}
+                return self.dataset.get(self.instance_id)
+            except Exception as e:
+                print(f"Error loading from Hugging Face: {e}")
+                print(f"Could not find instance {self.instance_id} in local files or online dataset")
+                return None
 
     def generate(self, prompt, stream=False):
         """Unified interface for generating responses via OpenAI-compatible endpoint"""
@@ -102,12 +154,12 @@ Note:
         return self.generate(prompt, stream=stream)
 
 
-def process_instance(directory, instance_id):
+def process_instance(directory, instance_id, benchmark_type="swe-bench"):
     """
     Reads a KG location file, uses it to prompt an LLM for more specific locations,
     and enriches the original KG file with the LLM's findings.
     """
-    pre_fl = PreFaultLocalization(instance_id)
+    pre_fl = PreFaultLocalization(instance_id, benchmark_type)
     if pre_fl.target_sample is None:
         return f"Error: Could not find instance {instance_id} in dataset"
 
@@ -239,6 +291,8 @@ def main():
     parser = argparse.ArgumentParser(description="LLM-based Fault Localization using KG context.")
     parser.add_argument("directory", type=str, help="Directory to save the results")
     parser.add_argument("--instance_id", type=str, help="The instance_id to process.", required=True)
+    parser.add_argument("--benchmark", type=str, default="swe-bench", 
+                        help="Benchmark type (swe-bench or multi-swe-bench)")
     args = parser.parse_args()
 
     # Create the directory if it doesn't exist
@@ -246,7 +300,8 @@ def main():
         os.makedirs(args.directory)
 
     print(f"Processing a single specified instance: {args.instance_id}")
-    result = process_instance(args.directory, args.instance_id)
+    print(f"Using benchmark: {args.benchmark}")
+    result = process_instance(args.directory, args.instance_id, args.benchmark)
     print(result)
 
 
