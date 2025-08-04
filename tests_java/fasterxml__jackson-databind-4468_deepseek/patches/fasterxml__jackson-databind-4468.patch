@@ -1,0 +1,24 @@
+Based on the issue, the bug is related to how Jackson deserializes empty strings into QName objects - currently it returns null for empty string input when it should return a QName with empty local part.
+
+Looking at the code segments provided, I don't see the actual QName deserializer implementation. However, the issue suggests that the problem is in how empty strings are handled during deserialization. The fix would need to ensure that empty strings are treated the same as non-empty strings when constructing QName objects.
+
+Since the QName deserializer code isn't shown in the provided segments, I can't provide the exact SEARCH/REPLACE edit. However, the fix would likely involve modifying the QName deserializer to:
+
+1. Not treat empty string as null
+2. Use QName.valueOf() consistently for all string inputs including empty strings
+
+The deserializer should look something like this:
+
+```java
+public QName deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    String str = p.getValueAsString();
+    if (str == null) { // handle actual null values
+        return null;
+    }
+    return QName.valueOf(str); // handles empty strings properly
+}
+```
+
+If you could provide the actual QName deserializer implementation file, I can provide the exact SEARCH/REPLACE edit needed to fix this issue. The key is to ensure empty strings are passed to QName.valueOf() rather than being treated as null.
+
+The issue confirms that QName allows empty local parts ("") for backwards compatibility, so we should maintain that behavior in the deserializer rather than converting empty strings to null.

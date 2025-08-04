@@ -9,7 +9,7 @@
 #   bash mine_kg_bulk.sh /path/to/SWE-bench_Verified.jsonl runs/kg_verified
 #
 # -----------------------------------------------------------------------------
-set -euo pipefail
+set -uo pipefail  # 移除 -e，允许单个命令失败而不中断脚本
 
 DATASET_FILE="$1"
 OUTPUT_ROOT="${2:-runs/kg_verified}"
@@ -39,6 +39,8 @@ declare -A REPO_URL_MAP=(
   ["matplotlib__matplotlib"]="https://github.com/matplotlib/matplotlib.git"
   ["mwaskom__seaborn"]="https://github.com/mwaskom/seaborn.git"
   ["psf__requests"]="https://github.com/psf/requests.git"
+  ['pallets__flask']="https://github.com/pallets/flask.git"
+  ['pydata__xarray']="https://github.com/pydata/xarray.git"
   ["pylint-dev__pylint"]="https://github.com/pylint-dev/pylint.git"
   ["pytest-dev__pytest"]="https://github.com/pytest-dev/pytest.git"
   ["scikit-learn__scikit-learn"]="https://github.com/scikit-learn/scikit-learn.git"

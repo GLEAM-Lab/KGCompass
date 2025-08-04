@@ -64,15 +64,75 @@ class KnowledgeGraph:
 
     @staticmethod
     def _create_and_link(tx, method_name, method_signature, file_path, start_line, end_line, source_code, doc_string, embedding, weight):
-        query = (
-            "MERGE (m:Method {name: $method_name, signature: $method_signature, file_path: $file_path, "
-            "start_line: $start_line, end_line: $end_line, source_code: $source_code, doc_string: $doc_string, embedding: $embedding}) "
-            # Removed direct linking to file here, as it's handled by a separate call in create_method_entity
-            # "MERGE (m)-[:RELATED {description: 'contained in file', weight: $weight}]->(f)"
-            # "MERGE (f)-[:RELATED {description: 'contains method', weight: $weight}]->(m)"
-        )
-        tx.run(query, method_name=method_name, method_signature=method_signature, 
-               file_path=file_path, start_line=start_line, end_line=end_line, source_code=source_code, doc_string=doc_string or '', embedding=embedding, weight=weight) # Ensure doc_string is not None
+        # Truncate source_code if it's too large (Neo4j index limit is around 32KB)
+        MAX_SOURCE_CODE_LENGTH = 20000  # Safe limit to avoid index issues
+        truncated_source_code = source_code[:MAX_SOURCE_CODE_LENGTH] if len(source_code) > MAX_SOURCE_CODE_LENGTH else source_code
+        
+        # Debug info for large source code
+        if len(source_code) > MAX_SOURCE_CODE_LENGTH:
+            print(f"截断大源码: {method_name} ({len(source_code)} -> {len(truncated_source_code)} 字符)")
+        
+        # First, try to find if the method already exists
+        find_query = """
+        MATCH (m:Method {name: $method_name, signature: $method_signature, file_path: $file_path})
+        RETURN m
+        """
+        existing_method = tx.run(find_query, 
+                               method_name=method_name, 
+                               method_signature=method_signature, 
+                               file_path=file_path).single()
+        
+        if existing_method:
+            # Update existing method
+            update_query = """
+            MATCH (m:Method {name: $method_name, signature: $method_signature, file_path: $file_path})
+            SET m.start_line = $start_line,
+                m.end_line = $end_line,
+                m.source_code = $source_code,
+                m.doc_string = $doc_string,
+                m.embedding = $embedding
+            """
+            tx.run(update_query,
+                   method_name=method_name,
+                   method_signature=method_signature,
+                   file_path=file_path,
+                   start_line=start_line,
+                   end_line=end_line,
+                   source_code=truncated_source_code,
+                   doc_string=doc_string or '',
+                   embedding=embedding)
+        else:
+            # Create new method - only index the key fields, then set large properties
+            create_query = """
+            CREATE (m:Method {
+                name: $method_name,
+                signature: $method_signature,
+                file_path: $file_path,
+                start_line: $start_line,
+                end_line: $end_line
+            })
+            """
+            tx.run(create_query,
+                   method_name=method_name,
+                   method_signature=method_signature,
+                   file_path=file_path,
+                   start_line=start_line,
+                   end_line=end_line)
+            
+            # Set large properties separately to avoid index issues
+            set_properties_query = """
+            MATCH (m:Method {name: $method_name, signature: $method_signature, file_path: $file_path})
+            SET m.source_code = $source_code,
+                m.doc_string = $doc_string,
+                m.embedding = $embedding
+            """
+            tx.run(set_properties_query,
+                   method_name=method_name,
+                   method_signature=method_signature,
+                   file_path=file_path,
+                   source_code=truncated_source_code,
+                   doc_string=doc_string or '',
+                   embedding=embedding)
 
     def clear_graph(self):
         with self.driver.session() as session:
@@ -246,24 +306,74 @@ class KnowledgeGraph:
 
     @staticmethod
     def _create_class(tx, class_name, file_path, start_line, end_line, source_code, doc_string="", embedding=None, weight=1):
-        # Create class node
-        query = (
-            "MERGE (c:Class {name: $class_name, file_path: $file_path, "
-            "start_line: $start_line, end_line: $end_line, source_code: $source_code, "
-            "doc_string: $doc_string, embedding: $embedding}) "
-            "SET c.short_name = $short_name"
-        )
-        tx.run(query, 
-            class_name=class_name,
-            file_path=file_path,
-            start_line=start_line,
-            end_line=end_line,
-            source_code=source_code,
-            doc_string=doc_string or '',  # Ensure doc_string is not None
-            embedding=embedding,
-            short_name=class_name.split('.')[-1],
-            weight=weight
-        )
+        # Truncate source_code if it's too large (Neo4j index limit is around 32KB)
+        MAX_SOURCE_CODE_LENGTH = 20000  # Safe limit to avoid index issues
+        truncated_source_code = source_code[:MAX_SOURCE_CODE_LENGTH] if len(source_code) > MAX_SOURCE_CODE_LENGTH else source_code
+        
+        # Debug info for large source code
+        if len(source_code) > MAX_SOURCE_CODE_LENGTH:
+            print(f"截断大类源码: {class_name} ({len(source_code)} -> {len(truncated_source_code)} 字符)")
+        
+        # First, try to find if the class already exists
+        find_query = """
+        MATCH (c:Class {name: $class_name, file_path: $file_path})
+        RETURN c
+        """
+        existing_class = tx.run(find_query, 
+                              class_name=class_name, 
+                              file_path=file_path).single()
+        
+        if existing_class:
+            # Update existing class
+            update_query = """
+            MATCH (c:Class {name: $class_name, file_path: $file_path})
+            SET c.start_line = $start_line,
+                c.end_line = $end_line,
+                c.source_code = $source_code,
+                c.doc_string = $doc_string,
+                c.embedding = $embedding,
+                c.short_name = $short_name
+            """
+            tx.run(update_query,
+                   class_name=class_name,
+                   file_path=file_path,
+                   start_line=start_line,
+                   end_line=end_line,
+                   source_code=truncated_source_code,
+                   doc_string=doc_string or '',
+                   embedding=embedding,
+                   short_name=class_name.split('.')[-1])
+        else:
+            # Create new class - only index the key fields, then set large properties
+            create_query = """
+            CREATE (c:Class {
+                name: $class_name,
+                file_path: $file_path,
+                start_line: $start_line,
+                end_line: $end_line,
+                short_name: $short_name
+            })
+            """
+            tx.run(create_query,
+                   class_name=class_name,
+                   file_path=file_path,
+                   start_line=start_line,
+                   end_line=end_line,
+                   short_name=class_name.split('.')[-1])
+            
+            # Set large properties separately to avoid index issues
+            set_properties_query = """
+            MATCH (c:Class {name: $class_name, file_path: $file_path})
+            SET c.source_code = $source_code,
+                c.doc_string = $doc_string,
+                c.embedding = $embedding
+            """
+            tx.run(set_properties_query,
+                   class_name=class_name,
+                   file_path=file_path,
+                   source_code=truncated_source_code,
+                   doc_string=doc_string or '',
+                   embedding=embedding)
         
         # Create relationship with file
         query = (

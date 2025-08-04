@@ -1,0 +1,35 @@
+Based on the issue description, the bug is in the regex pattern used to match Basic authentication in `RegistryAuthenticator.java`. The current regex requires a space after "Basic" but according to the HTTP spec, this space is optional when no realm is specified.
+
+Here's the fix:
+
+```java
+### playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryAuthenticator.java
+- start_line : 69
+- end_line : 69
+<<<<<<< SEARCH
+    static Optional<RegistryAuthenticator> fromAuthenticationMethod(
+=======
+    static Optional<RegistryAuthenticator> fromAuthenticationMethod(
+>>>>>>> REPLACE
+```
+
+Wait, I need to see more context around this method to make the proper edit. Since the full method wasn't shown in the code segments, I'll need to infer the fix based on the issue description. The issue mentions the problematic regex is `"^(?i)(basic) .*"` which requires a space after "Basic".
+
+Here's the proposed edit to make the space optional:
+
+```java
+### playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryAuthenticator.java
+<<<<<<< SEARCH
+authenticationMethod.matches("^(?i)(basic) .*")
+=======
+authenticationMethod.matches("^(?i)(basic)( .*)?")
+>>>>>>> REPLACE
+```
+
+This change makes the space and any following characters optional by adding `( .*)?` at the end. This will:
+1. Still match "Basic realm=..." with space
+2. Now also match just "Basic" without space
+3. Maintain case insensitivity with (?i)
+4. Keep the same basic structure of the regex
+
+The fix aligns with the HTTP WWW-Authenticate spec which allows Basic auth without specifying a realm. The original regex was too strict by requiring the space.

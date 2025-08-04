@@ -1,0 +1,103 @@
+Based on the issue, the bug is in how Jackson XML serializes floating-point infinity values - it uses "Infinity"/"-Infinity" instead of the XML Schema standard "INF"/"-INF". The issue occurs in the serialization path through `ToXmlGenerator`.
+
+Looking at the code, we need to modify `ToXmlGenerator` to handle infinity values specially when writing numbers. The key methods involved are `writeNumber()` variants that handle float/double values.
+
+Here's the proposed fix:
+
+```java
+### playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java
+<<<<<<< SEARCH
+    @Override
+    public void writeNumber(double d) throws IOException {
+        _verifyValueWrite("write number");
+        try {
+            if (_nextIsAttribute) {
+                _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), String.valueOf(d));
+            } else if (checkNextIsUnwrapped()) {
+                _xmlWriter.writeCharacters(String.valueOf(d));
+            } else {
+                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                _xmlWriter.writeCharacters(String.valueOf(d));
+                _xmlWriter.writeEndElement();
+            }
+        } catch (XMLStreamException e) {
+            StaxUtil.throwAsGenerationException(e, this);
+        }
+    }
+
+    @Override
+    public void writeNumber(float f) throws IOException {
+        _verifyValueWrite("write number");
+        try {
+            if (_nextIsAttribute) {
+                _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), String.valueOf(f));
+            } else if (checkNextIsUnwrapped()) {
+                _xmlWriter.writeCharacters(String.valueOf(f));
+            } else {
+                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                _xmlWriter.writeCharacters(String.valueOf(f));
+                _xmlWriter.writeEndElement();
+            }
+        } catch (XMLStreamException e) {
+            StaxUtil.throwAsGenerationException(e, this);
+        }
+    }
+=======
+    @Override
+    public void writeNumber(double d) throws IOException {
+        _verifyValueWrite("write number");
+        try {
+            String str;
+            if (Double.isInfinite(d)) {
+                str = d > 0 ? "INF" : "-INF";
+            } else {
+                str = String.valueOf(d);
+            }
+            if (_nextIsAttribute) {
+                _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), str);
+            } else if (checkNextIsUnwrapped()) {
+                _xmlWriter.writeCharacters(str);
+            } else {
+                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                _xmlWriter.writeCharacters(str);
+                _xmlWriter.writeEndElement();
+            }
+        } catch (XMLStreamException e) {
+            StaxUtil.throwAsGenerationException(e, this);
+        }
+    }
+
+    @Override
+    public void writeNumber(float f) throws IOException {
+        _verifyValueWrite("write number");
+        try {
+            String str;
+            if (Float.isInfinite(f)) {
+                str = f > 0 ? "INF" : "-INF";
+            } else {
+                str = String.valueOf(f);
+            }
+            if (_nextIsAttribute) {
+                _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), str);
+            } else if (checkNextIsUnwrapped()) {
+                _xmlWriter.writeCharacters(str);
+            } else {
+                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                _xmlWriter.writeCharacters(str);
+                _xmlWriter.writeEndElement();
+            }
+        } catch (XMLStreamException e) {
+            StaxUtil.throwAsGenerationException(e, this);
+        }
+    }
+>>>>>>> REPLACE
+```
+
+This change:
+1. Checks for infinite values using `Double.isInfinite()`/`Float.isInfinite()`
+2. For infinite values, uses "INF"/"-INF" format per XML Schema standard
+3. For all other values, keeps the existing behavior using `String.valueOf()`
+
+The change maintains all the existing structure and error handling, just modifies how infinite values are formatted to match the XML Schema standard that JAXB expects.
+
+Note that as mentioned in the issue comment, this should ideally be made configurable via a `ToXmlGenerator.Feature` for backwards compatibility. That would require additional changes to add the feature flag and make the behavior conditional. Let me know if you'd like me to propose those additional changes as well.

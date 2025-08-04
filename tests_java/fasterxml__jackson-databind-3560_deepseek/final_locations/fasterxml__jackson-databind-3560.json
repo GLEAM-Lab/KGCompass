@@ -1,0 +1,1778 @@
+{
+  "related_entities": {
+    "methods": [
+      {
+        "start_line": 882,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final JsonNode requiredAt(final JsonPointer path) throws IllegalArgumentException {\n        JsonPointer currentExpr = path;\n        JsonNode curr = this;\n\n        // Note: copied from `at()`\n        while (true) {\n            if (currentExpr.matches()) {\n                return curr;\n            }\n            curr = curr._at(currentExpr); // lgtm [java/dereferenced-value-may-be-null]\n            if (curr == null) {\n                _reportRequiredViolation(\"No node at '%s' (unmatched part: '%s')\",\n                        path, currentExpr);\n            }\n            currentExpr = currentExpr.tail();\n        }\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "requiredAt",
+        "documentation": "/**\n     * Method is functionally equivalent to\n     *{@code\n     *   at(path).required()\n     *}\n     * and can be used to check that there is an actual value node at specified {@link JsonPointer}\n     * starting from {@code this} node\n     * (but note that value may be explicit JSON null value).\n     * If such value node exists it is returned;\n     * otherwise {@link IllegalArgumentException} is thrown.\n     *\n     * @param path {@link JsonPointer} expression to use for finding value node\n     *\n     * @return Matching value node for given expression\n     *\n     * @throws IllegalArgumentException if no value node exists at given {@code JSON Pointer} path\n     *\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "requiredAt"
+          }
+        ],
+        "similarity": 0.10111311267062925,
+        "end_line": 898,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.requiredAt(JsonPointer path): JsonNode"
+      },
+      {
+        "start_line": 167,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/PropertyName.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public SerializableString simpleAsEncoded(MapperConfig<?> config) {\n        SerializableString sstr = _encodedSimple;\n        if (sstr == null) {\n            if (config == null) {\n                sstr = new SerializedString(_simpleName);\n            } else {\n                sstr = config.compileString(_simpleName);\n            }\n            _encodedSimple = sstr;\n        }\n        return sstr;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "simpleAsEncoded",
+        "documentation": "/**\n     * Accessor that may be used to get lazily-constructed efficient\n     * representation of the simple name.\n     * \n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "construct"
+          },
+          {
+            "start_node": "construct",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "PropertyName"
+          },
+          {
+            "start_node": "PropertyName",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "simpleAsEncoded"
+          }
+        ],
+        "similarity": 0.09016553333968345,
+        "end_line": 178,
+        "signature": "com.fasterxml.jackson.databind.PropertyName.simpleAsEncoded(MapperConfig config): SerializableString"
+      },
+      {
+        "start_line": 196,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/PropertyMetadata.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public PropertyMetadata withDefaultValue(String def) {\n        if ((def == null) || def.isEmpty()) {\n            if (_defaultValue == null) {\n                return this;\n            }\n            def = null;\n        } else if (def.equals(_defaultValue)) {\n            return this;\n        }\n        return new PropertyMetadata(_required, _description, _index, def,\n                _mergeInfo, _valueNulls, _contentNulls);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "withDefaultValue",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "construct"
+          },
+          {
+            "start_node": "construct",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "PropertyMetadata"
+          },
+          {
+            "start_node": "PropertyMetadata",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withDefaultValue"
+          }
+        ],
+        "similarity": 0.09015637542755668,
+        "end_line": 207,
+        "signature": "com.fasterxml.jackson.databind.PropertyMetadata.withDefaultValue(String def): PropertyMetadata"
+      },
+      {
+        "start_line": 214,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/PropertyMetadata.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public PropertyMetadata withRequired(Boolean b) {\n        if (b == null) {\n            if (_required == null) {\n                return this;\n            }\n        } else if (b.equals(_required)) {\n            return this;\n        }\n        return new PropertyMetadata(b, _description, _index, _defaultValue,\n                _mergeInfo, _valueNulls, _contentNulls);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "withRequired",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "construct"
+          },
+          {
+            "start_node": "construct",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "PropertyMetadata"
+          },
+          {
+            "start_node": "PropertyMetadata",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "withRequired"
+          }
+        ],
+        "similarity": 0.08907458248854123,
+        "end_line": 224,
+        "signature": "com.fasterxml.jackson.databind.PropertyMetadata.withRequired(Boolean b): PropertyMetadata"
+      },
+      {
+        "start_line": 71,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/PropertyName.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected Object readResolve() {\n        if (_namespace == null) {\n            if (_simpleName == null || _USE_DEFAULT.equals(_simpleName)) {\n                return USE_DEFAULT;\n            }\n            // 30-Oct-2016, tatu: I don't see how this could ever occur...\n            //     or how to distinguish USE_DEFAULT/NO_NAME from serialized\n            /*\n            if (_simpleName.equals(_NO_NAME)) {\n                return NO_NAME;\n            }\n            */\n        }\n        return this;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "readResolve",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "construct"
+          },
+          {
+            "start_node": "construct",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "PropertyName"
+          },
+          {
+            "start_node": "PropertyName",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readResolve"
+          }
+        ],
+        "similarity": 0.08076211559615326,
+        "end_line": 85,
+        "signature": "com.fasterxml.jackson.databind.PropertyName.readResolve(): Object"
+      },
+      {
+        "start_line": 1135,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectNode withObject(String propertyName) {\n        throw new UnsupportedOperationException(\"`JsonNode` not of type `ObjectNode` (but \"\n                +getClass().getName()+\"), cannot call `withObject()` on it\");\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "withObject",
+        "documentation": "/**\n     * Method that can be called on Object nodes, to access a property\n     * that has Object value; or if no such property exists, to create,\n     * add and return such Object node.\n     * If the node method is called on is not Object node,\n     * or if property exists and has value that is not Object node,\n     * {@link UnsupportedOperationException} is thrown\n     *\n     * @param propertyName Name of property for the {@link ObjectNode}\n     *\n     * @return {@link ObjectNode} found or created\n     *\n     * @since 2.14\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withObject"
+          }
+        ],
+        "similarity": 0.07616558573085142,
+        "end_line": 1138,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.withObject(String propertyName): ObjectNode"
+      },
+      {
+        "start_line": 140,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/PropertyName.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public PropertyName withNamespace(String ns) {\n        if (ns == null) {\n            if (_namespace == null) {\n                return this;\n            }\n        } else if (ns.equals(_namespace)) {\n            return this;\n        }\n        return new PropertyName(_simpleName, ns);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "withNamespace",
+        "documentation": "/**\n     * Fluent factory method for constructing an instance with different\n     * namespace.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "construct"
+          },
+          {
+            "start_node": "construct",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "PropertyName"
+          },
+          {
+            "start_node": "PropertyName",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "withNamespace"
+          }
+        ],
+        "similarity": 0.07409125082792727,
+        "end_line": 149,
+        "signature": "com.fasterxml.jackson.databind.PropertyName.withNamespace(String ns): PropertyName"
+      },
+      {
+        "start_line": 182,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/PropertyMetadata.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public PropertyMetadata withMergeInfo(MergeInfo mergeInfo) {\n        return new PropertyMetadata(_required, _description, _index, _defaultValue,\n                mergeInfo, _valueNulls, _contentNulls);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "withMergeInfo",
+        "documentation": "/**\n     * @since 2.9\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "construct"
+          },
+          {
+            "start_node": "construct",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "PropertyMetadata"
+          },
+          {
+            "start_node": "PropertyMetadata",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withMergeInfo"
+          }
+        ],
+        "similarity": 0.07306783110651963,
+        "end_line": 185,
+        "signature": "com.fasterxml.jackson.databind.PropertyMetadata.withMergeInfo(MergeInfo mergeInfo): PropertyMetadata"
+      },
+      {
+        "start_line": 1016,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Iterator<Map.Entry<String, JsonNode>> fields() {\n        return ClassUtil.emptyIterator();\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "fields",
+        "documentation": "/**\n     * @return Iterator that can be used to traverse all key/value pairs for\n     *   object nodes; empty iterator (no contents) for other types\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          }
+        ],
+        "similarity": 0.07156359368590302,
+        "end_line": 1018,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.fields(): Iterator"
+      },
+      {
+        "start_line": 1368,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean equals(Comparator<JsonNode> comparator, JsonNode other) {\n        return comparator.compare(this, other) == 0;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "equals",
+        "documentation": "/**\n     * Entry method for invoking customizable comparison, using passed-in\n     * {@link Comparator} object. Nodes will handle traversal of structured\n     * types (arrays, objects), but defer to comparator for scalar value\n     * comparisons. If a \"natural\" {@link Comparator} is passed -- one that\n     * simply calls <code>equals()</code> on one of arguments, passing the other\n     * -- implementation is the same as directly calling <code>equals()</code>\n     * on node.\n     *<p>\n     * Default implementation simply delegates to passed in <code>comparator</code>,\n     * with <code>this</code> as the first argument, and <code>other</code> as\n     * the second argument.\n     * \n     * @param comparator Object called to compare two scalar {@link JsonNode} \n     *   instances, and return either 0 (are equals) or non-zero (not equal)\n     *\n     * @since 2.6\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "equals"
+          }
+        ],
+        "similarity": 0.06686860500245558,
+        "end_line": 1370,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.equals(Comparator comparator, JsonNode other): boolean"
+      },
+      {
+        "start_line": 1254,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T extends JsonNode> T withArray(String propertyName) {\n        throw new UnsupportedOperationException(\"`JsonNode` not of type `ObjectNode` (but `\"\n                +getClass().getName()+\")`, cannot call `withArray()` on it\");\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "withArray",
+        "documentation": "/**\n     * Method that can be called on {@link ObjectNode} nodes, to access a property\n     * that has <code>Array</code> value; or if no such property exists, to create,\n     * add and return such Array node.\n     * If the node method is called on is not Object node,\n     * or if property exists and has value that is not Array node,\n     * {@link UnsupportedOperationException} is thrown\n     *\n     * @param propertyName Name of property for the {@link ArrayNode}\n     *\n     * @return {@link ArrayNode} found or created\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withArray"
+          }
+        ],
+        "similarity": 0.0666324842897174,
+        "end_line": 1257,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.withArray(String propertyName): T"
+      },
+      {
+        "start_line": 322,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final boolean isPojo() {\n        return getNodeType() == JsonNodeType.POJO;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "isPojo",
+        "documentation": "/**\n     * Method that can be used to check if the node is a wrapper\n     * for a POJO (\"Plain Old Java Object\" aka \"bean\".\n     * Returns true only for\n     * instances of <code>POJONode</code>.\n     *\n     * @return True if this node wraps a POJO\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isPojo"
+          }
+        ],
+        "similarity": 0.06505905847580583,
+        "end_line": 324,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.isPojo(): boolean"
+      },
+      {
+        "start_line": 411,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final boolean isNull() {\n        return getNodeType() == JsonNodeType.NULL;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "isNull",
+        "documentation": "/**\n     * Method that can be used to check if this node was created from\n     * JSON literal null value.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isNull"
+          }
+        ],
+        "similarity": 0.06473590213856216,
+        "end_line": 413,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.isNull(): boolean"
+      },
+      {
+        "start_line": 41,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/jsontype/BasicPolymorphicTypeValidator.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "        public abstract boolean match(MapperConfig<?> config, Class<?> clazz);",
+        "distance": 1.0,
+        "title": null,
+        "name": "match",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "match"
+          }
+        ],
+        "similarity": 0.06239780482697295,
+        "end_line": 41,
+        "signature": "com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator.TypeMatcher.match(MapperConfig config, Class clazz): boolean"
+      },
+      {
+        "start_line": 1154,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final ObjectNode withObject(JsonPointer ptr) {\n        return withObject(ptr, OverwriteMode.NULLS, true);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "withObject",
+        "documentation": "/**\n     * Same as {@link #withObject(JsonPointer, OverwriteMode, boolean)} but\n     * with defaults of {@code OvewriteMode#NULLS} (overwrite mode)\n     * and {@code true} for {@code preferIndex} (that is, will try to\n     * consider {@link JsonPointer} segments index if at all possible\n     * and only secondarily as property name\n     *\n     * @param ptr {@link JsonPointer} that indicates path to use for Object value to return\n     *   (potentially creating as necessary)\n     *\n     * @return {@link ObjectNode} found or created\n     *\n     * @since 2.14\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withObject"
+          }
+        ],
+        "similarity": 0.06151921618787818,
+        "end_line": 1156,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.withObject(JsonPointer ptr): ObjectNode"
+      },
+      {
+        "start_line": 812,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonNode required(String propertyName) throws IllegalArgumentException {\n        return _reportRequiredViolation(\"Node of type `%s` has no fields\", getClass().getName());\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "required",
+        "documentation": "/**\n     * Method is functionally equivalent to\n     *{@code\n     *   path(fieldName).required()\n     *}\n     * and can be used to check that this node is an {@code ObjectNode} (that is, represents\n     * JSON Object value) and has value for specified property with key {@code fieldName}\n     * (but note that value may be explicit JSON null value).\n     * If this node is Object Node and has value for specified property, matching value\n     * is returned; otherwise {@link IllegalArgumentException} is thrown.\n     *\n     * @param propertyName Name of property to access\n     *\n     * @return Value of the specified property of this Object node\n     *\n     * @throws IllegalArgumentException if this node is not an Object node or if it does not\n     *   have value for specified property\n     *\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "required"
+          }
+        ],
+        "similarity": 0.05970098740987192,
+        "end_line": 814,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.required(String propertyName): JsonNode"
+      },
+      {
+        "start_line": 148,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final boolean isContainerNode() {\n        final JsonNodeType type = getNodeType();\n        return type == JsonNodeType.OBJECT || type == JsonNodeType.ARRAY;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "isContainerNode",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isContainerNode"
+          }
+        ],
+        "similarity": 0.05904035357183714,
+        "end_line": 151,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.isContainerNode(): boolean"
+      },
+      {
+        "start_line": 836,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonNode required(int index) throws IllegalArgumentException {\n        return _reportRequiredViolation(\"Node of type `%s` has no indexed values\", getClass().getName());\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "required",
+        "documentation": "/**\n     * Method is functionally equivalent to\n     *{@code\n     *   path(index).required()\n     *}\n     * and can be used to check that this node is an {@code ArrayNode} (that is, represents\n     * JSON Array value) and has value for specified {@code index}\n     * (but note that value may be explicit JSON null value).\n     * If this node is Array Node and has value for specified index, value at index\n     * is returned; otherwise {@link IllegalArgumentException} is thrown.\n     *\n     * @param index Index of the value of this Array node to access\n     *\n     * @return Value at specified index of this Array node\n     *\n     * @throws IllegalArgumentException if this node is not an Array node or if it does not\n     *   have value for specified index\n     *\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "required"
+          }
+        ],
+        "similarity": 0.058977420627277295,
+        "end_line": 838,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.required(int index): JsonNode"
+      },
+      {
+        "start_line": 49,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/jsontype/BasicPolymorphicTypeValidator.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "        public abstract boolean match(MapperConfig<?> config, String clazzName);",
+        "distance": 1.0,
+        "title": null,
+        "name": "match",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "match"
+          }
+        ],
+        "similarity": 0.058457654149784266,
+        "end_line": 49,
+        "signature": "com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator.NameMatcher.match(MapperConfig config, String clazzName): boolean"
+      },
+      {
+        "start_line": 190,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/PropertyMetadata.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public PropertyMetadata withNulls(Nulls valueNulls,",
+        "distance": 1.5,
+        "title": null,
+        "name": "withNulls",
+        "documentation": "/**\n     * @since 2.9\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "construct"
+          },
+          {
+            "start_node": "construct",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "PropertyMetadata"
+          },
+          {
+            "start_node": "PropertyMetadata",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "withNulls"
+          }
+        ],
+        "similarity": 0.05740647765734407,
+        "end_line": 190,
+        "signature": "com.fasterxml.jackson.databind.PropertyMetadata.withNulls(Nulls valueNulls, Nulls contentNulls): PropertyMetadata"
+      },
+      {
+        "start_line": 983,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean hasNonNull(int index) {\n        JsonNode n = get(index);\n        return (n != null) && !n.isNull();\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "hasNonNull",
+        "documentation": "/**\n     * Method that is similar to {@link #has(int)}, but that will\n     * return <code>false</code> for explicitly added nulls.\n     *<p>\n     * This method is equivalent to:\n     *<pre>\n     *   node.get(index) != null &amp;&amp; !node.get(index).isNull()\n     *</pre>\n     * \n     * @since 2.1\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "hasNonNull"
+          }
+        ],
+        "similarity": 0.056983998352388654,
+        "end_line": 986,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.hasNonNull(int index): boolean"
+      },
+      {
+        "start_line": 967,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean hasNonNull(String fieldName) {\n        JsonNode n = get(fieldName);\n        return (n != null) && !n.isNull();\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "hasNonNull",
+        "documentation": "/**\n     * Method that is similar to {@link #has(String)}, but that will\n     * return <code>false</code> for explicitly added nulls.\n     *<p>\n     * This method is functionally equivalent to:\n     *<pre>\n     *   node.get(fieldName) != null &amp;&amp; !node.get(fieldName).isNull()\n     *</pre>\n     * \n     * @since 2.1\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "hasNonNull"
+          }
+        ],
+        "similarity": 0.05633574892157402,
+        "end_line": 970,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.hasNonNull(String fieldName): boolean"
+      },
+      {
+        "start_line": 243,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/node/ObjectNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectNode withObject(String propertyName) {\n        JsonNode n = _children.get(propertyName);\n        if (n != null) {\n            if (n instanceof ObjectNode) {\n                return (ObjectNode) n;\n            }\n            throw new UnsupportedOperationException(\"Property '\" + propertyName\n                + \"' has value that is not of type `ObjectNode` (but `\" + n\n                .getClass().getName() + \"`)\");\n        }\n        ObjectNode result = objectNode();\n        _children.put(propertyName, result);\n        return result;\n    }",
+        "distance": 2.5,
+        "title": null,
+        "name": "withObject",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withObject"
+          }
+        ],
+        "similarity": 0.05631326314437877,
+        "end_line": 256,
+        "signature": "com.fasterxml.jackson.databind.node.ObjectNode.withObject(String propertyName): ObjectNode"
+      },
+      {
+        "start_line": 952,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean has(int index) {\n        return get(index) != null;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "has",
+        "documentation": "/**\n     * Method that allows checking whether this node is JSON Array node\n     * and contains a value for specified index\n     * If this is the case\n     * (including case of specified indexing having null as value), returns true;\n     * otherwise returns false.\n     *<p>\n     * Note: array element indexes are 0-based.\n     *<p>\n     * This method is equivalent to:\n     *<pre>\n     *   node.get(index) != null\n     *</pre>\n     *<p>\n     * NOTE: this method will return <code>true</code> for explicitly added\n     * null values.\n     *\n     * @param index Index to check\n     * \n     * @return True if this node is a JSON Object node, and has a property\n     *   entry with specified name (with any value, including null value)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "has"
+          }
+        ],
+        "similarity": 0.056299720377989054,
+        "end_line": 954,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.has(int index): boolean"
+      },
+      {
+        "start_line": 926,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean has(String fieldName) {\n        return get(fieldName) != null;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "has",
+        "documentation": "/**\n     * Method that allows checking whether this node is JSON Object node\n     * and contains value for specified property. If this is the case\n     * (including properties with explicit null values), returns true;\n     * otherwise returns false.\n     *<p>\n     * This method is equivalent to:\n     *<pre>\n     *   node.get(fieldName) != null\n     *</pre>\n     * (since return value of get() is node, not value node contains)\n     *<p>\n     * NOTE: when explicit <code>null</code> values are added, this\n     * method will return <code>true</code> for such properties.\n     *\n     * @param fieldName Name of element to check\n     * \n     * @return True if this node is a JSON Object node, and has a property\n     *   entry with specified name (with any value, including null value)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "has"
+          }
+        ],
+        "similarity": 0.056184391254824356,
+        "end_line": 928,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.has(String fieldName): boolean"
+      },
+      {
+        "start_line": 1426,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected <T extends JsonNode> T _this() {\n        return (T) this;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_this",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_this"
+          }
+        ],
+        "similarity": 0.0551151391518959,
+        "end_line": 1428,
+        "signature": "com.fasterxml.jackson.databind.JsonNode._this(): T"
+      },
+      {
+        "start_line": 174,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/PropertyMetadata.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public PropertyMetadata withDescription(String desc) {\n        return new PropertyMetadata(_required, desc, _index, _defaultValue,\n                _mergeInfo, _valueNulls, _contentNulls);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "withDescription",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "construct"
+          },
+          {
+            "start_node": "construct",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "PropertyMetadata"
+          },
+          {
+            "start_node": "PropertyMetadata",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withDescription"
+          }
+        ],
+        "similarity": 0.05413873489025991,
+        "end_line": 177,
+        "signature": "com.fasterxml.jackson.databind.PropertyMetadata.withDescription(String desc): PropertyMetadata"
+      },
+      {
+        "start_line": 788,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T extends JsonNode> T requireNonNull() throws IllegalArgumentException {\n        return _this();\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "requireNonNull",
+        "documentation": "/**\n     * Method that may be called to verify that {@code this} node is neither so-called\n     * \"missing node\" (that is, one for which {@link #isMissingNode()} returns {@code true})\n     * nor \"null node\" (one for which {@link #isNull()} returns {@code true}).\n     * If non-null non-missing node, {@code this} is returned to allow chaining; otherwise\n     * {@link IllegalArgumentException} is thrown.\n     *\n     * @return {@code this} node to allow chaining\n     *\n     * @throws IllegalArgumentException if this node is either \"missing node\" or \"null node\"\n     *\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "requireNonNull"
+          }
+        ],
+        "similarity": 0.053957403244157265,
+        "end_line": 790,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.requireNonNull(): T"
+      },
+      {
+        "start_line": 148,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/PropertyMetadata.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static PropertyMetadata construct(boolean req, String desc, Integer index,",
+        "distance": 1.0,
+        "title": null,
+        "name": "construct",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "construct"
+          }
+        ],
+        "similarity": 0.05393698790962797,
+        "end_line": 148,
+        "signature": "com.fasterxml.jackson.databind.PropertyMetadata.construct(boolean req, String desc, Integer index, String defaultValue): PropertyMetadata"
+      },
+      {
+        "start_line": 209,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/PropertyMetadata.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public PropertyMetadata withIndex(Integer index) {\n        return new PropertyMetadata(_required, _description, index, _defaultValue,\n                _mergeInfo, _valueNulls, _contentNulls);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "withIndex",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "construct"
+          },
+          {
+            "start_node": "construct",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "PropertyMetadata"
+          },
+          {
+            "start_node": "PropertyMetadata",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withIndex"
+          }
+        ],
+        "similarity": 0.05379133539063442,
+        "end_line": 212,
+        "signature": "com.fasterxml.jackson.databind.PropertyMetadata.withIndex(Integer index): PropertyMetadata"
+      },
+      {
+        "start_line": 26,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/impl/JDKValueInstantiators.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static ValueInstantiator findStdValueInstantiator(DeserializationConfig config,",
+        "distance": 1.25,
+        "title": null,
+        "name": "findStdValueInstantiator",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JDKValueInstantiators"
+          },
+          {
+            "start_node": "JDKValueInstantiators",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "findStdValueInstantiator"
+          }
+        ],
+        "similarity": 0.053637677825220914,
+        "end_line": 26,
+        "signature": "com.fasterxml.jackson.databind.deser.impl.JDKValueInstantiators.findStdValueInstantiator(DeserializationConfig config, Class raw): ValueInstantiator"
+      },
+      {
+        "start_line": 1226,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectNode withObject(JsonPointer ptr,",
+        "distance": 1.5,
+        "title": null,
+        "name": "withObject",
+        "documentation": "/**\n     * Method that can be called on Object or Array nodes, to access a Object-valued\n     * node pointed to by given {@link JsonPointer}, if such a node exists:\n     * or if not, an attempt is made to create one and return it.\n     * For example, on document\n     *<pre>\n     *  { \"a\" : {\n     *       \"b\" : {\n     *          \"c\" : 13\n     *       }\n     *    }\n     *  }\n     *</pre>\n     * calling method with {@link JsonPointer} of {@code /a/b} would return\n     * {@link ObjectNode}\n     *<pre>\n     *  { \"c\" : 13 }\n     *</pre>\n     *<p>\n     * In cases where path leads to \"missing\" nodes, a path is created.\n     * So, for example, on above document, and\n     * {@link JsonPointer} of {@code /a/x} an empty {@link ObjectNode} would\n     * be returned and the document would look like:\n     *<pre>\n     *  { \"a\" : {\n     *       \"b\" : {\n     *          \"c\" : 13\n     *       },\n     *       \"x\" : { }\n     *    }\n     *  }\n     *</pre>\n     * Finally, if the path is incompatible with the document -- there is an existing\n     * {@code JsonNode} through which expression cannot go -- a replacement is\n     * attempted if (and only if) conversion is allowed as per {@code overwriteMode}\n     * passed in. For example, with above document and expression of {@code /a/b/c},\n     * conversion is allowed if passing {@code OverwriteMode.SCALARS} or\n     * {@code OvewriteMode.ALL}, and resulting document would look like:\n     *<pre>\n     *  { \"a\" : {\n     *       \"b\" : {\n     *          \"c\" : { }\n     *       },\n     *       \"x\" : { }\n     *    }\n     *  }\n     *</pre>\n     * but if different modes ({@code NONE} or {@code NULLS}) is passed, an exception\n     * is thrown instead.\n     *\n     * @param ptr Pointer that indicates path to use for {@link ObjectNode} value to return\n     *   (potentially creating one as necessary)\n     * @param overwriteMode Defines which node types may be converted in case of\n     *    incompatible {@code JsonPointer} expression: if conversion not allowed,\n     *    {@link UnsupportedOperationException} is thrown.\n     * @param preferIndex When creating a path (for empty or replacement), and path\n     *    contains segment that may be an array index (simple integer number like\n     *    {@code 3}), whether to construct an {@link ArrayNode} ({@code true}) or\n     *    {@link ObjectNode} ({@code false}). In latter case matching property with\n     *    quoted number (like {@code \"3\"}) is used within Object.\n     *\n     * @return {@link ObjectNode} found or created\n     *\n     * @throws UnsupportedOperationException if a conversion would be needed for given\n     *    {@code JsonPointer}, document, but was not allowed for the type encountered\n     *\n     * @since 2.14\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withObject"
+          }
+        ],
+        "similarity": 0.053543524075790314,
+        "end_line": 1226,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.withObject(JsonPointer ptr, OverwriteMode overwriteMode, boolean preferIndex): ObjectNode"
+      },
+      {
+        "start_line": 135,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/PropertyMetadata.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static PropertyMetadata construct(Boolean req, String desc, Integer index,",
+        "distance": 1.0,
+        "title": null,
+        "name": "construct",
+        "documentation": "/**\n     * @since 2.8.8\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "construct"
+          }
+        ],
+        "similarity": 0.052925923639654725,
+        "end_line": 135,
+        "signature": "com.fasterxml.jackson.databind.PropertyMetadata.construct(Boolean req, String desc, Integer index, String defaultValue): PropertyMetadata"
+      },
+      {
+        "start_line": 329,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final boolean isNumber() {\n        return getNodeType() == JsonNodeType.NUMBER;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "isNumber",
+        "documentation": "/**\n     * @return True if this node represents a numeric JSON value\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isNumber"
+          }
+        ],
+        "similarity": 0.05261834967892755,
+        "end_line": 331,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.isNumber(): boolean"
+      },
+      {
+        "start_line": 245,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/PropertyMetadata.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean hasDefaultValue() { return (_defaultValue != null); }",
+        "distance": 1.5,
+        "title": null,
+        "name": "hasDefaultValue",
+        "documentation": "/**\n     * Accessor for determining whether property has declared \"default value\",\n     * which may be used by extension modules.\n     *\n     * @since 2.6\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "construct"
+          },
+          {
+            "start_node": "construct",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "PropertyMetadata"
+          },
+          {
+            "start_node": "PropertyMetadata",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "hasDefaultValue"
+          }
+        ],
+        "similarity": 0.052307898111870275,
+        "end_line": 245,
+        "signature": "com.fasterxml.jackson.databind.PropertyMetadata.hasDefaultValue(): boolean"
+      },
+      {
+        "start_line": 395,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final boolean isTextual() {\n        return getNodeType() == JsonNodeType.STRING;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "isTextual",
+        "documentation": "/**\n     * Method that checks whether this node represents basic JSON String\n     * value.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isTextual"
+          }
+        ],
+        "similarity": 0.051949745785941324,
+        "end_line": 397,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.isTextual(): boolean"
+      },
+      {
+        "start_line": 859,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonNode requiredAt(String pathExpr) throws IllegalArgumentException {\n        return requiredAt(JsonPointer.compile(pathExpr));\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "requiredAt",
+        "documentation": "/**\n     * Method is functionally equivalent to\n     *{@code\n     *   at(pathExpr).required()\n     *}\n     * and can be used to check that there is an actual value node at specified {@link JsonPointer}\n     * starting from {@code this} node\n     * (but note that value may be explicit JSON null value).\n     * If such value node exists it is returned;\n     * otherwise {@link IllegalArgumentException} is thrown.\n     *\n     * @param pathExpr {@link JsonPointer} expression (as String) to use for finding value node\n     *\n     * @return Matching value node for given expression\n     *\n     * @throws IllegalArgumentException if no value node exists at given {@code JSON Pointer} path\n     *\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "requiredAt"
+          }
+        ],
+        "similarity": 0.05182235479126262,
+        "end_line": 861,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.requiredAt(String pathExpr): JsonNode"
+      },
+      {
+        "start_line": 1271,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final ArrayNode withArray(JsonPointer ptr) {\n        return withArray(ptr, OverwriteMode.NULLS, true);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "withArray",
+        "documentation": "/**\n     * Same as {@link #withArray(JsonPointer, OverwriteMode, boolean)} but\n     * with defaults of {@code OvewriteMode#NULLS} (overwrite mode)\n     * and {@code true} for {@code preferIndex}.\n     *\n     * @param ptr Pointer that indicates path to use for {@link ArrayNode} to return\n     *   (potentially creating as necessary)\n     *\n     * @return {@link ArrayNode} found or created\n     *\n     * @since 2.14\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withArray"
+          }
+        ],
+        "similarity": 0.0515496087523239,
+        "end_line": 1273,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.withArray(JsonPointer ptr): ArrayNode"
+      },
+      {
+        "start_line": 281,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final JsonNode at(String jsonPtrExpr) {\n        return at(JsonPointer.compile(jsonPtrExpr));\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "at",
+        "documentation": "/**\n     * Convenience method that is functionally equivalent to:\n     *<pre>\n     *   return at(JsonPointer.valueOf(jsonPointerExpression));\n     *</pre>\n     *<p>\n     * Note that if the same expression is used often, it is preferable to construct\n     * {@link JsonPointer} instance once and reuse it: this method will not perform\n     * any caching of compiled expressions.\n     * \n     * @param jsonPtrExpr Expression to compile as a {@link JsonPointer}\n     *   instance\n     * \n     * @return Node that matches given JSON Pointer: if no match exists,\n     *   will return a node for which {@link TreeNode#isMissingNode()} returns true.\n     * \n     * @since 2.3\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "at"
+          },
+          {
+            "start_node": "at",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "at"
+          }
+        ],
+        "similarity": 0.04990162806533742,
+        "end_line": 283,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.at(String jsonPtrExpr): JsonNode"
+      },
+      {
+        "start_line": 1238,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final <T extends JsonNode> T with(String propertyName) {\n        return (T) withObject(propertyName);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * @deprecated Since 2.14 use {@code withObject(String)} instead\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.049894548076112884,
+        "end_line": 1240,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.with(String propertyName): T"
+      },
+      {
+        "start_line": 1337,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ArrayNode withArray(JsonPointer ptr,",
+        "distance": 1.5,
+        "title": null,
+        "name": "withArray",
+        "documentation": "/**\n     * Method that can be called on Object or Array nodes, to access a Array-valued\n     * node pointed to by given {@link JsonPointer}, if such a node exists:\n     * or if not, an attempt is made to create one and return it.\n     * For example, on document\n     *<pre>\n     *  { \"a\" : {\n     *       \"b\" : [ 1, 2 ]\n     *    }\n     *  }\n     *</pre>\n     * calling method with {@link JsonPointer} of {@code /a/b} would return\n     * {@code Array}\n     *<pre>\n     *  [ 1, 2 ]\n     *</pre>\n     *<p>\n     * In cases where path leads to \"missing\" nodes, a path is created.\n     * So, for example, on above document, and\n     * {@link JsonPointer} of {@code /a/x} an empty {@code ArrayNode} would\n     * be returned and the document would look like:\n     *<pre>\n     *  { \"a\" : {\n     *       \"b\" : [ 1, 2 ],\n     *       \"x\" : [ ]\n     *    }\n     *  }\n     *</pre>\n     * Finally, if the path is incompatible with the document -- there is an existing\n     * {@code JsonNode} through which expression cannot go -- a replacement is\n     * attempted if (and only if) conversion is allowed as per {@code overwriteMode}\n     * passed in. For example, with above document and expression of {@code /a/b/0},\n     * conversion is allowed if passing {@code OverwriteMode.SCALARS} or\n     * {@code OvewriteMode.ALL}, and resulting document would look like:\n     *<pre>\n     *  { \"a\" : {\n     *       \"b\" : [ [ ], 2 ],\n     *       \"x\" : [ ]\n     *    }\n     *  }\n     *</pre>\n     * but if different modes ({@code NONE} or {@code NULLS}) is passed, an exception\n     * is thrown instead.\n     *\n     * @param ptr Pointer that indicates path to use for {@link ArrayNode} value to return\n     *   (potentially creating it as necessary)\n     * @param overwriteMode Defines which node types may be converted in case of\n     *    incompatible {@code JsonPointer} expression: if conversion not allowed,\n     *    an exception is thrown.\n     * @param preferIndex When creating a path (for empty or replacement), and path\n     *    contains segment that may be an array index (simple integer number like\n     *    {@code 3}), whether to construct an {@link ArrayNode} ({@code true}) or\n     *    {@link ObjectNode} ({@code false}). In latter case matching property with\n     *    quoted number (like {@code \"3\"}) is used within Object.\n     *\n     * @return {@link ArrayNode} found or created\n     *\n     * @throws UnsupportedOperationException if a conversion would be needed for given\n     *    {@code JsonPointer}, document, but was not allowed for the type encountered\n     *\n     * @since 2.14\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withArray"
+          }
+        ],
+        "similarity": 0.04971928653911651,
+        "end_line": 1337,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.withArray(JsonPointer ptr, OverwriteMode overwriteMode, boolean preferIndex): ArrayNode"
+      },
+      {
+        "start_line": 244,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/PropertyName.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public int hashCode() {\n        if (_namespace == null) {\n            return _simpleName.hashCode();\n        }\n        return _namespace.hashCode() ^  _simpleName.hashCode();\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "hashCode",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "construct"
+          },
+          {
+            "start_node": "construct",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "PropertyName"
+          },
+          {
+            "start_node": "PropertyName",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "hashCode"
+          }
+        ],
+        "similarity": 0.04900225141872437,
+        "end_line": 249,
+        "signature": "com.fasterxml.jackson.databind.PropertyName.hashCode(): int"
+      },
+      {
+        "start_line": 1435,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected <T> T _reportRequiredViolation(String msgTemplate, Object...args) {\n        throw new IllegalArgumentException(String.format(msgTemplate, args));\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_reportRequiredViolation",
+        "documentation": "/**\n     * Helper method that throws {@link IllegalArgumentException} as a result of\n     * violating \"required-constraint\" for this node (for {@link #required} or related\n     * methods).\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_reportRequiredViolation"
+          }
+        ],
+        "similarity": 0.048396304155705075,
+        "end_line": 1437,
+        "signature": "com.fasterxml.jackson.databind.JsonNode._reportRequiredViolation(String msgTemplate, Object args): T"
+      },
+      {
+        "start_line": 344,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean isFloatingPointNumber() { return false; }",
+        "distance": 1.5,
+        "title": null,
+        "name": "isFloatingPointNumber",
+        "documentation": "/**\n     * @return True if this node represents a non-integral\n     *   numeric JSON value\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isFloatingPointNumber"
+          }
+        ],
+        "similarity": 0.047993875212015216,
+        "end_line": 344,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.isFloatingPointNumber(): boolean"
+      },
+      {
+        "start_line": 637,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader at(final JsonPointer pointer) {\n        _assertNotNull(\"pointer\", pointer);\n        return new ObjectReader(this, new JsonPointerBasedFilter(pointer));\n    }",
+        "distance": 2.5,
+        "title": null,
+        "name": "at",
+        "documentation": "/**\n     * Convenience method to bind from {@link JsonPointer}\n      * {@link JsonPointerBasedFilter} is registered and will be used for parsing later.\n     * @since 2.6\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "at"
+          },
+          {
+            "start_node": "at",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "at"
+          }
+        ],
+        "similarity": 0.04779890822558856,
+        "end_line": 640,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader.at(JsonPointer pointer): ObjectReader"
+      },
+      {
+        "start_line": 771,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T extends JsonNode> T require() throws IllegalArgumentException {\n        return _this();\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "require",
+        "documentation": "/**\n     * Method that may be called to verify that {@code this} node is NOT so-called\n     * \"missing node\": that is, one for which {@link #isMissingNode()} returns {@code true}.\n     * If not missing node, {@code this} is returned to allow chaining; otherwise\n     * {@link IllegalArgumentException} is thrown.\n     *\n     * @return {@code this} node to allow chaining\n     *\n     * @throws IllegalArgumentException if this node is \"missing node\"\n     *\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "require"
+          }
+        ],
+        "similarity": 0.04714277179795015,
+        "end_line": 773,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.require(): T"
+      },
+      {
+        "start_line": 264,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected ObjectReader(ObjectReader base, TokenFilter filter) {\n        _config = base._config;\n        _context = base._context;\n        _rootDeserializers = base._rootDeserializers;\n        _parserFactory = base._parserFactory;\n        _valueType = base._valueType;\n        _rootDeserializer = base._rootDeserializer;\n        _valueToUpdate = base._valueToUpdate;\n        _schema = base._schema;\n        _injectableValues = base._injectableValues;\n        _unwrapRoot = base._unwrapRoot;\n        _dataFormatReaders = base._dataFormatReaders;\n        _filter = filter;\n    }",
+        "distance": 3.0,
+        "title": null,
+        "name": "ObjectReader",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "at"
+          },
+          {
+            "start_node": "at",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "at"
+          },
+          {
+            "start_node": "at",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          }
+        ],
+        "similarity": 0.04625626899459847,
+        "end_line": 277,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader(ObjectReader base, TokenFilter filter)"
+      },
+      {
+        "start_line": 2213,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonParser _considerFilter(final JsonParser p, boolean multiValue) {\n        // 26-Mar-2016, tatu: Need to allow multiple-matches at least if we have\n        //    have a multiple-value read (that is, \"readValues()\").\n        return ((_filter == null) || FilteringParserDelegate.class.isInstance(p))\n                ? p : new FilteringParserDelegate(p, _filter, Inclusion.ONLY_INCLUDE_ALL, multiValue);\n    }",
+        "distance": 3.0,
+        "title": null,
+        "name": "_considerFilter",
+        "documentation": "/**\n     * Consider filter when creating JsonParser.  \n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "at"
+          },
+          {
+            "start_node": "at",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "at"
+          },
+          {
+            "start_node": "at",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_considerFilter"
+          }
+        ],
+        "similarity": 0.045797485013943366,
+        "end_line": 2218,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader._considerFilter(JsonParser p, boolean multiValue): JsonParser"
+      },
+      {
+        "start_line": 1008,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Iterator<JsonNode> elements() {\n        return ClassUtil.emptyIterator();\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "elements",
+        "documentation": "/**\n     * Method for accessing all value nodes of this Node, iff\n     * this node is a JSON Array or Object node. In case of Object node,\n     * field names (keys) are not included, only values.\n     * For other types of nodes, returns empty iterator.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "elements"
+          }
+        ],
+        "similarity": 0.04543753876921257,
+        "end_line": 1010,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.elements(): Iterator"
+      },
+      {
+        "start_line": 403,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final boolean isBoolean() {\n        return getNodeType() == JsonNodeType.BOOLEAN;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "isBoolean",
+        "documentation": "/**\n     * Method that can be used to check if this node was created from\n     * JSON boolean value (literals \"true\" and \"false\").\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fields"
+          },
+          {
+            "start_node": "fields",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isBoolean"
+          }
+        ],
+        "similarity": 0.04541669478548521,
+        "end_line": 405,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.isBoolean(): boolean"
+      }
+    ],
+    "classes": [],
+    "issues": [
+      {
+        "content": "Currently it is not possible to have declaration like this:\r\n\r\n```\r\n    private static class JsonAnySetterOnMap {\r\n        @JsonAnySetter\r\n        public Map<String, String> other;\r\n    }\r\n```\r\n\r\nsince \"any setter\" handler cannot instantiate a `Map`: instead, one has to use:\r\n\r\n```\r\n    private static class JsonAnySetterOnMap {\r\n        @JsonAnySetter\r\n        public Map<String, String> other = new HashMap<>();\r\n    }\r\n```\r\n\r\nIn general this may not be an easily solvable problem; however, for a reasonable set of common, standard types,\r\nthere is class `JDKValueInstantiators` which does provide ability to construct instances. In case of `Map`s it covers:\r\n\r\n* `HashMap`\r\n* `LinkedHashMap`\r\n\r\n(plus we can use defaulting for plain `Map`).\r\n\r\nSo let's see if we can add initialization; and in case no match found, throw an actual exception to indicate the problem instead of current behavior, quietly failing.\r\n\r\n\r\n\r\n\n",
+        "distance": 0,
+        "title": "Support `null`-valued `Map` fields with \"any setter\"",
+        "name": "root",
+        "path": [],
+        "issue_id": "root",
+        "similarity": 2.0,
+        "type": "issue"
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "3559",
+        "type": "issue",
+        "content": "Currently it is not possible to have declaration like this:\r\n\r\n```\r\n    private static class JsonAnySetterOnMap {\r\n        @JsonAnySetter\r\n        public Map<String, String> other;\r\n    }\r\n```\r\n\r\nsince \"any setter\" handler cannot instantiate a `Map`: instead, one has to use:\r\n\r\n```\r\n    private static class JsonAnySetterOnMap {\r\n        @JsonAnySetter\r\n        public Map<String, String> other = new HashMap<>();\r\n    }\r\n```\r\n\r\nIn general this may not be an easily solvable problem; however, for a reasonable set of common, standard types,\r\nthere is class `JDKValueInstantiators` which does provide ability to construct instances. In case of `Map`s it covers:\r\n\r\n* `HashMap`\r\n* `LinkedHashMap`\r\n\r\n(plus we can use defaulting for plain `Map`).\r\n\r\nSo let's see if we can add initialization; and in case no match found, throw an actual exception to indicate the problem instead of current behavior, quietly failing.\r\n\r\n\r\n\r\n\n\n",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "Support `null`-valued `Map` fields with \"any setter\"",
+        "name": "issue#3559",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#3559"
+          }
+        ],
+        "similarity": 0.8232551444988264,
+        "end_line": null,
+        "signature": null
+      }
+    ]
+  },
+  "artifact_stats": {
+    "skipped_due_to_time": 3,
+    "valid_related_items": 13
+  }
+}

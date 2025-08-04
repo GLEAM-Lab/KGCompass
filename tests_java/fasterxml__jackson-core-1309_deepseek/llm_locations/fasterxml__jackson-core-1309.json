@@ -1,0 +1,771 @@
+{
+    "related_entities": {
+        "methods": [
+            {
+                "start_line": 583,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static boolean looksLikeValidNumber(final String s) {\n        // While PATTERN_FLOAT handles most cases we can optimize some simple ones:\n        if (s == null || s.isEmpty()) {\n            return false;\n        }\n        if (s.length() == 1) {\n            char c = s.charAt(0);\n            return (c <= '9') && (c >= '0');\n        }\n        return PATTERN_FLOAT.matcher(s).matches();\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "looksLikeValidNumber",
+                "documentation": "/**\n     * Method called to check whether given pattern looks like a valid Java\n     * Number (which is bit looser definition than valid JSON Number).\n     * Used as pre-parsing check when parsing \"Stringified numbers\".\n     *<p>\n     * The differences to stricter JSON Number are:\n     * <ul>\n     *   <li>Positive sign is allowed\n     *     </li>\n     *   <li>Leading zeroes are allowed\n     *     </li>\n     * </ul>\n     *<p>\n     * Note: no trimming ({@code String.trim()}) nor null checks are performed\n     * on String passed.\n     *<p>\n     * Note: this method returning {@code true} DOES NOT GUARANTEE String is valid\n     * number but just that it looks close enough.\n     *\n     * @param s String to validate\n     *\n     * @return True if String looks like valid Java number; false otherwise.\n     *\n     * @since 2.17\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "looksLikeValidNumber"
+                    }
+                ],
+                "similarity": 0.172368743721549,
+                "end_line": 593,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.looksLikeValidNumber(String s): boolean"
+            },
+            {
+                "start_line": 450,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static BigDecimal parseBigDecimal(final String s, final boolean useFastParser) throws NumberFormatException {\n        if (useFastParser) {\n            return BigDecimalParser.parseWithFastParser(s);\n        }\n        return BigDecimalParser.parse(s);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseBigDecimal",
+                "documentation": "/**\n     * @param s a string representing a number to parse\n     * @param useFastParser whether to use custom fast parser (true) or JDK default (false) parser\n     * @return a BigDecimal\n     * @throws NumberFormatException if the char array cannot be represented by a BigDecimal\n     * @since v2.15\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseBigDecimal"
+                    }
+                ],
+                "similarity": 0.11850872406654782,
+                "end_line": 455,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseBigDecimal(String s, boolean useFastParser): BigDecimal"
+            },
+            {
+                "start_line": 424,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static float parseFloat(final String s, final boolean useFastParser) throws NumberFormatException {\n        if (useFastParser) {\n            return JavaFloatParser.parseFloat(s);\n        }\n        return Float.parseFloat(s);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseFloat",
+                "documentation": "/**\n     * @param s a string representing a number to parse\n     * @param useFastParser whether to use {@code FastDoubleParser}\n     * @return closest matching float\n     * @throws NumberFormatException if string cannot be represented by a float\n     * @since v2.14\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseFloat"
+                    }
+                ],
+                "similarity": 0.11652372496118359,
+                "end_line": 429,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseFloat(String s, boolean useFastParser): float"
+            },
+            {
+                "start_line": 509,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static BigDecimal parseBigDecimal(final char[] ch, final boolean useFastParser) throws NumberFormatException {\n        return useFastParser ?\n                BigDecimalParser.parseWithFastParser(ch, 0, ch.length) :\n                BigDecimalParser.parse(ch);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseBigDecimal",
+                "documentation": "/**\n     * @param ch a char array with text that makes up a number\n     * @param useFastParser whether to use custom fast parser (true) or JDK default (false) parser\n     * @return a BigDecimal\n     * @throws NumberFormatException if the char array cannot be represented by a BigDecimal\n     * @since v2.15\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseBigDecimal"
+                    }
+                ],
+                "similarity": 0.1155490797530444,
+                "end_line": 513,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseBigDecimal(char[] ch, boolean useFastParser): BigDecimal"
+            },
+            {
+                "start_line": 535,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static BigInteger parseBigInteger(final String s, final boolean useFastParser) throws NumberFormatException {\n        if (useFastParser) {\n            return BigIntegerParser.parseWithFastParser(s);\n        }\n        return new BigInteger(s);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseBigInteger",
+                "documentation": "/**\n     * @param s a string representing a number to parse\n     * @param useFastParser whether to use custom fast parser (true) or JDK default (false) parser\n     * @return a BigInteger\n     * @throws NumberFormatException if string cannot be represented by a BigInteger\n     * @since v2.15\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseBigInteger"
+                    }
+                ],
+                "similarity": 0.11217226548014478,
+                "end_line": 540,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseBigInteger(String s, boolean useFastParser): BigInteger"
+            },
+            {
+                "start_line": 399,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static double parseDouble(final String s, final boolean useFastParser) throws NumberFormatException {\n        return useFastParser ? JavaDoubleParser.parseDouble(s) : Double.parseDouble(s);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseDouble",
+                "documentation": "/**\n     * @param s a string representing a number to parse\n     * @param useFastParser whether to use {@code FastDoubleParser}\n     * @return closest matching double\n     * @throws NumberFormatException if string cannot be represented by a double\n     * @since v2.14\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseDouble"
+                    }
+                ],
+                "similarity": 0.10766367133959896,
+                "end_line": 401,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseDouble(String s, boolean useFastParser): double"
+            },
+            {
+                "start_line": 467,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static BigDecimal parseBigDecimal(final char[] ch, final int off, final int len) throws NumberFormatException {\n        return BigDecimalParser.parse(ch, off, len);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseBigDecimal",
+                "documentation": "/**\n     * @param ch a char array with text that makes up a number\n     * @param off the offset to apply when parsing the number in the char array\n     * @param len the length of the number in the char array\n     * @return a BigDecimal\n     * @throws NumberFormatException if the char array cannot be represented by a BigDecimal\n     *\n     * @deprecated Since 2.17 use {@link #parseBigDecimal(char[], int, int, boolean)} instead\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseBigDecimal"
+                    }
+                ],
+                "similarity": 0.10200157089793482,
+                "end_line": 469,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseBigDecimal(char[] ch, int off, int len): BigDecimal"
+            },
+            {
+                "start_line": 439,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static BigDecimal parseBigDecimal(final String s) throws NumberFormatException {\n        return parseBigDecimal(s, false);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseBigDecimal",
+                "documentation": "/**\n     * @param s a string representing a number to parse\n     * @return a BigDecimal\n     * @throws NumberFormatException if the char array cannot be represented by a BigDecimal\n     *\n     * @deprecated Since 2.17 use {@link #parseBigDecimal(String, boolean)} instead\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseBigDecimal"
+                    }
+                ],
+                "similarity": 0.09843531671957714,
+                "end_line": 441,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseBigDecimal(String s): BigDecimal"
+            },
+            {
+                "start_line": 498,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static BigDecimal parseBigDecimal(final char[] ch) throws NumberFormatException {\n        return BigDecimalParser.parse(ch);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseBigDecimal",
+                "documentation": "/**\n     * @param ch a char array with text that makes up a number\n     * @return a BigDecimal\n     * @throws NumberFormatException if the char array cannot be represented by a BigDecimal\n     *\n     * @deprecated Since 2.17 use {@link #parseBigDecimal(char[], boolean)} instead\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseBigDecimal"
+                    }
+                ],
+                "similarity": 0.09599920481821189,
+                "end_line": 500,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseBigDecimal(char[] ch): BigDecimal"
+            },
+            {
+                "start_line": 413,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static float parseFloat(final String s) throws NumberFormatException {\n        return parseFloat(s, false);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseFloat",
+                "documentation": "/**\n     * @param s a string representing a number to parse\n     * @return closest matching float\n     * @throws NumberFormatException if string cannot be represented by a float where useFastParser=false\n     * @see #parseFloat(String, boolean)\n     * @since v2.14\n     *\n     * @deprecated Since 2.17 use {@link #parseFloat(String, boolean)} instead\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseFloat"
+                    }
+                ],
+                "similarity": 0.09493684034907245,
+                "end_line": 415,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseFloat(String s): float"
+            },
+            {
+                "start_line": 388,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static double parseDouble(final String s) throws NumberFormatException {\n        return parseDouble(s, false);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseDouble",
+                "documentation": "/**\n     * @param s a string representing a number to parse\n     * @return closest matching double\n     * @throws NumberFormatException if string cannot be represented by a double where useFastParser=false\n     * @see #parseDouble(String, boolean)\n     *\n     * @deprecated Since 2.17 use {@link #parseDouble(String, boolean)} instead\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseDouble"
+                    }
+                ],
+                "similarity": 0.09309782791597847,
+                "end_line": 390,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseDouble(String s): double"
+            },
+            {
+                "start_line": 524,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static BigInteger parseBigInteger(final String s) throws NumberFormatException {\n        return parseBigInteger(s, false);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseBigInteger",
+                "documentation": "/**\n     * @param s a string representing a number to parse\n     * @return a BigInteger\n     * @throws NumberFormatException if string cannot be represented by a BigInteger\n     * @since v2.14\n     *\n     * @deprecated Since 2.17 use {@link #parseBigInteger(String, boolean)} instead\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseBigInteger"
+                    }
+                ],
+                "similarity": 0.08977869241027955,
+                "end_line": 526,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseBigInteger(String s): BigInteger"
+            },
+            {
+                "start_line": 480,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static BigDecimal parseBigDecimal(final char[] ch, final int off, final int len,",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseBigDecimal",
+                "documentation": "/**\n     * @param ch a char array with text that makes up a number\n     * @param off the offset to apply when parsing the number in the char array\n     * @param len the length of the number in the char array\n     * @param useFastParser whether to use custom fast parser (true) or JDK default (false) parser\n     * @return a BigDecimal\n     * @throws NumberFormatException if the char array cannot be represented by a BigDecimal\n     * @since v2.15\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseBigDecimal"
+                    }
+                ],
+                "similarity": 0.0887132163118049,
+                "end_line": 480,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseBigDecimal(char[] ch, int off, int len, boolean useFastParser): BigDecimal"
+            },
+            {
+                "start_line": 366,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static double parseAsDouble(String s, final double def, final boolean useFastParser)",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseAsDouble",
+                "documentation": "/**\n     * @param s a string representing a number to parse\n     * @param def the default to return if `s` is not a parseable number\n     * @param useFastParser whether to use {@code FastDoubleParser}\n     * @return closest matching double (or `def` if there is an issue with `s`)\n     * @since 2.14\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseAsDouble"
+                    }
+                ],
+                "similarity": 0.07580885118985752,
+                "end_line": 366,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseAsDouble(String s, double def, boolean useFastParser): double"
+            },
+            {
+                "start_line": 550,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static BigInteger parseBigIntegerWithRadix(final String s, final int radix,",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseBigIntegerWithRadix",
+                "documentation": "/**\n     * @param s a string representing a number to parse\n     * @param radix for parse\n     * @param useFastParser whether to use custom fast parser (true) or JDK default (false) parser\n     * @return a BigInteger\n     * @throws NumberFormatException if string cannot be represented by a BigInteger\n     * @since v2.15\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseBigIntegerWithRadix"
+                    }
+                ],
+                "similarity": 0.07233319267843472,
+                "end_line": 550,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseBigIntegerWithRadix(String s, int radix, boolean useFastParser): BigInteger"
+            },
+            {
+                "start_line": 354,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static double parseAsDouble(final String s, final double def)",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseAsDouble",
+                "documentation": "/**\n     * @param s a string representing a number to parse\n     * @param def the default to return if `s` is not a parseable number\n     * @return closest matching double (or `def` if there is an issue with `s`) where useFastParser=false\n     * @see #parseAsDouble(String, double, boolean)\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseAsDouble"
+                    }
+                ],
+                "similarity": 0.06939575976630714,
+                "end_line": 354,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseAsDouble(String s, double def): double"
+            },
+            {
+                "start_line": 224,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static boolean inLongRange(char[] ch, int off, int len,",
+                "distance": 1.25,
+                "title": null,
+                "name": "inLongRange",
+                "documentation": "/**\n     * Helper method for determining if given String representation of\n     * an integral number would fit in 64-bit Java long or not.\n     * Note that input String must NOT contain leading minus sign (even\n     * if 'negative' is set to true).\n     *\n     * @param ch Buffer that contains long value to check\n     * @param off Offset of the first digit character in buffer\n     * @param len Length of the number to decode (in characters)\n     * @param negative Whether original number had a minus sign (which is\n     *    NOT passed to this method) or not\n     *\n     * @return {@code True} if specified String representation is within Java\n     *   {@code long} range; {@code false} if not.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "inLongRange"
+                    }
+                ],
+                "similarity": 0.06429912952393442,
+                "end_line": 224,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.inLongRange(char[] ch, int off, int len, boolean negative): boolean"
+            },
+            {
+                "start_line": 252,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static boolean inLongRange(String s, boolean negative)",
+                "distance": 1.25,
+                "title": null,
+                "name": "inLongRange",
+                "documentation": "/**\n     * Similar to {@link #inLongRange(char[],int,int,boolean)}, but\n     * with String argument\n     *\n     * @param s String that contains {@code long} value to check\n     * @param negative Whether original number had a minus sign (which is\n     *    NOT passed to this method) or not\n     *\n     * @return {@code True} if specified String representation is within Java\n     *   {@code long} range; {@code false} if not.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "inLongRange"
+                    }
+                ],
+                "similarity": 0.06228356051385187,
+                "end_line": 252,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.inLongRange(String s, boolean negative): boolean"
+            },
+            {
+                "start_line": 270,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static int parseAsInt(String s, int def)",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseAsInt",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseAsInt"
+                    }
+                ],
+                "similarity": 0.06185075250557135,
+                "end_line": 270,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseAsInt(String s, int def): int"
+            },
+            {
+                "start_line": 101,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static int parseInt(String s)",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseInt",
+                "documentation": "/**\n     * Helper method to (more) efficiently parse integer numbers from\n     * String values. Input String must be simple Java integer value.\n     * No range checks are made to verify that the value fits in 32-bit Java {@code int}:\n     * caller is expected to only calls this in cases where this can be guaranteed\n     * (basically: number of digits does not exceed 9)\n     *<p>\n     * NOTE: semantics differ significantly from {@link #parseInt(char[], int, int)}.\n     *\n     * @param s String that contains integer value to decode\n     *\n     * @return Decoded {@code int} value\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseInt"
+                    }
+                ],
+                "similarity": 0.05970313592866281,
+                "end_line": 101,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseInt(String s): int"
+            },
+            {
+                "start_line": 179,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static long parseLong19(char[] ch, int off, boolean negative)",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseLong19",
+                "documentation": "/**\n     * Parses an unsigned long made up of exactly 19 digits.\n     * <p>\n     * It is the callers responsibility to make sure the input is exactly 19 digits.\n     * and fits into a 64bit long by calling {@link #inLongRange(char[], int, int, boolean)}\n     * first.\n     * <p>\n     * Note that input String must NOT contain leading minus sign (even\n     * if {@code negative} is set to true).\n     *\n     * @param ch Buffer that contains integer value to decode\n     * @param off Offset of the first digit character in buffer\n     * @param negative Whether original number had a minus sign\n     * @return Decoded {@code long} value\n     *\n     * @since 2.15.0\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseLong19"
+                    }
+                ],
+                "similarity": 0.05932233276627929,
+                "end_line": 179,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseLong19(char[] ch, int off, boolean negative): long"
+            },
+            {
+                "start_line": 309,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static long parseAsLong(String s, long def)",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseAsLong",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseAsLong"
+                    }
+                ],
+                "similarity": 0.05502127931516261,
+                "end_line": 309,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseAsLong(String s, long def): long"
+            },
+            {
+                "start_line": 58,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static int parseInt(char[] ch, int off, int len)",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseInt",
+                "documentation": "/**\n     * Fast method for parsing unsigned integers that are known to fit into\n     * regular 32-bit signed int type. This means that length is\n     * between 1 and 9 digits (inclusive) and there is no sign character.\n     *<p>\n     * Note: public to let unit tests call it; not meant to be used by any\n     * code outside this package.\n     *\n     * @param ch Buffer that contains integer value to decode\n     * @param off Offset of the first digit character in buffer\n     * @param len Length of the number to decode (in characters)\n     *\n     * @return Decoded {@code int} value\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseInt"
+                    }
+                ],
+                "similarity": 0.04853245428586293,
+                "end_line": 58,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseInt(char[] ch, int off, int len): int"
+            },
+            {
+                "start_line": 154,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static long parseLong(char[] ch, int off, int len)",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseLong",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseLong"
+                    }
+                ],
+                "similarity": 0.047226494027604704,
+                "end_line": 154,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseLong(char[] ch, int off, int len): long"
+            },
+            {
+                "start_line": 197,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static long parseLong(String s)",
+                "distance": 1.25,
+                "title": null,
+                "name": "parseLong",
+                "documentation": "/**\n     * Similar to {@link #parseInt(String)} but for {@code long} values.\n     *\n     * @param s String that contains {@code long} value to decode\n     *\n     * @return Decoded {@code long} value\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "NumberInput"
+                    },
+                    {
+                        "start_node": "NumberInput",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parseLong"
+                    }
+                ],
+                "similarity": 0.047137892057187734,
+                "end_line": 197,
+                "signature": "com.fasterxml.jackson.core.io.NumberInput.parseLong(String s): long"
+            }
+        ],
+        "classes": [],
+        "issues": [
+            {
+                "content": "Rules for numbers for which `NumberInput.looksLikeValidNumber(String)` returns true are a superset of JSON number, to roughly correspond to valid Java numbers (but more strict than say YAML).\r\nThe reason for this is that it is used by \"Stringified numbers\" functionality -- databind level functionality that takes JSON String (or XML, YAML, CSV etc for other backends) and coerces into valid `Number`. Given that different backends have different number validation rules this functionality needs to avoid being too strict.\r\n\r\nSpecific differences from JSON number so far includes:\r\n\r\n1. Allow leading `+` sign (so `+10.25` is valid unlike in JSON)\r\n2. Allow omitting of leading `0` in front of `.` (so `.00006` and `-.025` are valid)\r\n\r\nbut one case that got accidentally stricter with 2.17 wrt \"trailing\" dot: values like `3.` were previously allowed (in 2.16). So let's again allow this case.\r\n\n",
+                "distance": 0,
+                "title": "Relax validation by `NumberInput.looksLikeValidNumber()` to allow trailing dot (like `3.`)",
+                "name": "root",
+                "path": [],
+                "issue_id": "root",
+                "similarity": 2.0,
+                "type": "issue"
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "1308",
+                "type": "issue",
+                "content": "Rules for numbers for which `NumberInput.looksLikeValidNumber(String)` returns true are a superset of JSON number, to roughly correspond to valid Java numbers (but more strict than say YAML).\r\nThe reason for this is that it is used by \"Stringified numbers\" functionality -- databind level functionality that takes JSON String (or XML, YAML, CSV etc for other backends) and coerces into valid `Number`. Given that different backends have different number validation rules this functionality needs to avoid being too strict.\r\n\r\nSpecific differences from JSON number so far includes:\r\n\r\n1. Allow leading `+` sign (so `+10.25` is valid unlike in JSON)\r\n2. Allow omitting of leading `0` in front of `.` (so `.00006` and `-.025` are valid)\r\n\r\nbut one case that got accidentally stricter with 2.17 wrt \"trailing\" dot: values like `3.` were previously allowed (in 2.16). So let's again allow this case.\r\n\n\n",
+                "source_code": null,
+                "distance": 0.25,
+                "title": "Relax validation by `NumberInput.looksLikeValidNumber()` to allow trailing dot (like `3.`)",
+                "name": "issue#1308",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#1308"
+                    }
+                ],
+                "similarity": 0.8022172060956684,
+                "end_line": null,
+                "signature": null
+            }
+        ]
+    },
+    "artifact_stats": {
+        "skipped_due_to_time": 0,
+        "valid_related_items": 16
+    }
+}

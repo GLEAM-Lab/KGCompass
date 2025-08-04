@@ -1,0 +1,20 @@
+--- a/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java
++++ b/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java
+@@ -1234,9 +1234,14 @@
+         }
+         try {
+             // NOTE! Length of number string has been validated earlier
+-            _numberBigInt = NumberInput.parseBigInteger(
+-                    _numberString,
+-                    isEnabled(StreamReadFeature.USE_FAST_BIG_NUMBER_PARSER));
++            if (_numberBigDecimal != null) {
++                _streamReadConstraints.validateBigIntegerScale(Math.abs(_numberBigDecimal.scale()));
++                _numberBigInt = _numberBigDecimal.toBigInteger();
++            } else {
++                _numberBigInt = NumberInput.parseBigInteger(
++                        _numberString,
++                        isEnabled(StreamReadFeature.USE_FAST_BIG_NUMBER_PARSER));
++            }
+         } catch (NumberFormatException nex) {
+             _wrapError("Malformed numeric value ("+_longNumberDesc(_numberString)+")", nex);
+         }

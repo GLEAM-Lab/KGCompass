@@ -1,0 +1,219 @@
+{
+  "related_entities": {
+    "methods": [],
+    "classes": [],
+    "issues": [
+      {
+        "content": "**Describe the bug**\r\nExisting code which disables `MapperFeature.ALLOW_COERCION_OF_SCALARS` unexpectedly impacted by #3509 / #3503 which added support for coercionconfig converting from integer-shaped data into float-shaped data. I agree that the ability to control such facets of coercion is fantastic, but I'm not sure that the feature should impact `MapperFeature.ALLOW_COERCION_OF_SCALARS` for a case that can be considered a valid format in JSON (`1` vs `1.0`, I would argue both are valid representations of `(float) 1`).\r\n\r\nIn an ideal world, I would use the new coercion configuration type, however this is not always possible due to cross-version compatibility requirements. Dependency resolution from 2.13.x to 2.14.0 will potentially cause deserialization to fail unexpectedly.\r\n\r\n**Version information**\r\nWhich Jackson version(s) was this for?\r\n2.14.0-rc2, introduced in 2.14.0-rc1.\r\n\r\n**To Reproduce**\r\nIf you have a way to reproduce this with:\r\n\r\nThis PR includes a test which fails on the tip of 2.14.0, and passes with the proposed fix in the PR: https://github.com/FasterXML/jackson-databind/pull/3625\r\n\r\n**Expected behavior**\r\nIf reproduction itself needs further explanation, you may also add more details here.\r\n\r\nIdeally the semantics of `MapperFeature.ALLOW_COERCION_OF_SCALARS` would not be modified by the introduction of support for configuring integer to float coercion. I would propose special-casting the behavior of `ALLOW_COERCION_OF_SCALARS`  to exclude failing int-to-float coercion, maintaining existing behavior.\r\n\r\nAny feedback you have is appreciated, thanks!\n",
+        "distance": 0,
+        "title": "Legacy `ALLOW_COERCION_OF_SCALARS` interacts poorly with Integer to Float coercion",
+        "name": "root",
+        "path": [],
+        "issue_id": "root",
+        "similarity": 2.0,
+        "type": "issue"
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "3624",
+        "type": "issue",
+        "content": "**Describe the bug**\r\nExisting code which disables `MapperFeature.ALLOW_COERCION_OF_SCALARS` unexpectedly impacted by #3509 / #3503 which added support for coercionconfig converting from integer-shaped data into float-shaped data. I agree that the ability to control such facets of coercion is fantastic, but I'm not sure that the feature should impact `MapperFeature.ALLOW_COERCION_OF_SCALARS` for a case that can be considered a valid format in JSON (`1` vs `1.0`, I would argue both are valid representations of `(float) 1`).\r\n\r\nIn an ideal world, I would use the new coercion configuration type, however this is not always possible due to cross-version compatibility requirements. Dependency resolution from 2.13.x to 2.14.0 will potentially cause deserialization to fail unexpectedly.\r\n\r\n**Version information**\r\nWhich Jackson version(s) was this for?\r\n2.14.0-rc2, introduced in 2.14.0-rc1.\r\n\r\n**To Reproduce**\r\nIf you have a way to reproduce this with:\r\n\r\nThis PR includes a test which fails on the tip of 2.14.0, and passes with the proposed fix in the PR: https://github.com/FasterXML/jackson-databind/pull/3625\r\n\r\n**Expected behavior**\r\nIf reproduction itself needs further explanation, you may also add more details here.\r\n\r\nIdeally the semantics of `MapperFeature.ALLOW_COERCION_OF_SCALARS` would not be modified by the introduction of support for configuring integer to float coercion. I would propose special-casting the behavior of `ALLOW_COERCION_OF_SCALARS`  to exclude failing int-to-float coercion, maintaining existing behavior.\r\n\r\nAny feedback you have is appreciated, thanks!\n\n",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "Legacy `ALLOW_COERCION_OF_SCALARS` interacts poorly with Integer to Float coercion",
+        "name": "issue#3624",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#3624"
+          }
+        ],
+        "similarity": 0.8788544183779333,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "3625",
+        "type": "issue",
+        "content": "Issue reported here: #3624\r\n\r\nExisting code which disables `MapperFeature.ALLOW_COERCION_OF_SCALARS` unexpectedly impacted by #3509 / #3503 which added support for coercionconfig converting from integer-shaped data into float-shaped data. I agree that the ability to control such facets of coercion is fantastic, but I'm not sure that the feature should impact `MapperFeature.ALLOW_COERCION_OF_SCALARS` for a case that can be considered a valid format in JSON (`1` vs `1.0`, I would argue both are valid representations of `(float) 1`).\r\n\r\nIn an ideal world, I would use the new coercion configuration type, however this is not always possible due to cross-version compatibility requirements. Dependency resolution from 2.13.x to 2.14.0 will potentially cause deserialization to fail unexpectedly.\n\n",
+        "source_code": null,
+        "distance": 0.5,
+        "title": "fix #3624 ALLOW_COERCION_OF_SCALARS allows int->float coercion",
+        "name": "pr#3625",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#3624"
+          },
+          {
+            "start_node": "issue#3624",
+            "description": "referenced by issue",
+            "type": "RELATED",
+            "end_node": "pr#3625"
+          }
+        ],
+        "similarity": 0.7209431584701844,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "3503",
+        "type": "issue",
+        "content": "**Describe the bug**\r\nCoercion configuration makes it possible to configure int-to-float coercions to fail. The `StdDeserializer` class, however, coerces floats to ints regardless of the coercion config. In fact, the `_parseFloatPrimitive` method makes no distinction between ints and floats.\r\n\r\nhttps://github.com/FasterXML/jackson-databind/blob/0b7d89be9a32edabda6dcc19161f8d7722cfe9ed/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java#L986-L988\r\n\r\n**Version information**\r\n2.13.2\r\n\r\n**To Reproduce**\r\n```java\r\npackage my.package;\r\n\r\nimport static org.junit.jupiter.api.Assertions.assertThrows;\r\n\r\nimport com.fasterxml.jackson.core.JsonProcessingException;\r\nimport com.fasterxml.jackson.databind.ObjectMapper;\r\nimport com.fasterxml.jackson.databind.cfg.CoercionAction;\r\nimport com.fasterxml.jackson.databind.cfg.CoercionInputShape;\r\nimport com.fasterxml.jackson.databind.exc.MismatchedInputException;\r\nimport com.fasterxml.jackson.databind.type.LogicalType;\r\nimport org.junit.jupiter.api.Test;\r\n\r\nclass MyClass {\r\n    float foo;\r\n\r\n    void setFoo(float foo) {\r\n        this.foo = foo;\r\n    }\r\n}\r\n\r\npublic class IntToFloatCoercionTest {\r\n    @Test\r\n    void intToFloatCoercion_shouldFailWhenSetToFail() throws JsonProcessingException {\r\n        var mapper = new ObjectMapper();\r\n        mapper.coercionConfigFor(LogicalType.Float).setCoercion(CoercionInputShape.Integer, CoercionAction.Fail);\r\n\r\n        mapper.readValue(\"{\\\"foo\\\": 11}\", MyType.class);\r\n\r\n        assertThrows(MismatchedInputException.class, () -> mapper.readValue(\r\n                \"{\\\"foo\\\": 11}\",\r\n                MyClass.class\r\n        ));\r\n    }\r\n}\r\n```\r\n\r\nThe test fails.\r\n\r\n```\r\norg.opentest4j.AssertionFailedError: Expected com.fasterxml.jackson.databind.exc.MismatchedInputException to be thrown, but nothing was thrown.\r\n```\r\n\r\n**Expected behavior**\r\nAs specified in the unit test, I would expect `readValue` to throw some type of `MismatchedInputException` exception.\r\n\r\n**Additional context**\r\n\n\n\nComment by cowtowncoder:\nHmmh. Interesting question -- does \"coercion\" mean forceful explicit change that is not allowed by default like in Java -- in which case Integral numbers can become Floating-point ones since there is no loss of accuracy (... except for possible overflow?) -- or should it also include this case?\r\n\r\nSo, the reason this is not checked is as per above: whereas conversion from integer number to floating point is likely dangerous, the reverse typical is not.\r\n\r\nBut I think it is not unreasonable to expect one could consider this a coercion too, something that can be prevented.\r\n\r\nSo if anyone has time and interest to work on a PR to add support, I'd be happy to help\r\n(or if I happen to have time & this gets highly voted, eventually I might work on it myself)\r\n\n\nComment by Tomasito665:\nFriday evening seemed like the perfect moment to work on some open-source and give this a shot. I sent in a PR. Let me know what you think.\n\nComment by cowtowncoder:\nThank you! I really appreciate this & hope to look into it soon.\r\nRight now I have quite a few things going on but I try to give priority to helping with PRs.\r\nSo hopefully can check it out some time this week.\r\n",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "`StdDeserializer` coerces ints to floats even if configured to fail",
+        "name": "issue#3503",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#3503"
+          }
+        ],
+        "similarity": 0.6871599249773265,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "3509",
+        "type": "issue",
+        "content": "### Description\r\nThis pull request proposes to update the `float`, `Float`, and `BigDecimal` deserializing logic to take into account the coercion config for integer JSON inputs. Currently, this configuration is being ignored.\r\n\r\n### Issue\r\n#3503 \r\n\n\n\nComment by cowtowncoder:\nLooks good! One thing I will need before merging in for 2.14 is the CLA from\r\n\r\nhttps://github.com/FasterXML/jackson/blob/master/contributor-agreement.pdf\r\n\r\nwhich is usually easiest to do by printing, filling & signing, scan/photo, email to `info` at fasterxml dot com.\r\nOnce this is done (and it is only needed for the first contribution; one works for all contributions), I can proceed with merging.\r\n\r\nLooking forward to getting this improvement in, I like it!\r\n\r\n\r\n\n\nComment by pjfanning:\n@Tomasito665 the code works in Java 11 but not in Java 8 - can you fix it so that the code works in Java 8 too?\n\nComment by cowtowncoder:\nIt is possible that this is due to an issue with Github actions -- to resolve, merge or rebase from `2.14` (there has been a fix) -- and not PR itself.\n\nComment by pjfanning:\n@Tomasito665 do you intend to continue with this PR or have you abandoned it?\n\nComment by cowtowncoder:\nI definitely hope we could get this merged, for what that is worth!\r\n\n\nComment by Tomasito665:\nHeyo! Sorry for the radio silence. Thanks for your comments. Had set this pull request on pause for a while while focusing on work/study. I will rebase this tomorrow on top of 2.14 and see if it works!\n\nComment by cowtowncoder:\nThank you @Tomasito665! Also, if and when things work, CLA would be good to get so I can merge PR.\r\n\n\nComment by Tomasito665:\n@cowtowncoder I have rebased this branch on top of `2.14`. Could you re-trigger CI?\r\n\r\nWith regards to the ~CLI~ CLA, I sent it in on June 4th to info@fasterxml.com from jordi665@hotmail.com.\r\n\r\nLet me know if you have found it or, if not, I will resend it.\n\nComment by cowtowncoder:\n@Tomasito665 doh! CLA had gone into Gmail's spam folder. I should check it now and then. But yes, I got it now!\n\nComment by cowtowncoder:\nThank you @Tomasito665 for this contribution: it looks great, I think you got it right, impressive! This will be in 2.14.0 once released, I hope to get the first release candidate out in July.\r\n",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "Fix #3503 - Implement Integer to Float coercion config",
+        "name": "pr#3509",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#3509"
+          }
+        ],
+        "similarity": 0.557586865479792,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "3613",
+        "type": "issue",
+        "content": "**Is your feature request related to a problem? Please describe.**\r\n\r\nOur current string deserializers consider coercion configurations for integer input types (https://github.com/FasterXML/jackson-databind/pull/3608) but not for boolean or floating point number inputs. This is an issue because the library lets users configure float-to-string and boolean-to-string coercion behavior, which the corresponding deserializers do not stick to.\r\n\r\n**Describe the solution you'd like**\r\nImplement the handling for the following coercion configurations:\r\n\r\n- boolean to string coercion config: [Fail, TryConvert, AsNull, AsEmpty]\r\n- floating point number to string config: [Fail, TryConvert, AsNull, AsEmpty]\r\n\r\n**Usage example**\r\n\r\n```java\r\nObjectMapper mapper = new ObjectMapper();\r\nmapper.coercionConfigFor(LogicalType.Textual).setCoercion(CoercionInputShape.Float, CoercionAction.Fail);\r\nmapper.coercionConfigFor(LogicalType.Textual).setCoercion(CoercionInputShape.Boolean, CoercionAction.Fail);\r\n```\r\n\r\n**Additional context**\r\nSimilar issues:\r\n\r\n- https://github.com/FasterXML/jackson-databind/issues/3503 (int-to-float)\r\n- https://github.com/FasterXML/jackson-databind/issues/3013 (int-to-string)\n\n",
+        "source_code": null,
+        "distance": 0.5,
+        "title": "Implement `float` and `boolean` to `String` coercion config",
+        "name": "issue#3613",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#3503"
+          },
+          {
+            "start_node": "issue#3503",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#3613"
+          }
+        ],
+        "similarity": 0.5302012784776321,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "3240",
+        "type": "issue",
+        "content": "The default String deserializer does not enforce coercion configs (or feature [ALLOW_COERCION_OF_SCALARS](https://fasterxml.github.io/jackson-databind/javadoc/2.12/com/fasterxml/jackson/databind/MapperFeature.html#ALLOW_COERCION_OF_SCALARS)).\r\n\r\n```\r\nimport com.fasterxml.jackson.databind.ObjectMapper;\r\nimport com.fasterxml.jackson.databind.cfg.CoercionAction;\r\nimport com.fasterxml.jackson.databind.cfg.CoercionInputShape;\r\nimport com.fasterxml.jackson.databind.json.JsonMapper;\r\n\r\nObjectMapper objectMapper = JsonMapper.builder().build();\r\nobjectMapper.coercionConfigDefaults()\r\n    .setCoercion(CoercionInputShape.Boolean, CoercionAction.Fail)\r\n    .setCoercion(CoercionInputShape.Integer, CoercionAction.Fail)\r\n    .setCoercion(CoercionInputShape.Float, CoercionAction.Fail)\r\n    .setCoercion(CoercionInputShape.String, CoercionAction.Fail)\r\n    .setCoercion(CoercionInputShape.Array, CoercionAction.Fail)\r\n    .setCoercion(CoercionInputShape.Object, CoercionAction.Fail);\r\n\r\nobjectMapper.readValue(\"true\", String.class); // should throw MismatchedInputException but doesn't\r\nobjectMapper.readValue(\"1\", String.class); // should throw MismatchedInputException but doesn't\r\nobjectMapper.readValue(\"1.0\", String.class); // should throw MismatchedInputException but doesn't\r\nobjectMapper.readValue(\"[]\", String.class); // throws MismatchedInputException\r\nobjectMapper.readValue(\"{}\", String.class); // throws MismatchedInputException\r\n```\r\n\r\nWhen the source is a scalar value, coercion configs seem to be ignored\r\nhttps://github.com/FasterXML/jackson-databind/blob/2.13/src/main/java/com/fasterxml/jackson/databind/deser/std/StringDeserializer.java.\n\n\nComment by cowtowncoder:\nCorrect, currently `StringDeserializer` does not check for coercion config settings and should be improved.\r\n\r\nOne of the cases was reported earlier, I think: #3013 \r\n",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "The default String deserializer does not enforce coercion configs",
+        "name": "issue#3240",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#3503"
+          },
+          {
+            "start_node": "issue#3503",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#3613"
+          },
+          {
+            "start_node": "issue#3613",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#3240"
+          }
+        ],
+        "similarity": 0.49335144780193263,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "3615",
+        "type": "issue",
+        "content": "### Description\r\nThis pull request implements configurable float and boolean to string coercion.\r\n\r\n### Issue\r\nhttps://github.com/FasterXML/jackson-databind/issues/3613\r\n\n\n\nComment by cowtowncoder:\nThank you again!",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "Fix FasterXML#3613: Handle float and boolean to string coercion config",
+        "name": "pr#3615",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#3503"
+          },
+          {
+            "start_node": "issue#3503",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#3613"
+          },
+          {
+            "start_node": "issue#3613",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#3615"
+          }
+        ],
+        "similarity": 0.45260637250087604,
+        "end_line": null,
+        "signature": null
+      }
+    ]
+  },
+  "artifact_stats": {
+    "skipped_due_to_time": 9,
+    "valid_related_items": 30
+  }
+}

@@ -1,0 +1,54 @@
+Based on the issue, the problem is that `FactoryBasedEnumDeserializer` fails to deserialize enum values wrapped in an array (like `["Frequency","DAILY"]`), while `EnumDeserializer` handles this case fine. The issue occurs when using polymorphic type IDs with `As.WRAPPER_ARRAY`.
+
+The fix needs to be made in `FactoryBasedEnumDeserializer` to properly handle array-wrapped enum values similar to how `EnumDeserializer` does it. The key is to add array handling in the `deserialize()` method.
+
+Here's the proposed fix:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java
+- start_line : 182
+- end_line : 182
+<<<<<<< SEARCH
+    public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException
+    {
+        Object value;
+        if (_deser != null) {
+            value = _deser.deserialize(p, ctxt);
+        } else {
+            value = p.getText();
+        }
+=======
+    public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException
+    {
+        Object value;
+        if (p.currentToken() == JsonToken.VALUE_STRING) {
+            value = p.getText();
+        } else if (p.currentToken() == JsonToken.START_ARRAY) {
+            // Handle polymorphic wrapper case
+            p.nextToken(); // skip START_ARRAY
+            value = p.getText(); // get enum value
+            if (p.nextToken() != JsonToken.END_ARRAY) {
+                ctxt.reportWrongTokenException(this, JsonToken.END_ARRAY,
+                    "Attempted to unwrap array for enum value but there was more than a single value in array");
+            }
+        } else {
+            if (_deser != null) {
+                value = _deser.deserialize(p, ctxt);
+            } else {
+                value = p.getText();
+            }
+        }
+>>>>>>> REPLACE
+```
+
+This change:
+1. First checks for simple string case (original behavior)
+2. Then handles array-wrapped case by:
+   - Skipping START_ARRAY token
+   - Reading the enum value string
+   - Verifying END_ARRAY token follows
+3. Falls back to original behavior for other cases
+
+The fix matches how `EnumDeserializer` handles array-wrapped enum values while maintaining all the existing functionality of `FactoryBasedEnumDeserializer`. It will now properly deserialize polymorphic enum values that use `As.WRAPPER_ARRAY` format.
+
+The error reporting is also consistent with Jackson's style by using `reportWrongTokenException` when the array format is invalid.

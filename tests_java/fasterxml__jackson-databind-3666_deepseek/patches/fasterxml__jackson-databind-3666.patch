@@ -1,0 +1,54 @@
+Based on the issue, the problem is that when deserializing an enum from a single-element array with `UNWRAP_SINGLE_VALUE_ARRAYS` enabled, the enum's `@JsonCreator` method receives `null` instead of the actual string value.
+
+The root cause appears to be in how the enum deserializer handles array unwrapping. The issue suggests that the code isn't properly checking for string values when unwrapping arrays for enums.
+
+Looking at the code, we need to modify the enum deserialization logic to properly handle array unwrapping. The key fix would be in the `DeserializationContext` class where it handles value reading.
+
+Here's the proposed fix:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java
+- start_line : 965
+- end_line : 972
+<<<<<<< SEARCH
+    public <T> T readValue(JsonParser p, JavaType type) throws IOException {
+        JsonDeserializer<Object> deser = findRootValueDeserializer(type);
+        if (deser == null) {
+            return reportBadDefinition(type,
+                    "Could not find JsonDeserializer for type "+ClassUtil.getTypeDescription(type));
+        }
+        return (T) deser.deserialize(p, this);
+    }
+=======
+    public <T> T readValue(JsonParser p, JavaType type) throws IOException {
+        JsonDeserializer<Object> deser = findRootValueDeserializer(type);
+        if (deser == null) {
+            return reportBadDefinition(type,
+                    "Could not find JsonDeserializer for type "+ClassUtil.getTypeDescription(type));
+        }
+        if (p.getCurrentToken() == JsonToken.VALUE_STRING && type.isEnumType()) {
+            return (T) deser.deserialize(p, this);
+        }
+        if (isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS) 
+            && p.getCurrentToken() == JsonToken.START_ARRAY) {
+            p.nextToken();
+            T value = (T) deser.deserialize(p, this);
+            if (p.nextToken() != JsonToken.END_ARRAY) {
+                handleUnexpectedToken(type.getRawClass(), p);
+            }
+            return value;
+        }
+        return (T) deser.deserialize(p, this);
+    }
+>>>>>>> REPLACE
+```
+
+This change:
+1. Adds special handling for enum types when reading from strings
+2. Properly implements array unwrapping for single-value arrays when `UNWRAP_SINGLE_VALUE_ARRAYS` is enabled
+3. Ensures the array is properly consumed (checks for END_ARRAY token)
+4. Maintains backward compatibility with existing behavior
+
+The fix ensures that when an enum value comes from a single-element array, the array is properly unwrapped and the string value is passed to the enum's `@JsonCreator` method rather than null.
+
+The change handles both the direct string case and the array case explicitly, which should resolve the issue while maintaining all existing functionality. The enum deserializer will now properly receive the string value whether it comes from a direct string or from a single-element array.

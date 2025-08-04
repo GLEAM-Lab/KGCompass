@@ -1,0 +1,21 @@
+--- a/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java
++++ b/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java
+@@ -1004,9 +1004,15 @@
+     public <T> T readPropertyValue(JsonParser p, BeanProperty prop, JavaType type) throws IOException {
+         JsonDeserializer<Object> deser = findContextualValueDeserializer(type, prop);
+         if (deser == null) {
+-            return reportBadDefinition(type, String.format(
+-                    "Could not find JsonDeserializer for type %s (via property %s)",
+-                    ClassUtil.getTypeDescription(type), ClassUtil.nameOf(prop)));
++            // Special handling for polymorphic types with external property
++            if (type.isContainerType() || type.isReferenceType()) {
++                deser = _factory.createBeanDeserializer(this, type, _config);
++            }
++            if (deser == null) {
++                return reportBadDefinition(type, String.format(
++                        "Could not find JsonDeserializer for type %s (via property %s)",
++                        ClassUtil.getTypeDescription(type), ClassUtil.nameOf(prop)));
++            }
+         }
+         return (T) deser.deserialize(p, this);
+     }

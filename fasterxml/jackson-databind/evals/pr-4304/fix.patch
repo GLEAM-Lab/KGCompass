@@ -1,0 +1,17 @@
+--- a/src/main/java/com/fasterxml/jackson/databind/util/TokenBuffer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/util/TokenBuffer.java
+@@ -980,7 +980,13 @@
+      */
+ 
+     @Override
+-    public void writeObject(Object value) throws IOException
++    public void writeObject(Object value) throws IOException {
++        if (value instanceof com.fasterxml.jackson.databind.jsontype.TypeSerializer) {
++            // Skip serialization of TypeSerializer to avoid NotSerializableException
++            return;
++        }
++        super.writeObject(value);
++    }
+     {
+         if (value == null) {
+             writeNull();

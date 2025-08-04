@@ -1,0 +1,28 @@
+Based on the issue, the bug is that `ReaderBasedJsonParser` is still using `usesPadding()` to check for padding requirements when decoding Base64, instead of using the newer `requiresPaddingOnRead()` method that was introduced to handle padding behavior more flexibly.
+
+The issue specifically mentions that even when padding is set to `PADDING_ALLOWED`, it still throws an exception for missing padding characters because it's checking the wrong method. We need to modify the Base64 decoding logic in `ReaderBasedJsonParser` to use `requiresPaddingOnRead()` instead of `usesPadding()`.
+
+Looking at the code, while we don't see the exact implementation of `_decodeBase64()` in the provided segments, we can see that the parser inherits from `ParserBase` which has a `_handleBase64MissingPadding()` method. The fix would involve checking the padding read behavior rather than just whether padding is used.
+
+Here's the proposed edit:
+
+```java
+### playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java
+- start_line : 1486
+- end_line : 1486
+<<<<<<< SEARCH
+    protected void _handleBase64MissingPadding(Base64Variant b64variant) throws IOException
+=======
+    protected void _handleBase64MissingPadding(Base64Variant b64variant) throws IOException {
+        if (b64variant.requiresPaddingOnRead()) {
+            throw new IllegalArgumentException(b64variant.missingPaddingMessage());
+        }
+    }
+>>>>>>> REPLACE
+```
+
+This change ensures that missing padding only throws an exception when the variant actually requires padding (`PADDING_REQUIRED`), and allows missing padding when it's set to `PADDING_ALLOWED`.
+
+The fix is minimal and targeted at the core issue while maintaining backward compatibility. It follows the principle that was introduced in #646 where padding behavior should be controlled by `PaddingReadBehaviour` rather than just the presence of padding characters.
+
+Note: If we had access to the actual `_decodeBase64()` implementation in `ReaderBasedJsonParser`, there might be additional places where `usesPadding()` checks should be replaced with `requiresPaddingOnRead()` or `acceptsPaddingOnRead()`, but this change in the base class should handle the main issue reported.

@@ -1,0 +1,51 @@
+Based on the issue, the main problem is that `withObject(String)` currently only accepts JSON pointer expressions while `withArray(String)` accepts both property names and expressions, creating inconsistency. The proposed solution is to add two new methods `withObjectProperty(String)` and `withArrayProperty(String)` that explicitly work with property names only.
+
+Here are the necessary edits to implement this:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java
+- start_line : 1154
+- end_line : 1156
+<<<<<<< SEARCH
+    public final ObjectNode withObject(String expr) {
+        return withObject(JsonPointer.compile(expr));
+    }
+=======
+    public final ObjectNode withObject(String expr) {
+        return withObject(JsonPointer.compile(expr));
+    }
+    
+    public final ObjectNode withObjectProperty(String propertyName) {
+        throw new UnsupportedOperationException("`JsonNode` not of type `ObjectNode` (but `"
+                +getClass().getName()+")`, cannot call `withObjectProperty()` on it");
+    }
+>>>>>>> REPLACE
+```
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java
+- start_line : 1309
+- end_line : 1312
+<<<<<<< SEARCH
+    public <T extends JsonNode> T withArray(String exprOrProperty) {
+        throw new UnsupportedOperationException("`JsonNode` not of type `ObjectNode` (but `"
+                +getClass().getName()+")`, cannot call `withArray()` on it");
+    }
+=======
+    public <T extends JsonNode> T withArray(String exprOrProperty) {
+        throw new UnsupportedOperationException("`JsonNode` not of type `ObjectNode` (but `"
+                +getClass().getName()+")`, cannot call `withArray()` on it");
+    }
+    
+    public ArrayNode withArrayProperty(String propertyName) {
+        throw new UnsupportedOperationException("`JsonNode` not of type `ObjectNode` (but `"
+                +getClass().getName()+")`, cannot call `withArrayProperty()` on it");
+    }
+>>>>>>> REPLACE
+```
+
+These changes add the two new methods to the base `JsonNode` class with default implementations that throw `UnsupportedOperationException`. Concrete implementations like `ObjectNode` would need to provide proper implementations, but those would be separate changes.
+
+The changes maintain backward compatibility while providing the new explicit property-only methods as requested in the issue. The implementations match the pattern already used for other similar methods in the class.
+
+Note: The actual implementations in `ObjectNode` would need similar edits to properly handle the property names, but those weren't shown in the provided code segments. The issue specifically asked for adding these methods to `JsonNode`, which is what these edits accomplish.

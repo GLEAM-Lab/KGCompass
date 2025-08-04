@@ -1,0 +1,709 @@
+{
+  "related_entities": {
+    "methods": [],
+    "classes": [],
+    "issues": [
+      {
+        "content": "(note: related to #1117 )\r\n\r\nThere should be mechanism through which one can clear recycled buffer instances (for pools that do actual recycling (no op for non-recycling fake instances; and are able to clear instances (not applicable to `ThreadLocal` based pool).\r\nThis may be necessary since many implementations are unbounded (theoretically).\r\n\n",
+        "distance": 0,
+        "title": "Add `RecyclerPool.clear()` method for dropping all pooled Objects",
+        "name": "root",
+        "path": [],
+        "issue_id": "root",
+        "similarity": 2.0,
+        "type": "issue"
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1202",
+        "type": "issue",
+        "content": "(note: related to #1117 )\r\n\r\nThere should be mechanism through which one can clear recycled buffer instances (for pools that do actual recycling (no op for non-recycling fake instances; and are able to clear instances (not applicable to `ThreadLocal` based pool).\r\nThis may be necessary since many implementations are unbounded (theoretically).\r\n\n\n",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "Add `RecyclerPool.clear()` method for dropping all pooled Objects",
+        "name": "issue#1202",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1202"
+          }
+        ],
+        "similarity": 0.7252110509223169,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1089",
+        "type": "issue",
+        "content": "Although the current hard-coder `ThreadLocal`-based buffer recycling (via `BufferRecycler` containers accessed via `BufferRecyclers`) has worked reasonably well up until recently, changes to later JVMs have made `ThreadLocal` access less beneficial; and in near future (Project Loom et al) even counter-productive.\r\nBut there are other ways to allow beneficial buffer recycling: especially for use cases where pooling is integrated with other frameworks.\r\n\r\nTo allow new default and alternative recycling schemes, let's add `RecyclerPool` extension point, make current implementation work with it.\r\nAnd for bonus points, possibly implement one or more alternate implementations to use.\r\n\n\n\nComment by cowtowncoder:\nNote: #1064 is the current PR for implementation\n\nComment by cowtowncoder:\nCreated issues for follow-up work for 4 modules:\r\n\r\n* Avro and Smile format modules\r\n* JAX-RS / Jakarta-RS providers\r\n\r\nplanning to at least tackle first 2 for 2.16, but ideally all 4.\r\n\n\nComment by cowtowncoder:\nOk, realized that JAX-RS / Jakarta RS use case is NOT for Object recycling, so not related to this work -- closed issues.\r\n\r\nSmile format use case removed altogether as https://github.com/FasterXML/jackson-dataformats-binary/issues/403 (performance benefit seemed too modest to be worth it).\r\n\r\nThis leaves just Avro to be converted, hopefully by 2.16.0.\r\n",
+        "source_code": null,
+        "distance": 0.5,
+        "title": "Allow pluggable buffer recycling via new `RecyclerPool` extension point",
+        "name": "issue#1089",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1117"
+          },
+          {
+            "start_node": "issue#1117",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1089"
+          }
+        ],
+        "similarity": 0.5087147373727737,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1187",
+        "type": "issue",
+        "content": "\n\n\nComment by pjfanning:\n@cowtowncoder maybe I'm wrong but I still think we have a GC issue. https://github.com/FasterXML/jackson/discussions/204 mentions a GC issue. The new code still means that we need to GC an array - just possibly a different array (the smaller array). This still means GC. This code change may still be helpful generally but may not be enough.\r\n\r\nI think something more is at play. Without a reproducible test case, this is all supposition. Should we not ask ourselves why this user is getting so many extra arrays created in the first place? Ideally, we should only create so many arrays and we should have free slots to add them back to buffer recycler. I suppose that we might need to create a new array if the buffer recycler has no free entries (they are all in use).\r\n\r\nMaybe we need the ability to choose a recycler that blocks when all its arrays are in use. This would be optional - most users won't want this but users who are worried about object creation and GC might choose to block and wait for an array to be returned to the recycler.\n\nComment by pjfanning:\n@cowtowncoder I think we are stuck if the OP won't give us more detail or a reproducible case. If you are using jackson-databind to deserialize lots of input files then you will be creating lots of Java instances, not just byte and char arrays. I see nothing in what the OP has shown that they have anything more than guesswork to point fingers specifically at the buffer recycling. There are no stats from Profiling tools. No heap dumps. Nada.\n\nComment by cowtowncoder:\n@pjfanning right, I added similar note to #1186 (wrt this not avoiding possible GC for \"extra\" buffers).\r\nAnd I agree that there is little evidence here. However, I do think that the change I made here is net positive.\r\n\r\nBut beside anything done in `BufferRecycler` container,  there is much more important work to be done for #1117: changing `RecyclerPool` default implementation.\r\n\r\nThe issue at that level is that with ThreadLocal-based pooling, there will only be single `BufferRecycler` instance per Thread. So if and when there are more than 1 instance of `JsonParser` / `JsonGenerator` used within same thread, reycling only avoids one of allocations per buffer-type.\r\nBut with all other (new) `ReyclerPool` implementations there will be distinct `BufferRecycler` per parser/generator.\r\nThis may lead to more buffer retention, but it should make recycling itself much more effective,\r\n\r\n(sidenote: this is where exposing metrics for hit/recycle rate would be useful.. but that's much more work).\r\n\r\n\r\n\r\n\r\n",
+        "source_code": null,
+        "distance": 0.5,
+        "title": "Fix #1186: improve recycled buffer release logic",
+        "name": "pr#1187",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1117"
+          },
+          {
+            "start_node": "issue#1117",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1187"
+          }
+        ],
+        "similarity": 0.4759944684690914,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "400",
+        "type": "issue",
+        "content": "We see a class loader memory leak by using Jackson: on redeployment of our application in WebSphere we see an increase of heap usage of a couple of hundred MB's en after several redeployments heap usage becomes close to the heap size and garbage collection takes a lot of CPU. Note that most extra heap is taken by the BufferRecyclers retaining char[][]'s.\r\n\r\nSoftReferences may help to prevent out of memory errors, it doesn't help for gc overhead (including long compaction pauses.)\r\nIn addition, the BufferRecycler classes of previous deployed versions of the app are still in the ThreadLocals of all threads of the threadpool and prevent the classloader with all its classes to be unloaded.\r\nSee here: https://stackoverflow.com/questions/17968803/threadlocal-memory-leak for more on classloader leaks.\r\n\r\nWe would like Jackson to release/remove the BufferRecyclers from the ThreadLocals on shutdown, by calling a shutdown method on e.g. JsonFactory.\r\nSee also: http://java.jiderhamn.se/2012/02/26/classloader-leaks-v-common-mistakes-and-known-offenders/\n\n\nComment by jborgers:\nSee #67 and #189 \n\nComment by jborgers:\nFrom #67 posted by @cowtowncoder:\r\nI can see potential issues with hot reloading, although TBH I didn't think anyone would really want to use those in production systems these days (but rather just during development).\r\nIf there are convenient hooks for clearing state (and if ThreadLocal allows purging across Threads -- I know that under the hood there are probably means, but JsonFactory does not keep track of anything by itself) adding those would be an improvement.\r\n\r\nThank you for the links that might be helpful here.\r\n\r\nOne thought on BufferRecycler usage: while bit ugly, it would probably be possible to replace its use with old-skool combination of recycler \"class\", for static utility methods, but passing Object[] that contains buffers to be recycled. These would need to be cast, but doing this would remove any Jackson provided classes -- buffers are just byte[]s and char[]s after all.\r\nIf this is the only class remaining it could help remove ClassLoader reference itself I assume.\n\nComment by jborgers:\nThanks for your reply. \r\nWe actually do hot re-deployments in production. \r\nI can imagine a solution with WeakReferences in stead of SoftReferences in ThreadLocal, to BufferRecycler, and in addition a (strong) reference from e.g. JsonFactory to all BufferRecycler objects, which can be dereferenced/released by invoking a shutDown method. On application stop/undeploy event we could then invoke this JsonFactory.shutDown method.\n\nComment by jborgers:\nIn your thought, if you don't put any objects of jackson classes on the ThreadLocal, this would solve the classloading leak. However, if you reference a BufferRecycler by an Object reference (or in array Object[]) the objects itself still reference BufferRecycler class and thus the classloader. Therefore, it doesn't solve the issue.\n\nComment by cowtowncoder:\n@jborgers Use of `ThreadLocal` is a core feature and rather important for performance. It works really nicely, allows memory to be cleared via GC (with soft references), and I don't have much interest in implementing more complicated buffer reuse scheme.\r\nI am not 100% sure I understand reference wrt weak vs soft references in this context. My recollection was that downside of soft references was that they really disappear very quickly and do not work as well for caches; but that they are indeed cleared when memory pressure so dictates.\r\nSo to me this choice does not seem like it would affect retention of `ClassLoader`s via class.\r\n\r\nBut as to `BufferRecycler`, what I meant was that it would be perfectly possible to only recycle an `Object[]` that contains actual buffers, and either make `BufferRecycler` only consist of static methods, or just create wrapper from `Object[]`. This way reference from `ThreadLocal` would only be to JDK classes (`Object[]` and `char[]` / `byte[]` buffers retained).\r\nIt would be slightly ugly but nothing too bad, and if still using recycler instance seems like it could actually be hidden as implementation detail.\r\n\n\nComment by jborgers:\n@cowtowncoder I agree that use of ThreadLocal is a nice feature for performance. Only I have an issue with SoftReferences. They prevent out-of-memory however, cause high heap usage and high gc overhead.\r\n\r\nAs I understand it, having no BufferRecycler instances, so char[][] and byte[][] directly in Object[] in ThreadLocal will indeed solve the classloader leak: there is no reference from the system classloader to a class loaded by the classloader of the undeployed application, so that classloader and its classes can be gc-ed.\r\n\r\nHowever, since each application creates its own ThreadLocal which ends up in a Map in Thread, the buffers created for the undeployed applications are still there. This is most of the added heap usage by the undeployed application.\r\n\r\nIn my proposed solution, WeakReferences are used instead of SoftReferences, so if no other (stronger) reference references the BufferRecycler, it will be gc-ed. We keep a reference from JsonFactory to all BufferRecycler's in order to be able to release them (dereference) in a shutdown method. I think this list of references should be SoftReferences, to keep the same behavior in case of memory pressure, when not using the shutdown.\r\n\r\n\n\nComment by jborgers:\n@cowtowncoder I cloned the source, added and changed a few lines of code in JsonFactory as prototype implementation of my proposed solution. Would that be helpful? Should I create a fork?\n\nComment by cowtowncoder:\nSure, fork is usually a good way, even if just reproducing a problem or showing approach.\n\nComment by jborgers:\nRight, we are going to test this forked version in a load test and do heap analysis to see if it shows the desired effect when doing re-deployments: no more classloader leak and releasing of the unneeded BufferRecyclers in ThreadLocals, resulting in lower, stable heap usage.\n\nComment by cowtowncoder:\n@jborgers That would be great. I think there may be one or two other places (`jackson-dataformat-smile` has additional recycler, and `JsonStringEncoder` with this project too. However, eliminating latter should be easy if you can verify that approach works (i.e. if you can see what are the references blocking GC of ClassLoaders). It should also be possible to locally hack `JsonStringEncoder` to elminiate recycling for testing; and if you don't use smile format it's not relevant yet.\r\n\r\nI can go ahead and check other format modules as well; these are the only components with buffer recycling within Jackson components.\r\n\n\nComment by jborgers:\nMy colleague had good results with our improved version of JsonFactory/jackson-core with a small webservice running on HotSpot: buffers were gc-ed quickly after shutdown. Friday they had a version ready for the whole application running in WebSphere, I expect it will be fully load tested beginning of next week.\n\nComment by cowtowncoder:\nExcellent, looking forward to seeing more!\n\nComment by jborgers:\n@cowtowncoder We have good results from the load test on WebSphere/J9-JVM! The BufferRecyclers are released after the shutdown method is called on undeploy and the classloader is also released.\r\nI put the change in JsonFactory in my fork: https://github.com/jborgers/jackson-core.\r\nHow can we go forward?\n\nComment by cowtowncoder:\nOne possibility would be a PR; I could either merge it directly, or cut'n paste depending on how things go (I'd want to get this in `2.9` branch most likely, but `master` is diverging from it quite rapidly due to 3.0 being major API-incompatible change).\r\nAnyway, I just need to see diffs.\r\n\r\nRegardless of mode of merging changes one thing I would need is CLA:\r\n\r\nhttps://github.com/FasterXML/jackson/blob/master/contributor-agreement.pdf\r\n\r\n(or Corporate CLA variant that's found next to it).\r\n\r\nThis is usually printed, filled & signed, scanned and email to `info` at fasterxml dot com.\r\nOnly needs to be done once for all Jackson contributions, but we need it before first one. Keeps corporate lawyers less unhappy wrt distribution etc.\r\n\r\n\r\n\r\n\r\n\n\nComment by cowtowncoder:\n@jborgers Um. I must have misunderstood here -- this is nothing at all what I had in mind.\r\n\r\nWhat I would be interested is the idea I had for getting rid of the class, not new piece of machinery to keep track of `ThreadLocal` referenced things.\r\n\r\n\n\nComment by jborgers:\n@cowtowncoder Sorry for the delay. Based on a code review, I made some improvements to the code. We did retesting on both Hotspot and IBM J9/WebSphere (SoftReferences behave differently for them.) We had some unavailability of team members. New version is now fully tested, also duration tested. I analyzed heap dumps and the conclusion is that everything works as expected. BufferRecyclers get released after shutdown call. Classes can be unloaded. We see a nice reduction in memory usage now and we are happy with the result. I will proceed with signing the doc.\r\n\r\nNot sure what you mean by your remark of Oct 14. Maybe I can explain the workings if unclear.\r\nI think we should add some doc how/why/when to invoke the shutdown.\r\n\r\nLike discussed above, getting rid of the class (BufferRecycler) does *not* solve our problem. There needs to be a way to release the buffers (being BufferRecyclers or byte[], char[]) (we run with 400 threads)  hence a reference is needed from a central place. In our improved version, we got rid of the overhead of the WeakReference, a strong reference to the SoftReference is enough. We use a Set instead of a List to have faster access and a ReferenceQueue to prevent a small memory leak. I added doc in the source to explain things.\n\nComment by cowtowncoder:\nOk. So, my original assumption was that there was some way to either trigger freeing of all `SoftReference`, from shutdown hook. Possibly using something not normally accessible (like `Unsafe`). If so, while I wouldn't be too happy about it, I might be ok.\r\n\r\nBut adding the whole overhead of linked list for each and every alloc and/or release is something I am not ok with: I will not add that into core. With potentially hundreds of threads that overhead will be sizable and you'd probably be better off just disabling recycling, and dropping use of `ThreadLocal`.\r\nSo, I will not merge this PR.\r\n\r\nHowever. I did refactor handling of `BufferRecycler` so that actual `ThreadLocal` is in new class `ThreadLocals`, called from `JsonFactory`. This means that you can sub-class `JsonFactory` and change handling to your liking, for example using code from this PR if and when it works the way that makes sense for your case.\r\n\r\n\n\nComment by jborgers:\nHi @cowtowncoder, thanks for your reply. \r\nDid you have a look at the current version? You mention 'the whole overhead of a linked list to every alloc and/or release'. There is actually no linked list in the solution. The current solution is a clear improvement over the earlier version you might have seen.\r\n\r\nWhat is added is adding a reference to a Set. In my view the relative overhead both time and space wise, is neglectable compared to the buffers. Add/remove to a Set is O(1) and very quick and heap taken is very small, I verified in heap analysis with MAT. Also our performance tests show that there is no degradation in response times. Yet, there is a huge win in memory usage after undeploy.\r\n\r\nFor making use of an Unsafe feature I think that is not a good idea, an unstable solution since Java 9+ will be hiding these features in a java module. Furthermore, performance wise, I think that the high memory use of the buffers with many threads (we have 400) and the use of SoftReferences both makes garbage collection take more time and have longer pauses, e.g. with compaction. In my opinion SoftReferences make poor caches, see for instance https://stackoverflow.com/questions/5757969/softreference-gets-garbage-collected-too-early and are largely over-used. \r\n\r\nI think our improvement will be very beneficial to any user with more than a handful of threads using jackson and who do un/redeployments either in production of development. Therefore, I ask you to reconsider your decision to not merge this solution.\r\n\r\nTo meet your worries about overhead, it might be an approach to enable the releasing functionality on request, register allocated buffers only then. Either by configuration and/or a method call e.g. enableShutdown(), enableReleasabilityOfBuffers() or registerBuffers() and include this in the official jackson.core. This way any user can choose to benefit and it will be possible for us to use this in our whole organization.\r\nWould that be an option for you?\r\n\n\nComment by jborgers:\nI like to add that a solution with subclassing will not work for us since we use several libraries which in turn use jackson-core. We cannot change the class (name) they use, yet, we can change the jar-file hence the version of the library and JsonFactory class as long as it is backward compatible.\r\n\r\nI also want to stress that this is a serious problem for us, several of our high-volume production systems suffer from high heap usage and as a consequence increased cpu usage because of this issue. Your help is much appreciated.\n\nComment by cowtowncoder:\nOk, I'll have a look at latest patch.\n\nComment by cowtowncoder:\nI guess that is an improvement, but there is now a potentially bit `Set` of all `BufferRecycler`s that is modified for each usage. And it is synchronized as well, likely becoming synchronization bottleneck.\r\nAccess may not be as bad as I thought since hash code is probably identity hash, and hopefully it's hash-based set.\r\n\r\nMention to potential use of Unsafe was just speculative -- I was guessing there might be a way to force cleanup through `ThreadLocal` reference. But I am not aware of such thing.\r\n\r\nI think the best course forward for your usage may really be disabling\r\n\r\n     JsonFactory.Feature.USE_THREAD_LOCAL_FOR_BUFFER_RECYCLING\r\n\r\nwhich will avoid memory retention.\r\n\r\n\n\nComment by jborgers:\nHi @cowtowncoder, not sure what you mean by 'now a potentially bit Set ... that is modified for each usage'. And for what reason you think it is likely a synchronization bottleneck. \r\n\r\nI think it would really be helpful to have a more interactive way of communication. Would it be possible for you to join a conference call with us? What is a good time for you? Next Wednesday would be best for us since all of us working on this issue are available and on location then. \r\nDoes skype, google hangouts, webex or something else work for you?\r\nThanks in advance.\r\n \n\nComment by cowtowncoder:\nAt this point I don't think more communication helps: I am not planning to include code as suggested in Jackson 2.9. I understand that you consider it important: but this is not an urgent problem for me.\r\nI also have not observed problems, or received for past 8+ years, so including an additional tracking here is not something I would do very quickly either. Especially for 2.9 version for which stability is important.\r\n\r\nAs to synchronization: it will be needed for each construction of parser, across all threads. For a large multi-threaded systems it becomes an issues, something for which `ThreadLocal` is designed for.\r\n\r\nBeside this, I still do not understand why JVM would not simply free buffers held on to via soft references as expected. There is no good reason why this should happen. I could see why class (`BufferRecycler`) might not get cleared via `ThreadLocal` reference; and perhaps with that, class loader that holds onto it. That would be fixable.\r\n\r\nGiven this, I am interested in helping have customizable aspects, something that you can configure.\r\nBut not default settings, nor do I care if it has to be something that automatically works when constructing vanilla `JsonFactory`. If that is a requirement, you may be best off forking the project.\r\n\r\n\n\nComment by jborgers:\nHi, yes indeed it is important to us. I just analyzed two production systems (many servers are copies of these in our server farm.) \r\n\r\nOne server has BufferRecyclers consuming almost half of the live data in the heap: 43%. the other 16%.\r\nIn another case we had to switch off buffering as you suggested because some of the service responses were very large, eventually enlarging the buffers in all threads and risking out of memory, especially after re-deployment. Our load tests however showed that this resulted in 34%-38% longer response times, which is of course undesirable.\r\n\r\nI think not many developers do heap analysis and understand what they see. In addition, who understands class loading leaks and how SoftReferences and garbage collection work? I think many have these problems yet are unaware of it.\r\n\r\nConsidering synchronization: the set is only accessed when creating a BufferRecycler, which is only once per thread, right? And the critical section is very small, uses identity hash and is O(1) as documented in the code and I think time taken is almost neglectable compared to the allocation performed by BufferRecycler.  Yet, maybe I miss something and we may get lock contention in some cases. We could prevent this contention by use of a Set which is optimized for multi-threaded access: backed by a ConcurrentHashMap. ConcurrentHashMap uses lock striping (and in my opinion a better approach in general than use of ThreadLocals). We can use something like (simplified):\r\n\r\nSet<<>> allSoftBufRecyclers = Collections.newSetFromMap(new ConcurrentHashMap<<>, >());\r\n\r\nAnd we are done. I am assuming we can use java 1.6 here.\r\n\r\nHow do you expect the JVM to free buffers held on to via soft references? \r\nGarbage collectors clear WeakReferences after the target is no longer stronger referenced. SoftReferences are less weak and hold on to the target for some time after it has become non-strongly referenced (by a normal reference that is.) When the gc clears the SoftReference is different per JVM, yet quicker when there is memory pressure. \r\n\r\nIBM JVM for instance clears (some of) the SoftReferences which uniquely retain their target once every N full gc's, where N can be 15 (for example). It may however take a while before a full gc takes place, on one production server for instance only once a day, so it takes 15 days in this example for the BufferRecyclers to be de-referenced. There can be multiple re-deployments in these 2 weeks. \r\n\r\nBut it can also happen quickly, with a full gc every minute, every 15 minutes the BufferRecyclers are cleared from the SoftReferences (since BufferRecyclers are only softly reachable) while you use them, regardless if there is memory pressure or not. And you don't want them to be cleared. A reason why SoftReferences make poor caches: there is no control over the time-to-live.\r\n\r\nThe classloader leak occurs because an object from a class of the system classloader (ThreadLocal) references an object of a class of the application classloader (BufferRecycler.) \r\n\r\nSomething configurable could very well work for us. Like I suggested in my previous post. How would you like to have this configured? Like other Feature-s?\r\n\r\n\n\nComment by jborgers:\nHi @cowtowncoder, I am eager to know your answer. \n\nComment by jborgers:\nI created a new version in my repo where I changed new releasability of buffer recyclers to be optional, enable by a feature and static method. I factored out needed machinery into a separate class, only instantiated if enabled. I also used the multi-threaded optimized Set.\r\nWe will test this version, I added some debug println's to be removed later.\r\n\n\nComment by cowtowncoder:\nOk. So, use of `SoftReference`s should work as expected, to be held until such time that GC pressure clears them (typically for Full/OldGen GC): \r\n\r\n```Soft reference objects, which are cleared at the discretion of the garbage collector in response to memory demand. Soft references are most often used to implement memory-sensitive caches. ``\r\n\r\nI am not surprised about longer time-to-live for SoftReferences per se (that is, in many ways, the idea).\r\nBut I am surprised that it should become problematic: although buffers are non-trivial in size (otherwise there's no point in trying to reuse in the first place), they wouldn't seem to add up to that much. Even if/when they end up in Old Generation (due to long lifespan).\r\n\r\nFrom earlier descriptions it sounded like there was something special, however, about your use case of hot-reloading classes, something that I have never used (nor seen used in production anywhere, although remember that application servers did allow that). Much more commonly service node would be shutdown, restarted; this simplifies life-cycle of system significantly.\r\nIf this is the case it seems/seemed odd that as part of this JVM would not end up clearing soft references as well.\r\n\r\nBut I'll add bit more thoughts on separate comment, so hopefully we can find common ground, and I can understand your limitations wrt possible solution.\r\n\r\n\n\nComment by cowtowncoder:\nSo, from my perspective, I would be most interested in finding a way to allow extension point that allows your approach to be used in your case, regardless of what the default behavior would be. I would like to keep existing behavior as unchanged as possible, partly since release cycle is such that 2.x will be in maintenance mode and I'd like to limit amount internal change in this are. This because possible new problems can be equally difficult to track down. As you say, debugging memory management, retention issues is very tricky, especially in heavily multi-threaded systems.\r\n\r\nExtension points, then, could come in at least 2 flavors;\r\n\r\n1. Sub-classing: easier to provide from my perspective, but somewhat fragile, and possibly difficult to deploy (and not applicable to other format backends)\r\n2. Adding new configurable handlers classes (with a default implementation); most modular, and although ideally not done in a patch, I would be ok with such a change\r\n3. Addition of direct method(s) for changing behavior (ideally per-instance, static configuration is problematic when Jackson is often used as transitive dep of multiple frameworks, libraries)\r\n\r\nIt sounds like (1) would not work for you, either. But perhaps (2) or (3) would work.\r\nAnd just to make sure: I do not object to the solution in general (that is, it is a valid approach), but just worry about its impact for existing use cases where retention is not problematic.\r\n\r\nAnother idea that may or may not make sense: allowing use of `WeakReference`s. Since they should be cleared much more rapidly, and since they share a base class, it would likely be much easier to add a configuration feature to allow change. But I am not sure if that would be something that would help you -- no point in adding option that is not useful.\r\n\n\nComment by jborgers:\nThanks for your reply and good to read you want to find common ground and a solution.\r\n\r\nI understand you want to keep the existing behavior as unchanged as possible for the reasons you mention. \r\n\r\nHappy to look along the lines of extension options (2) and (3).  \r\n2- Could you elaborate a bit more on configurable handler classes? What exactly you have in mind?\r\n3- \"static configuration is problematic when Jackson is often used as transitive dep of multiple frameworks, libraries\" - could you elaborate on that? What exactly is the problem? \r\nWe explicitly want to have the registration/releasability of buffers on JsonFactory class-level (static) and for enabling it for all JsonFactory instances especially also for libraries which use jackson-core, which have it as transitive dependency.\r\n\r\nWeakReferences will be cleared too rapidly, on the following gc event.\r\n\r\nI created a new version along the lines of (2) and (3). It makes our added machinery optional. It separates out all added state and behavior into a new private inner class (ThreadLocalBufferManager) which will only be instantiated and used in case JsonFactory is configured to useReleasableThreadLocalBuffers. New behavior is only applied in case the feature is enabled (default: disabled.) It can be enabled with a new Feature or with a static method enableUseReleasableThreadLocalBuffers, which will instantiate the ThreadLocalBufferManager (bufferMgr), referenced by a static field. New registration will only happen in case the bufferMgr exists (feature is enabled) by the bufferMgr. The shutdown method will delegate to the bufferMgr only in case it exists (feature is enabled).\r\n\r\nCould you have a look at this version? Eager to know your thoughts.\r\n\r\n\n\nComment by jborgers:\n@cowtowncoder Please have a look at the new version and let me know your thoughts, so we can go forward.\n\nComment by jborgers:\n@cowtowncoder Waiting for your reply. We are eager to go forward.\n\nComment by cowtowncoder:\nOk. On \"static configuration\", I just mean things like env variable and system properties: more accurate would be \"global settings\", which affect all instances everywhere. With jackson being transitive dep on many things, different usage often requires different configs. Almost as bad as system-prop/env would be static singletons, although at least those would be shaded.\r\n\r\nOn handlers: it would just mean making adding handler type (interface, abstract class), pluggable to factory/-ies, and getting called for allocation.\r\n\r\nOne thing I forgot to ask was simple limitations from your side, wrt. sub-classing or ability to configure factory instances. I can understand that you can not force use of, say, sub-class of `JsonFactory`.\r\nBut perhaps ability to set a handler instance (which could be from sub-class constructor, or by whatever constructs factory, or even gets factory handed) is acceptable?\r\n\r\nFrom my side I do not want substantial changes to default behavior, esp. for 2.x.\r\n3.0 is different story, but I don't think that is something you would be able to rely on, given that it will not be available for quite some time.\r\n\n\nComment by kirked:\nThreadLocals should be avoided in library code.\r\n\r\nI got here by doing research about possibly choosing Jackson for a project that will deserialise terabytes of JSON, streaming in an Akka-based system, where _you don't know, own, or control_ the thread that you will be running on. In fact, your execution is freely intermingled in Akka's thread pools to maintain high, non-blocking CPU throughput.\r\n\r\nAt least I can turn off the feature altogether.\r\n\r\nAs another note, instead of using synchronisation of access for a common set of references, it would probably be better to use an AtomicReference to hold the set, and access it through that so that you maintain non-blocking throughout.\n\nComment by jborgers:\n@kirked The pull request implements a releasability of the thread-local buffers. You can release all buffers when needed, e.g. on shutdown of the application. Not sure this will help you. For 3.0 plan is to have a pluggable buffering approach and multiple implementations. Your use case is useful input for that.\n\nComment by cowtowncoder:\n@kirked I am not going through argue the point on use of `ThreadLocal` beyond agreeing that its use should be carefully considered by all code, not just libraries and frameworks, and noting that Jackson's use is bit different from typical usage, aiming to optimize away both synchronization (no need since access guaranteed single-threaded) and complexity of buffer tracking, management (since it's essentially fixed set of buffers, per thread, as opposed to variable number of buffers from any and all threads).\r\nSimilar system has been successfully used by Jackson for past 9 years, as well as libraries before that like Woodstox, for past 15 years, and not reported as issues in the past. The only concern so far have been notes of seeing many buffers to reuse in memory dumps.\r\n\r\nAnyway... as @jborgers said, intent is to allow alternative strategies, where users can choose different trade-offs. There are certainly benefits from different, centralized approach, where actual memory usage can be strictly limited for example.\r\n\r\n\r\n\r\n\n\nComment by cowtowncoder:\nGetting closer: merged #450 in `2.9`, could use test verifying. Performance not different with modest number of threads (tested with 8), as expected. I assume differences, if any, would be for much higher concurrency.\n\nComment by cowtowncoder:\nSo: implementation checks for System Property\r\n\r\n    com.fasterxml.jackson.core.util.BufferRecyclers.trackReusableBuffers\r\n\r\nwhich is defined as String constant\r\n\r\n    BufferRecyclers.SYSTEM_PROPERTY_TRACK_REUSABLE_BUFFERS\r\n\r\nand specific value of `true` (String) will enable handling.\r\n\r\nAccess to clean up functionality is via class `com.fasterxml.jackson.core.util.BufferRecyclers` method\r\n\r\n    public static int releaseBuffers()\r\n\r\nwhich may be called at any point, and returns number of references cleared, or -1 to indicate tracking is not enabled. Actual count only gives upper bound of possibly de-referenced buffers.\r\n\r\nAt this point functionality in its current form is just for 2.9.6 and later 2.x releases: it may or may not make it in 3.x as-is; if not, we will figure out something else to solve specific problem this version was designed to fix.\r\n\n\nComment by cowtowncoder:\n@jborgers `2.9.6` finally released.\n\nComment by jborgers:\nNice! :-)",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "Add mechanism for forcing `BufferRecycler` released (to call on shutdown)",
+        "name": "issue#400",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1117"
+          },
+          {
+            "start_node": "issue#1117",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1089"
+          },
+          {
+            "start_node": "issue#1089",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#400"
+          }
+        ],
+        "similarity": 0.47481630390726937,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1114",
+        "type": "issue",
+        "content": "(note: continuation of #1064 and #1106)\r\n\r\nAs per #1064, #1106 we now have configurability for buffer recycling, usable for JSON parser/generator as well as other data formats.\r\nHowever: there are some modules (Smile and Avro format modules, JAXB/Jakarta-Bind) that use old-style `ThreadLocal`-based non-configurable pooling.\r\nWhile I tried to think of ways to perhaps extend `BufferRecycler` to allow for \"piggy-backing\" other buffers, I couldn't come up with a way that seemed Right. Instead, it seems like we should be able to reuse pool components added so far to 2.16, esp. since we can still change the API before release.\r\n\r\nMy initial thinking is that parameterizing `BufferRecyclerPool` with type of recycled item (in case of default impl, `BufferRecycler`), coupled with refactoring of the default use, would allow other modules to similarly switch to using the new pluggable mechanism. This is important since same issues wrt use of `ThreadLocal` affect those modules and it seems pointless to copy all (or parts) of code here.\r\n\r\nHaving said that, addition of type parameters may be cumbersome. But I think it is doable.\r\n\r\nAnd I think it's important to get it in 2.16, if at all possible, so API doesn't need to change in future.\r\n\r\n\r\n\n\n\nComment by cowtowncoder:\n/cc @mariofusco @pjfanning ",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "Make `BufferRecyclerPool` parameterized with type of instances pooled, to allow reuse",
+        "name": "issue#1114",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1117"
+          },
+          {
+            "start_node": "issue#1117",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1064"
+          },
+          {
+            "start_node": "pr#1064",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1114"
+          }
+        ],
+        "similarity": 0.4737854032253027,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1117",
+        "type": "issue",
+        "content": "With #1089 (and related) completed, Jackson 2.16 both allows for configuring alternate `RecyclerPool`s to use for buffer recycling and provides a set of alternatives, notably ones that do not use `ThreadLocal` for recycling.\r\n\r\nTo reduce likelihood of breakage, the default implementation for 2.16 remains ThreadLocal-based pool. This hopefully allows as to gather feedback, experiences by early adopters, on how alternative pools work (for example, Quarkus project is likely to experiment with alternatives). This, in turn, should let us decide on which alternative to use, along with global-vs-per-factory pools.\r\nAs the baseline, my icurrent thinking is that per-factory, unbounded/lock-free implementation might work well as the default.\r\n\n\n\nComment by cowtowncoder:\nOk, to get discussion started, I will propose we will use:\r\n\r\n* `JsonRecyclerPool.newLockFreePool()`\r\n\r\nas the default. This will have following benefits:\r\n\r\n* Per-factory instances to reduce chance of global contention\r\n* Has low baseline memory usage (for use cases where no recycling occurs)\r\n\r\nPotential downside for using non-global/shared pool is that overall memory retention may be higher than with global/shared pools.\r\n\r\nAs with any choice this will not be the optimal choice for all use cases. I am looking forward to hearing alternative suggestions, comments.\r\n\r\n\n\nComment by mariofusco:\nNote that this is blocked by https://github.com/FasterXML/jackson-databind/issues/4321\n\nComment by cowtowncoder:\nNote: issue @mariofusco outlined (thanks!) has been resolved now, so the default pool implementation may be changed.",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "Change default `RecylerPool` implementation to `newLockFreePool` (from `threadLocalPool`)",
+        "name": "issue#1117",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1117"
+          }
+        ],
+        "similarity": 0.44094408743334546,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1123",
+        "type": "issue",
+        "content": "As hopefully last change wr #1089, let's rename `JsonBufferRecyclers` as `JsonRecyclerPools` since that represents better what the container class does.\n\n",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "Rename `JsonBufferRecyclers` as `JsonRecyclerPools`",
+        "name": "issue#1123",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1117"
+          },
+          {
+            "start_node": "issue#1117",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1089"
+          },
+          {
+            "start_node": "issue#1089",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1123"
+          }
+        ],
+        "similarity": 0.43996189251541284,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1064",
+        "type": "issue",
+        "content": "This is an adaptation for branch 2.16 of [this pull request for master](https://github.com/FasterXML/jackson-core/pull/1061).\r\n\r\nAs requested I didn't remove any public method, but added a few new ones, deprecating the old methods that they are intended to replace. I also improved many tests trying to make sure that all Closeable resources are properly closed after their usage. This is necessary to guarantee the correct reuse of the `BufferRecycler` taken from the pool and in general to adhere with the lifecycle of those resources.\r\n\r\nThe last outstanding part is having an efficient implementation of the object pool itself. If you agree on the general idea of this pull request I will work on it. /cc @cowtowncoder @pjfanning @franz1981 \r\n\r\nNote that at the moment this pull request is the indirect cause of a couple of test failures that are actually caused by the bug I reported [here](https://github.com/FasterXML/jackson-core/issues/1063). \n\n\nComment by mariofusco:\nWith [this commit](https://github.com/FasterXML/jackson-core/pull/1064/commits/fc965499c4aef18f9e3716a54c8749f2f576069a) I tested different object pools implementations in order to benchmark them and pick the one that fit in the best possible way the jackson use case. I also temporarily add a `dependency to JCTools` because I wanted to also test a pool specifically designed to be very good with contention and use it at least as a baseline. Moreover the JCTools' one is the only pool implementation that I found not using `ThreadLocal`s internally.\n\nComment by mariofusco:\nI made an extensive performance comparison of all the different pool implementations that I introduced with [this commit](https://github.com/FasterXML/jackson-core/pull/1064/commits/fc965499c4aef18f9e3716a54c8749f2f576069a) in order to choose the best fit for jackson needs.\r\n\r\nFor this comparison I used the following benchmark that serialize in json a very simple pojo made of only 3 fields (a Person with firstName, lastName and age), performing this operation in parallel on 10, 100 or 1000 (native or virtual) threads. \r\n\r\n```\r\n    @Benchmark\r\n    @OutputTimeUnit(TimeUnit.SECONDS)\r\n    public void writePojoMediaItem(Blackhole bh) throws Exception {\r\n        CountDownLatch countDown = new CountDownLatch(parallelTasks);\r\n\r\n        for (int i = 0; i < parallelTasks; i++) {\r\n            runner.accept(() -> {\r\n                bh.consume(write(item, json));\r\n                countDown.countDown();\r\n            });\r\n        }\r\n\r\n        try {\r\n            countDown.await();\r\n        } catch (InterruptedException e) {\r\n            throw new RuntimeException(e);\r\n        }\r\n    }\r\n\r\n    protected final int write(Object value, JSON writer) {\r\n        NopOutputStream out = new NopOutputStream();\r\n        try {\r\n            writer.write(value, out);\r\n        } catch (IOException e) {\r\n            throw new RuntimeException(e);\r\n        }\r\n        return out.size();\r\n    }\r\n```\r\n\r\nI used this smaller `Person` object instead of the usual `MediaItems.stdMediaItem()` used in other benchmarks because I wanted to maximize the portion of time used by the benchmark to access and use the pool, thus making as evident as possible the performance gaps among the different implementations.\r\n\r\nIn the remaining part of this analysis I will consider only 5 different possibilities: \r\n\r\n1. using no pool at all.\r\n2. the existing `BufferRecyclers`.\r\n3. the pool using `JCTools` that as written before has been introduced only to have a comparison with a pool specifically designed to be very good with contention and use it as a baseline.\r\n\r\nplus the 2 best performing implementations not requiring the introduction of any external dependency\r\n\r\n4. the [one based on a `LinkedTransferQueue`](https://github.com/FasterXML/jackson-core/blob/fc965499c4aef18f9e3716a54c8749f2f576069a/src/main/java/com/fasterxml/jackson/core/util/ObjectPool.java#L66) \r\n5. the [one using a very simple lock free algorithm](https://github.com/FasterXML/jackson-core/blob/fc965499c4aef18f9e3716a54c8749f2f576069a/src/main/java/com/fasterxml/jackson/core/util/ObjectPool.java#L272) based on the CAS on an `AtomicReference`. \r\n\r\nThe charts below summarize the performances of these implementations for both virtual and native threads. The Y-axis reports the number of operations done per milliseconds, taking count that the number of operations in a benchmark loop is equal to the number of parallel tasks used when running that benchmark. In other words these results are normalized with the number of parallel tasks.  \r\n\r\nAs expected when running with virtual threads the `ThreadLocal` based `BufferRecyclers` performs particularly bad, even worse than not having any pool at all. Conversely the lock free pool is the one with best performances regardless of the number of parallel virtual threads used to run the benchmark.\r\n\r\n![image](https://github.com/FasterXML/jackson-core/assets/372781/f63f42c8-0246-4725-a71d-489a4aa0623f)\r\n\r\nOn the other side, when running with the traditional native threads, the `BufferRecyclers` still outperforms all other solutions, with the lock free algorithm being a good second and not far at all from the `BufferRecyclers` especially with a relatively low number of threads. When the number of parallel threads reaches 100 or above the performances of this lock free implementation (while remaining acceptable) tend to worsen a bit and become even lower than the `LinkedTransferQueue` solution, very likely because the highest contention increases the probability of a failure in the CAS.\r\n\r\n![image](https://github.com/FasterXML/jackson-core/assets/372781/dd3f6c5f-8e36-4b10-bc01-82ab4bf5a962)\r\n\r\nGiven all these considerations, and keeping in mind that we are introducing this new pool mostly to deal with virtual threads, I decided to keep the lock free implementation. As suggested by @pjfanning, at least for jackson 2.x, the actual use of this pool will be a feature opt-in that in this way could be used by projects and frameworks already leveraging virtual threads, while the existing `BufferRecyclers` will remain the default implementation in use.  \r\n\n\nComment by pjfanning:\nFor the feature, could I suggest adding something alongside `JsonFactory.Feature.USE_THREAD_LOCAL_FOR_BUFFER_RECYCLING` - maybe `JsonFactory.Feature.USE_BUFFER_RECYCLING_POOL` (default = false).\r\n\r\n@mariofusco could you load test disabling the USE_THREAD_LOCAL_FOR_BUFFER_RECYCLING feature when you are testing the BufferRecyclers case? It would be useful to know the performance of BufferRecyclers with this feature enabled (the default) and with it disabled. \n\nComment by mariofusco:\n@cowtowncoder @pjfanning @franz1981 I now consider this pull request completed and ready to be reviewed and merged. \r\n\r\nI made the new `ObjectPool` optional and disabled by default, so this shouldn't break backward compatibility in any way. Also there is still probably room to improve the performances of the pool implementation, I left in only the 2 more promising ones for now. As I wrote before the main goal of this pull request is clearly define the life cycle of all objects involved and make them compatible with the use of a pool that is different from the old `ThreadLocal` based one. The use of the pool is well encapsulated and it defines an interface with only 2 methods, so if we will find a better performing implementation it will be straightforward to replace it. This could be eventually investigated with a subsequent pull request.\n\nComment by mariofusco:\n@cowtowncoder did you give a look at this? any comment? If you think it's ok I'd appreciate if it could be merged in a reasonable time: I'm keeping having conflicts with other commits (I will fix the last ones asap) and it's becoming increasingly hard to resolve them.\n\nComment by mariofusco:\n@cowtowncoder sorry if I insist and ask again, but I'm literally resolving conflicts on this pull request on a daily basis and it's almost becoming a full time job. I'd appreciate it if you could at least provide some feedback. /cc @pjfanning @franz1981 \n\nComment by cowtowncoder:\n@mariofusco Sorry, I haven't had any time to look into this. I am going on a vacation, so on a plus side there shouldn't be anything to merge for that time (2 weeks). Reading through this PR is high on my TODO list but it requires quite a bit of focus.\r\n\r\nI'll add one more (separate) note on a general approach I think makes sense, for 2.16 timeline -- apologies for not trying to reconcile it with your work so far.\r\n\r\n\n\nComment by cowtowncoder:\nSo, to me what makes sense is (and once again, apologies for not figuring out how close this PR is from these ideas) as follows:\r\n\r\n1. Starting point like `BufferRecyclers` is associated with a single `JsonFactory` (or in 3.0 `TokenStreamFactory`). This is overridable\r\n2. Each new `JsonParser`/`JsonGenerator` is allocated a `BufferRecycler` by a call to `BufferRecyclers` -- and then char/byte arrays are taken from recycler by parser/generator\r\n3. Each `BufferRecycler` needs to be returned to `BufferRecyclers` on `close()` of parser/generator; parser/generator should return actual array to `BufferRecycler` right before this\r\n4. It may be that access to arrays via `BufferRecycler` still needs to use atomic operations? I am not 100% sure about this, but this is probably not a performance hot spot since these should always be uncontested\r\n\r\n\r\nOnce this life-cycle works in 2.16; and with one backing implementation (existing `ThreadLocal` based one), I think there's need to get experience with release, and target alternate implementations for later releases.\r\nThis could be 2.17, or, if there are blockers, then master/3.0.\r\n\r\nApproach above is based on my strong preference for allowing per-factory pooling as one of the options -- but also allowing global: latter case is achieved by just using single `BufferRecyclers` (with appropriate pooling), former by separate recyclers instance.\r\n\n\nComment by pjfanning:\n@cowtowncoder I think the PR as is achieves more or less what you have highlighted. The default behaviour remains as the ThreadLocal based BufferRecycler. Users can opt in to use the per-JsonFactory pooled BufferRecycler instead.\n\nComment by mariofusco:\nThe main intent of this pull request is clearly define a lifecycle for `JsonParser`/`JsonGenerator`. This is necessary to make sure that a resource, in this case the `BufferRecycler`, is properly released into the pool from where it has been acquired, without relying on a more forgiving mechanism like the one provided by the `ThreadLocal`-based pool. \r\n\r\nI also enforced the whole test suite to follow this lifecycle. In particular I ran all tests using the `DebugPoolDecorator`, suggested by @pjfanning, printing a line every time a  `BufferRecycler` is acquired from the pool or released into it and making sure that the 2 methods are invoked exactly the same amount of times.\r\n\r\nRegarding your points: \r\n \r\n>     1. Starting point like `BufferRecyclers` is associated with a single `JsonFactory` (or in 3.0 `TokenStreamFactory`). This is overridable\r\n\r\nAt the moment the `BufferRecyclers` isn't associated with anything, but it just provides a few `static` methods and in practice behaves like a singleton. What you wrote is (incidentally) true only because the `JsonFactory` is the only class accessing and using it in its `_getBufferRecycler()` method. I followed exactly the same pattern introducing my `BufferRecyclerPool` that has the same intent and behavior of the `BufferRecyclers`, just without using any `ThreadLocal`. Eventually both the old `BufferRecyclers` and the new `BufferRecyclerPool` could easily become proper instances of the `JsonFactory`, but I believe that this change is out of scope for this pull request and could be implemented with a subsequent commit (I could also take care of this if required).\r\n\r\n>     2. Each new `JsonParser`/`JsonGenerator` is allocated a `BufferRecycler` by a call to `BufferRecyclers` -- and then char/byte arrays are taken from recycler by parser/generator\r\n\r\nThis is already what happens, or more precisely this is what the `JsonParser`/`JsonGenerator` do via their `IOContext` which is the only class holding a reference to the `BufferRecycler`.\r\n\r\n>     3. Each `BufferRecycler` needs to be returned to `BufferRecyclers` on `close()` of parser/generator; parser/generator should return actual array to `BufferRecycler` right before this\r\n\r\nThis is indeed the main point of this pull request: now `IOContext` also implements `AutoCloseable`, so when the `JsonParser`/`JsonGenerator` are closed they also close the underlying `IOContext` which in turn releases the `BufferRecycler` it owns to the pool.\r\n \r\n>     4. It may be that access to arrays via `BufferRecycler` still needs to use atomic operations? I am not 100% sure about this, but this is probably not a performance hot spot since these should always be uncontested\r\n\r\nThis has not been changed in any way and it's also out of scope for this pull request.\r\n\r\n> Once this life-cycle works in 2.16; and with one backing implementation (existing `ThreadLocal` based one), I think there's need to get experience with release, and target alternate implementations for later releases. This could be 2.17, or, if there are blockers, then master/3.0.\r\n\r\nThe existing implementation based on `ThreadLocal` is still there and in use by default. My new `ThreadLocal`-free pool is an opt-in option that has to be explicitly enabled with a new `JsonFactory` feature. This should ensure the best and safest backward-compatibility while allowing to frameworks and tools leveraging virtual threads to do so correctly by simply enabling that feature.\r\n\n\nComment by pjfanning:\nWould this work?\r\n\r\n* BufferRecycler is still updated to be AutoCloseable. The changes in this PR to close the BufferRecycler will be kept.\r\n* A new BufferRecyclerProvider interface is created. We can have 2 built-in implementations. One based on the existing ThreadLocal approach and one based on this PR's approach.\r\n* JsonFactory has a setter that let's you override the BufferRecyclerProvider.\r\n* No need for a new Feature to control the behaviour.\n\nComment by cowtowncoder:\n> Would this work?\r\n> \r\n>     * BufferRecycler is still updated to be AutoCloseable. The changes in this PR to close the BufferRecycler will be kept.\r\n> \r\n>     * A new BufferRecyclerProvider interface is created. We can have 2 built-in implementations. One based on the existing ThreadLocal approach and one based on this PR's approach.\r\n> \r\n>     * JsonFactory has a setter that let's you override the BufferRecyclerProvider.\r\n> \r\n>     * No need for a new Feature to control the behaviour.\r\n\r\nI started thinking along similar lines, although working from `BufferRecyclers` -- however, your suggestion of new provider would be cleaner, basically deprecating `BufferRecyclers` (but using it for legacy support).\r\n\r\nI think I can on PR for doing integration pieces separate from this PR (to be merged here when ready).\r\n\r\nAside from mechanics of gettting to `BufferRecycler` (which above would tackle) I think this PR looks reasonable.\r\n\n\nComment by cowtowncoder:\n@mariofusco @pjfanning  Ok, so, created PR #1083 for suggested integration. I can merge that in 2.16 and master, but wanted to get your feedback first.\r\n\n\nComment by mariofusco:\n@cowtowncoder @pjfanning I rebased and reworked this pull request against the latest commits and now this is ready to be reviewed again. \r\n\r\nEven though the main purpose of this pull request is not having the fastest possible pool implementations (this is also less relevant now that it is fully pluggable) I also rerun a very quick benchmarking session against it, obtaining the following, quite expected, results:\r\n\r\n```\r\nBenchmark                                          (parallelTasks)      (poolStrategy)  (useVirtualThreads)   Mode  Cnt      Score      Error  Units\r\nJacksonMultithreadWriteVanilla.writePojoMediaItem              100               NO_OP                 true  thrpt   10   6222.229 \u00b1   37.120  ops/s\r\nJacksonMultithreadWriteVanilla.writePojoMediaItem              100               NO_OP                false  thrpt   10   7082.762 \u00b1   26.198  ops/s\r\nJacksonMultithreadWriteVanilla.writePojoMediaItem              100        THREAD_LOCAL                 true  thrpt   10   6139.130 \u00b1   35.366  ops/s\r\nJacksonMultithreadWriteVanilla.writePojoMediaItem              100        THREAD_LOCAL                false  thrpt   10  28455.487 \u00b1   78.597  ops/s\r\nJacksonMultithreadWriteVanilla.writePojoMediaItem              100           LOCK_FREE                 true  thrpt   10  13003.136 \u00b1   67.382  ops/s\r\nJacksonMultithreadWriteVanilla.writePojoMediaItem              100           LOCK_FREE                false  thrpt   10  21244.851 \u00b1   99.046  ops/s\r\nJacksonMultithreadWriteVanilla.writePojoMediaItem              100  CONCURRENT_DEQUEUE                 true  thrpt   10   9248.817 \u00b1  134.244  ops/s\r\nJacksonMultithreadWriteVanilla.writePojoMediaItem              100  CONCURRENT_DEQUEUE                false  thrpt   10  22029.189 \u00b1   90.243  ops/s\r\n```\r\n\r\n Let me know if you have any doubts, questions or suggestions to further improve it.\n\nComment by mariofusco:\n@cowtowncoder @pjfanning any news on this?\n\nComment by pjfanning:\n@cowtowncoder I don't like the changes here to make IOContext closeable. I really think that it would be simpler if the JsonFactory acquired one buffer recycler instance (or any TokenStreamFactory but let's just talk about JsonFactory for simplicity). This buffer recycler instance would be returned to the pool after the JsonFactory was closed (a new close method on TokenStreamFactory). All generators and parsers created with a JsonFactory instance would use the same buffer recycler instance.\r\n\r\nWith the ThreadLocal buffer recycler, the lifecycle doesn't matter. With the new BufferRecyclerPool in this PR, do we really need to acquire and release the buffer recyclers after each generate or parse job?\r\n\r\nIf we do need to acquire and release the buffer recyclers then I think it is better to manage this in the JsonGenerator and JsonParser code. When each JsonGenerator/JsonParser is created and the buffer recycler instance is released back to the pool when the generator/parser is closed (the close methods already exist).\r\n\r\nI think either of these approaches will have far less impact on the code. We won't need to rewrite all the tests to close IOContexts.\n\nComment by cowtowncoder:\nUm, no, JsonFactory/TokenStreamFactory is never closed; it does not have lifecycle at this point, nor is there proposal to do that.\r\nI guess adding that would allow closing of (some) `BufferRecyclerPool`s but I don't think that was the intent.\r\nAnd even if we did that, it would not really help with the part we do want to solve, which is returning `BufferRecycler`s into pool; for that we either need to directly release recyclers, or (which seemed preferable to me) make `IOContext` as owner do that upon getting closed/released.\r\n\r\nI'll have to read through PR and discussion again, seeing how things are progressing.\r\n\r\n\n\nComment by cowtowncoder:\nOk, so @pjfanning, aside from question of whether `JsonParser`/`JsonGenerator` or `IOContext` should own and close `BufferRecycler` instances, I thought there may be misunderstanding on what `BufferRecycler` does -- these are NOT shared instances, ideally, but containers of a set of buffers needed for a single read (JsonParser) or write (JsonGenerator) operation (reading/writing a JSON (etc) document).\r\nSo `JsonFactory` cannot own just one instance: each parser/generator needs its own instance. Pool is then the thing that manages access to a set of `BufferRecycler` instances needed. Hence factories have a reference to a pool instance (which may be per-Factory, global singleton, or something in between)\r\n\r\nI hope this helps in understanding logic here.\r\n\r\n\n\nComment by mariofusco:\n> Ok, so @pjfanning, aside from question of whether `JsonParser`/`JsonGenerator` or `IOContext` should own and close `BufferRecycler` instances, I thought there may be misunderstanding on what `BufferRecycler` does -- these are NOT shared instances, ideally, but containers of a set of buffers needed for a single read (JsonParser) or write (JsonGenerator) operation (reading/writing a JSON (etc) document). So `JsonFactory` cannot own just one instance: each parser/generator needs its own instance. Pool is then the thing that manages access to a set of `BufferRecycler` instances needed. Hence factories have a reference to a pool instance (which may be per-Factory, global singleton, or something in between)\r\n> \r\n> I hope this helps in understanding logic here.\r\n\r\nI had a similar intuition and was trying to explain the same, but thanks for this more in depth clarification. I believe that my pull request is already coherent with what you described, but if you want to change something or have any suggestion to improve please let me know.  \n\nComment by pjfanning:\nBut can we get rid of IOContext close and move the release of the buffer recyclers to the JsonParser and JsonGenerator close? That would reduce the impact of this PR. Most of the test code changes would vanish.\n\nComment by mariofusco:\n> But can we get rid of IOContext close and move the release of the buffer recyclers to the JsonParser and JsonGenerator close? That would reduce the impact of this PR. Most of the test code changes would vanish.\r\n\r\nMost of the test code changes are there exactly because in many cases the `JsonParser`s and `JsonGenerator`s weren't properly closed. When they're closed now they also close the underlying `IOContext`, which is the only one holding a reference to the `BufferRecycler` and then in my opinion should be responsible of releasing it to the pool.\n\nComment by cowtowncoder:\n@mariofusco I went ahead and merged latest from 2.16, including some additional refactoring to reduce direct construction of `IOContext` by tests of `jackson-core` (and I hope to reduce calls from other format package tests too).\r\n\r\nBut I also noticed PR has lots of test refactoring to use auto-close for JsonParser/JsonGenerator -- these are nice and good to have, but increase size of diff a lot. So I was wondering if they'd be easy enough to recreate for separate PR that I could merge into 2.16, and this PR, to make \"real changes\" here bit easier to see.\r\n\r\nI think we are converging on good solution here. Apologies for taking my time and asking for all kinds of things. But I think we are getting nice design and implementation here, all in all.\r\nBig thank you for your patience so far.\r\n\n\nComment by mariofusco:\n> @mariofusco I went ahead and merged latest from 2.16, including some additional refactoring to reduce direct construction of `IOContext` by tests of `jackson-core` (and I hope to reduce calls from other format package tests too).\r\n\r\nOk, I will bring in again your latest commits before continuing this work.\r\n\r\n> But I also noticed PR has lots of test refactoring to use auto-close for JsonParser/JsonGenerator -- these are nice and good to have, but increase size of diff a lot. So I was wondering if they'd be easy enough to recreate for separate PR that I could merge into 2.16, and this PR, to make \"real changes\" here bit easier to see.\r\n\r\nSure, I will split this pull request into 2, one with only tests refactor and the other with the actual pool implementation. I will need to change something also in the main code to compile what I did on the tests side, but I will try to keep these changes minimal. \r\n\r\n> I think we are converging on good solution here. Apologies for taking my time and asking for all kinds of things. But I think we are getting nice design and implementation here, all in all. Big thank you for your patience so far.\r\n\r\nNo problem, I understand this is quite a huge change and needs to be evaluated and discussed carefully. I also appreciate the work done so far.\r\n\r\n\n\nComment by cowtowncoder:\n@mariofusco I went ahead and merged test changes related to (auto-)closing of parsers & generators so diff is much smaller now.\n\nComment by mariofusco:\n> @mariofusco I went ahead and merged test changes related to (auto-)closing of parsers & generators so diff is much smaller now.\r\n\r\n@cowtowncoder That's great thanks a lot! But what's left now? Do you want me to remove that `enum` of pool implementations? Is there anything else that I should do?\n\nComment by mariofusco:\n@cowtowncoder I replied to your questions, added a few comments and removed that `enum` of pool implementations. Please review this again and let me know if you think that it is ok now or want other changes.\n\nComment by cowtowncoder:\n@mariofusco Thank you! I think I have grown to like the idea of `BufferRecycler` holding a backref to pool so that's fine.\r\nI'll have to merge one other PR (for property name max length), apologies for once again sluggish follow-up. But I want to get this right which needs focus (... due to distraction day job brings etc).\r\n\n\nComment by mariofusco:\nNo problem @cowtowncoder, please let me know if there is anything else that you want to change here as soon as you will have time to review it.\n\nComment by cowtowncoder:\n@mariofusco Ok, apologies for making tons of tweaking, but I think results are now something I could merge.\r\n\r\nChanges mostly concern following things:\r\n\r\n1. JDK serializability of `ThreadLocalPool`s: this is only needed in 2.x if `ObjectMapper` (or in theory `JsonFactory` instances) are JDK serialized -- I know some frameworks do that (whether sensibly or not), like Hadoop and Spark (when distributing jobs). In Jackson 3.x this is actually much more efficient thing to do. At any rate, `ThreadLocalPool` is part of serializable configuration of `JsonFactory` (and hence `ObjectMapper`) so it needs to be supported\r\n2. Factory methods for pools: I think distinction between \"shared\" (global) and \"non-shared\" (private per-factory instances) needs to be made clear\r\n\r\nOn (1) there is one thing I didn't yet figure out, and that is keeping identity of global LockFree / DeQue -based pools.\r\nFor now JDK ser/deser will not re-create Shared instance. It is doable but for now I didn't have time to make that work.\r\n(for No-op and ThreadLocal one it'd be easy to use `readResolve()` to return shared instance but I didn't bother since they are stateless).\r\n\r\nRemaining questions or (minor) open issues from my end are:\r\n\r\n1. Can we get one size-bound, stateful instance to complete the set\r\n2. Would it be possible to have unit tests that actually exercise pooling aspect (just verify, without even multi-threading, that `BufferRecycler` instances are recycled as expected. \r\n\r\nNeither of these is really blocker; but if we can resolve them, great. Either way I hope to actually finally get this merged tomorrow if all goes well.\r\nAnd then have fun merging it into `master` (3.0.0)!\r\n\n\nComment by mariofusco:\n> Remaining questions or (minor) open issues from my end are:\r\n> \r\n>     1. Can we get one size-bound, stateful instance to complete the set\r\n> \r\n>     2. Would it be possible to have unit tests that actually exercise pooling aspect (just verify, without even multi-threading, that `BufferRecycler` instances are recycled as expected.\r\n\r\nI did both things with my 2 latest commits. \r\n\r\nMy last outstanding concern is on the non-shared pools versions. At the moment I see them useful only to test the pools themselves, but nothing else, and they are also problematic with serialization. Also, even if we want to keep them, I also have some doubts about the naming: `shared`/`non-shared` doesn't entirely make sense to me (or at least I don't think it would make sense for somebody not knowing much of this internal implementation detail). I'd keep only the shared version, maybe simply calling it `INSTANCE`, leaving to users the possibility to directly invoke one of the pools' constructors if they really want/need to do so. \n\nComment by cowtowncoder:\n> > Remaining questions or (minor) open issues from my end are:\r\n> > ```\r\n> > 1. Can we get one size-bound, stateful instance to complete the set\r\n> > \r\n> > 2. Would it be possible to have unit tests that actually exercise pooling aspect (just verify, without even multi-threading, that `BufferRecycler` instances are recycled as expected.\r\n> > ```\r\n> \r\n> I did both things with my 2 latest commits.\r\n> \r\n> My last outstanding concern is on the non-shared pools versions. At the moment I see them useful only to test the pools themselves, but nothing else, and they are also problematic with serialization. Also, even if we want to keep them, I also have some doubts about the naming: `shared`/`non-shared` doesn't entirely make sense to me (or at least I don't think it would make sense for somebody not knowing much of this internal implementation detail). I'd keep only the shared version, maybe simply calling it `INSTANCE`, leaving to users the possibility to directly invoke one of the pools' constructors if they really want/need to do so.\r\n\r\nI feel strongly in this case that plain \"instance\" is not adequate -- I was thinking of `global` instead of `shared`, as an alternative. \r\n\r\nI agree that convenient access to the globally shared instances, along with allowing construction of non-shared, makes sense.\r\n\r\nFor the last part, then, the only (?) question is that of JDK serialization properly linking back shared/global to that, but creating new instance for non-shared.\r\nIt is doable by f.ex writing an `int` or `boolean` for type (or even `String`). Just some work.\r\n\n\nComment by cowtowncoder:\nAdded couple of notes, but I think my thinking now is that:\r\n\r\n1. I am ok with globally shared instances as the main default things (and am open to calling them whatever, global, shared), as long as there's a way to construct non-shared instances\r\n2. To support shared/non-shared instances, we do need bit more work for JDK serialization to retain identities; and for size-bound pool impl, need to retain size setting too. `jackson-databind` type `LRUMap` implements something similar. But in this case, could just use `-1` (or 0) as marker for size field to denote shared (not the best explanation, maybe I should implement and show).\r\n\r\nWith that I think we would be done here.\r\n\r\n**EDIT**: I am working on this (JDK serialization, tests) -- and then should be able to FINALLY merge this thing.\r\nThat doesn't mean we could not make further changes, just that bulk of work should be done (including merge to 3.0 which is not going to be fun to do).\r\n\n\nComment by cowtowncoder:\nOk: to expedite things I will go ahead and merge -- this does not mean that aspects, naming etc could not be changed based on discussions; I absolutely expect some minor tweaking.\r\nBut I figured that since I now have time I can get merging done.\r\n\n\nComment by cowtowncoder:\nOk: I am looking for comments to #1117 -- changing the default pool used by Jackson 2.17 and later.\r\n\r\nMy strawman argument is that we should use:\r\n\r\n1. per-factory\r\n2. lock-free\r\n3. That is: one returned by `JsonRecyclerPool.newLockFreePool()`\r\n\r\npool as the default. This is mostly to get discussion going; I don't have strong objection over alternatives.\r\n",
+        "source_code": null,
+        "distance": 0.5,
+        "title": "Add full set of `RecyclerPool` implementations",
+        "name": "pr#1064",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1117"
+          },
+          {
+            "start_node": "issue#1117",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1064"
+          }
+        ],
+        "similarity": 0.4376644009575922,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1186",
+        "type": "issue",
+        "content": "(based on discussion https://github.com/FasterXML/jackson/discussions/204 -- good suggestion by @kkkkkhhhh)\r\n\r\nIt seems that `BufferRecycler` will always replace assigned buffer when release method is called. But it would probably make sense to only replace `null` or smaller buffer, and avoid replacing bigger buffer with smaller.\r\nWhile in the original expected usage sequence should always be \"alloc / release / allow / release\" (in which case \"release\" would be replacing `null`), there can be cases where this does not hold (multiple parsers/generators per thread, concurrently; but also just parser-and-generator case).\r\n\r\nSo let's add some basic checking into release method.\r\n\n\n\nComment by cowtowncoder:\nNote: in multiple-allocation case there is no real guarantee that the oldest buffer would be retained.  Fix just helps to ensure the longest buffer chunk is retained.\r\n\r\nBut instead of trying to retain oldest buffer at this level we should migrate to newer `RecyclerPool`  implementations (ones not based on `ThreadLocal`) as they will also better support multiple-instances-of-buffer-per-thread case, in addition to other benefits.\r\n",
+        "source_code": null,
+        "distance": 1.0,
+        "title": "`BufferRecycler` should avoid setting replacement if one already returned, bigger",
+        "name": "issue#1186",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1117"
+          },
+          {
+            "start_node": "issue#1117",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1187"
+          },
+          {
+            "start_node": "pr#1187",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1186"
+          }
+        ],
+        "similarity": 0.41614815762148066,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1181",
+        "type": "issue",
+        "content": "### Search before asking\n\n- [X] I searched in the [issues](https://github.com/FasterXML/jackson-databind/issues) and found nothing similar.\n\n### Describe the bug\n\nWe had to add a call to BufferRecyclers.releaseBuffers(); in our contextDestroy method to avoid a memory leak on hot redeploy, but after upgrading to the 2.16.1 we are getting a message that BufferRecyclers is deprecated. Is calling BufferRecyclers.releaseBuffers() no longer necessary? \r\n\n\n### Version Information\n\n2.16.1\n\n### Reproduction\n\n<-- Any of the following\r\n1. Brief code sample/snippet: include here in preformatted/code section\r\n2. Longer example stored somewhere else (diff repo, snippet), add a link\r\n3. Textual explanation: include here\r\n -->\r\n```java\r\n// Your code here\r\n``` \r\n\n\n### Expected behavior\n\n_No response_\n\n### Additional context\n\n_No response_\n\n\nComment by pjfanning:\nDeprecated does not mean they work differently (yet). We have not deprecated the releaseBuffers method (yet). In a future version of jackson-core, the buffer recycling will default to the new buffer recycling code but it still defaults to the old code right now.\n\nComment by cowtowncoder:\nOk the short answer is that if you needed this functionality before, you can keep on using it. Method will not be removed before 3.0.\r\n\r\nBut ideally no one should ever (have to) call `BufferRecyclers.releaseBuffers()` -- it only has effect for esoteric case of System property `com.fasterxml.jackson.core.util.BufferRecyclers.trackReusableBuffers` being enabled.\r\nSo unless you set that sysprop, method does absolutely nothing; I assume you were aware of this but I just mention it for sake of completeness.\r\n\r\nThis system will be removed from Jackson 3.0, and if anyone needs something similar, that would indeed need to be implemented using new (in 2.16) `RecyclerPool` API.\r\n\r\nBut the need for tracking and release only concerns the default `ThreadLocal`-based recycling so eventually, even with 2.x (we hope), we hope to change default buffer recycling scheme to use pools that are bound to `JsonFactory` instances.\r\nWith that, buffers should not be problematic wrt context reloading.\r\n\r\nApologies for bit of stream-of-consciousness explanation here.\r\n\n\nComment by cowtowncoder:\nAlso, TL;DNR:\r\n\r\nYes, with 2.16 and later, use of different `RecyclerPool` (like any of alternatives included) will remove need to use `BufferRecyclers.releaseBuffers()`. But if leaving current default implementation, `ThreadLocal`-based one, it may still be used as before for same reasons it was already used. And while deprecated, mechanism WILL NOT be removed from Jackson 2.x.\r\n\n\nComment by cowtowncoder:\nAlso, wrong repo; will move to `jackson-core` where relevant functionality lives.\n\nComment by cowtowncoder:\nCreated #1202 which should remove need for `BufferRecyclers.releaseBuffers()`, when using one of newer pool implementations. Closing.\r\n",
+        "source_code": null,
+        "distance": 0.5,
+        "title": " Is calling BufferRecyclers.releaseBuffers() no longer necessary on contextDestroy?",
+        "name": "issue#1181",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1202"
+          },
+          {
+            "start_node": "issue#1202",
+            "description": "referenced by issue",
+            "type": "RELATED",
+            "end_node": "issue#1181"
+          }
+        ],
+        "similarity": 0.4121230377168434,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1085",
+        "type": "issue",
+        "content": "Addressing issues uncovered in the first PR to add pluggable BufferRecycler pooling.\n\n\nComment by mariofusco:\n@cowtowncoder Thanks a lot. I will rebase https://github.com/FasterXML/jackson-core/pull/1064 against this commit and the former one and rework it accordingly. Please don't change anything in this area in the meanwhile, or at least warn me if you have to do so.\n\nComment by cowtowncoder:\n> @cowtowncoder Thanks a lot. I will rebase #1064 against this commit and the former one and rework it accordingly. Please don't change anything in this area in the meanwhile, or at least warn me if you have to do so.\r\n\r\nThanks, will try to avoid/limit changes in relevant areas.\r\n",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "Changes to initial BufferRecyclerProvider PR",
+        "name": "pr#1085",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1117"
+          },
+          {
+            "start_node": "issue#1117",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1064"
+          },
+          {
+            "start_node": "pr#1064",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1085"
+          }
+        ],
+        "similarity": 0.40863882889914105,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "67",
+        "type": "issue",
+        "content": "Since Google seems unable to provide sane handling for SoftReferences, perhaps we can work-around this issue to some degree, at least for a relatively common case of single-threaded reuse.\n\nThe basic idea would be that before checking for combination of `ThreadLocal` and `SoftReference`, it'd be possible to use a share `AtomicReference` for a single buffer. If an instance is found this way, it could avoid use of SoftReference-based alternative; if not, it could use current handling.\nThis should not add significant overhead over current approach (it might even improve it slightly), but should work better on Android.\n\n\n\nComment by cowtowncoder:\nOk, one complication: the way `BufferRecycler` is handled, a `ThreadLocal` instance is accessed by `JsonFactory`, but never returned (it is set if need be, to allow for full access from same thread). This is problematic wrt one of possible ways to handle this.\n\n\nComment by cowtowncoder:\nQuick note: Jackson 2.6 adds `JsonFactory.Feature.USE_THREAD_LOCAL_FOR_BUFFER_RECYCLING` that allows disabling buffer recycling (as per #189), which could help a bit here.\nWhile it would be nice to have some alternate form of recycling (as mentioned, via singleton, `AtomicReference`), at least removing attempts to use `ThreadLocal`/`SoftReference` should offer minor improvement on Android.\n\n\nComment by jborgers:\nWe see a class loader memory leak by using jackson: on redeployment of our application in WebSphere we see an increase of heap usage of a couple of hundred MB's en after several redeployments heap usage becomes close to the heap size and garbage collection takes a lot of CPU.\r\n\r\nSoftReferences may help to prevent out of memory errors, it doesn't help for gc overhead (including long compaction pauses.)\r\nIn addition, the BufferRecycler classes of previous deployed versions of the app are still in the ThreadLocals of all threads of the threadpool and prevent the classloader with all its classes to be unloaded. \r\nSee here: https://stackoverflow.com/questions/17968803/threadlocal-memory-leak for more on classloader leaks.\r\n\r\nWe would like Jackson to release/remove the BufferRecyclers from the ThreadLocals on shutdown, by calling a shutdown method on e.g. JsonFactory.\r\nSee also: http://java.jiderhamn.se/2012/02/26/classloader-leaks-v-common-mistakes-and-known-offenders/\n\nComment by cowtowncoder:\n@jborgers Could you file a separate issue, since although it is sort of related, it sounds like separate issue?\r\nI can see potential issues with hot reloading, although TBH I didn't think anyone would really want to use those in production systems these days (but rather just during development). \r\nIf there are convenient hooks for clearing state (and if `ThreadLocal` allows purging across Threads -- I know that under the hood there are probably means, but `JsonFactory` does not keep track of anything by itself) adding those would be an improvement.\r\n\r\nThank you for the links that might be helpful here.\r\n\r\n\n\nComment by cowtowncoder:\nOne thought on `BufferRecycler` usage: while bit ugly, it would probably be possible to replace its use with old-skool combination of recycler \"class\", for static utility methods, but passing `Object[]` that contains buffers to be recycled. These would need to be cast, but doing this would remove any Jackson provided classes -- buffers are just `byte[]`s and `char[]`s after all.\r\nIf this is the only class remaining it could help remove `ClassLoader` reference itself I assume.\r\n\n\nComment by cowtowncoder:\nSolved by #1089 for Jackson 2.16 and later: pluggable buffer recyclers including multipl non-SoftReference based alternatives.",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "Improve buffer recycling for platforms that have broken SoftReference (Android)",
+        "name": "issue#67",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1117"
+          },
+          {
+            "start_node": "issue#1117",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1089"
+          },
+          {
+            "start_node": "issue#1089",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#67"
+          }
+        ],
+        "similarity": 0.390330571907684,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "833",
+        "type": "issue",
+        "content": "As _allocMore() method is called, _byteBuffers will reference to a new larger byte array, and the garbage collector has to collect the original memory. In my application, it may cause frequently fullgc.\r\n\r\nThe screenshot shows a dump with many unreachable byte array (in old heap) which caused by BufferRecycler.\r\n\r\nWhen I switched USE_THREAD_LOCAL_FOR_BUFFER_RECYCLING to false, fullgc times reduced while younggc times increased, so  I ask you if we can use bufferRecycler and with a fixed size buffer ?\r\n\r\n![image](https://user-images.githubusercontent.com/6293093/198582407-11db680d-f690-4c69-af4d-9531ccd61cc8.png)\r\n\n\n\nComment by cowtowncoder:\nUnfortunately due to the way `BufferRecycler` works it is difficult to add configurability (mostly it being handled with `ThreadLocal` and there's nothing bound to `JsonFactory` unlike most other things are).\r\nBut I do think that what you asking (ability to limit maximum recyclable buffer size, possibly by limiting largest chunk to allocate) makes sense.\r\n\r\nI'll leave this open and see if something could be figured out.\r\n\r\n\n\nComment by qiuyinglanshan:\n@cowtowncoder \r\nThanks for your reply.\r\n\r\nI found that when releasing space to BufferRecycler, comparing the size of the current space with the original space(recorded in an array at each allocation) can solve the problem. Could you help confirm whether the following codes are correct?\r\n\r\n- init:\r\n\r\n```\r\n    private final byte[][] _byteBuffersRecords;\r\n    private final char[][] _charBuffersRecords;\r\n\r\n    protected BufferRecycler(int bbCount, int cbCount) {\r\n        _byteBuffers = new AtomicReferenceArray<byte[]>(bbCount);\r\n        _charBuffers = new AtomicReferenceArray<char[]>(cbCount);\r\n        _byteBuffersRecords = new byte[bbCount][];\r\n        _charBuffersRecords = new char[cbCount][];\r\n    }\r\n```\r\n\r\n- alloc:\r\n\r\n```\r\n    public byte[] allocByteBuffer(int ix, int minSize) {\r\n        final int DEF_SIZE = byteBufferLength(ix);\r\n        if (minSize < DEF_SIZE) {\r\n            minSize = DEF_SIZE;\r\n        }\r\n        byte[] buffer = _byteBuffers.getAndSet(ix, null);\r\n        if (buffer == null || buffer.length < minSize) {\r\n            buffer = balloc(minSize);\r\n        } else {\r\n            // fill in records\r\n            _byteBuffersRecords[ix] = buffer;\r\n        }\r\n        return buffer;\r\n    }\r\n```\r\n- release:\r\n```\r\n    public void releaseByteBuffer(int ix, byte[] buffer) {\r\n        if (_byteBuffersRecords[ix] != null) {\r\n            if (buffer == null || _byteBuffersRecords[ix].length >= buffer.length) {\r\n                // get from records\r\n                buffer = _byteBuffersRecords[ix];\r\n            }\r\n            _byteBuffersRecords[ix] = null;\r\n        }\r\n        _byteBuffers.set(ix, buffer);\r\n    }\r\n```\r\nThis ensures that if the newly created buffer length is less than or equal to the original, it will **not** be updated. I think this can reduce the number of buffer objects promoted to the old generation space to some extent.\r\n\r\n\r\n\n\nComment by cowtowncoder:\n@qiuyinglanshan I think I understand the idea and it makes sense (try to avoid replacing buffer with something that's not bigger than what we already had). But I do not like storing an additional reference in separate array.\r\nHow about instead check value `_byteBuffers` (or `_charBuffers`) entry has, if any, and compare size it has? And then only `set` if there was no previous value OR released buffer is bigger than previous one?\r\n\r\nI'll see if I can provide a simple alternative that does this.\r\n\r\n\r\n\n\nComment by cowtowncoder:\nOh actually, no, never mind. I forgot that the buffer reference is cleared when returned with `_byteBuffers.getAndSet(ix, null);`. So there's no way to compare size.\r\n\r\nSo with this I am not sure why change you suggest would make any difference. I am  not sure I understand the logic after all.\r\n\n\nComment by qiuyinglanshan:\n> Oh actually, no, never mind. I forgot that the buffer reference is cleared when returned with `_byteBuffers.getAndSet(ix, null);`. So there's no way to compare size.\r\n> \r\nYes, this is why I created a reference point to the original byte array instead of comparing sizes directly. \r\n\r\n> So with this I am not sure why change you suggest would make any difference. I am not sure I understand the logic after all.\r\n\r\nI'll try to show the difference between the original logic and the new logic.\r\n\r\nFirst of all, I want to explain that because _byteBuffers is held by ThreadLocal for a long time (eg. in thread pool case), and the array object it references will be promoted to the old age.\r\n\r\nWhen releaseByteBuffer() is called, _byteBuffers may refer to a new array object if _allocMore() is executed. Although with the occurrence of younggc for many times(eg. max 15 age), this new object has not been recycled since ThreadLocal holding. As a result, the new array object will continue to promoted the old generation space.\r\n\r\nMy new logic is to hope that the new array object can be recycled by younggc if its length less than or **equal to** the original buffer arrry(In many cases, both of the length are 128k). So it reduce the number of buffer objects promoted to the old generation space, and fullgc occurs less frequently.\r\n\r\n\r\n\r\n\r\n\n\nComment by qiuyinglanshan:\nIn addition, as you mentioned in #835 , I think it would be better to add an initial buffer size that can be configured instead of _\"{ 8000, 8000, 2000, 2000 }\"_.\r\nFor example, in my case, I would set the initial buffer size to 128k without using _allocMore to expand it, thus reducing unnecessary performance overhead and long alive object garbage.\n\nComment by cowtowncoder:\n+1 for configurability, created #835 for being able to configure `BufferRecycler` behavior or add a custom implementation.\r\n\r\nAs to change proposed, part I do not understand is why change would likely change things: `_allocMore()` should usually only be called to allocate bigger buffers. I guess the one case where it might matter would be when the max block size is reached and new block is same size (max size). I can see how that could cause churn.\r\n\r\nOn change proposed, I think there is a real correctness problem for async use cases where same thread may be used to serve multiple requests. If so, when a buffer is returned we can NOT be certain that all buffers returned are freed (or more specifically, most recently returned buffer has been freed). So I think making change could cause data corruption where sometimes (rarely but sometimes) buffer could end up being used by 2 parsers/generators, from different sync handlers. I say this because originally reference to buffer was not actually cleared and we relied on assumption that calls are always one-thread-per-request blocking code.\r\nSo to solve the problem of returning different-but-no-bigger buffer it'd have to be solved from side of entity that gets and releases buffer. Not sure how feasible that is.\r\n\n\nComment by qiuyinglanshan:\nI'm sorry I can not understand it, and I'd appreciate it if you could point it out again.\r\n\r\n> So I think making change could cause data corruption where sometimes (rarely but sometimes) buffer could end up being used by 2 parsers/generators, from different sync handlers.\r\n\r\nAccording to the following code, when a buffer is borrowed, it will NOT be borrowed again by other requests until it is returned by the previous request. Therefore, the buffer(and more specifically, the index it is in) should be exclusive, so I cannot understand why it will NOT be freed by other requests when it is returned.\r\n```\r\n    byte[] buffer = _byteBuffers.getAndSet(ix, null);\r\n    if (buffer == null || buffer.length < minSize) {\r\n        buffer = balloc(minSize);\r\n    } \r\n```\r\n\r\n> when a buffer is returned we can NOT be certain that all buffers returned are freed\r\n\r\nThe newly added reference is actually an array of 4 references, with each element pointing to a unique buffer when it is borrowed. In the new logic, only the current index(variable `ix`) is processed, and no other buffers are processed.\r\n```\r\n    if (_byteBuffersRecords[ix] != null) {\r\n        if (buffer == null || _byteBuffersRecords[ix].length >= buffer.length) {\r\n            // get from records\r\n            buffer = _byteBuffersRecords[ix];\r\n        }\r\n        _byteBuffersRecords[ix] = null;\r\n    }\r\n```\r\nLooking forward to your guidance~\n\nComment by cowtowncoder:\n@qiuyinglanshan You are assuming that there will not be overlapping creation and usage of parsers and/or generators: this is not true for asynchronous frameworks -- or actually even in blocking ones, come to think of that.\r\nThere is nothing to enforce the original assumed allocate/release cycle. It would be possible to create a test scenario for this, constructing one parser, calling `nextToken()` on it, creating another one from same thread, calling `nextToken()`, then closing first one. The most recent allocate would not match with the release.\r\n\r\nI don't think I want to proceed with approach suggested above. If the allocation churn is to be solved, it will require caller (parser, generator) to try to return what it seems is most optimal (biggest, or if multiple buffers with same size allocated, the one that is recycled).\r\n\n\nComment by cowtowncoder:\nA lot of work went into 2.16 to allow pluggable recycler pools (see `JsonRecyclerPools`, #1064.\r\n\r\nClosing this issue as it is probably outdated; if changes still desired, should file a new issue based on current state of things (wrt 2.17 branch).",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "Can BufferRecycler support a fixed buffer size which can be customized, instead of dynamic one by calling _allocMore()",
+        "name": "issue#833",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1117"
+          },
+          {
+            "start_node": "issue#1117",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1064"
+          },
+          {
+            "start_node": "pr#1064",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#833"
+          }
+        ],
+        "similarity": 0.34938749479909015,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1083",
+        "type": "issue",
+        "content": "\n\n\nComment by cowtowncoder:\ncc @mariofusco @pjfanning this would be building block for #1064: defined as separate PR so I can merge this scaffolding to `master` (for 3.0) first, since merging will get bit messy overall.\n\nComment by pjfanning:\nI think the IOContext should normally be tried to a JsonFactory and that there is an argument that the a buffer recycler could be reused by all IOContexts associated with a JsonFactory instance.\r\n\r\nIf there is test code that creates IOContexts directly, then there might be an argument for us to change those to use JsonFactories.\r\n\r\n@cowtowncoder can clarify if IOContexts need to creatable without Json Factories.\n\nComment by cowtowncoder:\n@mariofusco @pjfanning You are correct: `IOContext` should never be created by anything other than `JsonFactory` (and it subtypes). Some tests do create it to simplify set-up but that should not be done by non-test code.\r\nIdeally these test dependencies would be reduced to minimum or removed; but if not, perhaps `IOContext` should have specific test support method(s) (factory method probably).\r\n\r\n**EDIT**: Ok actually there is at least one alternate/secondary owner for `BufferRecycler`s: `ObjectMapper` methods `writeValueAsBytes()` (and `...AsString()`). \r\nThey do not use `IOContext`, just recycler. So perhaps supporting would be easy enough.\r\n\r\nThis leads to another thing that is bit open: need for `BufferRecyclerProvider.releaseBufferRecycler()` (or lack thereof).\r\nTo use that, `IOContext` would need to be passed both Provider and Recycler -- but it might be simpler and safer to make Provider pass itself (or just Function?) to Recycler, to be called when closing.\r\n\r\nI think I will remove this method before merging; it (or similar) can easily be added when scaffolding is ready; for now only acquire method is really needed.\r\n\r\n\n\nComment by cowtowncoder:\nMerged: looking at code I do think that `BufferRecycler` itself should probably have `release()` (or similar) that will release itself to provider (pool) that created it. Not needed for ThreadLocal-based provider, fwtw; but for others.\r\nDoing this would require adding `BufferRecycler` constructor that takes `BufferRecyclerProvider` and retains reference to it.\r\n\r\nWDYT?\r\n\n\nComment by cowtowncoder:\nQuick note: I will do another PR with at least following changes:\r\n\r\n1. Rename Provider -> Pool\r\n2. Add \"release\" method back -- I finally grokked why this is almost certainly needed (I think we'll pass Pool instance through `BufferRecycler`, so no custom sub-classes)\r\n3. Add no-op implementation\r\n\n\nComment by cowtowncoder:\nDid #1085, merged it. So I think this is closer to working baseline.\n\nComment by mariofusco:\n> Merged: looking at code I do think that `BufferRecycler` itself should probably have `release()` (or similar) that will release itself to provider (pool) that created it. Not needed for ThreadLocal-based provider, fwtw; but for others. Doing this would require adding `BufferRecycler` constructor that takes `BufferRecyclerProvider` and retains reference to it.\r\n> \r\n> WDYT?\r\n\r\nAgreed, and I did something similar in my pull request. Actually there also `BufferRecycler` implements `AutoCloseable` and its `close()` method behaves as a `release()` returning the instance to the pool. I'm no longer sure if what I did is semantically correct because there you're not really closing the instance, but only making it available to the pool again, so yes, I guess that I will use `release()` also in my pull request.",
+        "source_code": null,
+        "distance": 1.0,
+        "title": "Add `BufferRecyclerProvider` configuration",
+        "name": "pr#1083",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1117"
+          },
+          {
+            "start_node": "issue#1117",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1064"
+          },
+          {
+            "start_node": "pr#1064",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1083"
+          }
+        ],
+        "similarity": 0.3410143129885184,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1190",
+        "type": "issue",
+        "content": "(note: spun off of https://github.com/FasterXML/jackson-databind/issues/4321)\r\n\r\nOne major new feature in Jackson 2.16 was addition of pluggable `RecyclerPool`s (see #1064 f.ex).\r\nBut unfortunately their functioning was not tested beyond regression testing for the default, ThreadLocal-based legacy `RecyclerPool`.\r\nLet's start by adding streaming-level testing first.\r\n\r\n**EDIT**: there is actually one test -- `BufferRecyclerPoolTest` -- that verifies some aspects but is limited (only simple generation case, not parser), but we can do better.\r\n\n\n",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "No tests for verifying basic functioning of `RecyclerPool` implementations (#1064)",
+        "name": "issue#1190",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1117"
+          },
+          {
+            "start_node": "issue#1117",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1064"
+          },
+          {
+            "start_node": "pr#1064",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1190"
+          }
+        ],
+        "similarity": 0.3118246163504711,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "920",
+        "type": "issue",
+        "content": "According to https://github.com/FasterXML/jackson-core/blob/31d4d85dcb25ca6699294db69591388470b9f8fc/src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java#L133 and https://github.com/FasterXML/jackson-core/blob/31d4d85dcb25ca6699294db69591388470b9f8fc/src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java#L159 `BufferRecycler`, that IIUC is supposed to be thread-confined (and obtained via thread local allocation/recycling), can avoid using atomic instructions (that are quite costy in the hot path, especially if supposely single-threaded).\r\n\r\nI see that the reason is due to the `releaseXYZBuffer(int ix, ...)` that can (maybe) perform release from whatever thread...is it correct? Or there are other reasons?\r\n\r\nI'm preparing a patch, to get used with the codebase, in case :)\n\n\nComment by franz1981:\nReading https://github.com/FasterXML/jackson-core/issues/479 that contains some background about it\n\nComment by franz1981:\nI see that the mentioned issue above perfectly answer my question and I can close this issue, although in my experience, hot path `getAndSet` are far distant from being free, especially on x86, which imply costy `xchg` instructions to be emitted.\r\nWhat's likely is that whatever benchmark/test wasn't stressing enough this, making it negligible if compared to other bottleneck: and that's fine; it means too that fixing this shouldn't bring noticeable improvements till other bottlenecks will be addressed first, if that previous analysis is still valid now (that's 2023 vs 2019, I suppose many things has changed from there).\r\n\r\n@cowtowncoder \r\nBased on https://github.com/FasterXML/jackson-core/issues/479#issuecomment-525143217 it mentions `jackson-benchmarks` and I'll give it a short: I'm going to report here or in another issue depending if relevant for the current topic.\n\nComment by cowtowncoder:\nRight, the short answer is that non-blocking/async use cases would be problematic; more than one `JsonParser` or `JsonGenerator` would get access to same buffer, and although they'd not run concurrently (bound to thread) they would interfere/cause corruption.\r\n\n\nComment by franz1981:\n> although they'd not run concurrently (bound to thread) they would interfere/cause corruption.\r\n\r\nI don't understand this; if no concurrent access happen because they interleave correctly based on external as-sequential order, no atomic ops should be needed - I'm not a natural english speaker so maybe I've misunderstood your comment too. I'll read again the referenced issue to better understand, thanks!\r\n\r\n\n\nComment by cowtowncoder:\n> > although they'd not run concurrently (bound to thread) they would interfere/cause corruption.\r\n> \r\n> I don't understand this; if no concurrent access happen because they interleave correctly based on external as-sequential order, no atomic ops should be needed - I'm not a natural english speaker so maybe I've misunderstood your comment too. I'll read again the referenced issue to better understand, thanks!\r\n\r\nOk. So, the problem is that effectively access to `BufferRecyler` WOULD come from different threads, because `JsonParser`/`JsonGenerator` instances were no longer bound to specific thread. So parser#1 on thread#1 would get an instance of `BufferRecycler`, start using it. But then another parser, parser#2 would be created on thread#1 as well; and in the meantime parser#1 may be running on different unrelated thread.\r\nThis happens on async processing when different stages of processing are done on different set of execution threads.\r\n\r\nPut another way: life-cycles of individual parsers/generators overlap, and they do not stay thread-bound in non-blocking use scenarios.\r\n\r\nAnd because of this, access to buffers within `BufferRecyclers` started to need syncing that was not needed for blocking use cases where the issue usually does not occur (but I guess with different thread pools they actually can? Maybe it's not even just async usage).\r\n\n\nComment by franz1981:\n>  (but I guess with different thread pools they actually can? Maybe it's not even just async usage).\r\n\r\nI think that if the owner of the `BufferRecycler` escape its thread where it has been allocated/recyled and the same `BufferRecycler` instance is shared and was accessible by others, it can still happen (that's the same problem with reactive libraries that don't do thread confinement, instead of running on the same event loop over and over - that's what Mutiny does IIRC).\r\nSo, in theory the problem is the *sharing* part: this can change if the thread local `BufferRecycler` can be \"consumed\" while acquired, and, if on the same thread, another `JsonParser/JsonGenerator` will try to acquire it, it has to create/reuse if avaialble another one. \r\nThis will make the `BufferRecycler` to not be shared anymore and it won't requires any atomic op, but will likely make, with a reactive stack, to have multiple `BufferRecycler`s per thread (base on the concurrency level i.e. how many concurrent reactive stages are using different ones), but it shouldn't be a big deal (right now if `BufferRecycler`s components `getAndSet` return `null` it will create a new one, so, simlarly here, different strategies could be used to make everyone happy - including limiting the number of `BufferRecycler` instances).\r\n\r\nWhat could happen with such approach is that, while the `BufferRecycler` will be \"recycled\" (something that doesn't exist yet, with an explicit \"close\" IIUC), it should contains a reference of the originating (\"owner\" let's call it) thread (local? not important really), stored in a concurrent queue (multi producer, single consumer) and will dispose it there by offering it back, until specific limits and if the thread is not dead (the `BufferRecycler` should have a soft/weak ref over `Thread` to avoid keeping it alive more then  necessary and/or offering a disposed recycler to someone no longer alive).\r\n\r\nIn a future the thread-local concurrent queue of `BufferRecycler` can be replaced, for virtual threads, by a fixed size (or growable too) array of queues and can use some nice math trick to distribute which queues to picking it based on the thread-id (I've solved something similar on https://github.com/franz1981/netty/blob/2c9a513edbe9250cb9270d37c428e9931a63f524/buffer/src/main/java/io/netty/buffer/PooledByteBufAllocator.java#L387).\r\n\r\n\r\n\r\n\n\nComment by franz1981:\nI see @cowtowncoder that I've been way to verbose to describe the idea, let me know if I have to rewrite it in a more concise way or if something isn't clear (my fault)\n\nComment by cowtowncoder:\n@franz1981 I think that I do not actually see all that much benefit in trying to solve the way buffer recycling currently works -- locking has overhead but I would not consider it a major problem.\r\n\r\nBut rather I think that the bigger problem is coming issue with `ThreadLocal`s and inflexibility of current internal API. So to me refactoring of this API, to allow alternative implementations is the important part. Trying to figure out how `BufferRecycler`s were not shared across Threads is probably fool's errand as it'd tie things more closely to `ThreadLocal` (instead of less).\r\n\r\nI think your last paragraph is nicely in line with what I think of future, fwtw; yes, the direction would be towards more centralized recycling (per-factory, but one pool, not using ThreadLocal).\r\n\r\nStill, how to change in place for Jackson 2.x is non-trivial, and this is not at the top of my priority list either (it's high just not top).\r\n\n\nComment by franz1981:\n> I think that I do not actually see all that much benefit in trying to solve the way buffer recycling currently works -- locking has overhead but I would not consider it a major problem.\r\n\r\nI though that having a simpler lifecycle (unshared, but own exclusively per-`JsonParser/JsonGenerator`), decoupled from the owner thread, but just having a notion of \"owner\" (which API is unique and got diff impl if is threadlocal thing or anything different) for `BufferRecycler` would benefit the code more then the performance aspects.\r\nIn this way the meaning of being \"recycled\" means \"unshared\" and in a quiescent state and we're trusty (unless users misues, that probably we should still capture somehow) that we can do whatever we want with it.\r\n\r\n> I think your last paragraph is nicely in line with what I think of future, fwtw; yes, the direction would be towards more centralized recycling (per-factory, but one pool, not using ThreadLocal).\r\n\r\nYep, I can come up with something related this, but myself got few things on my place recently, although I can work on this in background.\r\n\r\n> Still, how to change in place for Jackson 2.x is non-trivial, and this is not at the top of my priority list either (it's high just not top).\r\n\r\nDon't worry I perfectly understand/relate to this :)\r\nI'm very interested into your comment on https://github.com/FasterXML/jackson-core/issues/919#issuecomment-1425028482\r\n\r\n> The way release would have to happen, I think, is with close() of JsonParser/JsonGenerator instance, clearing local BufferRecycler first, then calling recycler.release() method\r\n\r\nif I can apply this change in the right way this would unblock the rest (not in a release eh, I mean in fork to start with)\n\nComment by cowtowncoder:\n@franz1981 yes, if you want to go ahead, propose something that'd be a good way to go.\r\n\r\nSo the idea would be for a single parser/generator to own `BufferRecycler`. Ideally I guess there'd be separate reader-/writer-side recyclers, really (now that there's no shared ownership, so half of buffers are always unreferenced), but that would require too big an API change.\r\nConsidering all dataformat backends that need retrofitting, and where ideally we would have some level of compatibility across \"adjacent\" minor versions.\r\n",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "why BufferRecycler uses atomic ops on its buffers?",
+        "name": "issue#920",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1117"
+          },
+          {
+            "start_node": "issue#1117",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1089"
+          },
+          {
+            "start_node": "issue#1089",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#920"
+          }
+        ],
+        "similarity": 0.30119938785339945,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "835",
+        "type": "issue",
+        "content": "(note: offshoot of #833)\r\n\r\nWhile there is `JsonFactory.Feature.USE_THREAD_LOCAL_FOR_BUFFER_RECYCLING` that allows turning off buffer recycling, there isn't any way to change, for example, default buffer sizes; or logic of what to recycle if anything (current logic will recycle bigger buffers if parser/generator has to realloc bigger ones).\r\nIt would be nice to be able to offer alternate configuration, if possible.\r\n\n\n",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "Improve `BufferRecyclers` configurability via `JsonFactory`",
+        "name": "issue#835",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1117"
+          },
+          {
+            "start_node": "issue#1117",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1089"
+          },
+          {
+            "start_node": "issue#1089",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#835"
+          }
+        ],
+        "similarity": 0.27230196597593137,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "21",
+        "type": "issue",
+        "content": "There have been some attacks (DoS) that make use of collisions in String.hashCode() values (or at least their low-bits collisions).\nThe one place where this matters most is in handling of symbol table: although Jackson actually does not directly use String.hashCode(), internal calculation is along the same lines.\n\nThis should be changed by, for example:\n- Using a non-constant seed value for calculation starting point; this could use system time as base, and needs to be something that varies between different runs\n- Append or prepend String length\n- Perhaps even use different multiplier during different runs? (31 vs 37 vs 39)\n\nCare needs to be taken as this is one of more performance critical paths.\n\n\n\nComment by cowtowncoder:\nOk, some learnings:\n- append/prepend of a per-map seed does not help with std JDK hashCode() (or its variations), since they fundamentally prone to cheap substring-concatenation style generation of collisions.\n- length() won't either, as substring-based strings can have same length as well.\n\nSome remaining practical alternatives include:\n- Use same hash code algo as Perl, which uses shifting; downside is that this is rather slow (twice as slow) -- however, while this is true for stand-alone calculation, it might not be measurable in big picture.\n- Use Adler-32 variation: this would be much faster (in fact, even marginally faster than original hashCode()!); but I need to verify that it can benefit from seed\n\nIn both cases it is important to note that per-Map seed value should make it impractical to pre-calculate collisions.\n\n\nComment by cowtowncoder:\nWith some testing, found out that Adler-32 is not (alas!) a good alternative; number of collisions is surprisingly high.\n\nSo: with that, changes to make will be:\n- For byte-based variant, add shifting, make less linear; should pretty much fix the problem\n- For char-based variant, add post-shuffling, use better multiplier. Will NOT fix substring problem, just improves non-malevolent cases\n- For both, add checking so that if max-collisions-length exceeds, exception thrown: assumption being that collisions may be still calculatable.\n\nNOTE: this does NOT fix potential issue with `ObjectNode`; that is covered by another Issue.\n\n\nComment by cowtowncoder:\nOn versions: fixes included in upcoming releases:\n- 1.9.9 for 1.x series (not backported as previous branches are closed)\n- 2.0.5 for 2.0; and 2.1.0 when 2.1 gets released.\n",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "Replace use of std String.hashCode() with safer alternative",
+        "name": "issue#21",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1117"
+          },
+          {
+            "start_node": "issue#1117",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1089"
+          },
+          {
+            "start_node": "issue#1089",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#21"
+          }
+        ],
+        "similarity": 0.0993683198948414,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "427",
+        "type": "issue",
+        "content": "OpenShit Online V2 is closed and this domain is not accessible anymore.\r\nAnd javadoc.io introduce badges hosted directly on javadoc.io\n\n\nComment by cowtowncoder:\nThanks!\r\n",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "Update URL for Javadoc badge's image",
+        "name": "pr#427",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1117"
+          },
+          {
+            "start_node": "issue#1117",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1064"
+          },
+          {
+            "start_node": "pr#1064",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#427"
+          }
+        ],
+        "similarity": 0.06502051788289848,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "176",
+        "type": "issue",
+        "content": "Although `00` can be parsed as `0` in some cases, it is not a valid JSON number; and is also not legal numeric index for JSON Pointer. As such, `JsonPointer` class should ensure it can only match property name \"00\" and not array index.\n\n\n",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "`JsonPointer` should not consider \"00\" to be valid index",
+        "name": "issue#176",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1117"
+          },
+          {
+            "start_node": "issue#1117",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1089"
+          },
+          {
+            "start_node": "issue#1089",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#176"
+          }
+        ],
+        "similarity": -0.006363140692417959,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "399",
+        "type": "issue",
+        "content": "When serializing data that is mapped using the @JsonCreator/@JsonProperty annotations, and when an unknown property is encountered, the JsonLocation row indicated in the exception message is not correct (See attached test case). Also, for simple deserialization scenarios where the row is correct, the column location is not what I would expect. I would expect the column to indicate the beginning of the property name, but it doesn't.\r\n[LocationTest.java.zip](https://github.com/FasterXML/jackson-core/files/1301014/LocationTest.java.zip)\r\n\r\n\n\n\nComment by cowtowncoder:\nAnd this is for Jackson version.... ?\r\n\n\nComment by coberleyv:\nSorry, forgot to mention that ... noticed in production at version 2.7.5. Reproduced and created test case with 2.9.1 \n\nComment by cowtowncoder:\nThank you for updated info. One note: since you are using annotations etc, this issue may belong under `jackson-databind` (since we couldn't add test case here). But it's ok for now.\r\n\r\nOne typical challenge with Creator properties, and something we probably won't be able to solve any time soon, is that buffering is often needed. Since locations are dynamically accessed, and since construction and retaining of `JsonLocation` has non-trivial cost (if done for each and every token), this tends to lead to location of buffered tokens not really being accurate -- it either refers to current location within stream (ahead), or, if choose to, location of the first token that was buffered.\r\n\r\nIt would perhaps be possible to add a `DeserializationFeature.EXACT_LOCATIONS` or such, which would start keeping token-by-token track, although that'd have to work through `TokenBuffer` to ensure they are retained (unless we'd be ok with location of first token of every value -- for scalars that's the only location, for Objects opening `{` etc).\r\n\n\nComment by cowtowncoder:\nNeeds to go under `jackson-databind`.\r\n",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "Wrong JsonLocation row/column for UncrecognizedPropertyException",
+        "name": "issue#399",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1117"
+          },
+          {
+            "start_node": "issue#1117",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1089"
+          },
+          {
+            "start_node": "issue#1089",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#399"
+          }
+        ],
+        "similarity": -0.02505971765636031,
+        "end_line": null,
+        "signature": null
+      }
+    ]
+  },
+  "artifact_stats": {
+    "skipped_due_to_time": 6,
+    "valid_related_items": 163
+  }
+}

@@ -1,0 +1,43 @@
+Based on the issue description, the bug is related to `@JsonSetter(nulls = Nulls.SKIP)` not working properly when deserializing nested objects with final fields. The issue occurs when the null field appears before non-null fields in the JSON.
+
+Looking at the code, the problem stems from how Jackson handles constructor properties and final fields during deserialization. The issue suggests that changing field order or removing final fixes it, but those aren't feasible solutions.
+
+The root cause appears to be in how `ConstructorProperties` interacts with `@JsonSetter` annotations during deserialization. When using constructor-based binding, the null skipping behavior isn't properly respected for nested objects.
+
+Here's the proposed fix that modifies the deserialization logic to properly respect `@JsonSetter(nulls = Nulls.SKIP)` even when using constructor properties:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java
+<<<<<<< SEARCH
+            if (_nullProvider != null) {
+                Object nullValue = _nullProvider.getNullValue(ctxt);
+                if (nullValue != null) {
+                    p.setValue(nullValue);
+                    return;
+                }
+            }
+=======
+            if (_nullProvider != null) {
+                Object nullValue = _nullProvider.getNullValue(ctxt);
+                if (nullValue != null) {
+                    // Check for @JsonSetter(nulls = SKIP) first
+                    if (_property != null && _property.getMetadata().getNulls() == Nulls.SKIP) {
+                        return;
+                    }
+                    p.setValue(nullValue);
+                    return;
+                }
+            }
+>>>>>>> REPLACE
+```
+
+This change modifies the null handling logic in `BeanDeserializer` to first check for `@JsonSetter(nulls = Nulls.SKIP)` before applying null values. This ensures that the null skipping behavior is respected even when constructor properties are involved.
+
+The fix works by:
+1. Checking if there's a property metadata available
+2. If so, checking if it has `Nulls.SKIP` configured
+3. If both conditions are true, skipping the null value entirely rather than trying to set it
+
+This maintains backward compatibility while fixing the issue where null values were being set despite the `SKIP` annotation.
+
+The change is minimal and focused specifically on the null handling behavior while preserving all other functionality. It should properly handle both the original case and all other cases where `@JsonSetter(nulls = Nulls.SKIP)` is used.

@@ -1,0 +1,20 @@
+--- a/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java
++++ b/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java
+@@ -971,6 +971,17 @@
+         return (T) deser.deserialize(p, this);
+     }
+ 
++    public <T> T readValue(JsonParser p, JavaType type, Object toUpdate) throws IOException {
++        if (toUpdate != null) {
++            JavaType subType = getTypeFactory().constructType(toUpdate.getClass());
++            if (type.getRawClass().isAssignableFrom(subType.getRawClass())) {
++                JsonDeserializer<Object> deser = findContextualValueDeserializer(subType, null);
++                return (T) deser.deserialize(p, this, toUpdate);
++            }
++        }
++        return readValue(p, type);
++    }
++
+     /**
+      * Convenience method that may be used by composite or container deserializers,
+      * for reading one-off values for the composite type, taking into account

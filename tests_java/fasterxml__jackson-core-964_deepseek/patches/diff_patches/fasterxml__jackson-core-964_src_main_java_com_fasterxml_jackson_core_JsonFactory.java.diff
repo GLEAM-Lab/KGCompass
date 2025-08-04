@@ -1,0 +1,14 @@
+--- a/src/main/java/com/fasterxml/jackson/core/JsonFactory.java
++++ b/src/main/java/com/fasterxml/jackson/core/JsonFactory.java
+@@ -779,6 +779,11 @@
+         return _streamReadConstraints;
+     }
+ 
++    public JsonFactory setStreamReadConstraints(StreamReadConstraints src) {
++        _streamReadConstraints = src == null ? StreamReadConstraints.defaults() : src;
++        return this;
++    }
++
+     /**
+      * Method for overriding {@link StreamReadConstraints} defined for
+      * this factory.

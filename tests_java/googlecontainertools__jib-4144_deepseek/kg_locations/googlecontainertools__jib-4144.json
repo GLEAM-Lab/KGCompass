@@ -1,0 +1,1885 @@
+{
+    "related_entities": {
+        "methods": [
+            {
+                "start_line": 356,
+                "file_path": "playground/googlecontainertools__jib/jib-build-plan/src/main/java/com/google/cloud/tools/jib/api/buildplan/ContainerBuildPlan.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ContainerBuildPlan build() {\n      return new ContainerBuildPlan(\n          baseImage,\n          platforms,\n          creationTime,\n          format,\n          environment,\n          labels,\n          volumes,\n          exposedPorts,\n          user,\n          workingDirectory,\n          entrypoint,\n          cmd,\n          layers);\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "build",
+                "documentation": "/**\n     * Returns the built {@link ContainerBuildPlan}.\n     *\n     * @return container build plan\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    }
+                ],
+                "similarity": 0.12802505089258107,
+                "end_line": 371,
+                "signature": "com.google.cloud.tools.jib.api.buildplan.ContainerBuildPlan.Builder.build(): ContainerBuildPlan"
+            },
+            {
+                "start_line": 101,
+                "file_path": "playground/googlecontainertools__jib/jib-cli/src/main/java/com/google/cloud/tools/jib/cli/Build.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public Integer call() {\n    commonCliOptions.validate();\n    Path buildFile = getBuildFile();\n    SingleThreadedExecutor executor = new SingleThreadedExecutor();\n    ConsoleLogger logger =\n        CliLogger.newLogger(\n            commonCliOptions.getVerbosity(),\n            commonCliOptions.getHttpTrace(),\n            commonCliOptions.getConsoleOutput(),\n            spec.commandLine().getOut(),\n            spec.commandLine().getErr(),\n            executor);\n    Future<Optional<String>> updateCheckFuture = Futures.immediateFuture(Optional.empty());\n    try {\n      JibCli.configureHttpLogging(commonCliOptions.getHttpTrace().toJulLevel());\n      GlobalConfig globalConfig = GlobalConfig.readConfig();\n      updateCheckFuture =\n          JibCli.newUpdateChecker(\n              globalConfig,\n              commonCliOptions.getVerbosity(),\n              logEvent -> logger.log(logEvent.getLevel(), logEvent.getMessage()));\n      if (!Files.isReadable(buildFile)) {\n        logger.log(\n            LogEvent.Level.ERROR,\n            \"The Build File YAML either does not exist or cannot be opened for reading: \"\n                + buildFile);\n        return 1;\n      }\n      if (!Files.isRegularFile(buildFile)) {\n        logger.log(LogEvent.Level.ERROR, \"Build File YAML path is a not a file: \" + buildFile);\n        return 1;\n      }\n\n      CacheDirectories cacheDirectories = CacheDirectories.from(commonCliOptions, contextRoot);\n      Containerizer containerizer = Containerizers.from(commonCliOptions, logger, cacheDirectories);\n\n      JibContainerBuilder containerBuilder =\n          BuildFiles.toJibContainerBuilder(contextRoot, buildFile, this, commonCliOptions, logger);\n\n      // Enable registry mirrors\n      Multimaps.asMap(globalConfig.getRegistryMirrors()).forEach(containerizer::addRegistryMirrors);\n\n      JibContainer jibContainer = containerBuilder.containerize(containerizer);\n      JibCli.writeImageJson(commonCliOptions.getImageJsonPath(), jibContainer);\n    } catch (InterruptedException ex) {\n      JibCli.logTerminatingException(logger, ex, commonCliOptions.isStacktrace());\n      Thread.currentThread().interrupt();\n      return 1;\n    } catch (Exception ex) {\n      JibCli.logTerminatingException(logger, ex, commonCliOptions.isStacktrace());\n      return 1;\n    } finally {\n      JibCli.finishUpdateChecker(logger, updateCheckFuture);\n      executor.shutDownAndAwaitTermination(Duration.ofSeconds(3));\n    }\n    return 0;\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "call",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Build"
+                    },
+                    {
+                        "start_node": "Build",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "call"
+                    }
+                ],
+                "similarity": 0.10687552969794799,
+                "end_line": 157,
+                "signature": "com.google.cloud.tools.jib.cli.Build.call(): Integer"
+            },
+            {
+                "start_line": 48,
+                "file_path": "playground/googlecontainertools__jib/jib-cli/src/main/java/com/google/cloud/tools/jib/cli/CacheDirectories.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static CacheDirectories from(CommonCliOptions commonCliOptions, Path contextRoot) {\n    Preconditions.checkArgument(\n        Files.isDirectory(contextRoot),\n        \"contextRoot must be a directory, but \" + contextRoot.toString() + \" is not.\");\n    return new CacheDirectories(\n        commonCliOptions.getBaseImageCache().orElse(null),\n        commonCliOptions\n            .getProjectCache()\n            .orElse(\n                Paths.get(System.getProperty(\"java.io.tmpdir\"))\n                    .resolve(\"jib-cli-cache\")\n                    .resolve(\"projects\")\n                    .resolve(getProjectCacheDirectoryFromProject(contextRoot))));\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "from",
+                "documentation": "/**\n   * Create a caches helper for cli cache locations.\n   *\n   * @param commonCliOptions cli options for user configured cache directories\n   * @param contextRoot the context root, use the parent directory of single files, this context\n   *     root must exist\n   * @return an instance of CacheDirectories with cli specific cache locations\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    }
+                ],
+                "similarity": 0.09855703469081051,
+                "end_line": 61,
+                "signature": "com.google.cloud.tools.jib.cli.CacheDirectories.from(CommonCliOptions commonCliOptions, Path contextRoot): CacheDirectories"
+            },
+            {
+                "start_line": 66,
+                "file_path": "playground/googlecontainertools__jib/jib-build-plan/src/main/java/com/google/cloud/tools/jib/api/buildplan/ContainerBuildPlan.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Builder setBaseImage(String baseImage) {\n      this.baseImage = baseImage;\n      return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "setBaseImage",
+                "documentation": "/**\n     * Image reference to a base image. The default is {@code scratch}.\n     *\n     * @param baseImage image reference to a base image\n     * @return this\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "setBaseImage"
+                    }
+                ],
+                "similarity": 0.0850084186587812,
+                "end_line": 69,
+                "signature": "com.google.cloud.tools.jib.api.buildplan.ContainerBuildPlan.Builder.setBaseImage(String baseImage): Builder"
+            },
+            {
+                "start_line": 43,
+                "file_path": "playground/googlecontainertools__jib/jib-plugins-common/src/main/java/com/google/cloud/tools/jib/plugins/common/globalconfig/GlobalConfig.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  static GlobalConfig readConfig(Path configDir) throws IOException, InvalidGlobalConfigException {\n    Path configFile = configDir.resolve(CONFIG_FILENAME);\n\n    try {\n      if (Files.exists(configFile)) {\n        GlobalConfigTemplate configJson =\n            JsonTemplateMapper.readJsonFromFile(configFile, GlobalConfigTemplate.class);\n        return from(configJson);\n      }\n\n      // Generate config file if it doesn't exist\n      Files.createDirectories(configDir);\n      Path tempConfigFile = Files.createTempFile(configDir, CONFIG_FILENAME, null);\n      tempConfigFile.toFile().deleteOnExit();\n\n      GlobalConfigTemplate configJson = new GlobalConfigTemplate();\n      try (OutputStream outputStream = Files.newOutputStream(tempConfigFile)) {\n        JsonTemplateMapper.writeTo(configJson, outputStream);\n        Files.move(tempConfigFile, configFile);\n        return from(configJson);\n\n      } catch (FileAlreadyExistsException ex) {\n        // Perhaps created concurrently. Read again.\n        return readConfig(configDir);\n      }\n\n    } catch (InvalidGlobalConfigException ex) {\n      throw new InvalidGlobalConfigException(\n          ex.getMessage()\n              + \"; see https://github.com/GoogleContainerTools/jib/blob/master/docs/faq.md#where-is-the-global-jib-configuration-file-and-how-i-can-configure-it \"\n              + \"to fix or you may need to delete \"\n              + configFile);\n\n    } catch (IOException ex) {\n      throw new IOException(\n          \"Failed to create, open, or parse global Jib config file; see \"\n              + \"https://github.com/GoogleContainerTools/jib/blob/master/docs/faq.md#where-is-the-global-jib-configuration-file-and-how-i-can-configure-it \"\n              + \"to fix or you may need to delete \"\n              + configFile,\n          ex);\n    }\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "readConfig",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GlobalConfig"
+                    },
+                    {
+                        "start_node": "GlobalConfig",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "readConfig"
+                    }
+                ],
+                "similarity": 0.08023936890820511,
+                "end_line": 84,
+                "signature": "com.google.cloud.tools.jib.plugins.common.globalconfig.GlobalConfig.readConfig(Path configDir): GlobalConfig"
+            },
+            {
+                "start_line": 103,
+                "file_path": "playground/googlecontainertools__jib/jib-build-plan/src/main/java/com/google/cloud/tools/jib/api/buildplan/ContainerBuildPlan.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Builder setPlatforms(Set<Platform> platforms) {\n      if (platforms.isEmpty()) {\n        throw new IllegalArgumentException(\"platforms set cannot be empty\");\n      }\n      this.platforms = new LinkedHashSet<>(platforms);\n      return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "setPlatforms",
+                "documentation": "/**\n     * Sets a desired platform (properties including OS and architecture) list. If the base image\n     * reference is a Docker manifest list or an OCI image index, an image builder may select the\n     * base images matching the given platforms. If the base image reference is an image manifest,\n     * an image builder may ignore the given platforms and use the platform of the base image or may\n     * decide to raise on error.\n     *\n     * <p>Note that a new build plan starts with \"amd64/linux\" as the default platform.\n     *\n     * @param platforms list of platforms to select base images in case of a manifest list\n     * @return this\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "setPlatforms"
+                    }
+                ],
+                "similarity": 0.07897285081376144,
+                "end_line": 109,
+                "signature": "com.google.cloud.tools.jib.api.buildplan.ContainerBuildPlan.Builder.setPlatforms(Set platforms): Builder"
+            },
+            {
+                "start_line": 89,
+                "file_path": "playground/googlecontainertools__jib/jib-cli/src/main/java/com/google/cloud/tools/jib/cli/Build.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  Path getBuildFile() {\n    if (buildFileUnprocessed == null) {\n      return contextRoot.resolve(\"jib.yaml\");\n    }\n    return buildFileUnprocessed;\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "getBuildFile",
+                "documentation": "/**\n   * Returns a user configured Path to a buildfile and if none is configured returns jib.yaml in\n   * {@link #contextRoot}.\n   *\n   * @return a path to a buildfile\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Build"
+                    },
+                    {
+                        "start_node": "Build",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getBuildFile"
+                    }
+                ],
+                "similarity": 0.07748768459586333,
+                "end_line": 94,
+                "signature": "com.google.cloud.tools.jib.cli.Build.getBuildFile(): Path"
+            },
+            {
+                "start_line": 64,
+                "file_path": "playground/googlecontainertools__jib/jib-cli/src/main/java/com/google/cloud/tools/jib/cli/CacheDirectories.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  static String getProjectCacheDirectoryFromProject(Path path) {\n    try {\n      byte[] hashedBytes =\n          MessageDigest.getInstance(\"SHA-256\")\n              .digest(path.toFile().getCanonicalPath().getBytes(Charsets.UTF_8));\n      StringBuilder stringBuilder = new StringBuilder(2 * hashedBytes.length);\n      for (byte b : hashedBytes) {\n        stringBuilder.append(String.format(\"%02x\", b));\n      }\n      return stringBuilder.toString();\n    } catch (IOException | SecurityException ex) {\n      throw new RuntimeException(\n          \"Unable to create cache directory for project path: \"\n              + path\n              + \" - you can try to configure --project-cache manually\",\n          ex);\n    } catch (NoSuchAlgorithmException ex) {\n      throw new RuntimeException(\n          \"SHA-256 algorithm implementation not found - might be a broken JVM\");\n    }\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getProjectCacheDirectoryFromProject",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "CacheDirectories"
+                    },
+                    {
+                        "start_node": "CacheDirectories",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getProjectCacheDirectoryFromProject"
+                    }
+                ],
+                "similarity": 0.06948767244997506,
+                "end_line": 84,
+                "signature": "com.google.cloud.tools.jib.cli.CacheDirectories.getProjectCacheDirectoryFromProject(Path path): String"
+            },
+            {
+                "start_line": 86,
+                "file_path": "playground/googlecontainertools__jib/jib-build-plan/src/main/java/com/google/cloud/tools/jib/api/buildplan/ContainerBuildPlan.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Builder addPlatform(String architecture, String os) {\n      platforms.add(new Platform(architecture, os));\n      return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "addPlatform",
+                "documentation": "/**\n     * Adds a desired image platform (OS and architecture pair). If the base image reference is a\n     * Docker manifest list or an OCI image index, an image builder may select the base image\n     * matching the given platform. If the base image reference is an image manifest, an image\n     * builder may ignore the given platform and use the platform of the base image or may decide to\n     * raise on error.\n     *\n     * <p>Note that a new build plan starts with \"amd64/linux\" as the default platform. If you want\n     * to reset the default platform instead of adding a new one, use {@link #setPlatforms(Set)}.\n     *\n     * @param architecture architecture (for example, {@code amd64}) to select a base image in case\n     *     of a manifest list\n     * @param os OS (for example, {@code linux}) to select a base image in case of a manifest list\n     * @return this\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "addPlatform"
+                    }
+                ],
+                "similarity": 0.06638306532587411,
+                "end_line": 89,
+                "signature": "com.google.cloud.tools.jib.api.buildplan.ContainerBuildPlan.Builder.addPlatform(String architecture, String os): Builder"
+            },
+            {
+                "start_line": 258,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/image/Image.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Image build() {\n      return new Image(\n          imageFormat,\n          created,\n          architecture,\n          os,\n          imageLayersBuilder.build(),\n          historyBuilder.build(),\n          ImmutableMap.copyOf(environmentBuilder),\n          entrypoint,\n          programArguments,\n          healthCheck,\n          ImmutableSet.copyOf(exposedPortsBuilder),\n          ImmutableSet.copyOf(volumesBuilder),\n          ImmutableMap.copyOf(labelsBuilder),\n          workingDirectory,\n          user);\n    }",
+                "distance": 2.5,
+                "title": null,
+                "name": "build",
+                "documentation": "/**\n     * Create an {@link Image} instance.\n     *\n     * @return a new {@link Image} instance\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "retrieve"
+                    },
+                    {
+                        "start_node": "retrieve",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    }
+                ],
+                "similarity": 0.06454361360085847,
+                "end_line": 275,
+                "signature": "com.google.cloud.tools.jib.image.Image.Builder.build(): Image"
+            },
+            {
+                "start_line": 91,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/cache/CacheStorageReader.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  boolean areAllLayersCached(ManifestTemplate manifest) {\n\n    List<DescriptorDigest> layerDigests;\n\n    if (manifest instanceof V21ManifestTemplate) {\n      layerDigests = ((V21ManifestTemplate) manifest).getLayerDigests();\n    } else if (manifest instanceof BuildableManifestTemplate) {\n      layerDigests =\n          ((BuildableManifestTemplate) manifest)\n              .getLayers().stream()\n                  .map(BuildableManifestTemplate.ContentDescriptorTemplate::getDigest)\n                  .collect(Collectors.toList());\n    } else {\n      throw new IllegalArgumentException(\"Unknown manifest type: \" + manifest);\n    }\n\n    for (DescriptorDigest layerDigest : layerDigests) {\n      Path layerDirectory = cacheStorageFiles.getLayerDirectory(layerDigest);\n      if (!Files.exists(layerDirectory)) {\n        return false;\n      }\n    }\n    return true;\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "areAllLayersCached",
+                "documentation": "/**\n   * Returns {@code true} if all image layers described in a manifest have a corresponding file\n   * entry in the cache.\n   *\n   * @param manifest the image manifest\n   * @return a boolean\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "areAllLayersCached"
+                    }
+                ],
+                "similarity": 0.0634753644685264,
+                "end_line": 114,
+                "signature": "com.google.cloud.tools.jib.cache.CacheStorageReader.areAllLayersCached(ManifestTemplate manifest): boolean"
+            },
+            {
+                "start_line": 287,
+                "file_path": "playground/googlecontainertools__jib/jib-build-plan/src/main/java/com/google/cloud/tools/jib/api/buildplan/ContainerBuildPlan.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Builder setWorkingDirectory(@Nullable AbsoluteUnixPath workingDirectory) {\n      this.workingDirectory = workingDirectory;\n      return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "setWorkingDirectory",
+                "documentation": "/**\n     * Sets the working directory in the container. {@code null} signals to use the base image\n     * value.\n     *\n     * @param workingDirectory the working directory\n     * @return this\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "setWorkingDirectory"
+                    }
+                ],
+                "similarity": 0.06312625539146126,
+                "end_line": 290,
+                "signature": "com.google.cloud.tools.jib.api.buildplan.ContainerBuildPlan.Builder.setWorkingDirectory(AbsoluteUnixPath workingDirectory): Builder"
+            },
+            {
+                "start_line": 306,
+                "file_path": "playground/googlecontainertools__jib/jib-build-plan/src/main/java/com/google/cloud/tools/jib/api/buildplan/ContainerBuildPlan.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Builder setEntrypoint(@Nullable List<String> entrypoint) {\n      if (entrypoint == null) {\n        this.entrypoint = null;\n      } else {\n        this.entrypoint = new ArrayList<>(entrypoint);\n      }\n      return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "setEntrypoint",
+                "documentation": "/**\n     * Sets the container entrypoint. This is the beginning of the command that is run when the\n     * container starts. {@link #setCmd} sets additional tokens. {@code null} signals to use the\n     * base image value.\n     *\n     * <p>This is similar to <a\n     * href=\"https://docs.docker.com/engine/reference/builder/#exec-form-entrypoint-example\">{@code\n     * ENTRYPOINT} in Dockerfiles</a> or {@code command} in the <a\n     * href=\"https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#container-v1-core\">Kubernetes\n     * Container spec</a>.\n     *\n     * @param entrypoint a list of the entrypoint command\n     * @return this\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "setEntrypoint"
+                    }
+                ],
+                "similarity": 0.06250780938316745,
+                "end_line": 313,
+                "signature": "com.google.cloud.tools.jib.api.buildplan.ContainerBuildPlan.Builder.setEntrypoint(List entrypoint): Builder"
+            },
+            {
+                "start_line": 91,
+                "file_path": "playground/googlecontainertools__jib/jib-cli/src/main/java/com/google/cloud/tools/jib/cli/CacheDirectories.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public Optional<Path> getBaseImageCache() {\n    return Optional.ofNullable(baseImageCache);\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getBaseImageCache",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "CacheDirectories"
+                    },
+                    {
+                        "start_node": "CacheDirectories",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getBaseImageCache"
+                    }
+                ],
+                "similarity": 0.06095164637347631,
+                "end_line": 93,
+                "signature": "com.google.cloud.tools.jib.cli.CacheDirectories.getBaseImageCache(): Optional"
+            },
+            {
+                "start_line": 491,
+                "file_path": "playground/googlecontainertools__jib/jib-build-plan/src/main/java/com/google/cloud/tools/jib/api/buildplan/ContainerBuildPlan.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public Builder toBuilder() {\n    return builder()\n        .setBaseImage(baseImage)\n        .setPlatforms(platforms)\n        .setCreationTime(creationTime)\n        .setFormat(format)\n        .setEnvironment(environment)\n        .setLabels(labels)\n        .setVolumes(volumes)\n        .setExposedPorts(exposedPorts)\n        .setUser(user)\n        .setWorkingDirectory(workingDirectory)\n        .setEntrypoint(entrypoint)\n        .setCmd(cmd)\n        .setLayers(layers);\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "toBuilder",
+                "documentation": "/**\n   * Creates a builder configured with the current values.\n   *\n   * @return {@link Builder} configured with the current values.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "setBaseImage"
+                    },
+                    {
+                        "start_node": "setBaseImage",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "toBuilder"
+                    }
+                ],
+                "similarity": 0.060780039445905154,
+                "end_line": 506,
+                "signature": "com.google.cloud.tools.jib.api.buildplan.ContainerBuildPlan.toBuilder(): Builder"
+            },
+            {
+                "start_line": 158,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/api/JavaContainerBuilder.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static JavaContainerBuilder from(ImageReference baseImageReference) {\n    return from(RegistryImage.named(baseImageReference));\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "from",
+                "documentation": "/**\n   * Creates a new {@link JavaContainerBuilder} with the specified base image reference.\n   *\n   * @param baseImageReference the base image reference\n   * @return a new {@link JavaContainerBuilder}\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GlobalConfig"
+                    },
+                    {
+                        "start_node": "GlobalConfig",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "readConfig"
+                    },
+                    {
+                        "start_node": "readConfig",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    }
+                ],
+                "similarity": 0.06060048049128429,
+                "end_line": 160,
+                "signature": "com.google.cloud.tools.jib.api.JavaContainerBuilder.from(ImageReference baseImageReference): JavaContainerBuilder"
+            },
+            {
+                "start_line": 129,
+                "file_path": "playground/googlecontainertools__jib/jib-build-plan/src/main/java/com/google/cloud/tools/jib/api/buildplan/ContainerBuildPlan.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Builder setFormat(ImageFormat format) {\n      this.format = format;\n      return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "setFormat",
+                "documentation": "/**\n     * Sets the format to build the container image as. Use {@link ImageFormat#Docker} for Docker\n     * V2.2 or {@link ImageFormat#OCI} for OCI.\n     *\n     * @param format the {@link ImageFormat}\n     * @return this\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "setFormat"
+                    }
+                ],
+                "similarity": 0.05822415376598575,
+                "end_line": 132,
+                "signature": "com.google.cloud.tools.jib.api.buildplan.ContainerBuildPlan.Builder.setFormat(ImageFormat format): Builder"
+            },
+            {
+                "start_line": 94,
+                "file_path": "playground/googlecontainertools__jib/jib-build-plan/src/main/java/com/google/cloud/tools/jib/api/buildplan/AbsoluteUnixPath.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public AbsoluteUnixPath resolve(RelativeUnixPath relativeUnixPath) {\n    int newSize = pathComponents.size() + relativeUnixPath.getRelativePathComponents().size();\n    List<String> newPathComponents = new ArrayList<>(newSize);\n\n    newPathComponents.addAll(pathComponents);\n    newPathComponents.addAll(relativeUnixPath.getRelativePathComponents());\n    return new AbsoluteUnixPath(newPathComponents);\n  }",
+                "distance": 2.0,
+                "title": null,
+                "name": "resolve",
+                "documentation": "/**\n   * Resolves this path against another relative path.\n   *\n   * @param relativeUnixPath the relative path to resolve against\n   * @return a new {@link AbsoluteUnixPath} representing the resolved path\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "resolve"
+                    }
+                ],
+                "similarity": 0.057913192665848344,
+                "end_line": 101,
+                "signature": "com.google.cloud.tools.jib.api.buildplan.AbsoluteUnixPath.resolve(RelativeUnixPath relativeUnixPath): AbsoluteUnixPath"
+            },
+            {
+                "start_line": 111,
+                "file_path": "playground/googlecontainertools__jib/jib-plugins-common/src/main/java/com/google/cloud/tools/jib/plugins/common/globalconfig/GlobalConfig.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static Path getConfigDir() {\n    String configDirProperty = System.getProperty(PropertyNames.CONFIG_DIRECTORY);\n    if (!Strings.isNullOrEmpty(configDirProperty)) {\n      return Paths.get(configDirProperty);\n    }\n    return XdgDirectories.getConfigHome();\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getConfigDir",
+                "documentation": "/**\n   * Returns the config directory set by {@link PropertyNames#CONFIG_DIRECTORY} if not null,\n   * otherwise returns the default config directory.\n   *\n   * @return the config directory set by {@link PropertyNames#CONFIG_DIRECTORY} if not null,\n   *     otherwise returns the default config directory.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GlobalConfig"
+                    },
+                    {
+                        "start_node": "GlobalConfig",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getConfigDir"
+                    }
+                ],
+                "similarity": 0.056988560854675366,
+                "end_line": 117,
+                "signature": "com.google.cloud.tools.jib.plugins.common.globalconfig.GlobalConfig.getConfigDir(): Path"
+            },
+            {
+                "start_line": 147,
+                "file_path": "playground/googlecontainertools__jib/jib-build-plan/src/main/java/com/google/cloud/tools/jib/api/buildplan/ContainerBuildPlan.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Builder setEnvironment(Map<String, String> environment) {\n      this.environment = new HashMap<>(environment);\n      return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "setEnvironment",
+                "documentation": "/**\n     * Sets the container environment. These environment variables are available to the program\n     * launched by the container entrypoint command. This replaces any previously-set environment\n     * variables. Note that these values are added to the base image values.\n     *\n     * <p>This is similar to <a href=\"https://docs.docker.com/engine/reference/builder/#env\">{@code\n     * ENV} in Dockerfiles</a> or {@code env} in the <a\n     * href=\"https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#container-v1-core\">Kubernetes\n     * Container spec</a>.\n     *\n     * @param environment a map of environment variable names to values\n     * @return this\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "setEnvironment"
+                    }
+                ],
+                "similarity": 0.05639626292371911,
+                "end_line": 150,
+                "signature": "com.google.cloud.tools.jib.api.buildplan.ContainerBuildPlan.Builder.setEnvironment(Map environment): Builder"
+            },
+            {
+                "start_line": 86,
+                "file_path": "playground/googlecontainertools__jib/jib-cli/src/main/java/com/google/cloud/tools/jib/cli/CacheDirectories.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public CacheDirectories(@Nullable Path baseImageCache, Path projectCache) {\n    this.baseImageCache = baseImageCache;\n    this.projectCache = projectCache;\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "CacheDirectories",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "CacheDirectories"
+                    },
+                    {
+                        "start_node": "CacheDirectories",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "CacheDirectories"
+                    }
+                ],
+                "similarity": 0.05553469161973251,
+                "end_line": 89,
+                "signature": "com.google.cloud.tools.jib.cli.CacheDirectories(Path baseImageCache, Path projectCache)"
+            },
+            {
+                "start_line": 224,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/cache/CacheStorageReader.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  Optional<ContainerConfigurationTemplate> retrieveLocalConfig(DescriptorDigest imageId)",
+                "distance": 1.5,
+                "title": null,
+                "name": "retrieveLocalConfig",
+                "documentation": "/**\n   * Retrieves the {@link ContainerConfigurationTemplate} for the image with the given image ID.\n   *\n   * @param imageId the image ID\n   * @return the {@link ContainerConfigurationTemplate} referenced by the image ID, if found\n   * @throws IOException if an I/O exception occurs\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "retrieveLocalConfig"
+                    }
+                ],
+                "similarity": 0.05259323390718851,
+                "end_line": 224,
+                "signature": "com.google.cloud.tools.jib.cache.CacheStorageReader.retrieveLocalConfig(DescriptorDigest imageId): Optional"
+            },
+            {
+                "start_line": 76,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/cache/CacheStorageWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private static void verifyImageMetadata(ImageMetadataTemplate metadata) {\n    Predicate<ManifestAndConfigTemplate> isManifestNull = pair -> pair.getManifest() == null;\n    Predicate<ManifestAndConfigTemplate> isConfigNull = pair -> pair.getConfig() == null;\n    Predicate<ManifestAndConfigTemplate> isDigestNull = pair -> pair.getManifestDigest() == null;\n\n    List<ManifestAndConfigTemplate> manifestsAndConfigs = metadata.getManifestsAndConfigs();\n    Preconditions.checkArgument(!manifestsAndConfigs.isEmpty(), \"no manifests given\");\n    Preconditions.checkArgument(\n        manifestsAndConfigs.stream().noneMatch(isManifestNull), \"null manifest(s)\");\n    Preconditions.checkArgument(\n        metadata.getManifestList() != null || manifestsAndConfigs.size() == 1,\n        \"manifest list missing while multiple manifests given\");\n\n    ManifestTemplate firstManifest = manifestsAndConfigs.get(0).getManifest();\n    if (firstManifest instanceof V21ManifestTemplate) {\n      Preconditions.checkArgument(\n          metadata.getManifestList() == null, \"manifest list given for schema 1\");\n      Preconditions.checkArgument(\n          isConfigNull.test(manifestsAndConfigs.get(0)), \"container config given for schema 1\");\n    } else if (firstManifest instanceof BuildableManifestTemplate) {\n      Preconditions.checkArgument(\n          manifestsAndConfigs.stream().noneMatch(isConfigNull), \"null container config(s)\");\n      if (metadata.getManifestList() != null) {\n        Preconditions.checkArgument(\n            manifestsAndConfigs.stream().noneMatch(isDigestNull), \"null manifest digest(s)\");\n      }\n    } else {\n      throw new IllegalArgumentException(\"Unknown manifest type: \" + firstManifest);\n    }\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "verifyImageMetadata",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "retrieveMetadata"
+                    },
+                    {
+                        "start_node": "retrieveMetadata",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "verifyImageMetadata"
+                    }
+                ],
+                "similarity": 0.04997988931146879,
+                "end_line": 105,
+                "signature": "com.google.cloud.tools.jib.cache.CacheStorageWriter.verifyImageMetadata(ImageMetadataTemplate metadata): void"
+            },
+            {
+                "start_line": 95,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/api/JavaContainerBuilder.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static JavaContainerBuilder fromDistroless() {\n    try {\n      return from(RegistryImage.named(\"gcr.io/distroless/java\"));\n    } catch (InvalidImageReferenceException ignored) {\n      throw new IllegalStateException(\"Unreachable\");\n    }\n  }",
+                "distance": 3.0,
+                "title": null,
+                "name": "fromDistroless",
+                "documentation": "/**\n   * Creates a new {@link JavaContainerBuilder} that uses distroless java as the base image. For\n   * more information on {@code gcr.io/distroless/java}, see <a\n   * href=\"https://github.com/GoogleContainerTools/distroless\">the distroless repository</a>.\n   *\n   * @return a new {@link JavaContainerBuilder}\n   * @see <a href=\"https://github.com/GoogleContainerTools/distroless\">The distroless repository</a>\n   * @deprecated Use {@code from()} with the image reference {@code gcr.io/distroless/java}.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GlobalConfig"
+                    },
+                    {
+                        "start_node": "GlobalConfig",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "readConfig"
+                    },
+                    {
+                        "start_node": "readConfig",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "JavaContainerBuilder"
+                    },
+                    {
+                        "start_node": "JavaContainerBuilder",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "fromDistroless"
+                    }
+                ],
+                "similarity": 0.04961634569246497,
+                "end_line": 101,
+                "signature": "com.google.cloud.tools.jib.api.JavaContainerBuilder.fromDistroless(): JavaContainerBuilder"
+            },
+            {
+                "start_line": 97,
+                "file_path": "playground/googlecontainertools__jib/jib-plugins-common/src/main/java/com/google/cloud/tools/jib/plugins/common/SkaffoldSyncMapTemplate.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static SkaffoldSyncMapTemplate from(String jsonString) throws IOException {\n    return new ObjectMapper().readValue(jsonString, SkaffoldSyncMapTemplate.class);\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "from",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    }
+                ],
+                "similarity": 0.049403240251435936,
+                "end_line": 99,
+                "signature": "com.google.cloud.tools.jib.plugins.common.SkaffoldSyncMapTemplate.from(String jsonString): SkaffoldSyncMapTemplate"
+            },
+            {
+                "start_line": 395,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/api/ImageReference.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private String toString(boolean singleQualifier) {\n    if (isScratch()) {\n      return SCRATCH;\n    }\n\n    StringBuilder referenceString = new StringBuilder();\n\n    if (!DOCKER_HUB_REGISTRY.equals(registry)) {\n      // Use registry and repository if not Docker Hub.\n      referenceString.append(registry).append('/').append(repository);\n\n    } else if (repository.startsWith(LIBRARY_REPOSITORY_PREFIX)) {\n      // If Docker Hub and repository has 'library/' prefix, remove the 'library/' prefix.\n      referenceString.append(repository.substring(LIBRARY_REPOSITORY_PREFIX.length()));\n\n    } else {\n      // Use just repository if Docker Hub.\n      referenceString.append(repository);\n    }\n\n    if (singleQualifier) {\n      if (!Strings.isNullOrEmpty(digest)) {\n        referenceString.append('@').append(digest);\n      } else {\n        referenceString.append(':').append(tag);\n      }\n    } else {\n      if (!Strings.isNullOrEmpty(tag) && !usesDefaultTag()) {\n        referenceString.append(':').append(tag);\n      }\n      if (!Strings.isNullOrEmpty(digest)) {\n        referenceString.append('@').append(digest);\n      }\n    }\n\n    return referenceString.toString();\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "toString",
+                "documentation": "/**\n   * Stringifies the {@link ImageReference}.\n   *\n   * @param singleQualifier when {@code true}, the result will include exactly one qualifier (i.e.\n   *     the digest, or the tag if the digest is missing). When {@code false}, the result will\n   *     include all specified qualifiers (omitting tag if the default {@code latest} is used).\n   * @return the image reference in a Docker-readable format.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "SkaffoldSyncMapTemplate"
+                    },
+                    {
+                        "start_node": "SkaffoldSyncMapTemplate",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "addGenerated"
+                    },
+                    {
+                        "start_node": "addGenerated",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "toString"
+                    }
+                ],
+                "similarity": 0.049135202543073686,
+                "end_line": 431,
+                "signature": "com.google.cloud.tools.jib.api.ImageReference.toString(boolean singleQualifier): String"
+            },
+            {
+                "start_line": 45,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/cache/CacheStorageReader.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  static void verifyImageMetadata(ImageMetadataTemplate metadata, Path metadataCacheDirectory)",
+                "distance": 1.5,
+                "title": null,
+                "name": "verifyImageMetadata",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "verifyImageMetadata"
+                    }
+                ],
+                "similarity": 0.048404002670011,
+                "end_line": 45,
+                "signature": "com.google.cloud.tools.jib.cache.CacheStorageReader.verifyImageMetadata(ImageMetadataTemplate metadata, Path metadataCacheDirectory): void"
+            },
+            {
+                "start_line": 129,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/api/JavaContainerBuilder.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static JavaContainerBuilder fromDistrolessJetty() {\n    try {\n      return from(RegistryImage.named(\"gcr.io/distroless/java/jetty\"))\n          .setAppRoot(AbsoluteUnixPath.get(DEFAULT_WEB_APP_ROOT));\n    } catch (InvalidImageReferenceException ignored) {\n      throw new IllegalStateException(\"Unreachable\");\n    }\n  }",
+                "distance": 3.0,
+                "title": null,
+                "name": "fromDistrolessJetty",
+                "documentation": "/**\n   * Creates a new {@link JavaContainerBuilder} that uses distroless jetty as the base image. For\n   * more information on {@code gcr.io/distroless/java}, see <a\n   * href=\"https://github.com/GoogleContainerTools/distroless\">the distroless repository</a>.\n   *\n   * @return a new {@link JavaContainerBuilder}\n   * @see <a href=\"https://github.com/GoogleContainerTools/distroless\">The distroless repository</a>\n   * @deprecated Use {@code from()} with the image reference {@code gcr.io/distroless/java/jetty}\n   *     and change the app root by calling {@code\n   *     JavaContainerBuilder.setAppRoot(\"/jetty/webapps/ROOT\")}.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GlobalConfig"
+                    },
+                    {
+                        "start_node": "GlobalConfig",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "readConfig"
+                    },
+                    {
+                        "start_node": "readConfig",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "JavaContainerBuilder"
+                    },
+                    {
+                        "start_node": "JavaContainerBuilder",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "fromDistrolessJetty"
+                    }
+                ],
+                "similarity": 0.048209861130955,
+                "end_line": 136,
+                "signature": "com.google.cloud.tools.jib.api.JavaContainerBuilder.fromDistrolessJetty(): JavaContainerBuilder"
+            },
+            {
+                "start_line": 117,
+                "file_path": "playground/googlecontainertools__jib/jib-build-plan/src/main/java/com/google/cloud/tools/jib/api/buildplan/ContainerBuildPlan.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Builder setCreationTime(Instant creationTime) {\n      this.creationTime = creationTime;\n      return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "setCreationTime",
+                "documentation": "/**\n     * Sets the container image creation time. The default is {@link Instant#EPOCH}.\n     *\n     * @param creationTime the container image creation time\n     * @return this\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "setCreationTime"
+                    }
+                ],
+                "similarity": 0.047685693868789444,
+                "end_line": 120,
+                "signature": "com.google.cloud.tools.jib.api.buildplan.ContainerBuildPlan.Builder.setCreationTime(Instant creationTime): Builder"
+            },
+            {
+                "start_line": 107,
+                "file_path": "playground/googlecontainertools__jib/jib-plugins-common/src/main/java/com/google/cloud/tools/jib/plugins/common/SkaffoldSyncMapTemplate.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void addGenerated(FileEntry layerEntry) {\n    generated.add(\n        new FileTemplate(\n            layerEntry.getSourceFile().toAbsolutePath().toString(),\n            layerEntry.getExtractionPath().toString()));\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "addGenerated",
+                "documentation": "/**\n   * Add a layer entry as a \"generated\" sync entry. Generated sync entries require rebuilds before\n   * files can be sync'd to a running container.\n   *\n   * @param layerEntry the layer entry to add to the generated configuration\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "SkaffoldSyncMapTemplate"
+                    },
+                    {
+                        "start_node": "SkaffoldSyncMapTemplate",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "addGenerated"
+                    }
+                ],
+                "similarity": 0.04743981004239572,
+                "end_line": 112,
+                "signature": "com.google.cloud.tools.jib.plugins.common.SkaffoldSyncMapTemplate.addGenerated(FileEntry layerEntry): void"
+            },
+            {
+                "start_line": 787,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/JibPluginConfiguration.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  Path getImageJsonOutputPath() {\n    Path configuredPath =\n        outputPaths.imageJson == null\n            ? Paths.get(getProject().getBuild().getDirectory()).resolve(\"jib-image.json\")\n            : outputPaths.imageJson.toPath();\n    return getRelativeToProjectRoot(configuredPath, PropertyNames.OUTPUT_PATHS_IMAGE_JSON);\n  }",
+                "distance": 3.0,
+                "title": null,
+                "name": "getImageJsonOutputPath",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "resolve"
+                    },
+                    {
+                        "start_node": "resolve",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "getImageJsonOutputPath"
+                    }
+                ],
+                "similarity": 0.047246958984812314,
+                "end_line": 793,
+                "signature": "com.google.cloud.tools.jib.maven.JibPluginConfiguration.getImageJsonOutputPath(): Path"
+            },
+            {
+                "start_line": 133,
+                "file_path": "playground/googlecontainertools__jib/jib-plugins-common/src/main/java/com/google/cloud/tools/jib/plugins/common/SkaffoldSyncMapTemplate.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public String getJsonString() throws IOException {\n    try (OutputStream outputStream = new ByteArrayOutputStream()) {\n      new ObjectMapper().writeValue(outputStream, this);\n      return outputStream.toString();\n    }\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getJsonString",
+                "documentation": "/**\n   * Return JSON representation of the SyncMap.\n   *\n   * @return the json string representation of this SyncMap\n   * @throws IOException if json serialization fails\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "SkaffoldSyncMapTemplate"
+                    },
+                    {
+                        "start_node": "SkaffoldSyncMapTemplate",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "getJsonString"
+                    }
+                ],
+                "similarity": 0.04722806619622565,
+                "end_line": 138,
+                "signature": "com.google.cloud.tools.jib.plugins.common.SkaffoldSyncMapTemplate.getJsonString(): String"
+            },
+            {
+                "start_line": 160,
+                "file_path": "playground/googlecontainertools__jib/jib-build-plan/src/main/java/com/google/cloud/tools/jib/api/buildplan/ContainerBuildPlan.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Builder addEnvironmentVariable(String name, String value) {\n      environment.put(name, value);\n      return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "addEnvironmentVariable",
+                "documentation": "/**\n     * Adds a variable in the container environment.\n     *\n     * @param name the environment variable name\n     * @param value the environment variable value\n     * @return this\n     * @see #setEnvironment\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "addEnvironmentVariable"
+                    }
+                ],
+                "similarity": 0.04614789741863612,
+                "end_line": 163,
+                "signature": "com.google.cloud.tools.jib.api.buildplan.ContainerBuildPlan.Builder.addEnvironmentVariable(String name, String value): Builder"
+            },
+            {
+                "start_line": 515,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  Path getJarArtifact() throws IOException {\n    Optional<String> classifier = Optional.empty();\n    Path buildDirectory = Paths.get(project.getBuild().getDirectory());\n    Path outputDirectory = buildDirectory;\n\n    // Read <classifier> and <outputDirectory> from maven-jar-plugin.\n    Plugin jarPlugin = project.getPlugin(\"org.apache.maven.plugins:maven-jar-plugin\");\n    if (jarPlugin != null) {\n      for (PluginExecution execution : jarPlugin.getExecutions()) {\n        if (\"default-jar\".equals(execution.getId())) {\n          Xpp3Dom configuration = (Xpp3Dom) execution.getConfiguration();\n          classifier = getChildValue(configuration, \"classifier\");\n          Optional<String> directoryString = getChildValue(configuration, \"outputDirectory\");\n\n          if (directoryString.isPresent()) {\n            outputDirectory = project.getBasedir().toPath().resolve(directoryString.get());\n          }\n          break;\n        }\n      }\n    }\n\n    String finalName = project.getBuild().getFinalName();\n    String suffix = \".jar\";\n\n    Optional<Xpp3Dom> bootConfiguration = getSpringBootRepackageConfiguration();\n    if (bootConfiguration.isPresent()) {\n      log(LogEvent.lifecycle(\"Spring Boot repackaging (fat JAR) detected; using the original JAR\"));\n\n      // Spring renames original JAR only when replacing it, so check if the paths are clashing.\n      Optional<String> bootFinalName = getChildValue(bootConfiguration.get(), \"finalName\");\n      Optional<String> bootClassifier = getChildValue(bootConfiguration.get(), \"classifier\");\n\n      boolean sameDirectory = outputDirectory.equals(buildDirectory);\n      // If Boot <finalName> is undefined, it uses the default project <finalName>.\n      boolean sameFinalName = !bootFinalName.isPresent() || finalName.equals(bootFinalName.get());\n      boolean sameClassifier = classifier.equals(bootClassifier);\n      if (sameDirectory && sameFinalName && sameClassifier) {\n        suffix = \".jar.original\";\n      }\n    }\n\n    String noSuffixJarName = finalName + (classifier.isPresent() ? '-' + classifier.get() : \"\");\n    Path jarPath = outputDirectory.resolve(noSuffixJarName + suffix);\n    log(LogEvent.debug(\"Using JAR: \" + jarPath));\n\n    if (\".jar\".equals(suffix)) {\n      return jarPath;\n    }\n\n    // \"*\" in \"java -cp *\" doesn't work if JAR doesn't end with \".jar\". Copy the JAR with a new name\n    // ending with \".jar\".\n    Path tempDirectory = tempDirectoryProvider.newDirectory();\n    Path newJarPath = tempDirectory.resolve(noSuffixJarName + \".original.jar\");\n    Files.copy(jarPath, newJarPath);\n    return newJarPath;\n  }",
+                "distance": 3.0,
+                "title": null,
+                "name": "getJarArtifact",
+                "documentation": "/**\n   * Gets the path of the JAR that the Maven JAR Plugin generates. Will also make copies of jar\n   * files with non-conforming names like those produced by springboot -- myjar.jar.original ->\n   * myjar.original.jar.\n   *\n   * <p>https://maven.apache.org/plugins/maven-jar-plugin/jar-mojo.html\n   * https://github.com/apache/maven-jar-plugin/blob/80f58a84aacff6e671f5a601d62a3a3800b507dc/src/main/java/org/apache/maven/plugins/jar/AbstractJarMojo.java#L177\n   *\n   * @return the path of the JAR\n   * @throws IOException if copying jars with non-conforming names fails\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "resolve"
+                    },
+                    {
+                        "start_node": "resolve",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "getJarArtifact"
+                    }
+                ],
+                "similarity": 0.04594457235799281,
+                "end_line": 571,
+                "signature": "com.google.cloud.tools.jib.maven.MavenProjectProperties.getJarArtifact(): Path"
+            },
+            {
+                "start_line": 103,
+                "file_path": "playground/googlecontainertools__jib/jib-cli/src/main/java/com/google/cloud/tools/jib/cli/CacheDirectories.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public Path getExplodedArtifactDirectory() {\n    return projectCache.resolve(EXPLODED_ARTIFACT_DIR);\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getExplodedArtifactDirectory",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "CacheDirectories"
+                    },
+                    {
+                        "start_node": "CacheDirectories",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "getExplodedArtifactDirectory"
+                    }
+                ],
+                "similarity": 0.0456665967553004,
+                "end_line": 105,
+                "signature": "com.google.cloud.tools.jib.cli.CacheDirectories.getExplodedArtifactDirectory(): Path"
+            },
+            {
+                "start_line": 250,
+                "file_path": "playground/googlecontainertools__jib/jib-build-plan/src/main/java/com/google/cloud/tools/jib/api/buildplan/ContainerBuildPlan.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Builder addExposedPort(Port exposedPort) {\n      exposedPorts.add(exposedPort);\n      return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "addExposedPort",
+                "documentation": "/**\n     * Adds a port to expose from the container.\n     *\n     * @param exposedPort the port to expose\n     * @return this\n     * @see #setExposedPorts(Set)\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "addExposedPort"
+                    }
+                ],
+                "similarity": 0.04552840479920429,
+                "end_line": 253,
+                "signature": "com.google.cloud.tools.jib.api.buildplan.ContainerBuildPlan.Builder.addExposedPort(Port exposedPort): Builder"
+            },
+            {
+                "start_line": 307,
+                "file_path": "playground/googlecontainertools__jib/jib-build-plan/src/main/java/com/google/cloud/tools/jib/api/buildplan/FileEntriesLayer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public FileEntriesLayer build() {\n      return new FileEntriesLayer(name, entries);\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "build",
+                "documentation": "/**\n     * Returns the built {@link FileEntriesLayer}.\n     *\n     * @return the built {@link FileEntriesLayer}\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    }
+                ],
+                "similarity": 0.04539420400910331,
+                "end_line": 309,
+                "signature": "com.google.cloud.tools.jib.api.buildplan.FileEntriesLayer.Builder.build(): FileEntriesLayer"
+            },
+            {
+                "start_line": 238,
+                "file_path": "playground/googlecontainertools__jib/jib-build-plan/src/main/java/com/google/cloud/tools/jib/api/buildplan/ContainerBuildPlan.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Builder setExposedPorts(Set<Port> exposedPorts) {\n      this.exposedPorts = new HashSet<>(exposedPorts);\n      return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "setExposedPorts",
+                "documentation": "/**\n     * Sets the ports to expose from the container. Ports exposed will allow ingress traffic. This\n     * replaces any previously-set exposed ports. Note that these values are added to the base image\n     * values.\n     *\n     * <p>Use {@link Port#tcp} to expose a port for TCP traffic and {@link Port#udp} to expose a\n     * port for UDP traffic.\n     *\n     * <p>This is similar to <a\n     * href=\"https://docs.docker.com/engine/reference/builder/#expose\">{@code EXPOSE} in\n     * Dockerfiles</a> or {@code ports} in the <a\n     * href=\"https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#container-v1-core\">Kubernetes\n     * Container spec</a>.\n     *\n     * @param exposedPorts the ports to expose\n     * @return this\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "setExposedPorts"
+                    }
+                ],
+                "similarity": 0.045185558737976854,
+                "end_line": 241,
+                "signature": "com.google.cloud.tools.jib.api.buildplan.ContainerBuildPlan.Builder.setExposedPorts(Set exposedPorts): Builder"
+            },
+            {
+                "start_line": 332,
+                "file_path": "playground/googlecontainertools__jib/jib-build-plan/src/main/java/com/google/cloud/tools/jib/api/buildplan/ContainerBuildPlan.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Builder setCmd(@Nullable List<String> cmd) {\n      if (cmd == null) {\n        this.cmd = null;\n      } else {\n        this.cmd = new ArrayList<>(cmd);\n      }\n      return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "setCmd",
+                "documentation": "/**\n     * Sets the container entrypoint program arguments. These are additional tokens added to the end\n     * of the entrypoint command. {@code null} signals to use the base image value (only when\n     * entrypoint is also {@code null}).\n     *\n     * <p>This is similar to <a href=\"https://docs.docker.com/engine/reference/builder/#cmd\">{@code\n     * CMD} in Dockerfiles</a> or {@code args} in the <a\n     * href=\"https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#container-v1-core\">Kubernetes\n     * Container spec</a>.\n     *\n     * <p>For example, if the entrypoint was {@code myprogram --flag subcommand} and program\n     * arguments were {@code hello world}, then the command that run when the container starts is\n     * {@code myprogram --flag subcommand hello world}.\n     *\n     * @param cmd a list of program argument tokens\n     * @return this\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "setCmd"
+                    }
+                ],
+                "similarity": 0.04514193340462654,
+                "end_line": 339,
+                "signature": "com.google.cloud.tools.jib.api.buildplan.ContainerBuildPlan.Builder.setCmd(List cmd): Builder"
+            },
+            {
+                "start_line": 100,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/api/JibContainerBuilder.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  JibContainerBuilder(DockerDaemonImage baseImage) {\n    this(\n        ImageConfiguration.builder(baseImage.getImageReference())\n            .setDockerClient(\n                DockerClientResolver.resolve(baseImage.getDockerEnvironment())\n                    .orElse(\n                        new CliDockerClient(\n                            baseImage.getDockerExecutable(), baseImage.getDockerEnvironment())))\n            .build(),\n        BuildContext.builder());\n  }",
+                "distance": 3.5,
+                "title": null,
+                "name": "JibContainerBuilder",
+                "documentation": "/** Instantiate with {@link Jib#from}. */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "retrieve"
+                    },
+                    {
+                        "start_node": "retrieve",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "JibContainerBuilder"
+                    }
+                ],
+                "similarity": 0.04476976067343743,
+                "end_line": 110,
+                "signature": "com.google.cloud.tools.jib.api.JibContainerBuilder(DockerDaemonImage baseImage)"
+            },
+            {
+                "start_line": 763,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/JibPluginConfiguration.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  Path getTarOutputPath() {\n    Path configuredPath =\n        outputPaths.tar == null\n            ? Paths.get(getProject().getBuild().getDirectory()).resolve(\"jib-image.tar\")\n            : outputPaths.tar.toPath();\n    return getRelativeToProjectRoot(configuredPath, PropertyNames.OUTPUT_PATHS_TAR);\n  }",
+                "distance": 3.0,
+                "title": null,
+                "name": "getTarOutputPath",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "resolve"
+                    },
+                    {
+                        "start_node": "resolve",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "getTarOutputPath"
+                    }
+                ],
+                "similarity": 0.044518858915720175,
+                "end_line": 769,
+                "signature": "com.google.cloud.tools.jib.maven.JibPluginConfiguration.getTarOutputPath(): Path"
+            },
+            {
+                "start_line": 113,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/api/JibContainerBuilder.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  JibContainerBuilder(TarImage baseImage) {\n    // TODO: Cleanup using scratch as placeholder\n    this(\n        ImageConfiguration.builder(baseImage.getImageReference().orElse(ImageReference.scratch()))\n            .setTarPath(baseImage.getPath())\n            .build(),\n        BuildContext.builder());\n  }",
+                "distance": 3.5,
+                "title": null,
+                "name": "JibContainerBuilder",
+                "documentation": "/** Instantiate with {@link Jib#from}. */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "retrieve"
+                    },
+                    {
+                        "start_node": "retrieve",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "JibContainerBuilder"
+                    }
+                ],
+                "similarity": 0.044319069716409,
+                "end_line": 120,
+                "signature": "com.google.cloud.tools.jib.api.JibContainerBuilder(TarImage baseImage)"
+            },
+            {
+                "start_line": 169,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/api/JavaContainerBuilder.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static JavaContainerBuilder from(RegistryImage registryImage) {\n    return new JavaContainerBuilder(Jib.from(registryImage));\n  }",
+                "distance": 3.0,
+                "title": null,
+                "name": "from",
+                "documentation": "/**\n   * Creates a new {@link JavaContainerBuilder} with the specified base image.\n   *\n   * @param registryImage the {@link RegistryImage} that defines base container registry and\n   *     credentials\n   * @return a new {@link JavaContainerBuilder}\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GlobalConfig"
+                    },
+                    {
+                        "start_node": "GlobalConfig",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "readConfig"
+                    },
+                    {
+                        "start_node": "readConfig",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "JavaContainerBuilder"
+                    },
+                    {
+                        "start_node": "JavaContainerBuilder",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    }
+                ],
+                "similarity": 0.0440324577365115,
+                "end_line": 171,
+                "signature": "com.google.cloud.tools.jib.api.JavaContainerBuilder.from(RegistryImage registryImage): JavaContainerBuilder"
+            },
+            {
+                "start_line": 142,
+                "file_path": "playground/googlecontainertools__jib/jib-plugins-common/src/main/java/com/google/cloud/tools/jib/plugins/common/globalconfig/GlobalConfig.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public ListMultimap<String, String> getRegistryMirrors() {\n    return registryMirrors;\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getRegistryMirrors",
+                "documentation": "/**\n   * Gets the registry mirror configuration.\n   *\n   * @return registry mirrors\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GlobalConfig"
+                    },
+                    {
+                        "start_node": "GlobalConfig",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getRegistryMirrors"
+                    }
+                ],
+                "similarity": 0.04400780367701231,
+                "end_line": 144,
+                "signature": "com.google.cloud.tools.jib.plugins.common.globalconfig.GlobalConfig.getRegistryMirrors(): ListMultimap"
+            },
+            {
+                "start_line": 779,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/JibPluginConfiguration.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  Path getImageIdOutputPath() {\n    Path configuredPath =\n        outputPaths.imageId == null\n            ? Paths.get(getProject().getBuild().getDirectory()).resolve(\"jib-image.id\")\n            : outputPaths.imageId.toPath();\n    return getRelativeToProjectRoot(configuredPath, PropertyNames.OUTPUT_PATHS_IMAGE_ID);\n  }",
+                "distance": 3.0,
+                "title": null,
+                "name": "getImageIdOutputPath",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "resolve"
+                    },
+                    {
+                        "start_node": "resolve",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "getImageIdOutputPath"
+                    }
+                ],
+                "similarity": 0.04400020720874886,
+                "end_line": 785,
+                "signature": "com.google.cloud.tools.jib.maven.JibPluginConfiguration.getImageIdOutputPath(): Path"
+            },
+            {
+                "start_line": 216,
+                "file_path": "playground/googlecontainertools__jib/jib-build-plan/src/main/java/com/google/cloud/tools/jib/api/buildplan/ContainerBuildPlan.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Builder addLabel(String key, String value) {\n      labels.put(key, value);\n      return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "addLabel",
+                "documentation": "/**\n     * Sets a label for the container.\n     *\n     * @param key the label key\n     * @param value the label value\n     * @return this\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "addLabel"
+                    }
+                ],
+                "similarity": 0.04349452550900614,
+                "end_line": 219,
+                "signature": "com.google.cloud.tools.jib.api.buildplan.ContainerBuildPlan.Builder.addLabel(String key, String value): Builder"
+            },
+            {
+                "start_line": 38,
+                "file_path": "playground/googlecontainertools__jib/jib-gradle-plugin/src/main/java/com/google/cloud/tools/jib/gradle/OutputPathsParameters.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public OutputPathsParameters(Project project) {\n    this.project = project;\n    digest = project.getBuildDir().toPath().resolve(\"jib-image.digest\");\n    imageId = project.getBuildDir().toPath().resolve(\"jib-image.id\");\n    imageJson = project.getBuildDir().toPath().resolve(\"jib-image.json\");\n    tar = project.getBuildDir().toPath().resolve(\"jib-image.tar\");\n  }",
+                "distance": 3.0,
+                "title": null,
+                "name": "OutputPathsParameters",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "resolve"
+                    },
+                    {
+                        "start_node": "resolve",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "OutputPathsParameters"
+                    }
+                ],
+                "similarity": 0.043368712931726894,
+                "end_line": 44,
+                "signature": "com.google.cloud.tools.jib.gradle.OutputPathsParameters(Project project)"
+            },
+            {
+                "start_line": 97,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/api/ImageReference.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static ImageReference parse(String reference) throws InvalidImageReferenceException {\n    if (reference.equals(SCRATCH)) {\n      return ImageReference.scratch();\n    }\n\n    Matcher matcher = REFERENCE_PATTERN.matcher(reference);\n\n    if (!matcher.find() || matcher.groupCount() < 4) {\n      throw new InvalidImageReferenceException(reference);\n    }\n\n    String registry = matcher.group(1);\n    String repository = matcher.group(2);\n    String tag = matcher.group(3);\n    String digest = matcher.group(4);\n\n    // If no registry was matched, use Docker Hub by default.\n    if (Strings.isNullOrEmpty(registry)) {\n      registry = DOCKER_HUB_REGISTRY;\n    }\n\n    if (Strings.isNullOrEmpty(repository)) {\n      throw new InvalidImageReferenceException(reference);\n    }\n    /*\n     * If a registry was matched but it does not contain any dots or colons, it should actually be\n     * part of the repository unless it is \"localhost\".\n     *\n     * See https://github.com/docker/distribution/blob/245ca4659e09e9745f3cc1217bf56e946509220c/reference/normalize.go#L62\n     */\n    if (!registry.contains(\".\") && !registry.contains(\":\") && !\"localhost\".equals(registry)) {\n      repository = registry + \"/\" + repository;\n      registry = DOCKER_HUB_REGISTRY;\n    }\n\n    /*\n     * For Docker Hub, if the repository is only one component, then it should be prefixed with\n     * 'library/'.\n     *\n     * See https://docs.docker.com/engine/reference/commandline/pull/#pull-an-image-from-docker-hub\n     */\n    if (DOCKER_HUB_REGISTRY.equals(registry) && repository.indexOf('/') < 0) {\n      repository = LIBRARY_REPOSITORY_PREFIX + repository;\n    }\n\n    if (Strings.isNullOrEmpty(tag) && Strings.isNullOrEmpty(digest)) {\n      tag = DEFAULT_TAG;\n    }\n    if (Strings.isNullOrEmpty(tag)) {\n      tag = null;\n    }\n    if (Strings.isNullOrEmpty(digest)) {\n      digest = null;\n    }\n\n    return new ImageReference(registry, repository, tag, digest);\n  }",
+                "distance": 3.0,
+                "title": null,
+                "name": "parse",
+                "documentation": "/**\n   * Parses a string {@code reference} into an {@link ImageReference}.\n   *\n   * <p>Image references should generally be in the form: {@code <registry>/<repository>:<tag>} For\n   * example, an image reference could be {@code gcr.io/k8s-skaffold/skaffold:v1.20.0}.\n   *\n   * <p>See <a\n   * href=\"https://docs.docker.com/engine/reference/commandline/tag/#extended-description\">https://docs.docker.com/engine/reference/commandline/tag/#extended-description</a>\n   * for a description of valid image reference format. Note, however, that the image reference is\n   * referred confusingly as {@code tag} on that page.\n   *\n   * @param reference the string to parse\n   * @return an {@link ImageReference} parsed from the string\n   * @throws InvalidImageReferenceException if {@code reference} is formatted incorrectly\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "from"
+                    },
+                    {
+                        "start_node": "from",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "SkaffoldSyncMapTemplate"
+                    },
+                    {
+                        "start_node": "SkaffoldSyncMapTemplate",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "addGenerated"
+                    },
+                    {
+                        "start_node": "addGenerated",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "toString"
+                    },
+                    {
+                        "start_node": "toString",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ImageReference"
+                    },
+                    {
+                        "start_node": "ImageReference",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "parse"
+                    }
+                ],
+                "similarity": 0.04330140905008064,
+                "end_line": 153,
+                "signature": "com.google.cloud.tools.jib.api.ImageReference.parse(String reference): ImageReference"
+            },
+            {
+                "start_line": 204,
+                "file_path": "playground/googlecontainertools__jib/jib-build-plan/src/main/java/com/google/cloud/tools/jib/api/buildplan/ContainerBuildPlan.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Builder setLabels(Map<String, String> labels) {\n      this.labels = new HashMap<>(labels);\n      return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "setLabels",
+                "documentation": "/**\n     * Sets the labels for the container. This replaces any previously-set labels. Note that these\n     * values are added to the base image values.\n     *\n     * <p>This is similar to <a\n     * href=\"https://docs.docker.com/engine/reference/builder/#label\">{@code LABEL} in\n     * Dockerfiles</a>.\n     *\n     * @param labels a map of label keys to values\n     * @return this\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "setLabels"
+                    }
+                ],
+                "similarity": 0.043192032524556494,
+                "end_line": 207,
+                "signature": "com.google.cloud.tools.jib.api.buildplan.ContainerBuildPlan.Builder.setLabels(Map labels): Builder"
+            },
+            {
+                "start_line": 125,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/cache/CacheStorageReader.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  Optional<ImageMetadataTemplate> retrieveMetadata(ImageReference imageReference)",
+                "distance": 1.5,
+                "title": null,
+                "name": "retrieveMetadata",
+                "documentation": "/**\n   * Retrieves the cached image metadata (a manifest list and a list of manifest/container\n   * configuration pairs) for an image reference.\n   *\n   * @param imageReference the image reference\n   * @return the image metadata for the image reference, if found\n   * @throws IOException if an I/O exception occurs\n   * @throws CacheCorruptedException if the cache is corrupted\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "retrieveMetadata"
+                    }
+                ],
+                "similarity": 0.04301312977370337,
+                "end_line": 125,
+                "signature": "com.google.cloud.tools.jib.cache.CacheStorageReader.retrieveMetadata(ImageReference imageReference): Optional"
+            }
+        ],
+        "classes": [],
+        "issues": [
+            {
+                "content": "**Environment**:\r\n\r\n- *Jib version:* 3.4.0\r\n- *Build tool:* Maven\r\n- *OS:* Fedora Linux\r\n\r\n**Description of the issue**:\r\n\r\nJib automatically selects the correct base image for Java 8,11 and 17 but not 21.\r\n\r\n**Expected behavior**:\r\n\r\nJib should automatically select `eclipse-temurin:21-jre` when Java 21 is detected.\r\n\r\n**Steps to reproduce**:\r\n  1. Switch maven-compiler-plugin to use Java 21\r\n  2. Run a build with Jib\r\n  3. See error message \"Your project is using Java 21 but the base image is for Java 17, perhaps you should configure a Java 21-compatible base image using the '<from><image>' parameter, or set maven-compiler-plugin's '<target>' or '<release>' version to 17 or below in your build configuration: IncompatibleBaseImageJavaVersionException\"\r\n\r\n**Log output**: https://github.com/opentripplanner/OpenTripPlanner/actions/runs/6809930157/job/18517607512\n",
+                "distance": 0,
+                "title": "Automatically select correct base image for Java 21",
+                "name": "root",
+                "path": [],
+                "issue_id": "root",
+                "similarity": 2.0,
+                "type": "issue"
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "4137",
+                "type": "issue",
+                "content": "**Environment**:\r\n\r\n- *Jib version:* 3.4.0\r\n- *Build tool:* Maven\r\n- *OS:* Fedora Linux\r\n\r\n**Description of the issue**:\r\n\r\nJib automatically selects the correct base image for Java 8,11 and 17 but not 21.\r\n\r\n**Expected behavior**:\r\n\r\nJib should automatically select `eclipse-temurin:21-jre` when Java 21 is detected.\r\n\r\n**Steps to reproduce**:\r\n  1. Switch maven-compiler-plugin to use Java 21\r\n  2. Run a build with Jib\r\n  3. See error message \"Your project is using Java 21 but the base image is for Java 17, perhaps you should configure a Java 21-compatible base image using the '<from><image>' parameter, or set maven-compiler-plugin's '<target>' or '<release>' version to 17 or below in your build configuration: IncompatibleBaseImageJavaVersionException\"\r\n\r\n**Log output**: https://github.com/opentripplanner/OpenTripPlanner/actions/runs/6809930157/job/18517607512\n\n",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "Automatically select correct base image for Java 21",
+                "name": "issue#4137",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#4144"
+                    },
+                    {
+                        "start_node": "pr#4144",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "issue#4137"
+                    }
+                ],
+                "similarity": 0.7693436390749451,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "4144",
+                "type": "issue",
+                "content": "I looked at all occurrences of \"eclipse-temurin\", I don't think I missed other places to update.\r\n\r\nThank you for your interest in contributing! For general guidelines, please refer to\r\nthe [contributing guide](https://github.com/GoogleContainerTools/jib/blob/master/CONTRIBUTING.md).\r\n\r\nBefore filing a pull request, make sure to do the following:\r\n\r\n- [x] Create a new issue at https://github.com/GoogleContainerTools/jib/issues/new/choose.\r\n- [ ] Ensure that your implementation plan is approved by the team.\r\n- [x] Verify that integration tests and unit tests are passing after the change.\r\n- [x] Address all checkstyle issues. Refer to\r\n  the [style guide](https://github.com/GoogleContainerTools/jib/blob/master/STYLE_GUIDE.md).\r\n\r\nThis helps to reduce the chance of having a pull request rejected.\r\n\r\nFixes #4137 \ud83d\udee0\ufe0f\n\n",
+                "source_code": null,
+                "distance": 0.25,
+                "title": "Add defaut base image for Java 21",
+                "name": "pr#4144",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#4144"
+                    }
+                ],
+                "similarity": 0.693808909160998,
+                "end_line": null,
+                "signature": null
+            }
+        ]
+    },
+    "artifact_stats": {
+        "skipped_due_to_time": 6,
+        "valid_related_items": 7
+    }
+}

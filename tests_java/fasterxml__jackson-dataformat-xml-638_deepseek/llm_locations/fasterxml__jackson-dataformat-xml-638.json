@@ -1,0 +1,68 @@
+{
+    "related_entities": {
+        "methods": [],
+        "classes": [],
+        "issues": [
+            {
+                "content": "(note: offshoot of #628)\r\n\r\nLooks like method `findNamepace()` in `JacksonXmlAnnotationIntrospector` is considering both `@JsonProperty` and `@JacksonXmlNamespace` (latter having precedence) but does not support case like so:\r\n\r\n```\r\n       @JsonProperty(value=\"value\", namespace=\"uri:ns1\")\r\n        @JacksonXmlProperty(isAttribute=true)\r\n        public int valueDefault = 42;\r\n```\r\n\r\nin which `@JacksonXmlProperty` does not define namespace (that is, is left as \"\", empty String).\r\nIn such case it should then return `namespace` value of `@JsonProperty` instead.\r\n\r\nIdeally in future we could simply use methods from `AnnotationIntrospection` -- `findNameForSerialization()` and `findNameForDeserializaiton` -- which also expose \"namespace\", but on short term let's handle merging better.\r\n\r\n\r\n\r\n\n",
+                "distance": 0,
+                "title": "`JacksonXmlAnnotationIntrospector.findNamespace()` should properly merge namespace information",
+                "name": "root",
+                "path": [],
+                "issue_id": "root",
+                "similarity": 2.0,
+                "type": "issue"
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "637",
+                "type": "issue",
+                "content": "(note: offshoot of #628)\r\n\r\nLooks like method `findNamepace()` in `JacksonXmlAnnotationIntrospector` is considering both `@JsonProperty` and `@JacksonXmlNamespace` (latter having precedence) but does not support case like so:\r\n\r\n```\r\n       @JsonProperty(value=\"value\", namespace=\"uri:ns1\")\r\n        @JacksonXmlProperty(isAttribute=true)\r\n        public int valueDefault = 42;\r\n```\r\n\r\nin which `@JacksonXmlProperty` does not define namespace (that is, is left as \"\", empty String).\r\nIn such case it should then return `namespace` value of `@JsonProperty` instead.\r\n\r\nIdeally in future we could simply use methods from `AnnotationIntrospection` -- `findNameForSerialization()` and `findNameForDeserializaiton` -- which also expose \"namespace\", but on short term let's handle merging better.\r\n\r\n\r\n\r\n\n\n",
+                "source_code": null,
+                "distance": 0.25,
+                "title": "`JacksonXmlAnnotationIntrospector.findNamespace()` should properly merge namespace information",
+                "name": "issue#637",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#637"
+                    }
+                ],
+                "similarity": 0.7669536227072531,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "628",
+                "type": "issue",
+                "content": "## TL;\r\n- When the `localName` property of `@JacksonXmlProperty` is not set, the `required` of `@JsonProperty` does not detect the property name of POJO.\r\n- I have an example to verify this phenomenon. I don't seem to see this documented in the documentation. This unit testing and reproduction process is located at https://github.com/linghengqian/jackson-mixed-annotations-test .\r\n```java\r\npublic class RequiredTest {\r\n    @Test\r\n    void assertRequiredValue() {\r\n        ObjectMapper XML_MAPPER = XmlMapper.builder().build();\r\n        Assertions.assertDoesNotThrow(() -> {\r\n            XML_MAPPER.readValue(\"\"\"\r\n                    <Record type=\"\">\r\n                        <driverClassName>\r\n                        </driverClassName>\r\n                    </Record>\r\n                    \"\"\", TestRecord.class);\r\n        });\r\n        Assertions.assertDoesNotThrow(() -> {\r\n            XML_MAPPER.readValue(\"\"\"\r\n                    <Record type=\"\">\r\n                        <driverClassName>\r\n                        </driverClassName>\r\n                    </Record>\r\n                    \"\"\", TestRecordWithoutLocalName.class);\r\n        });\r\n    }\r\n\r\n    @Getter\r\n    @NoArgsConstructor\r\n    @JacksonXmlRootElement(localName = \"Record\")\r\n    static class TestRecord {\r\n        private String type;\r\n\r\n        private String driverClassName;\r\n\r\n        @JsonCreator\r\n        public TestRecord(\r\n                @JsonProperty(required = true) @JacksonXmlProperty(localName = \"type\", isAttribute = true)\r\n                String type,\r\n                @JsonProperty(required = true) @JacksonXmlProperty(localName = \"driverClassName\")\r\n                String driverClassName) {\r\n            this.type = type;\r\n            this.driverClassName = driverClassName;\r\n        }\r\n    }\r\n\r\n    @Getter\r\n    @NoArgsConstructor\r\n    @JacksonXmlRootElement(localName = \"Record\")\r\n    static class TestRecordWithoutLocalName {\r\n        private String type;\r\n\r\n        private String driverClassName;\r\n\r\n        @JsonCreator\r\n        public TestRecordWithoutLocalName(\r\n                @JsonProperty(required = true) @JacksonXmlProperty(isAttribute = true)\r\n                String type,\r\n                @JsonProperty(required = true) @JacksonXmlProperty(localName = \"driverClassName\")\r\n                String driverClassName) {\r\n            this.type = type;\r\n            this.driverClassName = driverClassName;\r\n        }\r\n    }\r\n}\r\n```\r\n- The second assertion will fail.\r\n- From my understanding, the `localName` attribute of `@JacksonXmlProperty` has the same function as https://github.com/FasterXML/jackson-annotations?tab=readme-ov-file#annotations-for-renaming-properties , but is used renaming of POJO properties. Not setting `localName` should not cause this error.\r\n```shell\r\n[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.273 s <<< FAILURE! -- in com.lingh.RequiredTest\r\n[ERROR] com.lingh.RequiredTest.assertRequiredValue -- Time elapsed: 0.243 s <<< FAILURE!\r\norg.opentest4j.AssertionFailedError: \r\nUnexpected exception thrown: com.fasterxml.jackson.databind.exc.MismatchedInputException: Missing required creator property '' (index 0)\r\n at [Source: (StringReader); line: 4, column: 1] (through reference chain: com.lingh.RequiredTest$TestRecordWithoutLocalName[\"\"])\r\n        at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)\r\n        at org.junit.jupiter.api.AssertDoesNotThrow.createAssertionFailedError(AssertDoesNotThrow.java:84)\r\n        at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:53)\r\n        at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:36)\r\n        at org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3168)\r\n        at com.lingh.RequiredTest.assertRequiredValue(RequiredTest.java:26)\r\n        at java.base/java.lang.reflect.Method.invoke(Method.java:580)\r\n        at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n        at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\nCaused by: com.fasterxml.jackson.databind.exc.MismatchedInputException: Missing required creator property '' (index 0)\r\n at [Source: (StringReader); line: 4, column: 1] (through reference chain: com.lingh.RequiredTest$TestRecordWithoutLocalName[\"\"])\r\n        at com.fasterxml.jackson.databind.exc.MismatchedInputException.from(MismatchedInputException.java:59)\r\n        at com.fasterxml.jackson.databind.DeserializationContext.reportInputMismatch(DeserializationContext.java:1781)\r\n        at com.fasterxml.jackson.databind.deser.impl.PropertyValueBuffer._findMissing(PropertyValueBuffer.java:192)\r\n        at com.fasterxml.jackson.databind.deser.impl.PropertyValueBuffer.getParameters(PropertyValueBuffer.java:158)\r\n        at com.fasterxml.jackson.databind.deser.ValueInstantiator.createFromObjectWith(ValueInstantiator.java:301)\r\n        at com.fasterxml.jackson.databind.deser.impl.PropertyBasedCreator.build(PropertyBasedCreator.java:202)\r\n        at com.fasterxml.jackson.databind.deser.BeanDeserializer._deserializeUsingPropertyBased(BeanDeserializer.java:526)\r\n        at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.deserializeFromObjectUsingNonDefault(BeanDeserializerBase.java:1493)\r\n        at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserializeFromObject(BeanDeserializer.java:348)\r\n        at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:185)\r\n        at com.fasterxml.jackson.dataformat.xml.deser.XmlDeserializationContext.readRootValue(XmlDeserializationContext.java:104)\r\n        at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:4899)\r\n        at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3846)\r\n        at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3814)\r\n        at com.lingh.RequiredTest.lambda$assertRequiredValue$1(RequiredTest.java:27)\r\n        at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:49)\r\n        ... 6 more\r\n```\n\n\nComment by cowtowncoder:\nOk the problem here is, I think, that for naming purposes `@JsonProperty` and `@JacksonXmlProperty` are sort of synonyms. And specifically so that one with higher precedence (as they are detected by different `AnnotationIntrospector`s, I think by default is `@JacksonXmlProperty`) will be used for all name aspects -- both namespace and local name.\r\nSo in this case it'd be as if `@JsonProperty` did not even exist.\r\n\r\nI think this should be fixable, but has to be done in `jackson-databind` `AnnotationIntrospectorPair` which handles merging of annotation information from different source: method `findNameForDeserialization()` (and `findNameForSerialization()`) at least would need to be changed a bit.\r\n\n\nComment by cowtowncoder:\nActually, I take that back: constructor parameters' names are only discovered if using `jackson-module-parameter-names` (from https://github.com/FasterXML/jackson-modules-java8/).\r\nSo this:\r\n\r\n```\r\n                @JsonProperty(required = true) @JacksonXmlProperty(isAttribute = true)\r\n                String type,\r\n```\r\n\r\nDoes not have name available: either `@JsonProperty(value = \"type\")` or `@JacksonXmlProperty(localName=\"type\")` would indeed be needed.\r\n\r\n\n\nComment by linghengqian:\n- @cowtowncoder Hi, I used `XmlMapper.builder().addModule(new ParameterNamesModule()).build()` at https://github.com/linghengqian/jackson-mixed-annotations-test/commit/cb7e2506855c8836684a28a961b1e7a1c903b278 to verify what you said things. I'm not sure if I understand you correctly, but it looks like `jackson-module-parameter-names` doesn't take effect.\r\n```shell\r\norg.opentest4j.AssertionFailedError: Unexpected exception thrown: com.fasterxml.jackson.databind.exc.MismatchedInputException: Missing required creator property '' (index 0)\r\n at [Source: (StringReader); line: 4, column: 1] (through reference chain: com.lingh.RequiredTest$TestRecordWithoutLocalName[\"\"])\r\n```\n\nComment by cowtowncoder:\n@linghengqian Ok. In that case, that's problematic. I'll need to figure out if Parameter names module (or something in. Jackson databind) needs improvement -- ideally missing/empty local name should not override \"implicit\" name brought in by module.\r\n\r\nI do have a related fix to make, via https://github.com/FasterXML/jackson-databind/issues/4364 but not sure that is enough.\r\nI also have another fix to make in this module (see #637), but fundamentally something else might be needed.\r\n\r\n**EDIT**: now both fixes are in so test case might have a chance to work -- but I have not tested full set up yet (test needs to be in `jackson-modules-java8` repo to find parameter names).\r\n\r\n**EDIT 2**: tested against `jackson-parameter-names` -- https://github.com/FasterXML/jackson-modules-java8/issues/301 -- and things appear to work.\r\n",
+                "source_code": null,
+                "distance": 0.25,
+                "title": "When the `localName` property of `@JacksonXmlProperty` is not set, the `required` of `@JsonProperty` does not detect the property name of POJO",
+                "name": "issue#628",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#628"
+                    }
+                ],
+                "similarity": 0.4431072849465288,
+                "end_line": null,
+                "signature": null
+            }
+        ]
+    },
+    "artifact_stats": {
+        "skipped_due_to_time": 8,
+        "valid_related_items": 15
+    }
+}

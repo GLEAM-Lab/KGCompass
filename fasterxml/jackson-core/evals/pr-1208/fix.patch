@@ -1,0 +1,11 @@
+--- a/src/main/java/com/fasterxml/jackson/core/JsonFactory.java
++++ b/src/main/java/com/fasterxml/jackson/core/JsonFactory.java
+@@ -871,6 +871,9 @@
+      */
+     public JsonFactory setStreamReadConstraints(StreamReadConstraints src) {
+         _streamReadConstraints = Objects.requireNonNull(src);
++        if (_rootCharSymbols != null) {
++            _rootCharSymbols = CharsToNameCanonicalizer.createRoot(this);
++        }
+         return this;
+     }

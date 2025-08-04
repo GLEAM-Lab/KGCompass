@@ -1,0 +1,1765 @@
+{
+  "related_entities": {
+    "methods": [
+      {
+        "start_line": 88,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public TokenFilter filterStartObject() {\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "filterStartObject",
+        "documentation": "/**\n     * Method called to check whether Object value at current output\n     * location should be included in output.\n     * Three kinds of return values may be used as follows:\n     *<ul>\n     * <li><code>null</code> to indicate that the Object should be skipped\n     *   </li>\n     * <li>{@link #INCLUDE_ALL} to indicate that the Object should be included\n     * completely in output\n     *   </li>\n     * <li>Any other {@link TokenFilter} implementation (possibly this one) to mean\n     *  that further inclusion calls on return filter object need to be made\n     *  on contained properties, as necessary. {@link #filterFinishObject()} will\n     *  also be called on returned filter object\n     *   </li>\n     * </ul>\n     *<p>\n     * Default implementation returns <code>this</code>, which means that checks\n     * are made recursively for properties of the Object to determine possible inclusion.\n     * \n     * @return TokenFilter to use for further calls within Array, unless return value\n     *   is <code>null</code> or {@link #INCLUDE_ALL} (which have simpler semantics)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "filterStartObject"
+          }
+        ],
+        "similarity": 0.08876910321945934,
+        "end_line": 90,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.filterStartObject(): TokenFilter"
+      },
+      {
+        "start_line": 115,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public TokenFilter filterStartArray() {\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "filterStartArray",
+        "documentation": "/**\n     * Method called to check whether Array value at current output\n     * location should be included in output.\n     * Three kinds of return values may be used as follows:\n     *<ul>\n     * <li><code>null</code> to indicate that the Array should be skipped\n     *   </li>\n     * <li>{@link #INCLUDE_ALL} to indicate that the Array should be included\n     * completely in output\n     *   </li>\n     * <li>Any other {@link TokenFilter} implementation (possibly this one) to mean\n     *  that further inclusion calls on return filter object need to be made\n     *  on contained element values, as necessary. {@link #filterFinishArray()} will\n     *  also be called on returned filter object\n     *   </li>\n     * </ul>\n     *<p>\n     * Default implementation returns <code>this</code>, which means that checks\n     * are made recursively for elements of the array to determine possible inclusion.\n     * \n     * @return TokenFilter to use for further calls within Array, unless return value\n     *   is <code>null</code> or {@link #INCLUDE_ALL} (which have simpler semantics)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "filterStartArray"
+          }
+        ],
+        "similarity": 0.0853986690050127,
+        "end_line": 117,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.filterStartArray(): TokenFilter"
+      },
+      {
+        "start_line": 633,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/sym/CharsToNameCanonicalizer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private void rehash() {\n        final int size = _symbols.length;\n        int newSize = size + size;\n\n        /* 12-Mar-2010, tatu: Let's actually limit maximum size we are\n         *    prepared to use, to guard against OOME in case of unbounded\n         *    name sets (unique [non-repeating] names)\n         */\n        if (newSize > MAX_T_SIZE) {\n            // If this happens, there's no point in either growing or shrinking hash areas.\n            // Rather, let's just cut our losses and stop canonicalizing.\n            _size = 0;\n            _canonicalize = false;\n            // in theory, could just leave these as null, but...\n            _symbols = new String[DEFAULT_T_SIZE];\n            _buckets = new Bucket[DEFAULT_T_SIZE>>1];\n            _indexMask = DEFAULT_T_SIZE-1;\n            _hashShared = false;\n            return;\n        }\n\n        final String[] oldSyms = _symbols;\n        final Bucket[] oldBuckets = _buckets;\n        _symbols = new String[newSize];\n        _buckets = new Bucket[newSize >> 1];\n        // Let's update index mask, threshold, now (needed for rehashing)\n        _indexMask = newSize - 1;\n        _sizeThreshold = _thresholdSize(newSize);\n\n        int count = 0; // let's do sanity check\n\n        // Need to do two loops, unfortunately, since spill-over area is\n        // only half the size:\n        int maxColl = 0;\n        for (int i = 0; i < size; ++i) {\n            String symbol = oldSyms[i];\n            if (symbol != null) {\n                ++count;\n                int index = _hashToIndex(calcHash(symbol));\n                if (_symbols[index] == null) {\n                    _symbols[index] = symbol;\n                } else {\n                    int bix = (index >> 1);\n                    Bucket newB = new Bucket(symbol, _buckets[bix]);\n                    _buckets[bix] = newB;\n                    maxColl = Math.max(maxColl, newB.length);\n                }\n            }\n        }\n\n        final int bucketSize = (size >> 1);\n        for (int i = 0; i < bucketSize; ++i) {\n            Bucket b = oldBuckets[i];\n            while (b != null) {\n                ++count;\n                String symbol = b.symbol;\n                int index = _hashToIndex(calcHash(symbol));\n                if (_symbols[index] == null) {\n                    _symbols[index] = symbol;\n                } else {\n                    int bix = (index >> 1);\n                    Bucket newB = new Bucket(symbol, _buckets[bix]);\n                    _buckets[bix] = newB;\n                    maxColl = Math.max(maxColl, newB.length);\n                }\n                b = b.next;\n            }\n        }\n        _longestCollisionList = maxColl;\n        _overflows = null;\n\n        if (count != _size) {\n            throw new IllegalStateException(String.format(\n                    \"Internal error on SymbolTable.rehash(): had %d entries; now have %d\",\n                    _size, count));\n        }\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "rehash",
+        "documentation": "/**\n     * Method called when size (number of entries) of symbol table grows\n     * so big that load factor is exceeded. Since size has to remain\n     * power of two, arrays will then always be doubled. Main work\n     * is really redistributing old entries into new String/Bucket\n     * entries.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "CharsToNameCanonicalizer"
+          },
+          {
+            "start_node": "CharsToNameCanonicalizer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "rehash"
+          }
+        ],
+        "similarity": 0.08182011936961414,
+        "end_line": 709,
+        "signature": "com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer.rehash(): void"
+      },
+      {
+        "start_line": 57,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected TokenFilter() { }",
+        "distance": 1.0,
+        "title": null,
+        "name": "TokenFilter",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          }
+        ],
+        "similarity": 0.08041357584795894,
+        "end_line": 57,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter()"
+      },
+      {
+        "start_line": 165,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public TokenFilter includeProperty(String name) {\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "includeProperty",
+        "documentation": "/**\n     * Method called to check whether property value with specified name,\n     * at current output location, should be included in output.\n     * Three kinds of return values may be used as follows:\n     *<ul>\n     * <li><code>null</code> to indicate that the property and its value should be skipped\n     *   </li>\n     * <li>{@link #INCLUDE_ALL} to indicate that the property and its value should be included\n     * completely in output\n     *   </li>\n     * <li>Any other {@link TokenFilter} implementation (possibly this one) to mean\n     *  that further inclusion calls on returned filter object need to be made\n     *  as necessary, to determine inclusion.\n     *   </li>\n     * </ul>\n     *<p>\n     * The default implementation simply returns <code>this</code> to continue calling\n     * methods on this filter object, without full inclusion or exclusion.\n     * \n     * @param name Name of Object property to check\n     *\n     * @return TokenFilter to use for further calls within property value, unless return value\n     *   is <code>null</code> or {@link #INCLUDE_ALL} (which have simpler semantics)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "includeProperty"
+          }
+        ],
+        "similarity": 0.06911896374486846,
+        "end_line": 167,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.includeProperty(String name): TokenFilter"
+      },
+      {
+        "start_line": 221,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public TokenFilter includeRootValue(int index) {\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "includeRootValue",
+        "documentation": "/**\n     * Method called to check whether root-level value,\n     * at current output location, should be included in output.\n     * Three kinds of return values may be used as follows:\n     *<ul>\n     * <li><code>null</code> to indicate that the root value should be skipped\n     *   </li>\n     * <li>{@link #INCLUDE_ALL} to indicate that the root value should be included\n     * completely in output\n     *   </li>\n     * <li>Any other {@link TokenFilter} implementation (possibly this one) to mean\n     *  that further inclusion calls on returned filter object need to be made\n     *  as necessary, to determine inclusion.\n     *   </li>\n     * </ul>\n     *<p>\n     * The default implementation simply returns <code>this</code> to continue calling\n     * methods on this filter object, without full inclusion or exclusion.\n     *\n     * @param index Index (0-based) of the root value to check\n     *\n     * @return TokenFilter to use for further calls within root value, unless return value\n     *   is <code>null</code> or {@link #INCLUDE_ALL} (which have simpler semantics)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "includeRootValue"
+          }
+        ],
+        "similarity": 0.06753306528360833,
+        "end_line": 223,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.includeRootValue(int index): TokenFilter"
+      },
+      {
+        "start_line": 193,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public TokenFilter includeElement(int index) {\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "includeElement",
+        "documentation": "/**\n     * Method called to check whether array element with specified index (zero-based),\n     * at current output location, should be included in output.\n     * Three kinds of return values may be used as follows:\n     *<ul>\n     * <li><code>null</code> to indicate that the Array element should be skipped\n     *   </li>\n     * <li>{@link #INCLUDE_ALL} to indicate that the Array element should be included\n     * completely in output\n     *   </li>\n     * <li>Any other {@link TokenFilter} implementation (possibly this one) to mean\n     *  that further inclusion calls on returned filter object need to be made\n     *  as necessary, to determine inclusion.\n     *   </li>\n     * </ul>\n     *<p>\n     * The default implementation simply returns <code>this</code> to continue calling\n     * methods on this filter object, without full inclusion or exclusion.\n     *\n     * @param index Array element index (0-based) to check\n     *\n     * @return TokenFilter to use for further calls within element value, unless return value\n     *   is <code>null</code> or {@link #INCLUDE_ALL} (which have simpler semantics)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "includeElement"
+          }
+        ],
+        "similarity": 0.06276212324822134,
+        "end_line": 195,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.includeElement(int index): TokenFilter"
+      },
+      {
+        "start_line": 133,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void filterFinishArray() { }",
+        "distance": 1.25,
+        "title": null,
+        "name": "filterFinishArray",
+        "documentation": "/**\n     * Method called to indicate that output of non-filtered Array (one that may\n     * have been included either completely, or in part) is completed,\n     * in cases where filter other that {@link #INCLUDE_ALL} was returned.\n     * This occurs when {@link JsonGenerator#writeEndArray()} is called.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "filterFinishArray"
+          }
+        ],
+        "similarity": 0.05953042912121953,
+        "end_line": 133,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.filterFinishArray(): void"
+      },
+      {
+        "start_line": 125,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void filterFinishObject() { }",
+        "distance": 1.25,
+        "title": null,
+        "name": "filterFinishObject",
+        "documentation": "/**\n     * Method called to indicate that output of non-filtered Object (one that may\n     * have been included either completely, or in part) is completed,\n     * in cases where filter other that {@link #INCLUDE_ALL} was returned.\n     * This occurs when {@link JsonGenerator#writeEndObject()} is called.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "filterFinishObject"
+          }
+        ],
+        "similarity": 0.057520944824706814,
+        "end_line": 125,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.filterFinishObject(): void"
+      },
+      {
+        "start_line": 471,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public String toString() {\n        if (this == INCLUDE_ALL) {\n            return \"TokenFilter.INCLUDE_ALL\";\n        }\n        return super.toString();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "toString",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "toString"
+          }
+        ],
+        "similarity": 0.054156446304871535,
+        "end_line": 476,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.toString(): String"
+      },
+      {
+        "start_line": 290,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/sym/CharsToNameCanonicalizer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static CharsToNameCanonicalizer createRoot() {\n        // Need to use a variable seed, to thwart hash-collision based attacks.\n        // 14-Feb-2017, tatu: not sure it actually helps, at all, since it won't\n        //   change mixing or any of the steps. Should likely just remove in future.\n        long now = System.currentTimeMillis();\n        // ensure it's not 0; and might as well require to be odd so:\n        int seed = (((int) now) + ((int) (now >>> 32))) | 1;\n        return createRoot(seed);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "createRoot",
+        "documentation": "/**\n     * Method called to create root canonicalizer for a {@link com.fasterxml.jackson.core.JsonFactory}\n     * instance. Root instance is never used directly; its main use is for\n     * storing and sharing underlying symbol arrays as needed.\n     *\n     * @return Root instance to use for constructing new child instances \n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ByteQuadsCanonicalizer"
+          },
+          {
+            "start_node": "ByteQuadsCanonicalizer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "createRoot"
+          }
+        ],
+        "similarity": 0.05374812241245455,
+        "end_line": 298,
+        "signature": "com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer.createRoot(): CharsToNameCanonicalizer"
+      },
+      {
+        "start_line": 380,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/sym/ByteQuadsCanonicalizer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ByteQuadsCanonicalizer makeChildOrPlaceholder(int flags) {\n        if (JsonFactory.Feature.CANONICALIZE_FIELD_NAMES.enabledIn(flags)) {\n            // inlined \"makeChild()\"\n            return new ByteQuadsCanonicalizer(this, _seed,\n                    _tableInfo.get(),\n                    JsonFactory.Feature.INTERN_FIELD_NAMES.enabledIn(flags),\n                    JsonFactory.Feature.FAIL_ON_SYMBOL_HASH_OVERFLOW.enabledIn(flags));\n        }\n        return new ByteQuadsCanonicalizer(_tableInfo.get());\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "makeChildOrPlaceholder",
+        "documentation": "/**\n     * Method similar to {@link #makeChild} but one that only creates real\n     * instance of {@link com.fasterxml.jackson.core.JsonFactory.Feature#CANONICALIZE_FIELD_NAMES} is\n     * enabled: otherwise a \"bogus\" instance is created.\n     *\n     * @param flags Bit flags of active {@link com.fasterxml.jackson.core.JsonFactory.Feature}s enabled.\n     *\n     * @return Actual canonicalizer instance that can be used by a parser if (and only if)\n     *    canonicalization is enabled; otherwise a non-null \"placeholder\" instance.\n     *\n     * @since 2.13\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ByteQuadsCanonicalizer"
+          },
+          {
+            "start_node": "ByteQuadsCanonicalizer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "makeChildOrPlaceholder"
+          }
+        ],
+        "similarity": 0.053607641694972036,
+        "end_line": 389,
+        "signature": "com.fasterxml.jackson.core.sym.ByteQuadsCanonicalizer.makeChildOrPlaceholder(int flags): ByteQuadsCanonicalizer"
+      },
+      {
+        "start_line": 460,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean includeEmptyObject(boolean contentsFiltered) {\n        return false;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "includeEmptyObject",
+        "documentation": "/**\n     * Call made to verify whether leaf-level empty Object value\n     * should be included in output or not.\n     *\n     * @param contentsFiltered True if Object had contents but they were\n     *   filtered out (NOT included); false if we had actual empty Object.\n     *\n     * @return True if value is to be included; false if not\n     *\n     * @since 2.14\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "includeEmptyObject"
+          }
+        ],
+        "similarity": 0.03963660621637208,
+        "end_line": 462,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.includeEmptyObject(boolean contentsFiltered): boolean"
+      },
+      {
+        "start_line": 728,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/sym/CharsToNameCanonicalizer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void verifyInternalConsistency() {\n        int count = 0;\n        final int size = _symbols.length;\n\n        for (int i = 0; i < size; ++i) {\n            String symbol = _symbols[i];\n            if (symbol != null) {\n                ++count;\n            }\n        }\n\n        final int bucketSize = (size >> 1);\n        for (int i = 0; i < bucketSize; ++i) {\n            for (Bucket b = _buckets[i]; b != null; b = b.next) {\n                ++count;\n            }\n        }\n        if (count != _size) {\n            throw new IllegalStateException(String.format(\"Internal error: expected internal size %d vs calculated count %d\",\n                    _size, count));\n        }\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "verifyInternalConsistency",
+        "documentation": "/**\n     * Diagnostics method that will verify that internal data structures are consistent;\n     * not meant as user-facing method but only for test suites and possible troubleshooting.\n     *\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "CharsToNameCanonicalizer"
+          },
+          {
+            "start_node": "CharsToNameCanonicalizer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "verifyInternalConsistency"
+          }
+        ],
+        "similarity": 0.03933225678963807,
+        "end_line": 749,
+        "signature": "com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer.verifyInternalConsistency(): void"
+      },
+      {
+        "start_line": 445,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean includeEmptyArray(boolean contentsFiltered) {\n        return false;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "includeEmptyArray",
+        "documentation": "/**\n     * Call made to verify whether leaf-level empty Array value\n     * should be included in output or not.\n     *\n     * @param contentsFiltered True if Array had contents but they were\n     *   filtered out (NOT included); false if we had actual empty Array.\n     *\n     * @return True if value is to be included; false if not\n     *\n     * @since 2.14\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "includeEmptyArray"
+          }
+        ],
+        "similarity": 0.039296326310841644,
+        "end_line": 447,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.includeEmptyArray(boolean contentsFiltered): boolean"
+      },
+      {
+        "start_line": 360,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public int size() {\n        if (_inputStart >= 0) { // shared copy from input buf\n            return _inputLen;\n        }\n        if (_resultArray != null) {\n            return _resultArray.length;\n        }\n        if (_resultString != null) {\n            return _resultString.length();\n        }\n        // local segmented buffers\n        return _segmentSize + _currentSize;\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "size",
+        "documentation": "/**\n     * @return Number of characters currently stored in this buffer\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          }
+        ],
+        "similarity": 0.03874332818944383,
+        "end_line": 372,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.size(): int"
+      },
+      {
+        "start_line": 478,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/sym/CharsToNameCanonicalizer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private String _findSymbol2(char[] buffer, int start, int len, Bucket b) {\n        while (b != null) {\n            String sym = b.has(buffer, start, len);\n            if (sym != null) {\n                return sym;\n            }\n            b = b.next;\n        }\n        return null;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_findSymbol2",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "CharsToNameCanonicalizer"
+          },
+          {
+            "start_node": "CharsToNameCanonicalizer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_findSymbol2"
+          }
+        ],
+        "similarity": 0.03802425253556407,
+        "end_line": 487,
+        "signature": "com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer._findSymbol2(char[] buffer, int start, int len, Bucket b): String"
+      },
+      {
+        "start_line": 361,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/sym/ByteQuadsCanonicalizer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ByteQuadsCanonicalizer makeChild(int flags) {\n        return new ByteQuadsCanonicalizer(this, _seed,\n                _tableInfo.get(),\n                JsonFactory.Feature.INTERN_FIELD_NAMES.enabledIn(flags),\n                JsonFactory.Feature.FAIL_ON_SYMBOL_HASH_OVERFLOW.enabledIn(flags));\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "makeChild",
+        "documentation": "/**\n     * Factory method used to create actual symbol table instance to\n     * use for parsing.\n     *\n     * @param flags Bit flags of active {@link com.fasterxml.jackson.core.JsonFactory.Feature}s enabled.\n     *\n     * @return Actual canonicalizer instance that can be used by a parser\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ByteQuadsCanonicalizer"
+          },
+          {
+            "start_node": "ByteQuadsCanonicalizer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "makeChild"
+          }
+        ],
+        "similarity": 0.03794579208992413,
+        "end_line": 366,
+        "signature": "com.fasterxml.jackson.core.sym.ByteQuadsCanonicalizer.makeChild(int flags): ByteQuadsCanonicalizer"
+      },
+      {
+        "start_line": 246,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean includeValue(JsonParser p) throws IOException {\n        return _includeScalar();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "includeValue",
+        "documentation": "/**\n     * Call made when verifying whether a scalar value is being\n     * read from a parser.\n     *<p>\n     * Default action is to call <code>_includeScalar()</code> and return\n     * whatever it indicates.\n     *\n     * @param p Parser that points to the value (typically {@code delegate}\n     *    parser, not filtering parser that wraps it)\n     *\n     * @return True if scalar value is to be included; false if not\n     *\n     * @throws IOException if there are any problems reading content (typically\n     *   via calling passed-in {@code JsonParser})\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "includeValue"
+          }
+        ],
+        "similarity": 0.037504980606033265,
+        "end_line": 248,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.includeValue(JsonParser p): boolean"
+      },
+      {
+        "start_line": 365,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonPointer append(JsonPointer tail) {\n        if (this == EMPTY) {\n            return tail;\n        }\n        if (tail == EMPTY) {\n            return this;\n        }\n        // 21-Mar-2017, tatu: Not superbly efficient; could probably improve by not concatenating,\n        //    re-decoding -- by stitching together segments -- but for now should be fine.\n\n        String currentJsonPointer = _asString;\n        if (currentJsonPointer.endsWith(\"/\")) {\n            //removes final slash\n            currentJsonPointer = currentJsonPointer.substring(0, currentJsonPointer.length()-1);\n        }\n        return compile(currentJsonPointer + tail._asString);\n    }",
+        "distance": 2.5,
+        "title": null,
+        "name": "append",
+        "documentation": "/**\n     * Mutant factory method that will return\n     *<ul>\n     * <li>`tail` if `this` instance is \"empty\" pointer, OR\n     *  </li>\n     * <li>`this` instance if `tail` is \"empty\" pointer, OR\n     *  </li>\n     * <li>Newly constructed {@link JsonPointer} instance that starts with all segments\n     *    of `this`, followed by all segments of `tail`.\n     *  </li>\n     *</ul>\n     * \n     * @param tail {@link JsonPointer} instance to append to this one, to create a new pointer instance\n     *\n     * @return Either `this` instance, `tail`, or a newly created combination, as per description above.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          },
+          {
+            "start_node": "TextBuffer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "append"
+          }
+        ],
+        "similarity": 0.034842891793589605,
+        "end_line": 381,
+        "signature": "com.fasterxml.jackson.core.JsonPointer.append(JsonPointer tail): JsonPointer"
+      },
+      {
+        "start_line": 430,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean includeEmbeddedValue(Object value) {\n        return _includeScalar();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "includeEmbeddedValue",
+        "documentation": "/**\n     * Call made to verify whether leaf-level\n     * embedded (Opaque) value\n     * should be included in output or not.\n     *\n     * @param value Value to check\n     *\n     * @return True if value is to be included; false if not\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "includeEmbeddedValue"
+          }
+        ],
+        "similarity": 0.034519561911839476,
+        "end_line": 432,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.includeEmbeddedValue(Object value): boolean"
+      },
+      {
+        "start_line": 276,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean includeNull() {\n        return _includeScalar();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "includeNull",
+        "documentation": "/**\n     * Call made to verify whether leaf-level\n     * null value\n     * should be included in output or not.\n     *\n     * @return True if ({@code null}) value is to be included; false if not\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "includeNull"
+          }
+        ],
+        "similarity": 0.03426532156970848,
+        "end_line": 278,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.includeNull(): boolean"
+      },
+      {
+        "start_line": 417,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean includeRawValue() {\n        return _includeScalar();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "includeRawValue",
+        "documentation": "/**\n     * Call made to verify whether leaf-level\n     * raw (pre-encoded, not quoted by generator) value\n     * should be included in output or not.\n     *<p>\n     * NOTE: value itself not passed since it may come on multiple forms\n     * and is unlikely to be of much use in determining inclusion\n     * criteria.\n     *\n     * @return True if the raw value is to be included; false if not\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "includeRawValue"
+          }
+        ],
+        "similarity": 0.03413263688542787,
+        "end_line": 419,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.includeRawValue(): boolean"
+      },
+      {
+        "start_line": 128,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected TextBuffer(BufferRecycler allocator, char[] initialSegment) {\n        this(allocator);\n        _currentSegment = initialSegment;\n        _currentSize = initialSegment.length;\n        _inputStart = -1;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "TextBuffer",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          },
+          {
+            "start_node": "TextBuffer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          }
+        ],
+        "similarity": 0.032645984078624825,
+        "end_line": 133,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer(BufferRecycler allocator, char[] initialSegment)"
+      },
+      {
+        "start_line": 817,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public char[] finishCurrentSegment() {\n        if (_segments == null) {\n            _segments = new ArrayList<char[]>();\n        }\n        _hasSegments = true;\n        _segments.add(_currentSegment);\n        int oldLen = _currentSegment.length;\n        _segmentSize += oldLen;\n        _currentSize = 0;\n\n        // Let's grow segments by 50%\n        int newLen = oldLen + (oldLen >> 1);\n        if (newLen < MIN_SEGMENT_LEN) {\n            newLen = MIN_SEGMENT_LEN;\n        } else if (newLen > MAX_SEGMENT_LEN) {\n            newLen = MAX_SEGMENT_LEN;\n        }\n        char[] curr = carr(newLen);\n        _currentSegment = curr;\n        return curr;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "finishCurrentSegment",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          },
+          {
+            "start_node": "TextBuffer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "finishCurrentSegment"
+          }
+        ],
+        "similarity": 0.03228449478794654,
+        "end_line": 837,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.finishCurrentSegment(): char[]"
+      },
+      {
+        "start_line": 265,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean includeBoolean(boolean value) {\n        return _includeScalar();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "includeBoolean",
+        "documentation": "/**\n     * Call made to verify whether leaf-level\n     * boolean value\n     * should be included in output or not.\n     *\n     * @param value Value to check\n     *\n     * @return True if value is to be included; false if not\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "includeBoolean"
+          }
+        ],
+        "similarity": 0.032204042594470524,
+        "end_line": 267,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.includeBoolean(boolean value): boolean"
+      },
+      {
+        "start_line": 1290,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/sym/ByteQuadsCanonicalizer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private void nukeSymbols(boolean fill) {\n        _count = 0;\n        // reset spill-over to empty (starting at 7/8 of hash area)\n        _spilloverEnd = _spilloverStart();\n        // and long name area to empty, starting immediately after hash area\n        _longNameOffset = _hashSize << 3;\n        if (fill) {\n            Arrays.fill(_hashArea, 0);\n            Arrays.fill(_names, null);\n        }\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "nukeSymbols",
+        "documentation": "/**\n     * Helper method called to empty all shared symbols, but to leave\n     * arrays allocated\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ByteQuadsCanonicalizer"
+          },
+          {
+            "start_node": "ByteQuadsCanonicalizer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nukeSymbols"
+          }
+        ],
+        "similarity": 0.03158486537793904,
+        "end_line": 1300,
+        "signature": "com.fasterxml.jackson.core.sym.ByteQuadsCanonicalizer.nukeSymbols(boolean fill): void"
+      },
+      {
+        "start_line": 284,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonParser enable(Feature f) {\n        _features |= f.getMask();\n        if (f == Feature.STRICT_DUPLICATE_DETECTION) { // enabling dup detection?\n            if (_parsingContext.getDupDetector() == null) { // but only if disabled currently\n                _parsingContext = _parsingContext.withDupDetector(DupDetector.rootDetector(this));\n            }\n        }\n        return this;\n    }",
+        "distance": 3.0,
+        "title": null,
+        "name": "enable",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ByteArrayBuilder"
+          },
+          {
+            "start_node": "ByteArrayBuilder",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "release"
+          },
+          {
+            "start_node": "release",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "reset"
+          },
+          {
+            "start_node": "reset",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enable"
+          }
+        ],
+        "similarity": 0.0315091427026139,
+        "end_line": 292,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase.enable(Feature f): JsonParser"
+      },
+      {
+        "start_line": 161,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void releaseBuffers()",
+        "distance": 1.5,
+        "title": null,
+        "name": "releaseBuffers",
+        "documentation": "/**\n     * Method called to indicate that the underlying buffers should now\n     * be recycled if they haven't yet been recycled. Although caller\n     * can still use this text buffer, it is not advisable to call this\n     * method if that is likely, since next time a buffer is needed,\n     * buffers need to reallocated.\n     *<p>\n     * Note: since Jackson 2.11, calling this method will NOT clear already\n     * aggregated contents (that is, {@code _currentSegment}, to retain\n     * current token text if (but only if!) already aggregated.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          },
+          {
+            "start_node": "TextBuffer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "releaseBuffers"
+          }
+        ],
+        "similarity": 0.03113621337553404,
+        "end_line": 161,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.releaseBuffers(): void"
+      },
+      {
+        "start_line": 879,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/sym/ByteQuadsCanonicalizer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public String addName(String name, int q1, int q2) {\n        _verifySharing();\n        if (_intern) {\n            name = InternCache.instance.intern(name);\n        }\n\n        // 20-Mar-2021, tatu: For some reason, pre-2.13 there was logic\n        //    to support \"only one quad\" case. Not sure why, does not make sense;\n        //    removed from 2.13.0.\n//        int hash = (q2 == 0) ? calcHash(q1) : calcHash(q1, q2);\n        final int hash = calcHash(q1, q2);\n        final int offset = _findOffsetForAdd(hash);\n        _hashArea[offset] = q1;\n        _hashArea[offset+1] = q2;\n        _hashArea[offset+3] = 2;\n        _names[offset >> 2] = name;\n        ++_count;\n        return name;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "addName",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ByteQuadsCanonicalizer"
+          },
+          {
+            "start_node": "ByteQuadsCanonicalizer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "addName"
+          }
+        ],
+        "similarity": 0.031070315509147236,
+        "end_line": 897,
+        "signature": "com.fasterxml.jackson.core.sym.ByteQuadsCanonicalizer.addName(String name, int q1, int q2): String"
+      },
+      {
+        "start_line": 517,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/sym/ByteQuadsCanonicalizer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public int tertiaryCount() {\n        int count = 0;\n        int offset = _tertiaryStart + 3; // to 1.5x, starting point of tertiary\n        for (int end = offset + _hashSize; offset < end; offset += 4) {\n            if (_hashArea[offset] != 0) {\n                ++count;\n            }\n        }\n        return count;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "tertiaryCount",
+        "documentation": "/**\n     * Method mostly needed by unit tests; calculates number of entries\n     * in tertiary buckets\n     *\n     * @return Number of entries in the tertiary hash area\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ByteQuadsCanonicalizer"
+          },
+          {
+            "start_node": "ByteQuadsCanonicalizer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "tertiaryCount"
+          }
+        ],
+        "similarity": 0.03066223914590221,
+        "end_line": 526,
+        "signature": "com.fasterxml.jackson.core.sym.ByteQuadsCanonicalizer.tertiaryCount(): int"
+      },
+      {
+        "start_line": 309,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean includeString(java.io.Reader r, int maxLen) {\n        return _includeScalar();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "includeString",
+        "documentation": "/**\n     * Call made to verify whether leaf-level\n     * \"streaming\" String value\n     * should be included in output or not.\n     *<p>\n     * NOTE: note that any reads from passed in {@code Reader} may lead\n     * to actual loss of content to write; typically method should NOT\n     * access content passed via this method.\n     *\n     * @param r Reader used to pass String value to parser\n     * @param maxLen indicated maximum length of String value\n     *\n     * @return True if value is to be included; false if not\n     *\n     * @since 2.11\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "includeString"
+          }
+        ],
+        "similarity": 0.03036065491180836,
+        "end_line": 311,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.includeString(java r, int maxLen): boolean"
+      },
+      {
+        "start_line": 500,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/sym/ByteQuadsCanonicalizer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public int secondaryCount() {\n        int count = 0;\n        int offset = _secondaryStart + 3;\n        for (int end = _tertiaryStart; offset < end; offset += 4) {\n            if (_hashArea[offset] != 0) {\n                ++count;\n            }\n        }\n        return count;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "secondaryCount",
+        "documentation": "/**\n     * Method mostly needed by unit tests; calculates number of entries\n     * in secondary buckets\n     *\n     * @return Number of entries in the secondary hash area\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ByteQuadsCanonicalizer"
+          },
+          {
+            "start_node": "ByteQuadsCanonicalizer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "secondaryCount"
+          }
+        ],
+        "similarity": 0.030192562721602815,
+        "end_line": 509,
+        "signature": "com.fasterxml.jackson.core.sym.ByteQuadsCanonicalizer.secondaryCount(): int"
+      },
+      {
+        "start_line": 338,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/sym/ByteQuadsCanonicalizer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static ByteQuadsCanonicalizer createRoot() {\n        // Need to use a variable seed, to thwart hash-collision based attacks.\n        // 14-Feb-2017, tatu: Does this actually help?\n        long now = System.currentTimeMillis();\n        // ensure it's not 0; and might as well require to be odd so:\n        int seed = (((int) now) + ((int) (now >>> 32))) | 1;\n        return createRoot(seed);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "createRoot",
+        "documentation": "/**\n     * Factory method to call to create a symbol table instance with a\n     * randomized seed value.\n     *\n     * @return Root instance to use for constructing new child instances \n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ByteQuadsCanonicalizer"
+          },
+          {
+            "start_node": "ByteQuadsCanonicalizer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "createRoot"
+          }
+        ],
+        "similarity": 0.02966963115900414,
+        "end_line": 345,
+        "signature": "com.fasterxml.jackson.core.sym.ByteQuadsCanonicalizer.createRoot(): ByteQuadsCanonicalizer"
+      },
+      {
+        "start_line": 648,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void ensureNotShared() {\n        if (_inputStart >= 0) {\n            unshare(16);\n        }\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "ensureNotShared",
+        "documentation": "/**\n     * Method called to make sure that buffer is not using shared input\n     * buffer; if it is, it will copy such contents to private buffer.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          },
+          {
+            "start_node": "TextBuffer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "ensureNotShared"
+          }
+        ],
+        "similarity": 0.029125992600303244,
+        "end_line": 652,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.ensureNotShared(): void"
+      },
+      {
+        "start_line": 250,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/sym/CharsToNameCanonicalizer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private CharsToNameCanonicalizer(CharsToNameCanonicalizer parent, int flags, int seed,",
+        "distance": 1.5,
+        "title": null,
+        "name": "CharsToNameCanonicalizer",
+        "documentation": "/**\n     * Internal constructor used when creating child instances.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "CharsToNameCanonicalizer"
+          },
+          {
+            "start_node": "CharsToNameCanonicalizer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "CharsToNameCanonicalizer"
+          }
+        ],
+        "similarity": 0.02908511757948393,
+        "end_line": 250,
+        "signature": "com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer(CharsToNameCanonicalizer parent, int flags, int seed, TableInfo parentState)"
+      },
+      {
+        "start_line": 255,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected ParserBase(IOContext ctxt, int features) {\n        super(features);\n        _ioContext = ctxt;\n        _streamReadConstraints = ctxt.streamReadConstraints();\n        _textBuffer = ctxt.constructTextBuffer();\n        DupDetector dups = Feature.STRICT_DUPLICATE_DETECTION.enabledIn(features)\n                ? DupDetector.rootDetector(this) : null;\n        _parsingContext = JsonReadContext.createRootContext(dups);\n    }",
+        "distance": 3.0,
+        "title": null,
+        "name": "ParserBase",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ByteArrayBuilder"
+          },
+          {
+            "start_node": "ByteArrayBuilder",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "release"
+          },
+          {
+            "start_node": "release",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "reset"
+          },
+          {
+            "start_node": "reset",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          }
+        ],
+        "similarity": 0.029012786502890686,
+        "end_line": 263,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase(IOContext ctxt, int features)"
+      },
+      {
+        "start_line": 55,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/ByteArrayBuilder.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ByteArrayBuilder(BufferRecycler br, int firstBlockSize) {\n        _bufferRecycler = br;\n        // 04-Sep-2020, tatu: Let's make this bit more robust and refuse to allocate\n        //    humongous blocks even if requested\n        if (firstBlockSize > MAX_BLOCK_SIZE) {\n            firstBlockSize = MAX_BLOCK_SIZE;\n        }\n        _currBlock = (br == null) ? new byte[firstBlockSize] : br.allocByteBuffer(BufferRecycler.BYTE_WRITE_CONCAT_BUFFER);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "ByteArrayBuilder",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ByteArrayBuilder"
+          },
+          {
+            "start_node": "ByteArrayBuilder",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "ByteArrayBuilder"
+          }
+        ],
+        "similarity": 0.028986655682920807,
+        "end_line": 63,
+        "signature": "com.fasterxml.jackson.core.util.ByteArrayBuilder(BufferRecycler br, int firstBlockSize)"
+      },
+      {
+        "start_line": 509,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _handleEOF() throws JsonParseException {\n        if (!_parsingContext.inRoot()) {\n            String marker = _parsingContext.inArray() ? \"Array\" : \"Object\";\n            _reportInvalidEOF(String.format(\n                    \": expected close marker for %s (start marker at %s)\",\n                    marker,\n                    _parsingContext.startLocation(_contentReference())),\n                    null);\n        }\n    }",
+        "distance": 3.0,
+        "title": null,
+        "name": "_handleEOF",
+        "documentation": "/**\n     * Method called when an EOF is encountered between tokens.\n     * If so, it may be a legitimate EOF, but only iff there\n     * is no open non-root context.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ByteArrayBuilder"
+          },
+          {
+            "start_node": "ByteArrayBuilder",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "release"
+          },
+          {
+            "start_node": "release",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "reset"
+          },
+          {
+            "start_node": "reset",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_handleEOF"
+          }
+        ],
+        "similarity": 0.028880749026319666,
+        "end_line": 518,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase._handleEOF(): void"
+      },
+      {
+        "start_line": 557,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected final JsonToken reset(boolean negative, int intLen, int fractLen, int expLen)",
+        "distance": 2.5,
+        "title": null,
+        "name": "reset",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ByteArrayBuilder"
+          },
+          {
+            "start_node": "ByteArrayBuilder",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "release"
+          },
+          {
+            "start_node": "release",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "reset"
+          }
+        ],
+        "similarity": 0.02882760518988253,
+        "end_line": 557,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase.reset(boolean negative, int intLen, int fractLen, int expLen): JsonToken"
+      },
+      {
+        "start_line": 654,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void append(char c) {\n        // Using shared buffer so far?\n        if (_inputStart >= 0) {\n            unshare(16);\n        }\n        _resultString = null;\n        _resultArray = null;\n        // Room in current segment?\n        char[] curr = _currentSegment;\n        if (_currentSize >= curr.length) {\n            expand();\n            curr = _currentSegment;\n        }\n        curr[_currentSize++] = c;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "append",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          },
+          {
+            "start_node": "TextBuffer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "append"
+          }
+        ],
+        "similarity": 0.02860492016142487,
+        "end_line": 668,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.append(char c): void"
+      },
+      {
+        "start_line": 619,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/sym/CharsToNameCanonicalizer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private void copyArrays() {\n        final String[] oldSyms = _symbols;\n        _symbols = Arrays.copyOf(oldSyms, oldSyms.length);\n        final Bucket[] oldBuckets = _buckets;\n        _buckets = Arrays.copyOf(oldBuckets, oldBuckets.length);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "copyArrays",
+        "documentation": "/**\n     * Method called when copy-on-write is needed; generally when first\n     * change is made to a derived symbol table.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "CharsToNameCanonicalizer"
+          },
+          {
+            "start_node": "CharsToNameCanonicalizer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "copyArrays"
+          }
+        ],
+        "similarity": 0.028603058600305285,
+        "end_line": 624,
+        "signature": "com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer.copyArrays(): void"
+      },
+      {
+        "start_line": 492,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected boolean _includeScalar() {\n        return true;\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "_includeScalar",
+        "documentation": "/**\n     * Overridable default implementation delegated to all scalar value\n     * inclusion check methods.\n     * The default implementation simply includes all leaf values.\n     *\n     * @return Whether all leaf scalar values should be included ({@code true})\n     *    or not ({@code false})\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "_includeScalar"
+          }
+        ],
+        "similarity": 0.028435889288328416,
+        "end_line": 494,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter._includeScalar(): boolean"
+      },
+      {
+        "start_line": 588,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/sym/CharsToNameCanonicalizer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public int calcHash(char[] buffer, int start, int len) {\n        int hash = _seed;\n        for (int i = start, end = start+len; i < end; ++i) {\n            hash = (hash * HASH_MULT) + (int) buffer[i];\n        }\n        // NOTE: shuffling, if any, is done in 'findSymbol()', not here:\n        return (hash == 0) ? 1 : hash;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "calcHash",
+        "documentation": "/**\n     * Implementation of a hashing method for variable length\n     * Strings. Most of the time intention is that this calculation\n     * is done by caller during parsing, not here; however, sometimes\n     * it needs to be done for parsed \"String\" too.\n     *\n     * @param buffer Input buffer that contains name to decode\n     * @param start Pointer to the first character of the name\n     * @param len Length of String; has to be at least 1 (caller guarantees)\n     *\n     * @return Hash code calculated\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "CharsToNameCanonicalizer"
+          },
+          {
+            "start_node": "CharsToNameCanonicalizer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "calcHash"
+          }
+        ],
+        "similarity": 0.02814526467389064,
+        "end_line": 595,
+        "signature": "com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer.calcHash(char[] buffer, int start, int len): int"
+      },
+      {
+        "start_line": 221,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/ByteArrayBuilder.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public byte[] completeAndCoalesce(int lastBlockLength) {\n        _currBlockPtr = lastBlockLength;\n        return toByteArray();\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "completeAndCoalesce",
+        "documentation": "/**\n     * Method that will complete \"manual\" output process, coalesce\n     * content (if necessary) and return results as a contiguous buffer.\n     * \n     * @param lastBlockLength Amount of content in the current segment\n     * buffer.\n     * \n     * @return Coalesced contents\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ByteArrayBuilder"
+          },
+          {
+            "start_node": "ByteArrayBuilder",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "completeAndCoalesce"
+          }
+        ],
+        "similarity": 0.028000420467196568,
+        "end_line": 224,
+        "signature": "com.fasterxml.jackson.core.util.ByteArrayBuilder.completeAndCoalesce(int lastBlockLength): byte[]"
+      },
+      {
+        "start_line": 402,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean includeBinary() {\n        return _includeScalar();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "includeBinary",
+        "documentation": "/**\n     * Call made to verify whether leaf-level\n     * Binary value\n     * should be included in output or not.\n     *<p>\n     * NOTE: no binary payload passed; assumption is this won't be of much use.\n     *\n     * @return True if the binary value is to be included; false if not\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "includeBinary"
+          }
+        ],
+        "similarity": 0.027966052960374965,
+        "end_line": 404,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.includeBinary(): boolean"
+      },
+      {
+        "start_line": 568,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/sym/CharsToNameCanonicalizer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public int _hashToIndex(int rawHash) {\n        // doing these seems to help a bit\n        rawHash += (rawHash >>> 15);\n        rawHash ^= (rawHash << 7);\n        rawHash += (rawHash >>> 3);\n        return (rawHash & _indexMask);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_hashToIndex",
+        "documentation": "/**\n     * Helper method that takes in a \"raw\" hash value, shuffles it as necessary,\n     * and truncates to be used as the index.\n     *\n     * @param rawHash Raw hash value to use for calculating index\n     *\n     * @return Index value calculated\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "CharsToNameCanonicalizer"
+          },
+          {
+            "start_node": "CharsToNameCanonicalizer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "_hashToIndex"
+          }
+        ],
+        "similarity": 0.027900235236338795,
+        "end_line": 574,
+        "signature": "com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer._hashToIndex(int rawHash): int"
+      },
+      {
+        "start_line": 804,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public String setCurrentAndReturn(int len) {\n        _currentSize = len;\n        // We can simplify handling here compared to full `contentsAsString()`:\n        if (_segmentSize > 0) { // longer text; call main method\n            return contentsAsString();\n        }\n        // more common case: single segment\n        int currLen = _currentSize;\n        String str = (currLen == 0) ? \"\" : new String(_currentSegment, 0, currLen);\n        _resultString = str;\n        return str;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "setCurrentAndReturn",
+        "documentation": "/**\n     * Convenience method that finishes the current active content segment\n     * (by specifying how many characters within consists of valid content)\n     * and aggregates and returns resulting contents (similar to a call\n     * to {@link #contentsAsString()}).\n     *\n     * @param len Length of content (in characters) of the current active segment\n     *\n     * @return String that contains all buffered content\n     *\n     * @since 2.6\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          },
+          {
+            "start_node": "TextBuffer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setCurrentAndReturn"
+          }
+        ],
+        "similarity": 0.027531413862343104,
+        "end_line": 815,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.setCurrentAndReturn(int len): String"
+      },
+      {
+        "start_line": 315,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonParser overrideStdFeatures(int values, int mask) {\n        int oldState = _features;\n        int newState = (oldState & ~mask) | (values & mask);\n        int changed = oldState ^ newState;\n        if (changed != 0) {\n            _features = newState;\n            _checkStdFeatureChanges(newState, changed);\n        }\n        return this;\n    }",
+        "distance": 3.0,
+        "title": null,
+        "name": "overrideStdFeatures",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ByteArrayBuilder"
+          },
+          {
+            "start_node": "ByteArrayBuilder",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "release"
+          },
+          {
+            "start_node": "release",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "reset"
+          },
+          {
+            "start_node": "reset",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "overrideStdFeatures"
+          }
+        ],
+        "similarity": 0.02718402430983368,
+        "end_line": 324,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase.overrideStdFeatures(int values, int mask): JsonParser"
+      },
+      {
+        "start_line": 244,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void resetWithShared(char[] buf, int offset, int len)",
+        "distance": 1.5,
+        "title": null,
+        "name": "resetWithShared",
+        "documentation": "/**\n     * Method called to initialize the buffer with a shared copy of data;\n     * this means that buffer will just have pointers to actual data. It\n     * also means that if anything is to be appended to the buffer, it\n     * will first have to unshare it (make a local copy).\n     *\n     * @param buf Buffer that contains shared contents\n     * @param offset Offset of the first content character in {@code buf}\n     * @param len Length of content in {@code buf}\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "size"
+          },
+          {
+            "start_node": "size",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          },
+          {
+            "start_node": "TextBuffer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "resetWithShared"
+          }
+        ],
+        "similarity": 0.02607766763374274,
+        "end_line": 244,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.resetWithShared(char[] buf, int offset, int len): void"
+      }
+    ],
+    "classes": [],
+    "issues": [
+      {
+        "content": "The usecase is to filter Json while generating it but instead of a single property i wanted to be able to match multiples.\r\n\r\n\r\n\r\n\r\n\r\nsee: https://github.com/FasterXML/jackson-core/blob/2.15/src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java#L314-L317\r\n\r\nfor arrays it already happens: https://github.com/FasterXML/jackson-core/blob/2.15/src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java#L178-L182\r\n\r\n\r\n\r\nI wrote a simple OR composite:\r\n\r\n```\r\nprivate static final class OrTokenFilter extends TokenFilter {\r\n\u00a0  \u00a0\r\n\u00a0  private final List<? extends TokenFilter> delegates;\r\n\u00a0  \u00a0\r\n\u00a0  private OrTokenFilter(final List<? extends TokenFilter> delegates) {\r\n  \u00a0  this.delegates = delegates;\r\n\u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0  static OrTokenFilter create(final Set<String> jsonPointers) {\r\n\u00a0    return new OrTokenFilter(jsonPointers.stream().map(JsonPointerBasedFilter::new).toList());\r\n\u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0  @Override\r\n\u00a0  public TokenFilter includeElement(final int index) {\r\n\u00a0    return executeDelegates(delegate -> delegate.includeElement(index));\r\n\u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0  @Override\r\n\u00a0  public TokenFilter includeProperty(final String name) {\r\n\u00a0    return executeDelegates(delegate -> delegate.includeProperty(name));\r\n\u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0  @Override\r\n\u00a0  public TokenFilter filterStartArray() {\r\n\u00a0    return this;\r\n\u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0  @Override\r\n\u00a0  public TokenFilter filterStartObject() {\r\n\u00a0    return this;\r\n\u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0  // FIXME\r\n\u00a0  // @Override\r\n\u00a0  // protected boolean _includeScalar() {\r\n\u00a0  //   return delegates.stream().map(delegate -> delegate._includeScalar()).findFirst();\r\n\u00a0  // }\r\n\u00a0  \u00a0\r\n\u00a0  private TokenFilter executeDelegates(final UnaryOperator<TokenFilter> operator) {\r\n  \u00a0  List<TokenFilter> nextDelegates = null;\r\n\u00a0    for (final var delegate : delegates) {\r\n     \u00a0  final var next = operator.apply(delegate);\r\n     \u00a0  if (null == next) {\r\n        \u00a0  continue;\r\n\u00a0       }\r\n        if (TokenFilter.INCLUDE_ALL == next) {\r\n        \u00a0  return TokenFilter.INCLUDE_ALL;\r\n    \u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0      if (null == nextDelegates) {\r\n  \u00a0       nextDelegates = new ArrayList<>(delegates.size());\r\n    \u00a0  }\r\n\u00a0      nextDelegates.add(next);\r\n\u00a0    }\r\n\u00a0    return null == nextDelegates ? null : new OrTokenFilter(nextDelegates);\r\n\u00a0    }\r\n\u00a0  }\r\n```\r\n\r\n`new FilteringGeneratorDelegate(createGenerator(new ByteBufOutputStream(unpooled)), OrTokenFilter.create(jsonPointers), TokenFilter.Inclusion.INCLUDE_ALL_AND_PATH, true)`\r\n\r\n\r\nexample:\r\n```\r\n[\r\n  {\r\n    \"id\": \"1\"\r\n    \"stuff\": [\r\n      {\"name\":\"name1\"},\r\n      {\"name\":\"name2\"}\r\n   ]\r\n  },\r\n {\r\n    \"id\": \"2\",\r\n    \"stuff\": [\r\n      {\"name\":\"name1\"},\r\n      {\"name\":\"name2\"}\r\n   ]\r\n }\r\n]\r\n```\r\n\r\n```\r\nSet.of(\"/id\", \"/stuff/0/name\")\r\n```\r\n\r\nwithout creating the new context the generator will fail at the second object in the stuff array because the _startHandled is set to true from the first object.\n`FilteringGeneratorDelegate` does not create new `filterContext` if `tokenFilter` is null\nThe usecase is to filter Json while generating it but instead of a single property i wanted to be able to match multiples.\r\n\r\n\r\n\r\n\r\n\r\nsee: https://github.com/FasterXML/jackson-core/blob/2.15/src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java#L314-L317\r\n\r\nfor arrays it already happens: https://github.com/FasterXML/jackson-core/blob/2.15/src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java#L178-L182\r\n\r\n\r\n\r\nI wrote a simple OR composite:\r\n\r\n```\r\nprivate static final class OrTokenFilter extends TokenFilter {\r\n\u00a0  \u00a0\r\n\u00a0  private final List<? extends TokenFilter> delegates;\r\n\u00a0  \u00a0\r\n\u00a0  private OrTokenFilter(final List<? extends TokenFilter> delegates) {\r\n  \u00a0  this.delegates = delegates;\r\n\u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0  static OrTokenFilter create(final Set<String> jsonPointers) {\r\n\u00a0    return new OrTokenFilter(jsonPointers.stream().map(JsonPointerBasedFilter::new).toList());\r\n\u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0  @Override\r\n\u00a0  public TokenFilter includeElement(final int index) {\r\n\u00a0    return executeDelegates(delegate -> delegate.includeElement(index));\r\n\u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0  @Override\r\n\u00a0  public TokenFilter includeProperty(final String name) {\r\n\u00a0    return executeDelegates(delegate -> delegate.includeProperty(name));\r\n\u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0  @Override\r\n\u00a0  public TokenFilter filterStartArray() {\r\n\u00a0    return this;\r\n\u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0  @Override\r\n\u00a0  public TokenFilter filterStartObject() {\r\n\u00a0    return this;\r\n\u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0  // FIXME\r\n\u00a0  // @Override\r\n\u00a0  // protected boolean _includeScalar() {\r\n\u00a0  //   return delegates.stream().map(delegate -> delegate._includeScalar()).findFirst();\r\n\u00a0  // }\r\n\u00a0  \u00a0\r\n\u00a0  private TokenFilter executeDelegates(final UnaryOperator<TokenFilter> operator) {\r\n  \u00a0  List<TokenFilter> nextDelegates = null;\r\n\u00a0    for (final var delegate : delegates) {\r\n     \u00a0  final var next = operator.apply(delegate);\r\n     \u00a0  if (null == next) {\r\n        \u00a0  continue;\r\n\u00a0       }\r\n        if (TokenFilter.INCLUDE_ALL == next) {\r\n        \u00a0  return TokenFilter.INCLUDE_ALL;\r\n    \u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0      if (null == nextDelegates) {\r\n  \u00a0       nextDelegates = new ArrayList<>(delegates.size());\r\n    \u00a0  }\r\n\u00a0      nextDelegates.add(next);\r\n\u00a0    }\r\n\u00a0    return null == nextDelegates ? null : new OrTokenFilter(nextDelegates);\r\n\u00a0    }\r\n\u00a0  }\r\n```\r\n\r\n`new FilteringGeneratorDelegate(createGenerator(new ByteBufOutputStream(unpooled)), OrTokenFilter.create(jsonPointers), TokenFilter.Inclusion.INCLUDE_ALL_AND_PATH, true)`\r\n\r\n\r\nexample:\r\n```\r\n[\r\n  {\r\n    \"id\": \"1\"\r\n    \"stuff\": [\r\n      {\"name\":\"name1\"},\r\n      {\"name\":\"name2\"}\r\n   ]\r\n  },\r\n {\r\n    \"id\": \"2\",\r\n    \"stuff\": [\r\n      {\"name\":\"name1\"},\r\n      {\"name\":\"name2\"}\r\n   ]\r\n }\r\n]\r\n```\r\n\r\n```\r\nSet.of(\"/id\", \"/stuff/0/name\")\r\n```\r\n\r\nwithout creating the new context the generator will fail at the second object in the stuff array because the _startHandled is set to true from the first object.\n",
+        "distance": 0,
+        "title": "`FilteringGeneratorDelegate` does not create new `filterContext` if `tokenFilter` is null",
+        "name": "root",
+        "path": [],
+        "issue_id": "root",
+        "similarity": 2.0,
+        "type": "issue"
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "890",
+        "type": "issue",
+        "content": "The usecase is to filter Json while generating it but instead of a single property i wanted to be able to match multiples.\r\n\r\n\r\n\r\n\r\n\r\nsee: https://github.com/FasterXML/jackson-core/blob/2.15/src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java#L314-L317\r\n\r\nfor arrays it already happens: https://github.com/FasterXML/jackson-core/blob/2.15/src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java#L178-L182\r\n\r\n\r\n\r\nI wrote a simple OR composite:\r\n\r\n```\r\nprivate static final class OrTokenFilter extends TokenFilter {\r\n\u00a0  \u00a0\r\n\u00a0  private final List<? extends TokenFilter> delegates;\r\n\u00a0  \u00a0\r\n\u00a0  private OrTokenFilter(final List<? extends TokenFilter> delegates) {\r\n  \u00a0  this.delegates = delegates;\r\n\u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0  static OrTokenFilter create(final Set<String> jsonPointers) {\r\n\u00a0    return new OrTokenFilter(jsonPointers.stream().map(JsonPointerBasedFilter::new).toList());\r\n\u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0  @Override\r\n\u00a0  public TokenFilter includeElement(final int index) {\r\n\u00a0    return executeDelegates(delegate -> delegate.includeElement(index));\r\n\u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0  @Override\r\n\u00a0  public TokenFilter includeProperty(final String name) {\r\n\u00a0    return executeDelegates(delegate -> delegate.includeProperty(name));\r\n\u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0  @Override\r\n\u00a0  public TokenFilter filterStartArray() {\r\n\u00a0    return this;\r\n\u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0  @Override\r\n\u00a0  public TokenFilter filterStartObject() {\r\n\u00a0    return this;\r\n\u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0  // FIXME\r\n\u00a0  // @Override\r\n\u00a0  // protected boolean _includeScalar() {\r\n\u00a0  //   return delegates.stream().map(delegate -> delegate._includeScalar()).findFirst();\r\n\u00a0  // }\r\n\u00a0  \u00a0\r\n\u00a0  private TokenFilter executeDelegates(final UnaryOperator<TokenFilter> operator) {\r\n  \u00a0  List<TokenFilter> nextDelegates = null;\r\n\u00a0    for (final var delegate : delegates) {\r\n     \u00a0  final var next = operator.apply(delegate);\r\n     \u00a0  if (null == next) {\r\n        \u00a0  continue;\r\n\u00a0       }\r\n        if (TokenFilter.INCLUDE_ALL == next) {\r\n        \u00a0  return TokenFilter.INCLUDE_ALL;\r\n    \u00a0  }\r\n\u00a0  \u00a0\r\n\u00a0      if (null == nextDelegates) {\r\n  \u00a0       nextDelegates = new ArrayList<>(delegates.size());\r\n    \u00a0  }\r\n\u00a0      nextDelegates.add(next);\r\n\u00a0    }\r\n\u00a0    return null == nextDelegates ? null : new OrTokenFilter(nextDelegates);\r\n\u00a0    }\r\n\u00a0  }\r\n```\r\n\r\n`new FilteringGeneratorDelegate(createGenerator(new ByteBufOutputStream(unpooled)), OrTokenFilter.create(jsonPointers), TokenFilter.Inclusion.INCLUDE_ALL_AND_PATH, true)`\r\n\r\n\r\nexample:\r\n```\r\n[\r\n  {\r\n    \"id\": \"1\"\r\n    \"stuff\": [\r\n      {\"name\":\"name1\"},\r\n      {\"name\":\"name2\"}\r\n   ]\r\n  },\r\n {\r\n    \"id\": \"2\",\r\n    \"stuff\": [\r\n      {\"name\":\"name1\"},\r\n      {\"name\":\"name2\"}\r\n   ]\r\n }\r\n]\r\n```\r\n\r\n```\r\nSet.of(\"/id\", \"/stuff/0/name\")\r\n```\r\n\r\nwithout creating the new context the generator will fail at the second object in the stuff array because the _startHandled is set to true from the first object.\n\n\nComment by cowtowncoder:\nYes, I think you are right @DemonicTutor. It definitely looks like this:\r\n\r\n```\r\n  _filterContext = _filterContext.createChildObjectContext(_itemFilter, false);\r\n```\r\n\r\nshould be added before return statement.\r\n\r\nThis could be fixed to be included in 2.14.2, I think, all we need is a PR.\r\nI can do that, but one thing that'd really be useful would be a reproduction, unit test, to show what was not working before (and is working after) the fix.\r\nWould it be possible to create one from code sample above? Real world use cases are often nice to have as tests.\r\n\n\nComment by cowtowncoder:\nQuick note: adding fix as suggested does not break any of existing unit tests, fwtw.\r\nSo seems possibly safe, although granted test cases for filtering are not very extensive.\r\n\r\nAt any rate, would really love reproduction unit test.\r\n\n\nComment by DemonicTutor:\nyeah sure i can do that - will provide a PR for you!",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "`FilteringGeneratorDelegate` does not create new `filterContext` if `tokenFilter` is null",
+        "name": "issue#890",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#890"
+          }
+        ],
+        "similarity": 0.8561882182572476,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "891",
+        "type": "issue",
+        "content": "Fixes #890.\n\n",
+        "source_code": null,
+        "distance": 0.5,
+        "title": "filter generator: create child object context when writing start object. fixes #890",
+        "name": "pr#891",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#890"
+          },
+          {
+            "start_node": "issue#890",
+            "description": "referenced by issue",
+            "type": "RELATED",
+            "end_node": "pr#891"
+          }
+        ],
+        "similarity": 0.3606642107432227,
+        "end_line": null,
+        "signature": null
+      }
+    ]
+  },
+  "artifact_stats": {
+    "skipped_due_to_time": 7,
+    "valid_related_items": 8
+  }
+}

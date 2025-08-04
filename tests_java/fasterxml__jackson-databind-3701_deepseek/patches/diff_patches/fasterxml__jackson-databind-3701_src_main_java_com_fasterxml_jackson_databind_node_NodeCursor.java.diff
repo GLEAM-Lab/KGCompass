@@ -1,0 +1,14 @@
+--- a/src/main/java/com/fasterxml/jackson/databind/node/NodeCursor.java
++++ b/src/main/java/com/fasterxml/jackson/databind/node/NodeCursor.java
+@@ -192,7 +192,10 @@
+ 
+         protected boolean _needEntry;
+ 
+-        public ObjectCursor(JsonNode n, NodeCursor p)
++        public ObjectCursor(JsonNode n, NodeCursor p) {
++            super(JsonStreamContext.TYPE_OBJECT, p);
++            _contents = n.fields();
++        }
+         {
+             super(JsonStreamContext.TYPE_OBJECT, p);
+             _contents = n.fields();

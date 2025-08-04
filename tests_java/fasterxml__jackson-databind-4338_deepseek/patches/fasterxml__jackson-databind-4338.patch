@@ -1,0 +1,50 @@
+Based on the issue, the problem is that `AtomicReference` serializer doesn't support `@JsonSerialize(contentConverter=...)` annotation. Looking at the code, this functionality should be handled in the `ReferenceTypeSerializer` class which is the base class for `AtomicReferenceSerializer`.
+
+The issue stems from the fact that the `createContextual` method in `ReferenceTypeSerializer` doesn't properly handle content converters when resolving the value serializer. We need to modify this method to check for content converter annotations.
+
+Here's the fix:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java
+- start_line : 198
+- end_line : 198
+<<<<<<< SEARCH
+    public JsonSerializer<?> createContextual(SerializerProvider provider,
+=======
+    public JsonSerializer<?> createContextual(SerializerProvider provider, 
+>>>>>>> REPLACE
+```
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java
+- start_line : 198
+- end_line : 283
+<<<<<<< SEARCH
+    public JsonSerializer<?> createContextual(SerializerProvider provider,
+            BeanProperty property) throws JsonMappingException
+    {
+        JsonSerializer<?> ser = null;
+        TypeSerializer typeSer = _valueTypeSerializer;
+        
+        if (typeSer != null) {
+            typeSer = typeSer.forProperty(property);
+        }
+        // First: if we have a property, may have property-annotation overrides
+        if (property != null) {
+            ser = property.getValueSerializer();
+            if (ser == null) {
+                // 10-Dec-2015, tatu: As per [databind#1023], need to allow annotation-based
+                //   custom serializers to handle delegation cases
+                AnnotationIntrospector intr = provider.getAnnotationIntrospector();
+                AnnotatedMember m = property.getMember();
+                if ((m != null) && (intr != null)) {
+                    Object serDef = intr.findSerializer(m);
+                    if (serDef != null) {
+                        ser = provider.serializerInstance(m, serDef);
+                    }
+                }
+            }
+        }
+        // If not, maybe we have a default serializer to use?
+        if (ser == null) {
+            ser = _value

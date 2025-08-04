@@ -1,0 +1,2035 @@
+{
+    "related_entities": {
+        "methods": [
+            {
+                "start_line": 49,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/api/RegistryAuthenticationFailedException.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public RegistryAuthenticationFailedException(String serverUrl, String imageName, String reason) {\n    super(MessageFormat.format(REASON, serverUrl, imageName, reason));\n    this.serverUrl = serverUrl;\n    this.imageName = imageName;\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "RegistryAuthenticationFailedException",
+                "documentation": "/**\n   * Creates a new exception with a human readable message.\n   *\n   * @param serverUrl the registry server url\n   * @param imageName the image name that requires authentication\n   * @param reason the underlying reason that triggered this exception\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticationFailedException"
+                    }
+                ],
+                "similarity": 0.11980838753175153,
+                "end_line": 53,
+                "signature": "com.google.cloud.tools.jib.api.RegistryAuthenticationFailedException(String serverUrl, String imageName, String reason)"
+            },
+            {
+                "start_line": 69,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryAuthenticator.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  static Optional<RegistryAuthenticator> fromAuthenticationMethod(",
+                "distance": 1.25,
+                "title": null,
+                "name": "fromAuthenticationMethod",
+                "documentation": "/**\n   * Instantiates from parsing a {@code WWW-Authenticate} header.\n   *\n   * @param authenticationMethod the {@code WWW-Authenticate} header value\n   * @param registryEndpointRequestProperties the registry request properties\n   * @param userAgent the {@code User-Agent} header value to use in later authentication calls\n   * @param httpClient HTTP client\n   * @return a new {@link RegistryAuthenticator} for authenticating with the registry service\n   * @throws RegistryAuthenticationFailedException if authentication fails\n   * @see <a\n   *     href=\"https://docs.docker.com/registry/spec/auth/token/#how-to-authenticate\">https://docs.docker.com/registry/spec/auth/token/#how-to-authenticate</a>\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "fromAuthenticationMethod"
+                    }
+                ],
+                "similarity": 0.11249422276954467,
+                "end_line": 69,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryAuthenticator.fromAuthenticationMethod(String authenticationMethod, RegistryEndpointRequestProperties registryEndpointRequestProperties, String userAgent, FailoverHttpClient httpClient): Optional"
+            },
+            {
+                "start_line": 152,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryAuthenticator.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private RegistryAuthenticator(",
+                "distance": 1.0,
+                "title": null,
+                "name": "RegistryAuthenticator",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    }
+                ],
+                "similarity": 0.10127974962242071,
+                "end_line": 152,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryAuthenticator(String realm, String service, RegistryEndpointRequestProperties registryEndpointRequestProperties, String userAgent, FailoverHttpClient httpClient)"
+            },
+            {
+                "start_line": 244,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryAuthenticator.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private Authorization authenticate(@Nullable Credential credential, String scope)",
+                "distance": 1.25,
+                "title": null,
+                "name": "authenticate",
+                "documentation": "/**\n   * Sends the authentication request and retrieves the Bearer authorization token.\n   *\n   * @param credential the credential used to authenticate\n   * @param scope the scope of permissions to authenticate for\n   * @return the {@link Authorization} response\n   * @throws RegistryAuthenticationFailedException if authentication fails\n   * @throws RegistryCredentialsNotSentException if authentication is failed and credentials were\n   *     not sent over plain HTTP\n   * @see <a\n   *     href=\"https://docs.docker.com/registry/spec/auth/token/#how-to-authenticate\">https://docs.docker.com/registry/spec/auth/token/#how-to-authenticate</a>\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "authenticate"
+                    }
+                ],
+                "similarity": 0.09993285931994304,
+                "end_line": 244,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryAuthenticator.authenticate(Credential credential, String scope): Authorization"
+            },
+            {
+                "start_line": 107,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryAuthenticator.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private static RegistryAuthenticationFailedException newRegistryAuthenticationFailedException(",
+                "distance": 1.25,
+                "title": null,
+                "name": "newRegistryAuthenticationFailedException",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "newRegistryAuthenticationFailedException"
+                    }
+                ],
+                "similarity": 0.09621795270953425,
+                "end_line": 107,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryAuthenticator.newRegistryAuthenticationFailedException(String registry, String repository, String authenticationMethod, String authParam): RegistryAuthenticationFailedException"
+            },
+            {
+                "start_line": 35,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/api/RegistryAuthenticationFailedException.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public RegistryAuthenticationFailedException(",
+                "distance": 1.0,
+                "title": null,
+                "name": "RegistryAuthenticationFailedException",
+                "documentation": "/**\n   * Creates a new exception with a human readable message.\n   *\n   * @param serverUrl the registry server url\n   * @param imageName the image name that requires authentication\n   * @param cause the underlying cause that triggered this exception\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticationFailedException"
+                    }
+                ],
+                "similarity": 0.09310380456720786,
+                "end_line": 35,
+                "signature": "com.google.cloud.tools.jib.api.RegistryAuthenticationFailedException(String serverUrl, String imageName, Throwable cause)"
+            },
+            {
+                "start_line": 188,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryAuthenticator.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public Authorization authenticatePush(@Nullable Credential credential)",
+                "distance": 1.25,
+                "title": null,
+                "name": "authenticatePush",
+                "documentation": "/**\n   * Authenticates permission to pull and push.\n   *\n   * @param credential the credential used to authenticate\n   * @return an {@code Authorization} authenticating the push\n   * @throws RegistryAuthenticationFailedException if authentication fails\n   * @throws RegistryCredentialsNotSentException if authentication failed and credentials were not\n   *     sent over plain HTTP\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "authenticatePush"
+                    }
+                ],
+                "similarity": 0.08998320310483376,
+                "end_line": 188,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryAuthenticator.authenticatePush(Credential credential): Authorization"
+            },
+            {
+                "start_line": 174,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryAuthenticator.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public Authorization authenticatePull(@Nullable Credential credential)",
+                "distance": 1.25,
+                "title": null,
+                "name": "authenticatePull",
+                "documentation": "/**\n   * Authenticates permissions to pull.\n   *\n   * @param credential the credential used to authenticate\n   * @return an {@code Authorization} authenticating the pull\n   * @throws RegistryAuthenticationFailedException if authentication fails\n   * @throws RegistryCredentialsNotSentException if authentication failed and credentials were not\n   *     sent over plain HTTP\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "authenticatePull"
+                    }
+                ],
+                "similarity": 0.08951398916016041,
+                "end_line": 174,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryAuthenticator.authenticatePull(Credential credential): Authorization"
+            },
+            {
+                "start_line": 91,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/cache/CacheStorageReader.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  boolean areAllLayersCached(ManifestTemplate manifest) {\n\n    List<DescriptorDigest> layerDigests;\n\n    if (manifest instanceof V21ManifestTemplate) {\n      layerDigests = ((V21ManifestTemplate) manifest).getLayerDigests();\n    } else if (manifest instanceof BuildableManifestTemplate) {\n      layerDigests =\n          ((BuildableManifestTemplate) manifest)\n              .getLayers().stream()\n                  .map(BuildableManifestTemplate.ContentDescriptorTemplate::getDigest)\n                  .collect(Collectors.toList());\n    } else {\n      throw new IllegalArgumentException(\"Unknown manifest type: \" + manifest);\n    }\n\n    for (DescriptorDigest layerDigest : layerDigests) {\n      Path layerDirectory = cacheStorageFiles.getLayerDirectory(layerDigest);\n      if (!Files.exists(layerDirectory)) {\n        return false;\n      }\n    }\n    return true;\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "areAllLayersCached",
+                "documentation": "/**\n   * Returns {@code true} if all image layers described in a manifest have a corresponding file\n   * entry in the cache.\n   *\n   * @param manifest the image manifest\n   * @return a boolean\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "areAllLayersCached"
+                    }
+                ],
+                "similarity": 0.0843044686960271,
+                "end_line": 114,
+                "signature": "com.google.cloud.tools.jib.cache.CacheStorageReader.areAllLayersCached(ManifestTemplate manifest): boolean"
+            },
+            {
+                "start_line": 193,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryAuthenticator.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private String getServiceScopeRequestParameters(Map<String, String> repositoryScopes) {\n    StringBuilder parameters = new StringBuilder(\"service=\").append(service);\n    for (Map.Entry<String, String> pair : repositoryScopes.entrySet()) {\n      parameters\n          .append(\"&scope=repository:\")\n          .append(pair.getKey())\n          .append(\":\")\n          .append(pair.getValue());\n    }\n    return parameters.toString();\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "getServiceScopeRequestParameters",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getServiceScopeRequestParameters"
+                    }
+                ],
+                "similarity": 0.0815677677231794,
+                "end_line": 203,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryAuthenticator.getServiceScopeRequestParameters(Map repositoryScopes): String"
+            },
+            {
+                "start_line": 311,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private boolean doBearerAuth(boolean readOnlyBearerAuth) throws IOException, RegistryException {\n    String registry = registryEndpointRequestProperties.getServerUrl();\n    String repository = registryEndpointRequestProperties.getImageName();\n    String image = registry + \"/\" + repository;\n    eventHandlers.dispatch(LogEvent.debug(\"attempting bearer auth for \" + image + \"...\"));\n\n    Optional<RegistryAuthenticator> authenticator =\n        callRegistryEndpoint(\n            new AuthenticationMethodRetriever(\n                registryEndpointRequestProperties, getUserAgent(), httpClient));\n    if (!authenticator.isPresent()) {\n      eventHandlers.dispatch(LogEvent.debug(\"server requires basic auth for \" + image));\n      return false; // server returned \"WWW-Authenticate: Basic ...\"\n    }\n\n    doBearerAuth(readOnlyBearerAuth, authenticator.get());\n    return true;\n  }",
+                "distance": 2.75,
+                "title": null,
+                "name": "doBearerAuth",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "authenticatePull"
+                    },
+                    {
+                        "start_node": "authenticatePull",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "refreshBearerAuth"
+                    },
+                    {
+                        "start_node": "refreshBearerAuth",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "RegistryClient"
+                    },
+                    {
+                        "start_node": "RegistryClient",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "doBearerAuth"
+                    }
+                ],
+                "similarity": 0.08062844438723832,
+                "end_line": 328,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryClient.doBearerAuth(boolean readOnlyBearerAuth): boolean"
+            },
+            {
+                "start_line": 388,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void authPullByWwwAuthenticate(String wwwAuthenticate) throws RegistryException {\n    Optional<RegistryAuthenticator> authenticator =\n        RegistryAuthenticator.fromAuthenticationMethod(\n            wwwAuthenticate, registryEndpointRequestProperties, getUserAgent(), httpClient);\n    if (authenticator.isPresent()) {\n      doBearerAuth(true, authenticator.get());\n    } else if (credential != null && !credential.isOAuth2RefreshToken()) {\n      configureBasicAuth();\n    }\n  }",
+                "distance": 2.75,
+                "title": null,
+                "name": "authPullByWwwAuthenticate",
+                "documentation": "/**\n   * Configure basic authentication or attempts bearer authentication for pulling based on the\n   * specified authentication method in a server response.\n   *\n   * @param wwwAuthenticate {@code WWW-Authenticate} HTTP header value from a server response\n   *     specifying a required authentication method\n   * @throws RegistryException if communicating with the endpoint fails\n   * @throws RegistryAuthenticationFailedException if authentication fails\n   * @throws RegistryCredentialsNotSentException if authentication failed and credentials were not\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "authenticatePull"
+                    },
+                    {
+                        "start_node": "authenticatePull",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "refreshBearerAuth"
+                    },
+                    {
+                        "start_node": "refreshBearerAuth",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "RegistryClient"
+                    },
+                    {
+                        "start_node": "RegistryClient",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "authPullByWwwAuthenticate"
+                    }
+                ],
+                "similarity": 0.07948059731460688,
+                "end_line": 397,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryClient.authPullByWwwAuthenticate(String wwwAuthenticate): void"
+            },
+            {
+                "start_line": 260,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryAuthenticator.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private Authorization authenticate(",
+                "distance": 1.25,
+                "title": null,
+                "name": "authenticate",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "authenticate"
+                    }
+                ],
+                "similarity": 0.07777151002229633,
+                "end_line": 260,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryAuthenticator.authenticate(Credential credential, Map repositoryScopes): Authorization"
+            },
+            {
+                "start_line": 268,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void configureBasicAuth() {\n    Preconditions.checkNotNull(credential);\n    Preconditions.checkState(!credential.isOAuth2RefreshToken());\n\n    authorization.set(\n        Authorization.fromBasicCredentials(credential.getUsername(), credential.getPassword()));\n\n    String registry = registryEndpointRequestProperties.getServerUrl();\n    String repository = registryEndpointRequestProperties.getImageName();\n    eventHandlers.dispatch(\n        LogEvent.debug(\"configured basic auth for \" + registry + \"/\" + repository));\n  }",
+                "distance": 2.75,
+                "title": null,
+                "name": "configureBasicAuth",
+                "documentation": "/** Configure basic authentication on this registry client. */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "authenticatePull"
+                    },
+                    {
+                        "start_node": "authenticatePull",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "refreshBearerAuth"
+                    },
+                    {
+                        "start_node": "refreshBearerAuth",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "RegistryClient"
+                    },
+                    {
+                        "start_node": "RegistryClient",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "configureBasicAuth"
+                    }
+                ],
+                "similarity": 0.07758448495610404,
+                "end_line": 279,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryClient.configureBasicAuth(): void"
+            },
+            {
+                "start_line": 30,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryCredentialsNotSentException.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  RegistryCredentialsNotSentException(String registry, String repository) {\n    super(\n        \"Required credentials for \"\n            + registry\n            + \"/\"\n            + repository\n            + \" were not sent because the connection was over HTTP\");\n  }",
+                "distance": 2.25,
+                "title": null,
+                "name": "RegistryCredentialsNotSentException",
+                "documentation": "/**\n   * Identifies the image registry and repository that denied access.\n   *\n   * @param registry the image registry\n   * @param repository the image repository\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "authenticate"
+                    },
+                    {
+                        "start_node": "authenticate",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "RegistryCredentialsNotSentException"
+                    }
+                ],
+                "similarity": 0.07503987313543117,
+                "end_line": 37,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryCredentialsNotSentException(String registry, String repository)"
+            },
+            {
+                "start_line": 206,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryAuthenticator.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  URL getAuthenticationUrl(@Nullable Credential credential, Map<String, String> repositoryScopes)",
+                "distance": 1.25,
+                "title": null,
+                "name": "getAuthenticationUrl",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getAuthenticationUrl"
+                    }
+                ],
+                "similarity": 0.07138612435857773,
+                "end_line": 206,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryAuthenticator.getAuthenticationUrl(Credential credential, Map repositoryScopes): URL"
+            },
+            {
+                "start_line": 228,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryAuthenticator.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  boolean isOAuth2Auth(@Nullable Credential credential) {\n    return credential != null && credential.isOAuth2RefreshToken();\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "isOAuth2Auth",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "isOAuth2Auth"
+                    }
+                ],
+                "similarity": 0.06930847297923087,
+                "end_line": 230,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryAuthenticator.isOAuth2Auth(Credential credential): boolean"
+            },
+            {
+                "start_line": 580,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  static boolean canAttemptBlobMount(@Nullable Authorization authorization, String repository) {\n    if (!isBearerAuth(authorization)) {\n      // Authorization methods other than the Docker Container Registry Token don't provide\n      // information as to which repositories are accessible.  The caller should attempt the mount\n      // and rely on the registry fallback as required by the spec.\n      // https://docs.docker.com/registry/spec/api/#pushing-an-image\n      return true;\n    }\n    // if null then does not appear to be a DCRT\n    Multimap<String, String> repositoryGrants =\n        decodeTokenRepositoryGrants(Verify.verifyNotNull(authorization).getToken());\n    return repositoryGrants == null || repositoryGrants.containsEntry(repository, \"pull\");\n  }",
+                "distance": 2.75,
+                "title": null,
+                "name": "canAttemptBlobMount",
+                "documentation": "/**\n   * Check if the authorization allows using the specified repository can be mounted by the remote\n   * registry as a source for blobs. More specifically, we can only check if the repository is not\n   * disallowed.\n   *\n   * @param repository repository in question\n   * @return {@code true} if the repository appears to be mountable\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "authenticatePull"
+                    },
+                    {
+                        "start_node": "authenticatePull",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "refreshBearerAuth"
+                    },
+                    {
+                        "start_node": "refreshBearerAuth",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "RegistryClient"
+                    },
+                    {
+                        "start_node": "RegistryClient",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "canAttemptBlobMount"
+                    }
+                ],
+                "similarity": 0.06568806471900138,
+                "end_line": 592,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryClient.canAttemptBlobMount(Authorization authorization, String repository): boolean"
+            },
+            {
+                "start_line": 193,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  static Multimap<String, String> decodeTokenRepositoryGrants(String token) {\n    // Docker Registry Bearer Tokens are based on JWT.  A valid JWT is a set of 3 base64-encoded\n    // parts (header, payload, signature), collated with a \".\".  The header and payload are\n    // JSON objects.\n    String[] jwtParts = token.split(\"\\\\.\", -1);\n    if (jwtParts.length != 3) {\n      return null;\n    }\n    byte[] payloadData = Base64.getDecoder().decode(jwtParts[1]);\n\n    // The payload looks like:\n    // {\n    //   \"access\":[{\"type\":\"repository\",\"name\":\"repository/name\",\"actions\":[\"pull\"]}],\n    //   \"aud\":\"registry.docker.io\",\n    //   \"iss\":\"auth.docker.io\",\n    //   \"exp\":999,\n    //   \"iat\":999,\n    //   \"jti\":\"zzzz\",\n    //   \"nbf\":999,\n    //   \"sub\":\"e3ae001d-xxx\"\n    // }\n    //\n    try {\n      TokenPayloadTemplate payload =\n          JsonTemplateMapper.readJson(payloadData, TokenPayloadTemplate.class);\n      if (payload.access == null) {\n        return null;\n      }\n      return payload.access.stream()\n          .filter(claim -> \"repository\".equals(claim.type))\n          .collect(\n              ImmutableSetMultimap.<AccessClaim, String, String>flatteningToImmutableSetMultimap(\n                  claim -> claim.name,\n                  claim -> claim.actions == null ? Stream.empty() : claim.actions.stream()));\n    } catch (IOException ex) {\n      return null;\n    }\n  }",
+                "distance": 2.75,
+                "title": null,
+                "name": "decodeTokenRepositoryGrants",
+                "documentation": "/**\n   * Decode the <a href=\"https://docs.docker.com/registry/spec/auth/jwt/\">Docker Registry v2 Bearer\n   * Token</a> to list the granted repositories with their levels of access.\n   *\n   * @param token a Docker Registry Bearer Token\n   * @return a mapping of repository to granted access scopes, or {@code null} if the token is not a\n   *     Docker Registry Bearer Token\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "authenticatePull"
+                    },
+                    {
+                        "start_node": "authenticatePull",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "refreshBearerAuth"
+                    },
+                    {
+                        "start_node": "refreshBearerAuth",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "RegistryClient"
+                    },
+                    {
+                        "start_node": "RegistryClient",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "decodeTokenRepositoryGrants"
+                    }
+                ],
+                "similarity": 0.05575513803783296,
+                "end_line": 230,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryClient.decodeTokenRepositoryGrants(String token): Multimap"
+            },
+            {
+                "start_line": 69,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/api/RegistryAuthenticationFailedException.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public String getImageName() {\n    return imageName;\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "getImageName",
+                "documentation": "/**\n   * The image being authenticated.\n   *\n   * @return the image being authenticated\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticationFailedException"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticationFailedException",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getImageName"
+                    }
+                ],
+                "similarity": 0.05462945705495781,
+                "end_line": 71,
+                "signature": "com.google.cloud.tools.jib.api.RegistryAuthenticationFailedException.getImageName(): String"
+            },
+            {
+                "start_line": 348,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private Authorization refreshBearerAuth(@Nullable String wwwAuthenticate)",
+                "distance": 2.25,
+                "title": null,
+                "name": "refreshBearerAuth",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "authenticatePull"
+                    },
+                    {
+                        "start_node": "authenticatePull",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "refreshBearerAuth"
+                    }
+                ],
+                "similarity": 0.0535329084327855,
+                "end_line": 348,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryClient.refreshBearerAuth(String wwwAuthenticate): Authorization"
+            },
+            {
+                "start_line": 214,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryAuthenticator.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  String getAuthRequestParameters(",
+                "distance": 1.25,
+                "title": null,
+                "name": "getAuthRequestParameters",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getAuthRequestParameters"
+                    }
+                ],
+                "similarity": 0.052628454519141,
+                "end_line": 214,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryAuthenticator.getAuthRequestParameters(Credential credential, Map repositoryScopes): String"
+            },
+            {
+                "start_line": 293,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/configuration/BuildContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public BuildContext build() throws CacheDirectoryCreationException {\n      // Validates the parameters.\n      List<String> missingFields = new ArrayList<>();\n      if (baseImageConfiguration == null) {\n        missingFields.add(\"base image configuration\");\n      }\n      if (targetImageConfiguration == null) {\n        missingFields.add(\"target image configuration\");\n      }\n      if (containerConfiguration == null) {\n        missingFields.add(\"container configuration\");\n      }\n      if (baseImageLayersCacheDirectory == null) {\n        missingFields.add(\"base image layers cache directory\");\n      }\n      if (applicationLayersCacheDirectory == null) {\n        missingFields.add(\"application layers cache directory\");\n      }\n\n      switch (missingFields.size()) {\n        case 0: // No errors\n          Preconditions.checkNotNull(baseImageConfiguration);\n          if (!baseImageConfiguration.getImage().getDigest().isPresent()\n              && !baseImageConfiguration.getImage().isScratch()) {\n            eventHandlers.dispatch(\n                LogEvent.warn(\n                    \"Base image '\"\n                        + baseImageConfiguration.getImage()\n                        + \"' does not use a specific image digest - build may not be reproducible\"));\n          }\n\n          return new BuildContext(\n              baseImageConfiguration,\n              Verify.verifyNotNull(targetImageConfiguration),\n              additionalTargetImageTags,\n              Verify.verifyNotNull(containerConfiguration),\n              Cache.withDirectory(Preconditions.checkNotNull(baseImageLayersCacheDirectory)),\n              Cache.withDirectory(Preconditions.checkNotNull(applicationLayersCacheDirectory)),\n              targetFormat,\n              offline,\n              layerConfigurations,\n              toolName,\n              toolVersion,\n              eventHandlers,\n              // TODO: try setting global User-Agent: here\n              new FailoverHttpClient(\n                  allowInsecureRegistries,\n                  JibSystemProperties.sendCredentialsOverHttp(),\n                  eventHandlers::dispatch),\n              executorService == null ? Executors.newCachedThreadPool() : executorService,\n              executorService == null, // shutDownExecutorService\n              alwaysCacheBaseImage,\n              registryMirrors,\n              enablePlatformTags);\n\n        case 1:\n          throw new IllegalStateException(missingFields.get(0) + \" is required but not set\");\n\n        case 2:\n          throw new IllegalStateException(\n              missingFields.get(0) + \" and \" + missingFields.get(1) + \" are required but not set\");\n\n        default:\n          missingFields.add(\"and \" + missingFields.remove(missingFields.size() - 1));\n          StringJoiner errorMessage = new StringJoiner(\", \", \"\", \" are required but not set\");\n          for (String missingField : missingFields) {\n            errorMessage.add(missingField);\n          }\n          throw new IllegalStateException(errorMessage.toString());\n      }\n    }",
+                "distance": 2.5,
+                "title": null,
+                "name": "build",
+                "documentation": "/**\n     * Builds a new {@link BuildContext} using the parameters passed into the builder.\n     *\n     * @return the corresponding build context\n     * @throws CacheDirectoryCreationException if I/O exception occurs when creating cache directory\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "retrieveTarLayer"
+                    },
+                    {
+                        "start_node": "retrieveTarLayer",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    }
+                ],
+                "similarity": 0.05186008670281445,
+                "end_line": 363,
+                "signature": "com.google.cloud.tools.jib.configuration.BuildContext.Builder.build(): BuildContext"
+            },
+            {
+                "start_line": 330,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private void doBearerAuth(boolean readOnlyBearerAuth, RegistryAuthenticator authenticator)",
+                "distance": 2.75,
+                "title": null,
+                "name": "doBearerAuth",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "authenticatePull"
+                    },
+                    {
+                        "start_node": "authenticatePull",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "refreshBearerAuth"
+                    },
+                    {
+                        "start_node": "refreshBearerAuth",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "RegistryClient"
+                    },
+                    {
+                        "start_node": "RegistryClient",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "doBearerAuth"
+                    }
+                ],
+                "similarity": 0.050782650153299545,
+                "end_line": 330,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryClient.doBearerAuth(boolean readOnlyBearerAuth, RegistryAuthenticator authenticator): void"
+            },
+            {
+                "start_line": 307,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public boolean doPushBearerAuth() throws IOException, RegistryException {\n    return doBearerAuth(false);\n  }",
+                "distance": 2.75,
+                "title": null,
+                "name": "doPushBearerAuth",
+                "documentation": "/**\n   * Attempts bearer authentication for pull and push.\n   *\n   * @return true if bearer authentication succeeded; false if the server expects basic\n   *     authentication (and thus bearer authentication was not attempted)\n   * @throws IOException if communicating with the endpoint fails\n   * @throws RegistryException if communicating with the endpoint fails\n   * @throws RegistryAuthenticationFailedException if authentication fails\n   * @throws RegistryCredentialsNotSentException if authentication failed and credentials were not\n   *     sent over plain HTTP\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "authenticatePull"
+                    },
+                    {
+                        "start_node": "authenticatePull",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "refreshBearerAuth"
+                    },
+                    {
+                        "start_node": "refreshBearerAuth",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "RegistryClient"
+                    },
+                    {
+                        "start_node": "RegistryClient",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "doPushBearerAuth"
+                    }
+                ],
+                "similarity": 0.05044662831620721,
+                "end_line": 309,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryClient.doPushBearerAuth(): boolean"
+            },
+            {
+                "start_line": 292,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public boolean doPullBearerAuth() throws IOException, RegistryException {\n    return doBearerAuth(true);\n  }",
+                "distance": 2.75,
+                "title": null,
+                "name": "doPullBearerAuth",
+                "documentation": "/**\n   * Attempts bearer authentication for pull.\n   *\n   * @return {@code true} if bearer authentication succeeded; {@code false} if the server expects\n   *     basic authentication (and thus bearer authentication was not attempted)\n   * @throws IOException if communicating with the endpoint fails\n   * @throws RegistryException if communicating with the endpoint fails\n   * @throws RegistryAuthenticationFailedException if authentication fails\n   * @throws RegistryCredentialsNotSentException if authentication failed and credentials were not\n   *     sent over plain HTTP\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "authenticatePull"
+                    },
+                    {
+                        "start_node": "authenticatePull",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "refreshBearerAuth"
+                    },
+                    {
+                        "start_node": "refreshBearerAuth",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "RegistryClient"
+                    },
+                    {
+                        "start_node": "RegistryClient",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "doPullBearerAuth"
+                    }
+                ],
+                "similarity": 0.04947532099218776,
+                "end_line": 294,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryClient.doPullBearerAuth(): boolean"
+            },
+            {
+                "start_line": 594,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private static boolean isBearerAuth(@Nullable Authorization authorization) {\n    return authorization != null && \"bearer\".equalsIgnoreCase(authorization.getScheme());\n  }",
+                "distance": 2.75,
+                "title": null,
+                "name": "isBearerAuth",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "authenticatePull"
+                    },
+                    {
+                        "start_node": "authenticatePull",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "refreshBearerAuth"
+                    },
+                    {
+                        "start_node": "refreshBearerAuth",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "RegistryClient"
+                    },
+                    {
+                        "start_node": "RegistryClient",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "isBearerAuth"
+                    }
+                ],
+                "similarity": 0.04748620568504514,
+                "end_line": 596,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryClient.isBearerAuth(Authorization authorization): boolean"
+            },
+            {
+                "start_line": 45,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/cache/CacheStorageReader.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  static void verifyImageMetadata(ImageMetadataTemplate metadata, Path metadataCacheDirectory)",
+                "distance": 1.5,
+                "title": null,
+                "name": "verifyImageMetadata",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "verifyImageMetadata"
+                    }
+                ],
+                "similarity": 0.04726248009603732,
+                "end_line": 45,
+                "signature": "com.google.cloud.tools.jib.cache.CacheStorageReader.verifyImageMetadata(ImageMetadataTemplate metadata, Path metadataCacheDirectory): void"
+            },
+            {
+                "start_line": 76,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/cache/CacheStorageWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private static void verifyImageMetadata(ImageMetadataTemplate metadata) {\n    Predicate<ManifestAndConfigTemplate> isManifestNull = pair -> pair.getManifest() == null;\n    Predicate<ManifestAndConfigTemplate> isConfigNull = pair -> pair.getConfig() == null;\n    Predicate<ManifestAndConfigTemplate> isDigestNull = pair -> pair.getManifestDigest() == null;\n\n    List<ManifestAndConfigTemplate> manifestsAndConfigs = metadata.getManifestsAndConfigs();\n    Preconditions.checkArgument(!manifestsAndConfigs.isEmpty(), \"no manifests given\");\n    Preconditions.checkArgument(\n        manifestsAndConfigs.stream().noneMatch(isManifestNull), \"null manifest(s)\");\n    Preconditions.checkArgument(\n        metadata.getManifestList() != null || manifestsAndConfigs.size() == 1,\n        \"manifest list missing while multiple manifests given\");\n\n    ManifestTemplate firstManifest = manifestsAndConfigs.get(0).getManifest();\n    if (firstManifest instanceof V21ManifestTemplate) {\n      Preconditions.checkArgument(\n          metadata.getManifestList() == null, \"manifest list given for schema 1\");\n      Preconditions.checkArgument(\n          isConfigNull.test(manifestsAndConfigs.get(0)), \"container config given for schema 1\");\n    } else if (firstManifest instanceof BuildableManifestTemplate) {\n      Preconditions.checkArgument(\n          manifestsAndConfigs.stream().noneMatch(isConfigNull), \"null container config(s)\");\n      if (metadata.getManifestList() != null) {\n        Preconditions.checkArgument(\n            manifestsAndConfigs.stream().noneMatch(isDigestNull), \"null manifest digest(s)\");\n      }\n    } else {\n      throw new IllegalArgumentException(\"Unknown manifest type: \" + firstManifest);\n    }\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "verifyImageMetadata",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "retrieveMetadata"
+                    },
+                    {
+                        "start_node": "retrieveMetadata",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "verifyImageMetadata"
+                    }
+                ],
+                "similarity": 0.0472225919632209,
+                "end_line": 105,
+                "signature": "com.google.cloud.tools.jib.cache.CacheStorageWriter.verifyImageMetadata(ImageMetadataTemplate metadata): void"
+            },
+            {
+                "start_line": 581,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/configuration/BuildContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public RegistryClient.Factory newTargetImageRegistryClientFactory() {\n    // if base and target are on the same registry, try enabling cross-repository mounts\n    if (baseImageConfiguration\n        .getImageRegistry()\n        .equals(targetImageConfiguration.getImageRegistry())) {\n      return RegistryClient.factory(\n              getEventHandlers(),\n              targetImageConfiguration.getImageRegistry(),\n              targetImageConfiguration.getImageRepository(),\n              baseImageConfiguration.getImageRepository(),\n              httpClient)\n          .setUserAgent(makeUserAgent());\n    }\n    return RegistryClient.factory(\n            getEventHandlers(),\n            targetImageConfiguration.getImageRegistry(),\n            targetImageConfiguration.getImageRepository(),\n            httpClient)\n        .setUserAgent(makeUserAgent());\n  }",
+                "distance": 3.25,
+                "title": null,
+                "name": "newTargetImageRegistryClientFactory",
+                "documentation": "/**\n   * Creates a new {@link com.google.cloud.tools.jib.registry.RegistryClient.Factory} for the target\n   * image with fields from the build configuration.\n   *\n   * @return a new {@link com.google.cloud.tools.jib.registry.RegistryClient.Factory}\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "authenticate"
+                    },
+                    {
+                        "start_node": "authenticate",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "setUserAgent"
+                    },
+                    {
+                        "start_node": "setUserAgent",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "newTargetImageRegistryClientFactory"
+                    }
+                ],
+                "similarity": 0.04602662663717352,
+                "end_line": 600,
+                "signature": "com.google.cloud.tools.jib.configuration.BuildContext.newTargetImageRegistryClientFactory(): RegistryClient"
+            },
+            {
+                "start_line": 125,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryEndpointCaller.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private T call(URL url) throws IOException, RegistryException {\n    String serverUrl = registryEndpointRequestProperties.getServerUrl();\n    String imageName = registryEndpointRequestProperties.getImageName();\n\n    Request.Builder requestBuilder =\n        Request.builder()\n            .setUserAgent(userAgent)\n            .setHttpTimeout(JibSystemProperties.getHttpTimeout())\n            .setAccept(registryEndpointProvider.getAccept())\n            .setBody(registryEndpointProvider.getContent())\n            .setAuthorization(authorization);\n\n    try (Response response =\n        httpClient.call(registryEndpointProvider.getHttpMethod(), url, requestBuilder.build())) {\n\n      return registryEndpointProvider.handleResponse(response);\n\n    } catch (ResponseException ex) {\n      // First, see if the endpoint provider handles an exception as an expected response.\n      try {\n        return registryEndpointProvider.handleHttpResponseException(ex);\n\n      } catch (ResponseException responseException) {\n        if (responseException.getStatusCode() == HttpStatusCodes.STATUS_CODE_BAD_REQUEST\n            || responseException.getStatusCode() == HttpStatusCodes.STATUS_CODE_NOT_FOUND\n            || responseException.getStatusCode()\n                == HttpStatusCodes.STATUS_CODE_METHOD_NOT_ALLOWED) {\n          // The name or reference was invalid.\n          throw newRegistryErrorException(responseException);\n\n        } else if (responseException.getStatusCode() == HttpStatusCodes.STATUS_CODE_FORBIDDEN) {\n          throw new RegistryUnauthorizedException(serverUrl, imageName, responseException);\n\n        } else if (responseException.getStatusCode() == HttpStatusCodes.STATUS_CODE_UNAUTHORIZED) {\n          if (responseException.requestAuthorizationCleared()) {\n            throw new RegistryCredentialsNotSentException(serverUrl, imageName);\n          } else {\n            // Credentials are either missing or wrong.\n            throw new RegistryUnauthorizedException(serverUrl, imageName, responseException);\n          }\n\n        } else {\n          // Unknown\n          throw responseException;\n        }\n      }\n\n    } catch (IOException ex) {\n      logError(\"I/O error for image [\" + serverUrl + \"/\" + imageName + \"]:\");\n      logError(\"    \" + ex.getClass().getName());\n      logError(\"    \" + (ex.getMessage() == null ? \"(null exception message)\" : ex.getMessage()));\n      logErrorIfBrokenPipe(ex);\n\n      if (ex instanceof SSLException) {\n        throw new InsecureRegistryException(url, ex);\n      }\n      throw ex;\n    }\n  }",
+                "distance": 3.25,
+                "title": null,
+                "name": "call",
+                "documentation": "/**\n   * Calls the registry endpoint with a certain {@link URL}.\n   *\n   * @param url the endpoint URL to call\n   * @return an object representing the response\n   * @throws IOException for most I/O exceptions when making the request\n   * @throws RegistryException for known exceptions when interacting with the registry\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "authenticate"
+                    },
+                    {
+                        "start_node": "authenticate",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "setUserAgent"
+                    },
+                    {
+                        "start_node": "setUserAgent",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "call"
+                    }
+                ],
+                "similarity": 0.04516883329376215,
+                "end_line": 183,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryEndpointCaller.call(URL url): T"
+            },
+            {
+                "start_line": 224,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/cache/CacheStorageReader.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  Optional<ContainerConfigurationTemplate> retrieveLocalConfig(DescriptorDigest imageId)",
+                "distance": 1.5,
+                "title": null,
+                "name": "retrieveLocalConfig",
+                "documentation": "/**\n   * Retrieves the {@link ContainerConfigurationTemplate} for the image with the given image ID.\n   *\n   * @param imageId the image ID\n   * @return the {@link ContainerConfigurationTemplate} referenced by the image ID, if found\n   * @throws IOException if an I/O exception occurs\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "retrieveLocalConfig"
+                    }
+                ],
+                "similarity": 0.0448127171148536,
+                "end_line": 224,
+                "signature": "com.google.cloud.tools.jib.cache.CacheStorageReader.retrieveLocalConfig(DescriptorDigest imageId): Optional"
+            },
+            {
+                "start_line": 105,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public RegistryClient newRegistryClient() {\n      return new RegistryClient(\n          eventHandlers, credential, registryEndpointRequestProperties, userAgent, httpClient);\n    }",
+                "distance": 2.75,
+                "title": null,
+                "name": "newRegistryClient",
+                "documentation": "/**\n     * Creates a new {@link RegistryClient}.\n     *\n     * @return the new {@link RegistryClient}\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "authenticate"
+                    },
+                    {
+                        "start_node": "authenticate",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "setUserAgent"
+                    },
+                    {
+                        "start_node": "setUserAgent",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Factory"
+                    },
+                    {
+                        "start_node": "Factory",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "newRegistryClient"
+                    }
+                ],
+                "similarity": 0.04267720903630641,
+                "end_line": 108,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryClient.Factory.newRegistryClient(): RegistryClient"
+            },
+            {
+                "start_line": 60,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/api/RegistryAuthenticationFailedException.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public String getServerUrl() {\n    return serverUrl;\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "getServerUrl",
+                "documentation": "/**\n   * The server being authenticated.\n   *\n   * @return the server being authenticated\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticationFailedException"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticationFailedException",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getServerUrl"
+                    }
+                ],
+                "similarity": 0.042226351558703835,
+                "end_line": 62,
+                "signature": "com.google.cloud.tools.jib.api.RegistryAuthenticationFailedException.getServerUrl(): String"
+            },
+            {
+                "start_line": 117,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/cache/CacheStorageWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  static void moveIfDoesNotExist(Path source, Path destination) throws IOException {\n    String errorMessage =\n        String.format(\n            \"unable to move: %s to %s; such failures are often caused by interference from \"\n                + \"antivirus (https://github.com/GoogleContainerTools/jib/issues/3127#issuecomment-796838294), \"\n                + \"or rarely if the operation is not supported by the file system (for example: \"\n                + \"special non-local file system)\",\n            source, destination);\n\n    try {\n      Action<IOException> rename =\n          () -> {\n            if (Files.exists(destination)) {\n              // If the file already exists, we skip renaming and use the existing file.\n              // This happens, e.g., if a new layer happens to have the same content as a\n              // previously-cached layer or the same layer is being cached concurrently.\n              return true;\n            }\n            Files.move(source, destination);\n            return Files.exists(destination);\n          };\n      // Some Windows users report java.nio.file.AccessDeniedException that we suspect is caused\n      // by anti-virus programs, like Windows Defender, that open new files for scanning.\n      // Retry the rename up to 10 times, with 15ms pause between each retry.\n      if (!Retry.action(rename)\n          .maximumRetries(10)\n          .retryOnException(ex -> ex instanceof FileSystemException)\n          .sleep(15, TimeUnit.MILLISECONDS)\n          .run()) {\n        throw new IOException(errorMessage);\n      }\n\n    } catch (IOException ex) {\n      throw new IOException(errorMessage, ex);\n    }\n  }",
+                "distance": 3.0,
+                "title": null,
+                "name": "moveIfDoesNotExist",
+                "documentation": "/**\n   * Attempts to move {@code source} to {@code destination}. If {@code destination} already exists,\n   * this does nothing. Attempts an atomic move first, and falls back to non-atomic if the\n   * filesystem does not support atomic moves.\n   *\n   * @param source the source path\n   * @param destination the destination path\n   * @throws IOException if an I/O exception occurs\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "retrieveMetadata"
+                    },
+                    {
+                        "start_node": "retrieveMetadata",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "verifyImageMetadata"
+                    },
+                    {
+                        "start_node": "verifyImageMetadata",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageWriter"
+                    },
+                    {
+                        "start_node": "CacheStorageWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "moveIfDoesNotExist"
+                    }
+                ],
+                "similarity": 0.03832513846414827,
+                "end_line": 152,
+                "signature": "com.google.cloud.tools.jib.cache.CacheStorageWriter.moveIfDoesNotExist(Path source, Path destination): void"
+            },
+            {
+                "start_line": 94,
+                "file_path": "playground/googlecontainertools__jib/jib-build-plan/src/main/java/com/google/cloud/tools/jib/api/buildplan/AbsoluteUnixPath.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public AbsoluteUnixPath resolve(RelativeUnixPath relativeUnixPath) {\n    int newSize = pathComponents.size() + relativeUnixPath.getRelativePathComponents().size();\n    List<String> newPathComponents = new ArrayList<>(newSize);\n\n    newPathComponents.addAll(pathComponents);\n    newPathComponents.addAll(relativeUnixPath.getRelativePathComponents());\n    return new AbsoluteUnixPath(newPathComponents);\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "resolve",
+                "documentation": "/**\n   * Resolves this path against another relative path.\n   *\n   * @param relativeUnixPath the relative path to resolve against\n   * @return a new {@link AbsoluteUnixPath} representing the resolved path\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "retrieveTarLayer"
+                    },
+                    {
+                        "start_node": "retrieveTarLayer",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "resolve"
+                    }
+                ],
+                "similarity": 0.03825165561740128,
+                "end_line": 101,
+                "signature": "com.google.cloud.tools.jib.api.buildplan.AbsoluteUnixPath.resolve(RelativeUnixPath relativeUnixPath): AbsoluteUnixPath"
+            },
+            {
+                "start_line": 50,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/builder/steps/AuthenticatePushStep.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public RegistryClient call() throws CredentialRetrievalException, IOException, RegistryException {\n    String registry = buildContext.getTargetImageConfiguration().getImageRegistry();\n    try (ProgressEventDispatcher progressDispatcher =\n            progressEventDispatcherFactory.create(\"authenticating push to \" + registry, 2);\n        TimerEventDispatcher ignored2 =\n            new TimerEventDispatcher(\n                buildContext.getEventHandlers(), String.format(DESCRIPTION, registry))) {\n      Credential credential =\n          RegistryCredentialRetriever.getTargetImageCredential(buildContext).orElse(null);\n      progressDispatcher.dispatchProgress(1);\n\n      RegistryClient registryClient =\n          buildContext\n              .newTargetImageRegistryClientFactory()\n              .setCredential(credential)\n              .newRegistryClient();\n      if (!registryClient.doPushBearerAuth()) {\n        // server returned \"WWW-Authenticate: Basic ...\" (e.g., local Docker registry)\n        if (credential != null && !credential.isOAuth2RefreshToken()) {\n          registryClient.configureBasicAuth();\n        }\n      }\n      return registryClient;\n    }\n  }",
+                "distance": 3.75,
+                "title": null,
+                "name": "call",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "authenticatePull"
+                    },
+                    {
+                        "start_node": "authenticatePull",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "refreshBearerAuth"
+                    },
+                    {
+                        "start_node": "refreshBearerAuth",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "RegistryClient"
+                    },
+                    {
+                        "start_node": "RegistryClient",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "callRegistryEndpoint"
+                    },
+                    {
+                        "start_node": "callRegistryEndpoint",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "call"
+                    }
+                ],
+                "similarity": 0.037101491530316076,
+                "end_line": 74,
+                "signature": "com.google.cloud.tools.jib.builder.steps.AuthenticatePushStep.call(): RegistryClient"
+            },
+            {
+                "start_line": 91,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/api/JibContainerBuilder.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  JibContainerBuilder(RegistryImage baseImage) {\n    this(\n        ImageConfiguration.builder(baseImage.getImageReference())\n            .setCredentialRetrievers(baseImage.getCredentialRetrievers())\n            .build(),\n        BuildContext.builder());\n  }",
+                "distance": 3.5,
+                "title": null,
+                "name": "JibContainerBuilder",
+                "documentation": "/** Instantiate with {@link Jib#from}. */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "retrieveTarLayer"
+                    },
+                    {
+                        "start_node": "retrieveTarLayer",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "JibContainerBuilder"
+                    }
+                ],
+                "similarity": 0.03689959804756948,
+                "end_line": 97,
+                "signature": "com.google.cloud.tools.jib.api.JibContainerBuilder(RegistryImage baseImage)"
+            },
+            {
+                "start_line": 74,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/api/Containerizer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static Containerizer to(RegistryImage registryImage) {\n    ImageConfiguration imageConfiguration =\n        ImageConfiguration.builder(registryImage.getImageReference())\n            .setCredentialRetrievers(registryImage.getCredentialRetrievers())\n            .build();\n\n    Function<BuildContext, StepsRunner> stepsRunnerFactory =\n        buildContext -> StepsRunner.begin(buildContext).registryPushSteps();\n\n    return new Containerizer(\n        DESCRIPTION_FOR_DOCKER_REGISTRY, imageConfiguration, stepsRunnerFactory, true);\n  }",
+                "distance": 3.5,
+                "title": null,
+                "name": "to",
+                "documentation": "/**\n   * Gets a new {@link Containerizer} that containerizes to a container registry.\n   *\n   * @param registryImage the {@link RegistryImage} that defines target container registry and\n   *     credentials\n   * @return a new {@link Containerizer}\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "retrieveTarLayer"
+                    },
+                    {
+                        "start_node": "retrieveTarLayer",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "to"
+                    }
+                ],
+                "similarity": 0.03686873592115486,
+                "end_line": 85,
+                "signature": "com.google.cloud.tools.jib.api.Containerizer.to(RegistryImage registryImage): Containerizer"
+            },
+            {
+                "start_line": 84,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Factory setCredential(@Nullable Credential credential) {\n      this.credential = credential;\n      return this;\n    }",
+                "distance": 2.75,
+                "title": null,
+                "name": "setCredential",
+                "documentation": "/**\n     * Sets the authentication credentials to use to authenticate with the registry.\n     *\n     * @param credential the {@link Credential} to access the registry/repository\n     * @return this\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "authenticate"
+                    },
+                    {
+                        "start_node": "authenticate",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "setUserAgent"
+                    },
+                    {
+                        "start_node": "setUserAgent",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Factory"
+                    },
+                    {
+                        "start_node": "Factory",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "setCredential"
+                    }
+                ],
+                "similarity": 0.03678734283942454,
+                "end_line": 87,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryClient.Factory.setCredential(Credential credential): Factory"
+            },
+            {
+                "start_line": 86,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/credentials/DockerConfigCredentialRetriever.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public Optional<Credential> retrieve(Consumer<LogEvent> logger) throws IOException {\n    if (!Files.exists(dockerConfigFile)) {\n      return Optional.empty();\n    }\n\n    ObjectMapper objectMapper =\n        JsonMapper.builder()\n            .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)\n            .build();\n    try (InputStream fileIn = Files.newInputStream(dockerConfigFile)) {\n      if (legacyConfigFormat) {\n        // legacy config format is the value of the \"auths\":{ <map> } block of the new config (i.e.,\n        // the <map> of string -> DockerConfigTemplate.AuthTemplate).\n        Map<String, AuthTemplate> auths =\n            objectMapper.readValue(fileIn, new TypeReference<Map<String, AuthTemplate>>() {});\n        DockerConfig dockerConfig = new DockerConfig(new DockerConfigTemplate(auths));\n        return retrieve(dockerConfig, logger);\n      }\n\n      DockerConfig dockerConfig =\n          new DockerConfig(objectMapper.readValue(fileIn, DockerConfigTemplate.class));\n      return retrieve(dockerConfig, logger);\n    }\n  }",
+                "distance": 3.5,
+                "title": null,
+                "name": "retrieve",
+                "documentation": "/**\n   * Retrieves credentials for a registry. Tries all possible known aliases.\n   *\n   * @param logger a consumer for handling log events\n   * @return {@link Credential} found for {@code registry}, or {@link Optional#empty} if not found\n   * @throws IOException if failed to parse the config JSON\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "retrieveTarLayer"
+                    },
+                    {
+                        "start_node": "retrieveTarLayer",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "retrieve"
+                    }
+                ],
+                "similarity": 0.03657520011905104,
+                "end_line": 109,
+                "signature": "com.google.cloud.tools.jib.registry.credentials.DockerConfigCredentialRetriever.retrieve(Consumer logger): Optional"
+            },
+            {
+                "start_line": 100,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/api/JibContainerBuilder.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  JibContainerBuilder(DockerDaemonImage baseImage) {\n    this(\n        ImageConfiguration.builder(baseImage.getImageReference())\n            .setDockerClient(\n                DockerClientResolver.resolve(baseImage.getDockerEnvironment())\n                    .orElse(\n                        new CliDockerClient(\n                            baseImage.getDockerExecutable(), baseImage.getDockerEnvironment())))\n            .build(),\n        BuildContext.builder());\n  }",
+                "distance": 3.5,
+                "title": null,
+                "name": "JibContainerBuilder",
+                "documentation": "/** Instantiate with {@link Jib#from}. */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "retrieveTarLayer"
+                    },
+                    {
+                        "start_node": "retrieveTarLayer",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "JibContainerBuilder"
+                    }
+                ],
+                "similarity": 0.03607031733002347,
+                "end_line": 110,
+                "signature": "com.google.cloud.tools.jib.api.JibContainerBuilder(DockerDaemonImage baseImage)"
+            },
+            {
+                "start_line": 157,
+                "file_path": "playground/googlecontainertools__jib/jib-plugins-common/src/main/java/com/google/cloud/tools/jib/plugins/common/DefaultCredentialRetrievers.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public List<CredentialRetriever> asList() throws FileNotFoundException {\n    List<CredentialRetriever> credentialRetrievers = new ArrayList<>();\n    if (knownCredentialRetriever != null) {\n      credentialRetrievers.add(knownCredentialRetriever);\n    }\n    if (credentialHelper != null) {\n      // If credential helper contains file separator, treat as path; otherwise treat as suffix\n      if (credentialHelper.contains(FileSystems.getDefault().getSeparator())) {\n        if (!Files.exists(Paths.get(credentialHelper))) {\n          String osName = systemProperties.getProperty(\"os.name\").toLowerCase(Locale.ENGLISH);\n          if (!osName.contains(\"windows\")\n              || (!Files.exists(Paths.get(credentialHelper + \".cmd\"))\n                  && !Files.exists(Paths.get(credentialHelper + \".exe\")))) {\n            throw new FileNotFoundException(\n                \"Specified credential helper was not found: \" + credentialHelper);\n          }\n        }\n        credentialRetrievers.add(\n            credentialRetrieverFactory.dockerCredentialHelper(credentialHelper));\n      } else {\n        String suffix = credentialHelper; // not path; treat as suffix\n        credentialRetrievers.add(\n            credentialRetrieverFactory.dockerCredentialHelper(\"docker-credential-\" + suffix));\n      }\n    }\n\n    if (inferredCredentialRetriever != null) {\n      credentialRetrievers.add(inferredCredentialRetriever);\n    }\n\n    Set<Path> dockerConfigFiles = new LinkedHashSet<>();\n\n    String xdgRuntime = environment.get(\"XDG_RUNTIME_DIR\");\n    if (xdgRuntime != null) {\n      dockerConfigFiles.add(Paths.get(xdgRuntime).resolve(XDG_AUTH_FILE));\n    }\n    String xdgConfigHome = environment.get(\"XDG_CONFIG_HOME\");\n    if (xdgConfigHome != null) {\n      dockerConfigFiles.add(Paths.get(xdgConfigHome).resolve(XDG_AUTH_FILE));\n    }\n    String homeProperty = systemProperties.getProperty(\"user.home\");\n    if (homeProperty != null) {\n      dockerConfigFiles.add(Paths.get(homeProperty).resolve(\".config\").resolve(XDG_AUTH_FILE));\n    }\n    String homeEnvVar = environment.get(\"HOME\");\n    if (homeEnvVar != null) {\n      dockerConfigFiles.add(Paths.get(homeEnvVar).resolve(\".config\").resolve(XDG_AUTH_FILE));\n    }\n\n    String dockerConfigEnv = environment.get(\"DOCKER_CONFIG\");\n    if (dockerConfigEnv != null) {\n      dockerConfigFiles.addAll(getDockerFiles(Paths.get(dockerConfigEnv)));\n    }\n    if (homeProperty != null) {\n      dockerConfigFiles.addAll(getDockerFiles(Paths.get(homeProperty).resolve(\".docker\")));\n    }\n    if (homeEnvVar != null) {\n      dockerConfigFiles.addAll(getDockerFiles(Paths.get(homeEnvVar).resolve(\".docker\")));\n    }\n\n    dockerConfigFiles.stream()\n        .map(\n            path ->\n                path.endsWith(LEGACY_DOCKER_CONFIG_FILE)\n                    ? credentialRetrieverFactory.legacyDockerConfig(path)\n                    : credentialRetrieverFactory.dockerConfig(path))\n        .forEach(credentialRetrievers::add);\n\n    credentialRetrievers.add(credentialRetrieverFactory.wellKnownCredentialHelpers());\n    credentialRetrievers.add(credentialRetrieverFactory.googleApplicationDefaultCredentials());\n    return credentialRetrievers;\n  }",
+                "distance": 3.5,
+                "title": null,
+                "name": "asList",
+                "documentation": "/**\n   * Makes a list of {@link CredentialRetriever}s.\n   *\n   * @return the list of {@link CredentialRetriever}s\n   * @throws FileNotFoundException if a credential helper path is specified, but the file doesn't\n   *     exist\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "retrieveTarLayer"
+                    },
+                    {
+                        "start_node": "retrieveTarLayer",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "resolve"
+                    },
+                    {
+                        "start_node": "resolve",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "asList"
+                    }
+                ],
+                "similarity": 0.0359378819229195,
+                "end_line": 228,
+                "signature": "com.google.cloud.tools.jib.plugins.common.DefaultCredentialRetrievers.asList(): List"
+            },
+            {
+                "start_line": 95,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Factory setUserAgent(@Nullable String userAgent) {\n      this.userAgent = userAgent;\n      return this;\n    }",
+                "distance": 2.25,
+                "title": null,
+                "name": "setUserAgent",
+                "documentation": "/**\n     * Sets the value of {@code User-Agent} in headers for registry requests.\n     *\n     * @param userAgent user agent string\n     * @return this\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "authenticate"
+                    },
+                    {
+                        "start_node": "authenticate",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "setUserAgent"
+                    }
+                ],
+                "similarity": 0.03567584471636608,
+                "end_line": 98,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryClient.Factory.setUserAgent(String userAgent): Factory"
+            },
+            {
+                "start_line": 190,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/configuration/BuildContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Builder setAllowInsecureRegistries(boolean allowInsecureRegistries) {\n      this.allowInsecureRegistries = allowInsecureRegistries;\n      return this;\n    }",
+                "distance": 3.0,
+                "title": null,
+                "name": "setAllowInsecureRegistries",
+                "documentation": "/**\n     * Sets whether or not to allow communication over HTTP (as opposed to HTTPS).\n     *\n     * @param allowInsecureRegistries if {@code true}, insecure connections will be allowed\n     * @return this\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "retrieveTarLayer"
+                    },
+                    {
+                        "start_node": "retrieveTarLayer",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "setAllowInsecureRegistries"
+                    }
+                ],
+                "similarity": 0.034540780939830075,
+                "end_line": 193,
+                "signature": "com.google.cloud.tools.jib.configuration.BuildContext.Builder.setAllowInsecureRegistries(boolean allowInsecureRegistries): Builder"
+            },
+            {
+                "start_line": 314,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/cache/CacheStorageWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  CachedLayer writeTarLayer(DescriptorDigest diffId, Blob compressedBlob) throws IOException {\n    Files.createDirectories(cacheStorageFiles.getLocalDirectory());\n    Files.createDirectories(cacheStorageFiles.getTemporaryDirectory());\n    try (TempDirectoryProvider tempDirectoryProvider = new TempDirectoryProvider()) {\n      Path temporaryLayerDirectory =\n          tempDirectoryProvider.newDirectory(cacheStorageFiles.getTemporaryDirectory());\n      Path temporaryLayerFile = cacheStorageFiles.getTemporaryLayerFile(temporaryLayerDirectory);\n\n      BlobDescriptor layerBlobDescriptor;\n      try (OutputStream fileOutputStream =\n          new BufferedOutputStream(Files.newOutputStream(temporaryLayerFile))) {\n        layerBlobDescriptor = compressedBlob.writeTo(fileOutputStream);\n      }\n\n      // Renames the temporary layer file to its digest\n      // (temp/temp -> temp/<digest>)\n      String fileName = layerBlobDescriptor.getDigest().getHash();\n      Path digestLayerFile = temporaryLayerDirectory.resolve(fileName);\n      moveIfDoesNotExist(temporaryLayerFile, digestLayerFile);\n\n      // Moves the temporary directory to directory named with diff ID\n      // (temp/<digest> -> <diffID>/<digest>)\n      Path destination = cacheStorageFiles.getLocalDirectory().resolve(diffId.getHash());\n      moveIfDoesNotExist(temporaryLayerDirectory, destination);\n\n      return CachedLayer.builder()\n          .setLayerDigest(layerBlobDescriptor.getDigest())\n          .setLayerDiffId(diffId)\n          .setLayerSize(layerBlobDescriptor.getSize())\n          .setLayerBlob(Blobs.from(destination.resolve(fileName)))\n          .build();\n    }\n  }",
+                "distance": 3.0,
+                "title": null,
+                "name": "writeTarLayer",
+                "documentation": "/**\n   * Saves a local base image layer.\n   *\n   * @param diffId the layer blob's diff ID\n   * @param compressedBlob the blob to save\n   * @throws IOException if an I/O exception occurs\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "retrieveMetadata"
+                    },
+                    {
+                        "start_node": "retrieveMetadata",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "verifyImageMetadata"
+                    },
+                    {
+                        "start_node": "verifyImageMetadata",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageWriter"
+                    },
+                    {
+                        "start_node": "CacheStorageWriter",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "writeTarLayer"
+                    }
+                ],
+                "similarity": 0.03448537005432821,
+                "end_line": 346,
+                "signature": "com.google.cloud.tools.jib.cache.CacheStorageWriter.writeTarLayer(DescriptorDigest diffId, Blob compressedBlob): CachedLayer"
+            },
+            {
+                "start_line": 113,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/api/JibContainerBuilder.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  JibContainerBuilder(TarImage baseImage) {\n    // TODO: Cleanup using scratch as placeholder\n    this(\n        ImageConfiguration.builder(baseImage.getImageReference().orElse(ImageReference.scratch()))\n            .setTarPath(baseImage.getPath())\n            .build(),\n        BuildContext.builder());\n  }",
+                "distance": 3.5,
+                "title": null,
+                "name": "JibContainerBuilder",
+                "documentation": "/** Instantiate with {@link Jib#from}. */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    },
+                    {
+                        "start_node": "select",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CacheStorageReader"
+                    },
+                    {
+                        "start_node": "CacheStorageReader",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "retrieveTarLayer"
+                    },
+                    {
+                        "start_node": "retrieveTarLayer",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "JibContainerBuilder"
+                    }
+                ],
+                "similarity": 0.033759112878467425,
+                "end_line": 120,
+                "signature": "com.google.cloud.tools.jib.api.JibContainerBuilder(TarImage baseImage)"
+            },
+            {
+                "start_line": 245,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/cache/CacheStorageReader.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  Optional<DescriptorDigest> select(DescriptorDigest selector)",
+                "distance": 1.0,
+                "title": null,
+                "name": "select",
+                "documentation": "/**\n   * Retrieves the layer digest selected by the {@code selector}.\n   *\n   * @param selector the selector\n   * @return the layer digest {@code selector} selects, if found\n   * @throws CacheCorruptedException if the selector file contents was not a valid layer digest\n   * @throws IOException if an I/O exception occurs\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "select"
+                    }
+                ],
+                "similarity": 0.032223680377612814,
+                "end_line": 245,
+                "signature": "com.google.cloud.tools.jib.cache.CacheStorageReader.select(DescriptorDigest selector): Optional"
+            },
+            {
+                "start_line": 619,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/configuration/BuildContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  String makeUserAgent() {\n    if (!JibSystemProperties.isUserAgentEnabled()) {\n      return \"\";\n    }\n\n    StringBuilder userAgentBuilder = new StringBuilder(\"jib\");\n    userAgentBuilder.append(\" \").append(toolVersion);\n    userAgentBuilder.append(\" \").append(toolName);\n    if (!Strings.isNullOrEmpty(System.getProperty(JibSystemProperties.UPSTREAM_CLIENT))) {\n      userAgentBuilder.append(\" \").append(System.getProperty(JibSystemProperties.UPSTREAM_CLIENT));\n    }\n    return userAgentBuilder.toString();\n  }",
+                "distance": 3.75,
+                "title": null,
+                "name": "makeUserAgent",
+                "documentation": "/**\n   * The {@code User-Agent} is in the form of {@code jib <toolVersion> <toolName>}. For example:\n   * {@code jib 0.9.0 jib-maven-plugin}.\n   *\n   * @return the {@code User-Agent} header to send. The {@code User-Agent} can be disabled by\n   *     setting the system property variable {@code _JIB_DISABLE_USER_AGENT} to any non-empty\n   *     string.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "authenticate"
+                    },
+                    {
+                        "start_node": "authenticate",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "setUserAgent"
+                    },
+                    {
+                        "start_node": "setUserAgent",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "newBaseImageRegistryClientFactory"
+                    },
+                    {
+                        "start_node": "newBaseImageRegistryClientFactory",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "BuildContext"
+                    },
+                    {
+                        "start_node": "BuildContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "makeUserAgent"
+                    }
+                ],
+                "similarity": 0.031973529467049414,
+                "end_line": 631,
+                "signature": "com.google.cloud.tools.jib.configuration.BuildContext.makeUserAgent(): String"
+            },
+            {
+                "start_line": 569,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/configuration/BuildContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public RegistryClient.Factory newBaseImageRegistryClientFactory(String serverUrl) {\n    return RegistryClient.factory(\n            getEventHandlers(), serverUrl, baseImageConfiguration.getImageRepository(), httpClient)\n        .setUserAgent(makeUserAgent());\n  }",
+                "distance": 3.25,
+                "title": null,
+                "name": "newBaseImageRegistryClientFactory",
+                "documentation": "/**\n   * Creates a new {@link com.google.cloud.tools.jib.registry.RegistryClient.Factory} for the base\n   * image repository on the registry {@code serverUrl}. Compared to @link\n   * #newBaseImageRegistryClientFactory()), this method is useful to try a mirror.\n   *\n   * @param serverUrl the server URL for the registry (for example, {@code gcr.io})\n   * @return a new {@link com.google.cloud.tools.jib.registry.RegistryClient.Factory}\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryAuthenticator"
+                    },
+                    {
+                        "start_node": "RegistryAuthenticator",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "authenticate"
+                    },
+                    {
+                        "start_node": "authenticate",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "setUserAgent"
+                    },
+                    {
+                        "start_node": "setUserAgent",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "newBaseImageRegistryClientFactory"
+                    }
+                ],
+                "similarity": 0.03167118776092977,
+                "end_line": 573,
+                "signature": "com.google.cloud.tools.jib.configuration.BuildContext.newBaseImageRegistryClientFactory(String serverUrl): RegistryClient"
+            }
+        ],
+        "classes": [],
+        "issues": [
+            {
+                "content": "**Environment**:\r\n\r\n- *Jib version:* 3.3.2\r\n- *Build tool:* Gradle\r\n- *OS:* Macos Ventura 13.3.1\r\n\r\n**Description of the issue**:\r\nWhen trying to login to my self-hosted Docker registry, Jib fails with the following error:\r\n```\r\nCaused by: com.google.cloud.tools.jib.api.RegistryAuthenticationFailedException: Failed to authenticate with registry <my registry> because: 'Bearer' was not found in the 'WWW-Authenticate' header, tried to parse: Basic\r\n```\r\nHaving a look to `com.google.cloud.tools.jib.registry.RegistryAuthenticator#fromAuthenticationMethod` I see that regexp used to determine authentification method has a space before the `.*`. \r\n```java\r\nauthenticationMethod.matches(\"^(?i)(basic) .*\")\r\n```\r\nThis makes jib to fail to select auth method given header `WWW-Authenticate: Basic`\r\n\r\n**Expected behavior**:\r\nAccording to https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/WWW-Authenticate#syntax it is allowed to use `WWW-Authenticate: Basic` without providing any realm/charset. Jib should allow that\r\n\r\n**Steps to reproduce**:\r\nTry to login to any registry responding with `WWW-Authenticate: Basic` header.\r\n\n",
+                "distance": 0,
+                "title": "Jib authentification does not respect www-authenticate specification allowing Basic auth without specifying realm",
+                "name": "root",
+                "path": [],
+                "issue_id": "root",
+                "similarity": 2.0,
+                "type": "issue"
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "4032",
+                "type": "issue",
+                "content": "**Environment**:\r\n\r\n- *Jib version:* 3.3.2\r\n- *Build tool:* Gradle\r\n- *OS:* Macos Ventura 13.3.1\r\n\r\n**Description of the issue**:\r\nWhen trying to login to my self-hosted Docker registry, Jib fails with the following error:\r\n```\r\nCaused by: com.google.cloud.tools.jib.api.RegistryAuthenticationFailedException: Failed to authenticate with registry <my registry> because: 'Bearer' was not found in the 'WWW-Authenticate' header, tried to parse: Basic\r\n```\r\nHaving a look to `com.google.cloud.tools.jib.registry.RegistryAuthenticator#fromAuthenticationMethod` I see that regexp used to determine authentification method has a space before the `.*`. \r\n```java\r\nauthenticationMethod.matches(\"^(?i)(basic) .*\")\r\n```\r\nThis makes jib to fail to select auth method given header `WWW-Authenticate: Basic`\r\n\r\n**Expected behavior**:\r\nAccording to https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/WWW-Authenticate#syntax it is allowed to use `WWW-Authenticate: Basic` without providing any realm/charset. Jib should allow that\r\n\r\n**Steps to reproduce**:\r\nTry to login to any registry responding with `WWW-Authenticate: Basic` header.\r\n\n\n",
+                "source_code": null,
+                "distance": 0.25,
+                "title": "Jib authentification does not respect www-authenticate specification allowing Basic auth without specifying realm",
+                "name": "issue#4032",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#4032"
+                    }
+                ],
+                "similarity": 0.8376934747709184,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "4035",
+                "type": "issue",
+                "content": "Fixes #4032 \ud83d\udee0\ufe0f\r\n\r\nThis accepts the Basic auth scheme without realm.\r\n\n\n",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "fix: fix WWW-Authenticate header parsing for Basic authentication",
+                "name": "pr#4035",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#4032"
+                    },
+                    {
+                        "start_node": "issue#4032",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "pr#4035"
+                    }
+                ],
+                "similarity": 0.511993737735921,
+                "end_line": null,
+                "signature": null
+            }
+        ]
+    },
+    "artifact_stats": {
+        "skipped_due_to_time": 3,
+        "valid_related_items": 6
+    }
+}

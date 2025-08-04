@@ -1,0 +1,28 @@
+Based on the issue, the bug is that several places create `ByteQuadsCanonicalizer` instances using `makeChild` rather than `makeChildOrPlaceholder` which avoids canonicalization when `CANONICALIZE_FIELD_NAMES` is disabled.
+
+Looking at the code, the main place this occurs is in `JsonFactory._createParser()` where it creates a parser with a reader and uses `makeChild()` directly. We should change this to use `makeChildOrPlaceholder()` to respect the `CANONICALIZE_FIELD_NAMES` setting.
+
+Here's the fix:
+
+```java
+### playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java
+- start_line : 1778
+- end_line : 1781
+<<<<<<< SEARCH
+    protected JsonParser _createParser(Reader r, IOContext ctxt) throws IOException {
+        return new ReaderBasedJsonParser(ctxt, _parserFeatures, r, _objectCodec,
+                _rootCharSymbols.makeChild(_factoryFeatures));
+    }
+=======
+    protected JsonParser _createParser(Reader r, IOContext ctxt) throws IOException {
+        return new ReaderBasedJsonParser(ctxt, _parserFeatures, r, _objectCodec,
+                _rootCharSymbols.makeChildOrPlaceholder(_factoryFeatures));
+    }
+>>>>>>> REPLACE
+```
+
+This change ensures that the parser will respect the `CANONICALIZE_FIELD_NAMES` feature flag by using `makeChildOrPlaceholder()` instead of `makeChild()`. When canonicalization is disabled, it will use a placeholder canonicalizer that avoids unnecessary work.
+
+The fix aligns with the issue's stated goal of having implementations respect the `CANONICALIZE_FIELD_NAMES` setting while keeping the overhead minimal since `_findName` is inexpensive on an empty table.
+
+Note that there may be other places in the codebase that need similar changes (like in the smile-parser mentioned in the issue), but this is the main one visible in the provided code segments.

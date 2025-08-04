@@ -1,0 +1,16 @@
+--- a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/SubTypeValidator.java
++++ b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/SubTypeValidator.java
+@@ -64,7 +64,12 @@
+ 
+     public static SubTypeValidator instance() { return instance; }
+ 
+-    public void validateSubType(DeserializationContext ctxt, JavaType type) throws JsonMappingException
++    public void validateSubType(DeserializationContext ctxt, JavaType type) throws JsonMappingException {
++        Class<?> raw = type.getRawClass();
++        // Skip validation for interfaces
++        if (raw.isInterface()) {
++            return;
++        }
+     {
+         // There are certain nasty classes that could cause problems, mostly
+         // via default typing -- catch them here.

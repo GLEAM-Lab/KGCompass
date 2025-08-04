@@ -1,0 +1,1704 @@
+{
+    "related_entities": {
+        "methods": [
+            {
+                "start_line": 60,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/BuildImageMojo.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void execute() throws MojoExecutionException, MojoFailureException {\n    checkJibVersion();\n    if (MojoCommon.shouldSkipJibExecution(this)) {\n      return;\n    }\n\n    // Validates 'format'.\n    if (Arrays.stream(ImageFormat.values()).noneMatch(value -> value.name().equals(getFormat()))) {\n      throw new MojoFailureException(\n          \"<format> parameter is configured with value '\"\n              + getFormat()\n              + \"', but the only valid configuration options are '\"\n              + ImageFormat.Docker\n              + \"' and '\"\n              + ImageFormat.OCI\n              + \"'.\");\n    }\n\n    // Parses 'to' into image reference.\n    if (Strings.isNullOrEmpty(getTargetImage())) {\n      throw new MojoFailureException(\n          HelpfulSuggestions.forToNotConfigured(\n              \"Missing target image parameter\",\n              \"<to><image>\",\n              \"pom.xml\",\n              \"mvn compile jib:build -Dimage=<your image name>\"));\n    }\n\n    MavenSettingsProxyProvider.activateHttpAndHttpsProxies(\n        getSession().getSettings(), getSettingsDecrypter());\n\n    TempDirectoryProvider tempDirectoryProvider = new TempDirectoryProvider();\n    MavenProjectProperties projectProperties =\n        MavenProjectProperties.getForProject(\n            Preconditions.checkNotNull(descriptor),\n            getProject(),\n            getSession(),\n            getLog(),\n            tempDirectoryProvider);\n    Future<Optional<String>> updateCheckFuture =\n        MojoCommon.newUpdateChecker(projectProperties, getLog());\n    try {\n      PluginConfigurationProcessor.createJibBuildRunnerForRegistryImage(\n              new MavenRawConfiguration(this),\n              new MavenSettingsServerCredentials(\n                  getSession().getSettings(), getSettingsDecrypter()),\n              projectProperties,\n              new MavenHelpfulSuggestions(HELPFUL_SUGGESTIONS_PREFIX))\n          .runBuild();\n\n    } catch (InvalidAppRootException ex) {\n      throw new MojoExecutionException(\n          \"<container><appRoot> is not an absolute Unix-style path: \" + ex.getInvalidPathValue(),\n          ex);\n\n    } catch (InvalidContainerizingModeException ex) {\n      throw new MojoExecutionException(\n          \"invalid value for <containerizingMode>: \" + ex.getInvalidContainerizingMode(), ex);\n\n    } catch (InvalidWorkingDirectoryException ex) {\n      throw new MojoExecutionException(\n          \"<container><workingDirectory> is not an absolute Unix-style path: \"\n              + ex.getInvalidPathValue(),\n          ex);\n    } catch (InvalidPlatformException ex) {\n      throw new MojoExecutionException(\n          \"<from><platforms> contains a platform configuration that is missing required values or has invalid values: \"\n              + ex.getMessage()\n              + \": \"\n              + ex.getInvalidPlatform(),\n          ex);\n    } catch (InvalidContainerVolumeException ex) {\n      throw new MojoExecutionException(\n          \"<container><volumes> is not an absolute Unix-style path: \" + ex.getInvalidVolume(), ex);\n\n    } catch (InvalidFilesModificationTimeException ex) {\n      throw new MojoExecutionException(\n          \"<container><filesModificationTime> should be an ISO 8601 date-time (see \"\n              + \"DateTimeFormatter.ISO_DATE_TIME) or special keyword \\\"EPOCH_PLUS_SECOND\\\": \"\n              + ex.getInvalidFilesModificationTime(),\n          ex);\n\n    } catch (InvalidCreationTimeException ex) {\n      throw new MojoExecutionException(\n          \"<container><creationTime> should be an ISO 8601 date-time (see \"\n              + \"DateTimeFormatter.ISO_DATE_TIME) or a special keyword (\\\"EPOCH\\\", \"\n              + \"\\\"USE_CURRENT_TIMESTAMP\\\"): \"\n              + ex.getInvalidCreationTime(),\n          ex);\n\n    } catch (JibPluginExtensionException ex) {\n      String extensionName = ex.getExtensionClass().getName();\n      throw new MojoExecutionException(\n          \"error running extension '\" + extensionName + \"': \" + ex.getMessage(), ex);\n\n    } catch (IncompatibleBaseImageJavaVersionException ex) {\n      throw new MojoExecutionException(\n          HelpfulSuggestions.forIncompatibleBaseImageJavaVersionForMaven(\n              ex.getBaseImageMajorJavaVersion(), ex.getProjectMajorJavaVersion()),\n          ex);\n\n    } catch (InvalidImageReferenceException ex) {\n      throw new MojoExecutionException(\n          HelpfulSuggestions.forInvalidImageReference(ex.getInvalidReference()), ex);\n\n    } catch (IOException | CacheDirectoryCreationException | MainClassInferenceException ex) {\n      throw new MojoExecutionException(ex.getMessage(), ex);\n\n    } catch (BuildStepsExecutionException ex) {\n      throw new MojoExecutionException(ex.getMessage(), ex.getCause());\n\n    } finally {\n      tempDirectoryProvider.close();\n      MojoCommon.finishUpdateChecker(projectProperties, updateCheckFuture);\n      projectProperties.waitForLoggingThread();\n      getLog().info(\"\");\n    }\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "execute",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "execute"
+                    }
+                ],
+                "similarity": 0.18208384049083084,
+                "end_line": 177,
+                "signature": "com.google.cloud.tools.jib.maven.BuildImageMojo.execute(): void"
+            },
+            {
+                "start_line": 60,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/BuildTarMojo.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void execute() throws MojoExecutionException, MojoFailureException {\n    checkJibVersion();\n    if (MojoCommon.shouldSkipJibExecution(this)) {\n      return;\n    }\n\n    MavenSettingsProxyProvider.activateHttpAndHttpsProxies(\n        getSession().getSettings(), getSettingsDecrypter());\n\n    TempDirectoryProvider tempDirectoryProvider = new TempDirectoryProvider();\n    MavenProjectProperties projectProperties =\n        MavenProjectProperties.getForProject(\n            Preconditions.checkNotNull(descriptor),\n            getProject(),\n            getSession(),\n            getLog(),\n            tempDirectoryProvider);\n    Future<Optional<String>> updateCheckFuture =\n        MojoCommon.newUpdateChecker(projectProperties, getLog());\n    try {\n      PluginConfigurationProcessor.createJibBuildRunnerForTarImage(\n              new MavenRawConfiguration(this),\n              new MavenSettingsServerCredentials(\n                  getSession().getSettings(), getSettingsDecrypter()),\n              projectProperties,\n              new MavenHelpfulSuggestions(HELPFUL_SUGGESTIONS_PREFIX))\n          .runBuild();\n\n    } catch (InvalidAppRootException ex) {\n      throw new MojoExecutionException(\n          \"<container><appRoot> is not an absolute Unix-style path: \" + ex.getInvalidPathValue(),\n          ex);\n\n    } catch (InvalidContainerizingModeException ex) {\n      throw new MojoExecutionException(\n          \"invalid value for <containerizingMode>: \" + ex.getInvalidContainerizingMode(), ex);\n\n    } catch (InvalidWorkingDirectoryException ex) {\n      throw new MojoExecutionException(\n          \"<container><workingDirectory> is not an absolute Unix-style path: \"\n              + ex.getInvalidPathValue(),\n          ex);\n    } catch (InvalidPlatformException ex) {\n      throw new MojoExecutionException(\n          \"<from><platforms> contains a platform configuration that is missing required values or has invalid values: \"\n              + ex.getMessage()\n              + \": \"\n              + ex.getInvalidPlatform(),\n          ex);\n    } catch (InvalidContainerVolumeException ex) {\n      throw new MojoExecutionException(\n          \"<container><volumes> is not an absolute Unix-style path: \" + ex.getInvalidVolume(), ex);\n\n    } catch (InvalidFilesModificationTimeException ex) {\n      throw new MojoExecutionException(\n          \"<container><filesModificationTime> should be an ISO 8601 date-time (see \"\n              + \"DateTimeFormatter.ISO_DATE_TIME) or special keyword \\\"EPOCH_PLUS_SECOND\\\": \"\n              + ex.getInvalidFilesModificationTime(),\n          ex);\n\n    } catch (InvalidCreationTimeException ex) {\n      throw new MojoExecutionException(\n          \"<container><creationTime> should be an ISO 8601 date-time (see \"\n              + \"DateTimeFormatter.ISO_DATE_TIME) or a special keyword (\\\"EPOCH\\\", \"\n              + \"\\\"USE_CURRENT_TIMESTAMP\\\"): \"\n              + ex.getInvalidCreationTime(),\n          ex);\n\n    } catch (JibPluginExtensionException ex) {\n      String extensionName = ex.getExtensionClass().getName();\n      throw new MojoExecutionException(\n          \"error running extension '\" + extensionName + \"': \" + ex.getMessage(), ex);\n\n    } catch (IncompatibleBaseImageJavaVersionException ex) {\n      throw new MojoExecutionException(\n          HelpfulSuggestions.forIncompatibleBaseImageJavaVersionForMaven(\n              ex.getBaseImageMajorJavaVersion(), ex.getProjectMajorJavaVersion()),\n          ex);\n\n    } catch (InvalidImageReferenceException ex) {\n      throw new MojoExecutionException(\n          HelpfulSuggestions.forInvalidImageReference(ex.getInvalidReference()), ex);\n\n    } catch (IOException | CacheDirectoryCreationException | MainClassInferenceException ex) {\n      throw new MojoExecutionException(ex.getMessage(), ex);\n\n    } catch (BuildStepsExecutionException ex) {\n      throw new MojoExecutionException(ex.getMessage(), ex.getCause());\n\n    } finally {\n      tempDirectoryProvider.close();\n      MojoCommon.finishUpdateChecker(projectProperties, updateCheckFuture);\n      projectProperties.waitForLoggingThread();\n      getLog().info(\"\");\n    }\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "execute",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "execute"
+                    }
+                ],
+                "similarity": 0.17823683200027995,
+                "end_line": 155,
+                "signature": "com.google.cloud.tools.jib.maven.BuildTarMojo.execute(): void"
+            },
+            {
+                "start_line": 58,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/BuildDockerMojo.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void execute() throws MojoExecutionException, MojoFailureException {\n    checkJibVersion();\n    if (MojoCommon.shouldSkipJibExecution(this)) {\n      return;\n    }\n\n    Path dockerExecutable = getDockerClientExecutable();\n    boolean isDockerInstalled =\n        dockerExecutable == null\n            ? DockerClient.isDefaultDockerInstalled()\n            : DockerClient.isDockerInstalled(dockerExecutable);\n    if (!isDockerInstalled) {\n      throw new MojoExecutionException(\n          HelpfulSuggestions.forDockerNotInstalled(HELPFUL_SUGGESTIONS_PREFIX));\n    }\n\n    MavenSettingsProxyProvider.activateHttpAndHttpsProxies(\n        getSession().getSettings(), getSettingsDecrypter());\n\n    TempDirectoryProvider tempDirectoryProvider = new TempDirectoryProvider();\n    MavenProjectProperties projectProperties =\n        MavenProjectProperties.getForProject(\n            Preconditions.checkNotNull(descriptor),\n            getProject(),\n            getSession(),\n            getLog(),\n            tempDirectoryProvider);\n    Future<Optional<String>> updateCheckFuture =\n        MojoCommon.newUpdateChecker(projectProperties, getLog());\n    try {\n      PluginConfigurationProcessor.createJibBuildRunnerForDockerDaemonImage(\n              new MavenRawConfiguration(this),\n              new MavenSettingsServerCredentials(\n                  getSession().getSettings(), getSettingsDecrypter()),\n              projectProperties,\n              new MavenHelpfulSuggestions(HELPFUL_SUGGESTIONS_PREFIX))\n          .runBuild();\n\n    } catch (InvalidAppRootException ex) {\n      throw new MojoExecutionException(\n          \"<container><appRoot> is not an absolute Unix-style path: \" + ex.getInvalidPathValue(),\n          ex);\n\n    } catch (InvalidContainerizingModeException ex) {\n      throw new MojoExecutionException(\n          \"invalid value for <containerizingMode>: \" + ex.getInvalidContainerizingMode(), ex);\n\n    } catch (InvalidWorkingDirectoryException ex) {\n      throw new MojoExecutionException(\n          \"<container><workingDirectory> is not an absolute Unix-style path: \"\n              + ex.getInvalidPathValue(),\n          ex);\n    } catch (InvalidPlatformException ex) {\n      throw new MojoExecutionException(\n          \"<from><platforms> contains a platform configuration that is missing required values or has invalid values: \"\n              + ex.getMessage()\n              + \": \"\n              + ex.getInvalidPlatform(),\n          ex);\n    } catch (InvalidContainerVolumeException ex) {\n      throw new MojoExecutionException(\n          \"<container><volumes> is not an absolute Unix-style path: \" + ex.getInvalidVolume(), ex);\n\n    } catch (InvalidFilesModificationTimeException ex) {\n      throw new MojoExecutionException(\n          \"<container><filesModificationTime> should be an ISO 8601 date-time (see \"\n              + \"DateTimeFormatter.ISO_DATE_TIME) or special keyword \\\"EPOCH_PLUS_SECOND\\\": \"\n              + ex.getInvalidFilesModificationTime(),\n          ex);\n\n    } catch (InvalidCreationTimeException ex) {\n      throw new MojoExecutionException(\n          \"<container><creationTime> should be an ISO 8601 date-time (see \"\n              + \"DateTimeFormatter.ISO_DATE_TIME) or a special keyword (\\\"EPOCH\\\", \"\n              + \"\\\"USE_CURRENT_TIMESTAMP\\\"): \"\n              + ex.getInvalidCreationTime(),\n          ex);\n\n    } catch (JibPluginExtensionException ex) {\n      String extensionName = ex.getExtensionClass().getName();\n      throw new MojoExecutionException(\n          \"error running extension '\" + extensionName + \"': \" + ex.getMessage(), ex);\n\n    } catch (IncompatibleBaseImageJavaVersionException ex) {\n      throw new MojoExecutionException(\n          HelpfulSuggestions.forIncompatibleBaseImageJavaVersionForMaven(\n              ex.getBaseImageMajorJavaVersion(), ex.getProjectMajorJavaVersion()),\n          ex);\n\n    } catch (InvalidImageReferenceException ex) {\n      throw new MojoExecutionException(\n          HelpfulSuggestions.forInvalidImageReference(ex.getInvalidReference()), ex);\n\n    } catch (IOException | CacheDirectoryCreationException | MainClassInferenceException ex) {\n      throw new MojoExecutionException(ex.getMessage(), ex);\n\n    } catch (BuildStepsExecutionException ex) {\n      throw new MojoExecutionException(ex.getMessage(), ex.getCause());\n\n    } finally {\n      tempDirectoryProvider.close();\n      MojoCommon.finishUpdateChecker(projectProperties, updateCheckFuture);\n      projectProperties.waitForLoggingThread();\n      getLog().info(\"\");\n    }\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "execute",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "execute"
+                    }
+                ],
+                "similarity": 0.17704264840595205,
+                "end_line": 163,
+                "signature": "com.google.cloud.tools.jib.maven.BuildDockerMojo.execute(): void"
+            },
+            {
+                "start_line": 129,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/skaffold/FilesMojoV2.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void execute() throws MojoExecutionException, MojoFailureException {\n    Preconditions.checkNotNull(projects);\n    Preconditions.checkNotNull(session);\n    Preconditions.checkNotNull(projectDependenciesResolver);\n    checkJibVersion();\n\n    for (MavenProject project : projects) {\n      // Add pom configuration files\n      skaffoldFilesOutput.addBuild(project.getFile().toPath());\n      if (\"pom\".equals(project.getPackaging())) {\n        // done if <packaging>pom</packaging>\n        continue;\n      }\n\n      // Add sources directory (resolved by maven to be an absolute path)\n      skaffoldFilesOutput.addInput(Paths.get(project.getBuild().getSourceDirectory()));\n\n      for (Path directory : getKotlinSourceDirectories(project)) {\n        skaffoldFilesOutput.addInput(directory);\n      }\n\n      // Add resources directory (resolved by maven to be an absolute path)\n      project\n          .getBuild()\n          .getResources()\n          .stream()\n          .map(FileSet::getDirectory)\n          .map(Paths::get)\n          .forEach(skaffoldFilesOutput::addInput);\n\n      // This seems weird, but we will only print out the jib \"extraFiles\" directory on projects\n      // where the plugin is explicitly configured (even though _skaffold-files-v2 is a\n      // jib-maven-plugin goal and is expected to run on all projects irrespective of their\n      // configuring of the jib plugin).\n      if (project.getPlugin(MavenProjectProperties.PLUGIN_KEY) != null) {\n        // Add extra directory\n        resolveExtraDirectories(project).forEach(skaffoldFilesOutput::addInput);\n      }\n\n      // See above note on \"extraFiles\"\n      SkaffoldConfiguration.Watch watch = collectWatchParameters(project);\n      resolveFiles(watch.buildIncludes, project).forEach(skaffoldFilesOutput::addBuild);\n      resolveFiles(watch.includes, project).forEach(skaffoldFilesOutput::addInput);\n      // we don't do any special pre-processing for ignore (input and ignore can overlap with exact\n      // matches)\n      resolveFiles(watch.excludes, project).forEach(skaffoldFilesOutput::addIgnore);\n\n      // Grab non-project SNAPSHOT dependencies for this project\n      // TODO: this whole sections relies on internal maven API, it could break. We need to explore\n      // TODO: better ways to resolve dependencies using the public maven API.\n      Set<String> projectArtifacts =\n          projects\n              .stream()\n              .map(MavenProject::getArtifact)\n              .map(Artifact::toString)\n              .collect(Collectors.toSet());\n\n      DependencyFilter ignoreProjectDependenciesFilter =\n          (node, parents) -> {\n            if (node == null || node.getDependency() == null) {\n              // if nothing, then ignore\n              return false;\n            }\n            if (projectArtifacts.contains(node.getArtifact().toString())) {\n              // ignore project dependency artifacts\n              return false;\n            }\n            // we only want compile/runtime deps\n            return Artifact.SCOPE_COMPILE_PLUS_RUNTIME.contains(node.getDependency().getScope());\n          };\n\n      try {\n        DependencyResolutionResult resolutionResult =\n            projectDependenciesResolver.resolve(\n                new DefaultDependencyResolutionRequest(project, session.getRepositorySession())\n                    .setResolutionFilter(ignoreProjectDependenciesFilter));\n        resolutionResult\n            .getDependencies()\n            .stream()\n            .map(org.eclipse.aether.graph.Dependency::getArtifact)\n            .filter(org.eclipse.aether.artifact.Artifact::isSnapshot)\n            .map(org.eclipse.aether.artifact.Artifact::getFile)\n            .map(File::toPath)\n            .forEach(skaffoldFilesOutput::addInput);\n\n      } catch (DependencyResolutionException ex) {\n        throw new MojoExecutionException(\"Failed to resolve dependencies\", ex);\n      }\n    }\n\n    try {\n      // Print JSON string\n      System.out.println();\n      System.out.println(\"BEGIN JIB JSON\");\n      System.out.println(skaffoldFilesOutput.getJsonString());\n    } catch (IOException ex) {\n      throw new MojoExecutionException(ex.getMessage(), ex);\n    }\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "execute",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "execute"
+                    }
+                ],
+                "similarity": 0.1701491999376592,
+                "end_line": 227,
+                "signature": "com.google.cloud.tools.jib.maven.skaffold.FilesMojoV2.execute(): void"
+            },
+            {
+                "start_line": 47,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/skaffold/SyncMapMojo.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void execute() throws MojoExecutionException {\n    checkJibVersion();\n    if (MojoCommon.shouldSkipJibExecution(this)) {\n      return;\n    }\n\n    // TODO: move these shared checks with SyncMapTask into plugins-common\n    // add check that means this is only for jars\n    if (!\"jar\".equals(getProject().getPackaging())) {\n      throw new MojoExecutionException(\n          \"Skaffold sync is currently only available for 'jar' style Jib projects, but the packaging of \"\n              + getProject().getArtifactId()\n              + \" is '\"\n              + getProject().getPackaging()\n              + \"'\");\n    }\n    // add check for exploded containerization\n    try {\n      if (!ContainerizingMode.EXPLODED.equals(ContainerizingMode.from(getContainerizingMode()))) {\n        throw new MojoExecutionException(\n            \"Skaffold sync is currently only available for Jib projects in 'exploded' containerizing mode, but the containerizing mode of \"\n                + getProject().getArtifactId()\n                + \" is '\"\n                + getContainerizingMode()\n                + \"'\");\n      }\n    } catch (InvalidContainerizingModeException ex) {\n      throw new MojoExecutionException(\"Invalid containerizing mode\", ex);\n    }\n\n    try (TempDirectoryProvider tempDirectoryProvider = new TempDirectoryProvider()) {\n      MavenProjectProperties projectProperties =\n          MavenProjectProperties.getForProject(\n              Preconditions.checkNotNull(descriptor),\n              getProject(),\n              getSession(),\n              getLog(),\n              tempDirectoryProvider);\n\n      MavenRawConfiguration configuration = new MavenRawConfiguration(this);\n\n      try {\n        String syncMapJson =\n            PluginConfigurationProcessor.getSkaffoldSyncMap(\n                configuration,\n                projectProperties,\n                skaffold\n                    .sync\n                    .excludes\n                    .stream()\n                    .map(File::toPath)\n                    .map(Path::toAbsolutePath)\n                    .collect(Collectors.toSet()));\n\n        System.out.println();\n        System.out.println(\"BEGIN JIB JSON: SYNCMAP/1\");\n        System.out.println(syncMapJson);\n\n      } catch (Exception ex) {\n        throw new MojoExecutionException(\n            \"Failed to generate a Jib file map for sync with Skaffold\", ex);\n      }\n    }\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "execute",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "execute"
+                    }
+                ],
+                "similarity": 0.14909682673152444,
+                "end_line": 110,
+                "signature": "com.google.cloud.tools.jib.maven.skaffold.SyncMapMojo.execute(): void"
+            },
+            {
+                "start_line": 39,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/skaffold/InitMojo.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void execute() throws MojoExecutionException {\n    checkJibVersion();\n    MavenProject project = getProject();\n    // Ignore pom projects\n    if (\"pom\".equals(project.getPackaging())) {\n      return;\n    }\n\n    SkaffoldInitOutput skaffoldInitOutput = new SkaffoldInitOutput();\n    skaffoldInitOutput.setImage(getTargetImage());\n    skaffoldInitOutput.setProject(project.getGroupId() + \":\" + project.getArtifactId());\n    System.out.println();\n    System.out.println(\"BEGIN JIB JSON\");\n    try {\n      System.out.println(skaffoldInitOutput.getJsonString());\n    } catch (IOException ex) {\n      throw new MojoExecutionException(ex.getMessage(), ex);\n    }\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "execute",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "execute"
+                    }
+                ],
+                "similarity": 0.11442637134165108,
+                "end_line": 57,
+                "signature": "com.google.cloud.tools.jib.maven.skaffold.InitMojo.execute(): void"
+            },
+            {
+                "start_line": 499,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  Path getJarArtifact() throws IOException {\n    Optional<String> classifier = Optional.empty();\n    Path buildDirectory = Paths.get(project.getBuild().getDirectory());\n    Path outputDirectory = buildDirectory;\n\n    // Read <classifier> and <outputDirectory> from maven-jar-plugin.\n    Plugin jarPlugin = project.getPlugin(\"org.apache.maven.plugins:maven-jar-plugin\");\n    if (jarPlugin != null) {\n      for (PluginExecution execution : jarPlugin.getExecutions()) {\n        if (\"default-jar\".equals(execution.getId())) {\n          Xpp3Dom configuration = (Xpp3Dom) execution.getConfiguration();\n          classifier = getChildValue(configuration, \"classifier\");\n          Optional<String> directoryString = getChildValue(configuration, \"outputDirectory\");\n\n          if (directoryString.isPresent()) {\n            outputDirectory = project.getBasedir().toPath().resolve(directoryString.get());\n          }\n          break;\n        }\n      }\n    }\n\n    String finalName = project.getBuild().getFinalName();\n    String suffix = \".jar\";\n\n    Optional<Xpp3Dom> bootConfiguration = getSpringBootRepackageConfiguration();\n    if (bootConfiguration.isPresent()) {\n      log(LogEvent.lifecycle(\"Spring Boot repackaging (fat JAR) detected; using the original JAR\"));\n\n      // Spring renames original JAR only when replacing it, so check if the paths are clashing.\n      Optional<String> bootFinalName = getChildValue(bootConfiguration.get(), \"finalName\");\n      Optional<String> bootClassifier = getChildValue(bootConfiguration.get(), \"classifier\");\n\n      boolean sameDirectory = outputDirectory.equals(buildDirectory);\n      // If Boot <finalName> is undefined, it uses the default project <finalName>.\n      boolean sameFinalName = !bootFinalName.isPresent() || finalName.equals(bootFinalName.get());\n      boolean sameClassifier = classifier.equals(bootClassifier);\n      if (sameDirectory && sameFinalName && sameClassifier) {\n        suffix = \".jar.original\";\n      }\n    }\n\n    String noSuffixJarName = finalName + (classifier.isPresent() ? '-' + classifier.get() : \"\");\n    Path jarPath = outputDirectory.resolve(noSuffixJarName + suffix);\n    log(LogEvent.debug(\"Using JAR: \" + jarPath));\n\n    if (\".jar\".equals(suffix)) {\n      return jarPath;\n    }\n\n    // \"*\" in \"java -cp *\" doesn't work if JAR doesn't end with \".jar\". Copy the JAR with a new name\n    // ending with \".jar\".\n    Path tempDirectory = tempDirectoryProvider.newDirectory();\n    Path newJarPath = tempDirectory.resolve(noSuffixJarName + \".original.jar\");\n    Files.copy(jarPath, newJarPath);\n    return newJarPath;\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getJarArtifact",
+                "documentation": "/**\n   * Gets the path of the JAR that the Maven JAR Plugin generates. Will also make copies of jar\n   * files with non-conforming names like those produced by springboot -- myjar.jar.original ->\n   * myjar.original.jar.\n   *\n   * <p>https://maven.apache.org/plugins/maven-jar-plugin/jar-mojo.html\n   * https://github.com/apache/maven-jar-plugin/blob/80f58a84aacff6e671f5a601d62a3a3800b507dc/src/main/java/org/apache/maven/plugins/jar/AbstractJarMojo.java#L177\n   *\n   * @return the path of the JAR\n   * @throws IOException if copying jars with non-conforming names fails\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "MavenProjectProperties"
+                    },
+                    {
+                        "start_node": "MavenProjectProperties",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getJarArtifact"
+                    }
+                ],
+                "similarity": 0.10846796510891248,
+                "end_line": 555,
+                "signature": "com.google.cloud.tools.jib.maven.MavenProjectProperties.getJarArtifact(): Path"
+            },
+            {
+                "start_line": 51,
+                "file_path": "playground/googlecontainertools__jib/examples/dropwizard/.mvn/wrapper/MavenWrapperDownloader.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static void main(String args[]) {\n        System.out.println(\"- Downloader started\");\n        File baseDirectory = new File(args[0]);\n        System.out.println(\"- Using base directory: \" + baseDirectory.getAbsolutePath());\n\n        // If the maven-wrapper.properties exists, read it and check if it contains a custom\n        // wrapperUrl parameter.\n        File mavenWrapperPropertyFile = new File(baseDirectory, MAVEN_WRAPPER_PROPERTIES_PATH);\n        String url = DEFAULT_DOWNLOAD_URL;\n        if(mavenWrapperPropertyFile.exists()) {\n            FileInputStream mavenWrapperPropertyFileInputStream = null;\n            try {\n                mavenWrapperPropertyFileInputStream = new FileInputStream(mavenWrapperPropertyFile);\n                Properties mavenWrapperProperties = new Properties();\n                mavenWrapperProperties.load(mavenWrapperPropertyFileInputStream);\n                url = mavenWrapperProperties.getProperty(PROPERTY_NAME_WRAPPER_URL, url);\n            } catch (IOException e) {\n                System.out.println(\"- ERROR loading '\" + MAVEN_WRAPPER_PROPERTIES_PATH + \"'\");\n            } finally {\n                try {\n                    if(mavenWrapperPropertyFileInputStream != null) {\n                        mavenWrapperPropertyFileInputStream.close();\n                    }\n                } catch (IOException e) {\n                    // Ignore ...\n                }\n            }\n        }\n        System.out.println(\"- Downloading from: : \" + url);\n\n        File outputFile = new File(baseDirectory.getAbsolutePath(), MAVEN_WRAPPER_JAR_PATH);\n        if(!outputFile.getParentFile().exists()) {\n            if(!outputFile.getParentFile().mkdirs()) {\n                System.out.println(\n                        \"- ERROR creating output direcrory '\" + outputFile.getParentFile().getAbsolutePath() + \"'\");\n            }\n        }\n        System.out.println(\"- Downloading to: \" + outputFile.getAbsolutePath());\n        try {\n            downloadFileFromURL(url, outputFile);\n            System.out.println(\"Done\");\n            System.exit(0);\n        } catch (Throwable e) {\n            System.out.println(\"- Error downloading\");\n            e.printStackTrace();\n            System.exit(1);\n        }\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "main",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "main"
+                    }
+                ],
+                "similarity": 0.1055865226955597,
+                "end_line": 98,
+                "signature": "MavenWrapperDownloader.main(String[] args): void"
+            },
+            {
+                "start_line": 57,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/skaffold/PackageGoalsMojo.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void execute() throws MojoExecutionException, MojoFailureException {\n    Preconditions.checkNotNull(lifecycleExecutor);\n    Preconditions.checkNotNull(session);\n    checkJibVersion();\n\n    MavenExecutionPlan mavenExecutionPlan;\n    try {\n      mavenExecutionPlan = lifecycleExecutor.calculateExecutionPlan(session, \"package\");\n    } catch (Exception ex) {\n      throw new MojoExecutionException(\"failed to calculate execution plan\", ex);\n    }\n\n    mavenExecutionPlan\n        .getMojoExecutions()\n        .stream()\n        .filter(mojoExecution -> \"package\".equals(mojoExecution.getLifecyclePhase()))\n        .filter(\n            mojoExecution ->\n                MavenProjectProperties.PLUGIN_NAME.equals(\n                    mojoExecution.getPlugin().getArtifactId()))\n        .map(MojoExecution::getGoal)\n        .forEach(System.out::println);\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "execute",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "execute"
+                    }
+                ],
+                "similarity": 0.10073664564655765,
+                "end_line": 79,
+                "signature": "com.google.cloud.tools.jib.maven.skaffold.PackageGoalsMojo.execute(): void"
+            },
+            {
+                "start_line": 562,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  Optional<Xpp3Dom> getSpringBootRepackageConfiguration() {\n    Plugin springBootPlugin =\n        project.getPlugin(\"org.springframework.boot:spring-boot-maven-plugin\");\n    if (springBootPlugin != null) {\n      for (PluginExecution execution : springBootPlugin.getExecutions()) {\n        if (execution.getGoals().contains(\"repackage\")) {\n          Xpp3Dom configuration = (Xpp3Dom) execution.getConfiguration();\n\n          boolean skip = Boolean.valueOf(getChildValue(configuration, \"skip\").orElse(\"false\"));\n          return skip ? Optional.empty() : Optional.of(configuration);\n        }\n      }\n    }\n    return Optional.empty();\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "getSpringBootRepackageConfiguration",
+                "documentation": "/**\n   * Returns Spring Boot {@code &lt;configuration&gt;} if the Spring Boot plugin is configured to\n   * run the {@code repackage} goal to create a Spring Boot artifact.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getSpringBootRepackageConfiguration"
+                    }
+                ],
+                "similarity": 0.08766159366617958,
+                "end_line": 576,
+                "signature": "com.google.cloud.tools.jib.maven.MavenProjectProperties.getSpringBootRepackageConfiguration(): Optional"
+            },
+            {
+                "start_line": 186,
+                "file_path": "playground/googlecontainertools__jib/jib-gradle-plugin/src/main/java/com/google/cloud/tools/jib/gradle/GradleProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JibContainerBuilder createJibContainerBuilder(",
+                "distance": 1.0,
+                "title": null,
+                "name": "createJibContainerBuilder",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    }
+                ],
+                "similarity": 0.0860171414341041,
+                "end_line": 186,
+                "signature": "com.google.cloud.tools.jib.gradle.GradleProjectProperties.createJibContainerBuilder(JavaContainerBuilder javaContainerBuilder, ContainerizingMode containerizingMode): JibContainerBuilder"
+            },
+            {
+                "start_line": 252,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JibContainerBuilder createJibContainerBuilder(",
+                "distance": 1.0,
+                "title": null,
+                "name": "createJibContainerBuilder",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    }
+                ],
+                "similarity": 0.0860171414341041,
+                "end_line": 252,
+                "signature": "com.google.cloud.tools.jib.maven.MavenProjectProperties.createJibContainerBuilder(JavaContainerBuilder javaContainerBuilder, ContainerizingMode containerizingMode): JibContainerBuilder"
+            },
+            {
+                "start_line": 47,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/skaffold/CheckJibVersionMojo.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void execute() throws MojoExecutionException, MojoFailureException {\n    if (Strings.isNullOrEmpty(System.getProperty(MojoCommon.REQUIRED_VERSION_PROPERTY_NAME))) {\n      throw new MojoExecutionException(\n          GOAL_NAME + \" requires \" + MojoCommon.REQUIRED_VERSION_PROPERTY_NAME + \" to be set\");\n    }\n    checkJibVersion();\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "execute",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "execute"
+                    }
+                ],
+                "similarity": 0.08487837793238794,
+                "end_line": 53,
+                "signature": "com.google.cloud.tools.jib.maven.skaffold.CheckJibVersionMojo.execute(): void"
+            },
+            {
+                "start_line": 236,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/skaffold/FilesMojoV2.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private List<Path> collectExtraDirectories(MavenProject project) {\n    // Try getting extra directory from project/session properties\n    String property =\n        MavenProjectProperties.getProperty(PropertyNames.EXTRA_DIRECTORIES_PATHS, project, session);\n    if (property != null) {\n      List<String> paths = ConfigurationPropertyValidator.parseListProperty(property);\n      return paths.stream().map(Paths::get).collect(Collectors.toList());\n    }\n\n    // Try getting extra directory from project pom\n    Plugin jibMavenPlugin = project.getPlugin(MavenProjectProperties.PLUGIN_KEY);\n    if (jibMavenPlugin != null) {\n      Xpp3Dom pluginConfiguration = (Xpp3Dom) jibMavenPlugin.getConfiguration();\n      if (pluginConfiguration != null) {\n        Xpp3Dom extraDirectoriesConfiguration = pluginConfiguration.getChild(\"extraDirectories\");\n        if (extraDirectoriesConfiguration != null) {\n          Xpp3Dom paths = extraDirectoriesConfiguration.getChild(\"paths\");\n          if (paths != null) {\n            // <extraDirectories><paths><path>...</path><path>...</path></paths></extraDirectories>\n            // paths can contain either strings or ExtraDirectory objects\n            List<Path> pathList = new ArrayList<>();\n            for (Xpp3Dom path : paths.getChildren()) {\n              Xpp3Dom from = path.getChild(\"from\");\n              if (from != null) {\n                pathList.add(Paths.get(from.getValue()));\n              } else {\n                pathList.add(Paths.get(path.getValue()));\n              }\n            }\n            return Collections.unmodifiableList(pathList);\n          }\n        }\n      }\n    }\n\n    // Return default if not found\n    Path projectBase = Preconditions.checkNotNull(project).getBasedir().getAbsoluteFile().toPath();\n    Path srcMainJib = Paths.get(\"src\", \"main\", \"jib\");\n    return Collections.singletonList(projectBase.resolve(srcMainJib));\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "collectExtraDirectories",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "execute"
+                    },
+                    {
+                        "start_node": "execute",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "FilesMojoV2"
+                    },
+                    {
+                        "start_node": "FilesMojoV2",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "collectExtraDirectories"
+                    }
+                ],
+                "similarity": 0.08397649001122269,
+                "end_line": 275,
+                "signature": "com.google.cloud.tools.jib.maven.skaffold.FilesMojoV2.collectExtraDirectories(MavenProject project): List"
+            },
+            {
+                "start_line": 89,
+                "file_path": "playground/googlecontainertools__jib/jib-cli/src/main/java/com/google/cloud/tools/jib/cli/JibCli.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static void main(String[] args) {\n    int exitCode = new CommandLine(new JibCli()).execute(args);\n    System.exit(exitCode);\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "main",
+                "documentation": "/**\n   * The magic starts here.\n   *\n   * @param args the command-line arguments\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "main"
+                    }
+                ],
+                "similarity": 0.07189224457263589,
+                "end_line": 92,
+                "signature": "com.google.cloud.tools.jib.cli.JibCli.main(String[] args): void"
+            },
+            {
+                "start_line": 77,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/skaffold/FilesMojoV2.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  static Set<Path> getKotlinSourceDirectories(MavenProject project) {\n    Plugin kotlinPlugin = project.getPlugin(\"org.jetbrains.kotlin:kotlin-maven-plugin\");\n    if (kotlinPlugin == null) {\n      return Collections.emptySet();\n    }\n\n    Path projectBaseDir = project.getBasedir().toPath();\n\n    // Extract <sourceDir> values from <configuration> in the plugin <executions>. Sample:\n    // <executions><execution><configuration>\n    //   <sourceDirs>\n    //     <sourceDir>src/main/kotlin</sourceDir>\n    //     <sourceDir>${project.basedir}/src/main/java</sourceDir>\n    //   </sourceDirs>\n    // </configuration></execution></executions>\n    Set<Path> kotlinSourceDirectories =\n        kotlinPlugin\n            .getExecutions()\n            .stream()\n            .filter(execution -> !execution.getGoals().contains(\"test-compile\"))\n            .map(execution -> (Xpp3Dom) execution.getConfiguration())\n            .filter(Objects::nonNull)\n            .map(configuration -> configuration.getChild(\"sourceDirs\"))\n            .filter(Objects::nonNull)\n            .map(sourceDirs -> Arrays.asList(sourceDirs.getChildren()))\n            .flatMap(Collection::stream) // \"array of arrays\" into \"arrays\"\n            .map(Xpp3Dom::getValue)\n            .filter(value -> !Strings.isNullOrEmpty(value))\n            .map(Paths::get)\n            .map(path -> path.isAbsolute() ? path : projectBaseDir.resolve(path))\n            .collect(Collectors.toSet());\n\n    Path conventionalDirectory = projectBaseDir.resolve(Paths.get(\"src\", \"main\", \"kotlin\"));\n    kotlinSourceDirectories.add(conventionalDirectory);\n\n    return kotlinSourceDirectories;\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getKotlinSourceDirectories",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "execute"
+                    },
+                    {
+                        "start_node": "execute",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "FilesMojoV2"
+                    },
+                    {
+                        "start_node": "FilesMojoV2",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "getKotlinSourceDirectories"
+                    }
+                ],
+                "similarity": 0.06993964757713143,
+                "end_line": 113,
+                "signature": "com.google.cloud.tools.jib.maven.skaffold.FilesMojoV2.getKotlinSourceDirectories(MavenProject project): Set"
+            },
+            {
+                "start_line": 277,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/skaffold/FilesMojoV2.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private SkaffoldConfiguration.Watch collectWatchParameters(MavenProject project) {\n    // Try getting extra directory from project pom\n    SkaffoldConfiguration.Watch watchConfig = new SkaffoldConfiguration.Watch();\n    Plugin jibMavenPlugin = project.getPlugin(MavenProjectProperties.PLUGIN_KEY);\n    if (jibMavenPlugin != null) {\n      Xpp3Dom pluginConfiguration = (Xpp3Dom) jibMavenPlugin.getConfiguration();\n      if (pluginConfiguration != null) {\n        Xpp3Dom skaffold = pluginConfiguration.getChild(\"skaffold\");\n        if (skaffold != null) {\n          Xpp3Dom watch = skaffold.getChild(\"watch\");\n          if (watch != null) {\n            Xpp3Dom buildIncludes = watch.getChild(\"buildIncludes\");\n            if (buildIncludes != null) {\n              watchConfig.buildIncludes = xpp3ToList(buildIncludes, File::new);\n            }\n            Xpp3Dom includes = watch.getChild(\"includes\");\n            if (includes != null) {\n              watchConfig.includes = xpp3ToList(includes, File::new);\n            }\n            Xpp3Dom excludes = watch.getChild(\"excludes\");\n            if (excludes != null) {\n              watchConfig.excludes = xpp3ToList(excludes, File::new);\n            }\n          }\n        }\n      }\n    }\n    return watchConfig;\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "collectWatchParameters",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "execute"
+                    },
+                    {
+                        "start_node": "execute",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "FilesMojoV2"
+                    },
+                    {
+                        "start_node": "FilesMojoV2",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "collectWatchParameters"
+                    }
+                ],
+                "similarity": 0.06891040652688889,
+                "end_line": 305,
+                "signature": "com.google.cloud.tools.jib.maven.skaffold.FilesMojoV2.collectWatchParameters(MavenProject project): SkaffoldConfiguration"
+            },
+            {
+                "start_line": 33,
+                "file_path": "playground/googlecontainertools__jib/examples/dropwizard/src/main/java/example/JibExampleApplication.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static void main(final String[] args) throws Exception {\n    new JibExampleApplication().run(args);\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "main",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "main"
+                    }
+                ],
+                "similarity": 0.06676924104242359,
+                "end_line": 35,
+                "signature": "example.JibExampleApplication.main(String[] args): void"
+            },
+            {
+                "start_line": 148,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MojoCommon.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static void checkJibVersion(PluginDescriptor descriptor) throws MojoExecutionException {\n    String acceptableVersionSpec = System.getProperty(MojoCommon.REQUIRED_VERSION_PROPERTY_NAME);\n    if (acceptableVersionSpec == null) {\n      return;\n    }\n    String actualVersion = descriptor.getVersion();\n    if (actualVersion == null) {\n      throw new MojoExecutionException(\"Could not determine Jib plugin version\");\n    }\n    VersionChecker<DefaultArtifactVersion> checker =\n        new VersionChecker<>(DefaultArtifactVersion::new);\n    if (!checker.compatibleVersion(acceptableVersionSpec, actualVersion)) {\n      String failure =\n          String.format(\n              \"Jib plugin version is %s but is required to be %s\",\n              actualVersion, acceptableVersionSpec);\n      throw new MojoExecutionException(failure);\n    }\n  }",
+                "distance": 2.0,
+                "title": null,
+                "name": "checkJibVersion",
+                "documentation": "/**\n   * Check that the actual version satisfies required Jib version range when specified. No check is\n   * performed if the provided Jib version is {@code null}, which should only occur during debug.\n   *\n   * @param descriptor the plugin version\n   * @throws MojoExecutionException if the version is not acceptable\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "execute"
+                    },
+                    {
+                        "start_node": "execute",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "checkJibVersion"
+                    }
+                ],
+                "similarity": 0.06192078600589919,
+                "end_line": 166,
+                "signature": "com.google.cloud.tools.jib.maven.MojoCommon.checkJibVersion(PluginDescriptor descriptor): void"
+            },
+            {
+                "start_line": 579,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JibContainerBuilder runPluginExtensions(",
+                "distance": 1.5,
+                "title": null,
+                "name": "runPluginExtensions",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "MavenProjectProperties"
+                    },
+                    {
+                        "start_node": "MavenProjectProperties",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "runPluginExtensions"
+                    }
+                ],
+                "similarity": 0.0599871115332518,
+                "end_line": 579,
+                "signature": "com.google.cloud.tools.jib.maven.MavenProjectProperties.runPluginExtensions(List extensionConfigs, JibContainerBuilder jibContainerBuilder): JibContainerBuilder"
+            },
+            {
+                "start_line": 422,
+                "file_path": "playground/googlecontainertools__jib/jib-gradle-plugin/src/main/java/com/google/cloud/tools/jib/gradle/GradleProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JibContainerBuilder runPluginExtensions(",
+                "distance": 1.5,
+                "title": null,
+                "name": "runPluginExtensions",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GradleProjectProperties"
+                    },
+                    {
+                        "start_node": "GradleProjectProperties",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "runPluginExtensions"
+                    }
+                ],
+                "similarity": 0.0599871115332518,
+                "end_line": 422,
+                "signature": "com.google.cloud.tools.jib.gradle.GradleProjectProperties.runPluginExtensions(List extensionConfigs, JibContainerBuilder jibContainerBuilder): JibContainerBuilder"
+            },
+            {
+                "start_line": 288,
+                "file_path": "playground/googlecontainertools__jib/jib-gradle-plugin/src/main/java/com/google/cloud/tools/jib/gradle/GradleProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public List<Path> getClassFiles() throws IOException {\n    // TODO: Consolidate with createJibContainerBuilder\n    JavaPluginConvention javaPluginConvention =\n        project.getConvention().getPlugin(JavaPluginConvention.class);\n    SourceSet mainSourceSet = javaPluginConvention.getSourceSets().getByName(MAIN_SOURCE_SET_NAME);\n    FileCollection classesOutputDirectories =\n        mainSourceSet.getOutput().getClassesDirs().filter(File::exists);\n    List<Path> classFiles = new ArrayList<>();\n    for (File classesOutputDirectory : classesOutputDirectories) {\n      classFiles.addAll(new DirectoryWalker(classesOutputDirectory.toPath()).walk().asList());\n    }\n    return classFiles;\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getClassFiles",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GradleProjectProperties"
+                    },
+                    {
+                        "start_node": "GradleProjectProperties",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "getClassFiles"
+                    }
+                ],
+                "similarity": 0.05734829493633712,
+                "end_line": 300,
+                "signature": "com.google.cloud.tools.jib.gradle.GradleProjectProperties.getClassFiles(): List"
+            },
+            {
+                "start_line": 43,
+                "file_path": "playground/googlecontainertools__jib/examples/dropwizard/src/main/java/example/JibExampleApplication.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void initialize(final Bootstrap<JibExampleConfiguration> bootstrap) {\n    // Enable FreeMarker config templates\n    bootstrap.addBundle(new TemplateConfigBundle());\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "initialize",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "main"
+                    },
+                    {
+                        "start_node": "main",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JibExampleApplication"
+                    },
+                    {
+                        "start_node": "JibExampleApplication",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "initialize"
+                    }
+                ],
+                "similarity": 0.05686921437231851,
+                "end_line": 46,
+                "signature": "example.JibExampleApplication.initialize(Bootstrap bootstrap): void"
+            },
+            {
+                "start_line": 614,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private <T> ContainerBuildPlan runPluginExtension(",
+                "distance": 1.5,
+                "title": null,
+                "name": "runPluginExtension",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "MavenProjectProperties"
+                    },
+                    {
+                        "start_node": "MavenProjectProperties",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "runPluginExtension"
+                    }
+                ],
+                "similarity": 0.05673076670415703,
+                "end_line": 614,
+                "signature": "com.google.cloud.tools.jib.maven.MavenProjectProperties.runPluginExtension(Optional extraConfigType, JibMavenPluginExtension extension, ExtensionConfiguration config, ContainerBuildPlan buildPlan): ContainerBuildPlan"
+            },
+            {
+                "start_line": 457,
+                "file_path": "playground/googlecontainertools__jib/jib-gradle-plugin/src/main/java/com/google/cloud/tools/jib/gradle/GradleProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private <T> ContainerBuildPlan runPluginExtension(",
+                "distance": 1.5,
+                "title": null,
+                "name": "runPluginExtension",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GradleProjectProperties"
+                    },
+                    {
+                        "start_node": "GradleProjectProperties",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "runPluginExtension"
+                    }
+                ],
+                "similarity": 0.05673076670415703,
+                "end_line": 457,
+                "signature": "com.google.cloud.tools.jib.gradle.GradleProjectProperties.runPluginExtension(Optional extraConfigType, JibGradlePluginExtension extension, ExtensionConfiguration config, ContainerBuildPlan buildPlan): ContainerBuildPlan"
+            },
+            {
+                "start_line": 662,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private JibMavenPluginExtension<?> findConfiguredExtension(",
+                "distance": 1.5,
+                "title": null,
+                "name": "findConfiguredExtension",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "MavenProjectProperties"
+                    },
+                    {
+                        "start_node": "MavenProjectProperties",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findConfiguredExtension"
+                    }
+                ],
+                "similarity": 0.055841243312135525,
+                "end_line": 662,
+                "signature": "com.google.cloud.tools.jib.maven.MavenProjectProperties.findConfiguredExtension(List extensions, ExtensionConfiguration config): JibMavenPluginExtension"
+            },
+            {
+                "start_line": 175,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MojoCommon.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static boolean shouldSkipJibExecution(JibPluginConfiguration jibPluginConfiguration) {\n    Log log = jibPluginConfiguration.getLog();\n    if (jibPluginConfiguration.isSkipped()) {\n      log.info(\"Skipping containerization because jib-maven-plugin: skip = true\");\n      return true;\n    }\n    if (!jibPluginConfiguration.isContainerizable()) {\n      log.info(\n          \"Skipping containerization of this module (not specified in \"\n              + PropertyNames.CONTAINERIZE\n              + \")\");\n      return true;\n    }\n    if (\"pom\".equals(jibPluginConfiguration.getProject().getPackaging())) {\n      log.info(\"Skipping containerization because packaging is 'pom'...\");\n      return true;\n    }\n    return false;\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "shouldSkipJibExecution",
+                "documentation": "/**\n   * Determines if Jib goal execution on this project/module should be skipped due to configuration.\n   *\n   * @param jibPluginConfiguration usually {@code this}, the Mojo this check is applied in.\n   * @return {@code true} if Jib should be skipped (should not execute goal), or {@code false} if it\n   *     should continue with execution.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "execute"
+                    },
+                    {
+                        "start_node": "execute",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "checkJibVersion"
+                    },
+                    {
+                        "start_node": "checkJibVersion",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "MojoCommon"
+                    },
+                    {
+                        "start_node": "MojoCommon",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "shouldSkipJibExecution"
+                    }
+                ],
+                "similarity": 0.05297747846727562,
+                "end_line": 193,
+                "signature": "com.google.cloud.tools.jib.maven.MojoCommon.shouldSkipJibExecution(JibPluginConfiguration jibPluginConfiguration): boolean"
+            },
+            {
+                "start_line": 105,
+                "file_path": "playground/googlecontainertools__jib/jib-gradle-plugin/src/main/java/com/google/cloud/tools/jib/gradle/JibExtension.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JibExtension(Project project) {\n    ObjectFactory objectFactory = project.getObjects();\n\n    from = objectFactory.newInstance(BaseImageParameters.class);\n    to = objectFactory.newInstance(TargetImageParameters.class);\n    container = objectFactory.newInstance(ContainerParameters.class);\n    extraDirectories = objectFactory.newInstance(ExtraDirectoriesParameters.class, project);\n    dockerClient = objectFactory.newInstance(DockerClientParameters.class);\n    outputPaths = objectFactory.newInstance(OutputPathsParameters.class, project);\n    skaffold = objectFactory.newInstance(SkaffoldParameters.class, project);\n\n    pluginExtensions = objectFactory.listProperty(ExtensionParameters.class).empty();\n    extensionParametersSpec =\n        objectFactory.newInstance(ExtensionParametersSpec.class, project, pluginExtensions);\n    allowInsecureRegistries = objectFactory.property(Boolean.class);\n    containerizingMode = objectFactory.property(String.class);\n\n    // Sets defaults.\n    allowInsecureRegistries.set(DEFAULT_ALLOW_INSECURE_REGISTIRIES);\n    containerizingMode.set(DEFAULT_CONTAINERIZING_MODE);\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "JibExtension",
+                "documentation": "/**\n   * Should be called using {@link org.gradle.api.plugins.ExtensionContainer#create}.\n   *\n   * @param project the injected gradle project\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "execute"
+                    },
+                    {
+                        "start_node": "execute",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "getContainerizingMode"
+                    },
+                    {
+                        "start_node": "getContainerizingMode",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JibExtension"
+                    },
+                    {
+                        "start_node": "JibExtension",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "JibExtension"
+                    }
+                ],
+                "similarity": 0.05281502461910879,
+                "end_line": 125,
+                "signature": "com.google.cloud.tools.jib.gradle.JibExtension(Project project)"
+            },
+            {
+                "start_line": 49,
+                "file_path": "playground/googlecontainertools__jib/examples/dropwizard/src/main/java/example/JibExampleApplication.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void run(final JibExampleConfiguration configuration, final Environment environment) {\n    final TemplateHealthCheck healthCheck =\n        new TemplateHealthCheck(configuration.getHelloConfiguration().getTemplate());\n    environment.healthChecks().register(\"template\", healthCheck);\n\n    environment.jersey().register(HelloWorldResource.from(configuration));\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "run",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "main"
+                    },
+                    {
+                        "start_node": "main",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JibExampleApplication"
+                    },
+                    {
+                        "start_node": "JibExampleApplication",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "run"
+                    }
+                ],
+                "similarity": 0.04952715230525195,
+                "end_line": 55,
+                "signature": "example.JibExampleApplication.run(JibExampleConfiguration configuration, Environment environment): void"
+            },
+            {
+                "start_line": 221,
+                "file_path": "playground/googlecontainertools__jib/jib-plugins-common/src/main/java/com/google/cloud/tools/jib/plugins/common/JibBuildRunner.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JibContainer runBuild()",
+                "distance": 2.0,
+                "title": null,
+                "name": "runBuild",
+                "documentation": "/**\n   * Runs the Jib build.\n   *\n   * @return the built {@link JibContainer}\n   * @throws BuildStepsExecutionException if another exception is thrown during the build\n   * @throws IOException if an I/O exception occurs\n   * @throws CacheDirectoryCreationException if the cache directory could not be created\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "execute"
+                    },
+                    {
+                        "start_node": "execute",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "runBuild"
+                    }
+                ],
+                "similarity": 0.04878416070333683,
+                "end_line": 221,
+                "signature": "com.google.cloud.tools.jib.plugins.common.JibBuildRunner.runBuild(): JibContainer"
+            },
+            {
+                "start_line": 105,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static MavenProjectProperties getForProject(",
+                "distance": 1.5,
+                "title": null,
+                "name": "getForProject",
+                "documentation": "/**\n   * Static factory method for {@link MavenProjectProperties}.\n   *\n   * @param jibPluginDescriptor the jib-maven-plugin plugin descriptor\n   * @param project the {@link MavenProject} for the plugin.\n   * @param session the {@link MavenSession} for the plugin.\n   * @param log the Maven {@link Log} to log messages during Jib execution\n   * @param tempDirectoryProvider temporary directory provider\n   * @return a MavenProjectProperties from the given project and logger.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "MavenProjectProperties"
+                    },
+                    {
+                        "start_node": "MavenProjectProperties",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getForProject"
+                    }
+                ],
+                "similarity": 0.04802875364736936,
+                "end_line": 105,
+                "signature": "com.google.cloud.tools.jib.maven.MavenProjectProperties.getForProject(PluginDescriptor jibPluginDescriptor, MavenProject project, MavenSession session, Log log, TempDirectoryProvider tempDirectoryProvider): MavenProjectProperties"
+            },
+            {
+                "start_line": 494,
+                "file_path": "playground/googlecontainertools__jib/jib-gradle-plugin/src/main/java/com/google/cloud/tools/jib/gradle/GradleProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private JibGradlePluginExtension<?> findConfiguredExtension(",
+                "distance": 1.5,
+                "title": null,
+                "name": "findConfiguredExtension",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GradleProjectProperties"
+                    },
+                    {
+                        "start_node": "GradleProjectProperties",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findConfiguredExtension"
+                    }
+                ],
+                "similarity": 0.047743953269482,
+                "end_line": 494,
+                "signature": "com.google.cloud.tools.jib.gradle.GradleProjectProperties.findConfiguredExtension(List extensions, ExtensionConfiguration config): JibGradlePluginExtension"
+            },
+            {
+                "start_line": 470,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  Path getWarArtifact() {\n    Build build = project.getBuild();\n    String warName = build.getFinalName();\n\n    Plugin warPlugin = project.getPlugin(\"org.apache.maven.plugins:maven-war-plugin\");\n    if (warPlugin != null) {\n      for (PluginExecution execution : warPlugin.getExecutions()) {\n        if (\"default-war\".equals(execution.getId())) {\n          Xpp3Dom configuration = (Xpp3Dom) execution.getConfiguration();\n          warName = getChildValue(configuration, \"warName\").orElse(warName);\n        }\n      }\n    }\n\n    return Paths.get(build.getDirectory(), warName + \".war\");\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getWarArtifact",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "MavenProjectProperties"
+                    },
+                    {
+                        "start_node": "MavenProjectProperties",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getWarArtifact"
+                    }
+                ],
+                "similarity": 0.046301659960781956,
+                "end_line": 485,
+                "signature": "com.google.cloud.tools.jib.maven.MavenProjectProperties.getWarArtifact(): Path"
+            },
+            {
+                "start_line": 438,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public int getMajorJavaVersion() {\n    // Check properties for version\n    if (project.getProperties().getProperty(\"maven.compiler.target\") != null) {\n      return getVersionFromString(project.getProperties().getProperty(\"maven.compiler.target\"));\n    }\n    if (project.getProperties().getProperty(\"maven.compiler.release\") != null) {\n      return getVersionFromString(project.getProperties().getProperty(\"maven.compiler.release\"));\n    }\n\n    // Check maven-compiler-plugin for version\n    Plugin mavenCompilerPlugin =\n        project.getPlugin(\"org.apache.maven.plugins:maven-compiler-plugin\");\n    if (mavenCompilerPlugin != null) {\n      Xpp3Dom pluginConfiguration = (Xpp3Dom) mavenCompilerPlugin.getConfiguration();\n      Optional<String> target = getChildValue(pluginConfiguration, \"target\");\n      if (target.isPresent()) {\n        return getVersionFromString(target.get());\n      }\n      Optional<String> release = getChildValue(pluginConfiguration, \"release\");\n      if (release.isPresent()) {\n        return getVersionFromString(release.get());\n      }\n    }\n    return 6; // maven-compiler-plugin default is 1.6\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getMajorJavaVersion",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "MavenProjectProperties"
+                    },
+                    {
+                        "start_node": "MavenProjectProperties",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getMajorJavaVersion"
+                    }
+                ],
+                "similarity": 0.045160004097631594,
+                "end_line": 462,
+                "signature": "com.google.cloud.tools.jib.maven.MavenProjectProperties.getMajorJavaVersion(): int"
+            },
+            {
+                "start_line": 395,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public String getMainClassFromJarPlugin() {\n    Plugin mavenJarPlugin = project.getPlugin(\"org.apache.maven.plugins:maven-jar-plugin\");\n    if (mavenJarPlugin != null) {\n      return getChildValue(\n              (Xpp3Dom) mavenJarPlugin.getConfiguration(), \"archive\", \"manifest\", \"mainClass\")\n          .orElse(null);\n    }\n    return null;\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getMainClassFromJarPlugin",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "MavenProjectProperties"
+                    },
+                    {
+                        "start_node": "MavenProjectProperties",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getMainClassFromJarPlugin"
+                    }
+                ],
+                "similarity": 0.04511683558715952,
+                "end_line": 403,
+                "signature": "com.google.cloud.tools.jib.maven.MavenProjectProperties.getMainClassFromJarPlugin(): String"
+            },
+            {
+                "start_line": 378,
+                "file_path": "playground/googlecontainertools__jib/jib-gradle-plugin/src/main/java/com/google/cloud/tools/jib/gradle/GradleProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  static FileCollection getInputFiles(Project project, List<Path> extraDirectories) {\n    JavaPluginConvention javaPluginConvention =\n        project.getConvention().getPlugin(JavaPluginConvention.class);\n    SourceSet mainSourceSet = javaPluginConvention.getSourceSets().getByName(MAIN_SOURCE_SET_NAME);\n    List<FileCollection> dependencyFileCollections = new ArrayList<>();\n    dependencyFileCollections.add(mainSourceSet.getRuntimeClasspath());\n\n    extraDirectories\n        .stream()\n        .filter(Files::exists)\n        .map(Path::toFile)\n        .map(project::files)\n        .forEach(dependencyFileCollections::add);\n\n    return project.files(dependencyFileCollections);\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getInputFiles",
+                "documentation": "/**\n   * Returns the input files for a task. These files include the runtimeClasspath of the application\n   * and any extraDirectories defined by the user to include in the container.\n   *\n   * @param project the gradle project\n   * @param extraDirectories the image's configured extra directories\n   * @return the input files\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GradleProjectProperties"
+                    },
+                    {
+                        "start_node": "GradleProjectProperties",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getInputFiles"
+                    }
+                ],
+                "similarity": 0.04484566060831066,
+                "end_line": 393,
+                "signature": "com.google.cloud.tools.jib.gradle.GradleProjectProperties.getInputFiles(Project project, List extraDirectories): FileCollection"
+            },
+            {
+                "start_line": 219,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  MavenProjectProperties(",
+                "distance": 1.5,
+                "title": null,
+                "name": "MavenProjectProperties",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "MavenProjectProperties"
+                    },
+                    {
+                        "start_node": "MavenProjectProperties",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "MavenProjectProperties"
+                    }
+                ],
+                "similarity": 0.039742614595841684,
+                "end_line": 219,
+                "signature": "com.google.cloud.tools.jib.maven.MavenProjectProperties(PluginDescriptor jibPluginDescriptor, MavenProject project, MavenSession session, Log log, TempDirectoryProvider tempDirectoryProvider, Supplier extensionLoader)"
+            },
+            {
+                "start_line": 308,
+                "file_path": "playground/googlecontainertools__jib/jib-gradle-plugin/src/main/java/com/google/cloud/tools/jib/gradle/GradleProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void configureEventHandlers(Containerizer containerizer) {\n    containerizer\n        .addEventHandler(LogEvent.class, this::log)\n        .addEventHandler(\n            TimerEvent.class, new TimerEventHandler(message -> log(LogEvent.debug(message))))\n        .addEventHandler(\n            ProgressEvent.class,\n            new ProgressEventHandler(\n                update -> {\n                  List<String> footer =\n                      ProgressDisplayGenerator.generateProgressDisplay(\n                          update.getProgress(), update.getUnfinishedLeafTasks());\n                  footer.add(\"\");\n                  consoleLogger.setFooter(footer);\n                }));\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "configureEventHandlers",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GradleProjectProperties"
+                    },
+                    {
+                        "start_node": "GradleProjectProperties",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "configureEventHandlers"
+                    }
+                ],
+                "similarity": 0.037875076935614364,
+                "end_line": 323,
+                "signature": "com.google.cloud.tools.jib.gradle.GradleProjectProperties.configureEventHandlers(Containerizer containerizer): void"
+            },
+            {
+                "start_line": 198,
+                "file_path": "playground/googlecontainertools__jib/jib-plugins-common/src/main/java/com/google/cloud/tools/jib/plugins/common/JibBuildRunner.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  JibBuildRunner(",
+                "distance": 2.5,
+                "title": null,
+                "name": "JibBuildRunner",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "execute"
+                    },
+                    {
+                        "start_node": "execute",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "runBuild"
+                    },
+                    {
+                        "start_node": "runBuild",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JibBuildRunner"
+                    },
+                    {
+                        "start_node": "JibBuildRunner",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "JibBuildRunner"
+                    }
+                ],
+                "similarity": 0.036998166072071015,
+                "end_line": 198,
+                "signature": "com.google.cloud.tools.jib.plugins.common.JibBuildRunner(JibContainerBuilder jibContainerBuilder, Containerizer containerizer, Consumer logger, HelpfulSuggestions helpfulSuggestions, String startupMessage, String successMessage)"
+            },
+            {
+                "start_line": 411,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public String getJarPluginName() {\n    return JAR_PLUGIN_NAME;\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getJarPluginName",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "MavenProjectProperties"
+                    },
+                    {
+                        "start_node": "MavenProjectProperties",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getJarPluginName"
+                    }
+                ],
+                "similarity": 0.03663617423721434,
+                "end_line": 413,
+                "signature": "com.google.cloud.tools.jib.maven.MavenProjectProperties.getJarPluginName(): String"
+            },
+            {
+                "start_line": 361,
+                "file_path": "playground/googlecontainertools__jib/jib-gradle-plugin/src/main/java/com/google/cloud/tools/jib/gradle/GradleProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public String getJarPluginName() {\n    return JAR_PLUGIN_NAME;\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getJarPluginName",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GradleProjectProperties"
+                    },
+                    {
+                        "start_node": "GradleProjectProperties",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "getJarPluginName"
+                    }
+                ],
+                "similarity": 0.03663617423721434,
+                "end_line": 363,
+                "signature": "com.google.cloud.tools.jib.gradle.GradleProjectProperties.getJarPluginName(): String"
+            },
+            {
+                "start_line": 118,
+                "file_path": "playground/googlecontainertools__jib/jib-cli/src/main/java/com/google/cloud/tools/jib/cli/JibCli.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  RegistryImage toCredentialedImage(ImageReference reference, Consumer<LogEvent> logger) {\n    RegistryImage registryImage = RegistryImage.named(reference);\n\n    // first add any explicitly specified credential helpers\n    CredentialRetrieverFactory factory = CredentialRetrieverFactory.forImage(reference, logger);\n    for (String credentialHelper : credentialHelpers) {\n      Path path = Paths.get(credentialHelper);\n      if (Files.exists(path)) {\n        registryImage.addCredentialRetriever(factory.dockerCredentialHelper(path));\n      } else {\n        registryImage.addCredentialRetriever(factory.dockerCredentialHelper(credentialHelper));\n      }\n    }\n    // then add any other known helpers\n    registryImage.addCredentialRetriever(factory.dockerConfig());\n    registryImage.addCredentialRetriever(factory.wellKnownCredentialHelpers());\n    registryImage.addCredentialRetriever(factory.googleApplicationDefaultCredentials());\n\n    return registryImage;\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "toCredentialedImage",
+                "documentation": "/** Create a {@link RegistryImage} with credential retrievers. */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "main"
+                    },
+                    {
+                        "start_node": "main",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "JibCli"
+                    },
+                    {
+                        "start_node": "JibCli",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "toCredentialedImage"
+                    }
+                ],
+                "similarity": 0.03530235685255148,
+                "end_line": 137,
+                "signature": "com.google.cloud.tools.jib.cli.JibCli.toCredentialedImage(ImageReference reference, Consumer logger): RegistryImage"
+            },
+            {
+                "start_line": 38,
+                "file_path": "playground/googlecontainertools__jib/examples/dropwizard/src/main/java/example/JibExampleApplication.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public String getName() {\n    return \"Dropwizard Jib Example\";\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getName",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "main"
+                    },
+                    {
+                        "start_node": "main",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JibExampleApplication"
+                    },
+                    {
+                        "start_node": "JibExampleApplication",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getName"
+                    }
+                ],
+                "similarity": 0.03494508422263938,
+                "end_line": 40,
+                "signature": "example.JibExampleApplication.getName(): String"
+            },
+            {
+                "start_line": 147,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  static boolean isProgressFooterEnabled(MavenSession session) {\n    if (!session.getRequest().isInteractiveMode()) {\n      return false;\n    }\n\n    if (\"plain\".equals(System.getProperty(PropertyNames.CONSOLE))) {\n      return false;\n    }\n\n    // Enables progress footer when ANSI is supported (Windows or System.console() not null and TERM\n    // not 'dumb').\n    if (Os.isFamily(Os.FAMILY_WINDOWS)) {\n      return true;\n    }\n    return System.console() != null && !\"dumb\".equals(System.getenv(\"TERM\"));\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "isProgressFooterEnabled",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "MavenProjectProperties"
+                    },
+                    {
+                        "start_node": "MavenProjectProperties",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "isProgressFooterEnabled"
+                    }
+                ],
+                "similarity": 0.03487582385141925,
+                "end_line": 162,
+                "signature": "com.google.cloud.tools.jib.maven.MavenProjectProperties.isProgressFooterEnabled(MavenSession session): boolean"
+            },
+            {
+                "start_line": 229,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/skaffold/FilesMojoV2.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private List<Path> resolveExtraDirectories(MavenProject project) {\n    return collectExtraDirectories(project)\n        .stream()\n        .map(path -> path.isAbsolute() ? path : project.getBasedir().toPath().resolve(path))\n        .collect(Collectors.toList());\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "resolveExtraDirectories",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "execute"
+                    },
+                    {
+                        "start_node": "execute",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "FilesMojoV2"
+                    },
+                    {
+                        "start_node": "FilesMojoV2",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "resolveExtraDirectories"
+                    }
+                ],
+                "similarity": 0.03426635950188826,
+                "end_line": 234,
+                "signature": "com.google.cloud.tools.jib.maven.skaffold.FilesMojoV2.resolveExtraDirectories(MavenProject project): List"
+            },
+            {
+                "start_line": 316,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  Set<Artifact> getProjectDependencies() {\n    return session\n        .getProjects()\n        .stream()\n        .map(MavenProject::getArtifact)\n        .filter(artifact -> !artifact.equals(project.getArtifact()))\n        .filter(artifact -> artifact.getFile() != null)\n        .collect(Collectors.toSet());\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getProjectDependencies",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "MavenProjectProperties"
+                    },
+                    {
+                        "start_node": "MavenProjectProperties",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getProjectDependencies"
+                    }
+                ],
+                "similarity": 0.03369936530951423,
+                "end_line": 324,
+                "signature": "com.google.cloud.tools.jib.maven.MavenProjectProperties.getProjectDependencies(): Set"
+            },
+            {
+                "start_line": 359,
+                "file_path": "playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void configureEventHandlers(Containerizer containerizer) {\n    containerizer\n        .addEventHandler(LogEvent.class, this::log)\n        .addEventHandler(\n            TimerEvent.class, new TimerEventHandler(message -> log(LogEvent.debug(message))))\n        .addEventHandler(\n            ProgressEvent.class,\n            new ProgressEventHandler(\n                update ->\n                    consoleLogger.setFooter(\n                        ProgressDisplayGenerator.generateProgressDisplay(\n                            update.getProgress(), update.getUnfinishedLeafTasks()))));\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "configureEventHandlers",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "MavenProjectProperties"
+                    },
+                    {
+                        "start_node": "MavenProjectProperties",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "configureEventHandlers"
+                    }
+                ],
+                "similarity": 0.033448150430077796,
+                "end_line": 371,
+                "signature": "com.google.cloud.tools.jib.maven.MavenProjectProperties.configureEventHandlers(Containerizer containerizer): void"
+            },
+            {
+                "start_line": 347,
+                "file_path": "playground/googlecontainertools__jib/jib-gradle-plugin/src/main/java/com/google/cloud/tools/jib/gradle/GradleProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public String getMainClassFromJarPlugin() {\n    Jar jarTask = (Jar) project.getTasks().findByName(\"jar\");\n    if (jarTask == null) {\n      return null;\n    }\n    return (String) jarTask.getManifest().getAttributes().get(\"Main-Class\");\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getMainClassFromJarPlugin",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GradleProjectProperties"
+                    },
+                    {
+                        "start_node": "GradleProjectProperties",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "getMainClassFromJarPlugin"
+                    }
+                ],
+                "similarity": 0.03208706542621007,
+                "end_line": 353,
+                "signature": "com.google.cloud.tools.jib.gradle.GradleProjectProperties.getMainClassFromJarPlugin(): String"
+            },
+            {
+                "start_line": 132,
+                "file_path": "playground/googlecontainertools__jib/jib-gradle-plugin/src/main/java/com/google/cloud/tools/jib/gradle/GradleProjectProperties.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private static boolean isProgressFooterEnabled(Project project) {\n    if (\"plain\".equals(System.getProperty(PropertyNames.CONSOLE))) {\n      return false;\n    }\n\n    switch (project.getGradle().getStartParameter().getConsoleOutput()) {\n      case Plain:\n        return false;\n\n      case Auto:\n        // Enables progress footer when ANSI is supported (Windows or TERM not 'dumb').\n        return Os.isFamily(Os.FAMILY_WINDOWS) || !\"dumb\".equals(System.getenv(\"TERM\"));\n\n      default:\n        return true;\n    }\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "isProgressFooterEnabled",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "createJibContainerBuilder"
+                    },
+                    {
+                        "start_node": "createJibContainerBuilder",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GradleProjectProperties"
+                    },
+                    {
+                        "start_node": "GradleProjectProperties",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "isProgressFooterEnabled"
+                    }
+                ],
+                "similarity": 0.03174987455587611,
+                "end_line": 148,
+                "signature": "com.google.cloud.tools.jib.gradle.GradleProjectProperties.isProgressFooterEnabled(Project project): boolean"
+            },
+            {
+                "start_line": 265,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/configuration/BuildContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public BuildContext build() throws CacheDirectoryCreationException {\n      // Validates the parameters.\n      List<String> missingFields = new ArrayList<>();\n      if (baseImageConfiguration == null) {\n        missingFields.add(\"base image configuration\");\n      }\n      if (targetImageConfiguration == null) {\n        missingFields.add(\"target image configuration\");\n      }\n      if (containerConfiguration == null) {\n        missingFields.add(\"container configuration\");\n      }\n      if (baseImageLayersCacheDirectory == null) {\n        missingFields.add(\"base image layers cache directory\");\n      }\n      if (applicationLayersCacheDirectory == null) {\n        missingFields.add(\"application layers cache directory\");\n      }\n\n      switch (missingFields.size()) {\n        case 0: // No errors\n          Preconditions.checkNotNull(baseImageConfiguration);\n          if (!baseImageConfiguration.getImage().getDigest().isPresent()\n              && !baseImageConfiguration.getImage().isScratch()) {\n            eventHandlers.dispatch(\n                LogEvent.warn(\n                    \"Base image '\"\n                        + baseImageConfiguration.getImage()\n                        + \"' does not use a specific image digest - build may not be reproducible\"));\n          }\n\n          return new BuildContext(\n              baseImageConfiguration,\n              Verify.verifyNotNull(targetImageConfiguration),\n              additionalTargetImageTags,\n              Verify.verifyNotNull(containerConfiguration),\n              Cache.withDirectory(Preconditions.checkNotNull(baseImageLayersCacheDirectory)),\n              Cache.withDirectory(Preconditions.checkNotNull(applicationLayersCacheDirectory)),\n              targetFormat,\n              offline,\n              layerConfigurations,\n              toolName,\n              toolVersion,\n              eventHandlers,\n              // TODO: try setting global User-Agent: here\n              new FailoverHttpClient(\n                  allowInsecureRegistries,\n                  JibSystemProperties.sendCredentialsOverHttp(),\n                  eventHandlers::dispatch),\n              executorService == null ? Executors.newCachedThreadPool() : executorService,\n              executorService == null, // shutDownExecutorService\n              alwaysCacheBaseImage);\n\n        case 1:\n          throw new IllegalStateException(missingFields.get(0) + \" is required but not set\");\n\n        case 2:\n          throw new IllegalStateException(\n              missingFields.get(0) + \" and \" + missingFields.get(1) + \" are required but not set\");\n\n        default:\n          missingFields.add(\"and \" + missingFields.remove(missingFields.size() - 1));\n          StringJoiner errorMessage = new StringJoiner(\", \", \"\", \" are required but not set\");\n          for (String missingField : missingFields) {\n            errorMessage.add(missingField);\n          }\n          throw new IllegalStateException(errorMessage.toString());\n      }\n    }",
+                "distance": 3.5,
+                "title": null,
+                "name": "build",
+                "documentation": "/**\n     * Builds a new {@link BuildContext} using the parameters passed into the builder.\n     *\n     * @return the corresponding build context\n     * @throws CacheDirectoryCreationException if I/O exception occurs when creating cache directory\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    },
+                    {
+                        "start_node": "build",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "setName"
+                    },
+                    {
+                        "start_node": "setName",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "call"
+                    },
+                    {
+                        "start_node": "call",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    }
+                ],
+                "similarity": 0.030900563938450004,
+                "end_line": 333,
+                "signature": "com.google.cloud.tools.jib.configuration.BuildContext.Builder.build(): BuildContext"
+            }
+        ],
+        "classes": [],
+        "issues": [
+            {
+                "content": "**Environment**:\r\n\r\n- *Jib version:* 2.5.0\r\n- *Build tool:* maven:3.6.3-amazoncorretto-11\r\n- *OS:* Amazon Linux 2\r\n\r\n\r\n**Description of the issue**:\r\n\r\nAfter upgrading from 2.4.0 to 2.5.0 we have NullPointerException during build. It looks that the issue is in getSpringBootRepackageConfiguration when spring-boot-maven-plugin configuration section is not provided.\r\n\r\n\r\n**Steps to reproduce**:\r\n\r\nUse spring-boot-maven-plugin without configuration section (we also don't have this section in our parent pom): \r\n\r\n    <build>\r\n        <plugins>\r\n            <plugin>\r\n                <groupId>org.springframework.boot</groupId>\r\n                <artifactId>spring-boot-maven-plugin</artifactId>\r\n            </plugin>\r\n\r\n\r\n**Workaround**:\r\n\r\nJust add configuration (may be empty):\r\n\r\n    <build>\r\n        <plugins>\r\n            <plugin>\r\n                <groupId>org.springframework.boot</groupId>\r\n                <artifactId>spring-boot-maven-plugin</artifactId>\r\n                <configuration></configuration>\r\n            </plugin>\r\n\r\n\r\n**Log output**:\r\n```\r\n[ERROR] Failed to execute goal com.google.cloud.tools:jib-maven-plugin:2.5.0:build (default-cli) on project my-service: Execution default-cli of goal com.google.cloud.tools:jib-maven-plugin:2.5.0:build failed. NullPointerException -> [Help 1]\r\norg.apache.maven.lifecycle.LifecycleExecutionException: Failed to execute goal com.google.cloud.tools:jib-maven-plugin:2.5.0:build (default-cli) on project notification-sender-service: Execution default-cli of goal com.google.cloud.tools:jib-maven-plugin:2.5.0:build failed.\r\n    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:215)\r\n    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:156)\r\n    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:148)\r\n    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:117)\r\n    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:81)\r\n    at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build (SingleThreadedBuilder.java:56)\r\n    at org.apache.maven.lifecycle.internal.LifecycleStarter.execute (LifecycleStarter.java:128)\r\n    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:305)\r\n    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:192)\r\n    at org.apache.maven.DefaultMaven.execute (DefaultMaven.java:105)\r\n    at org.apache.maven.cli.MavenCli.execute (MavenCli.java:957)\r\n    at org.apache.maven.cli.MavenCli.doMain (MavenCli.java:289)\r\n    at org.apache.maven.cli.MavenCli.main (MavenCli.java:193)\r\n    at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0 (Native Method)\r\n    at jdk.internal.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)\r\n    at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)\r\n    at java.lang.reflect.Method.invoke (Method.java:566)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced (Launcher.java:282)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.launch (Launcher.java:225)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode (Launcher.java:406)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.main (Launcher.java:347)\r\nCaused by: org.apache.maven.plugin.PluginExecutionException: Execution default-cli of goal com.google.cloud.tools:jib-maven-plugin:2.5.0:build failed.\r\n    at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo (DefaultBuildPluginManager.java:148)\r\n    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:210)\r\n    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:156)\r\n    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:148)\r\n    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:117)\r\n    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:81)\r\n    at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build (SingleThreadedBuilder.java:56)\r\n    at org.apache.maven.lifecycle.internal.LifecycleStarter.execute (LifecycleStarter.java:128)\r\n    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:305)\r\n    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:192)\r\n    at org.apache.maven.DefaultMaven.execute (DefaultMaven.java:105)\r\n    at org.apache.maven.cli.MavenCli.execute (MavenCli.java:957)\r\n    at org.apache.maven.cli.MavenCli.doMain (MavenCli.java:289)\r\n    at org.apache.maven.cli.MavenCli.main (MavenCli.java:193)\r\n    at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0 (Native Method)\r\n    at jdk.internal.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)\r\n    at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)\r\n    at java.lang.reflect.Method.invoke (Method.java:566)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced (Launcher.java:282)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.launch (Launcher.java:225)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode (Launcher.java:406)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.main (Launcher.java:347)\r\nCaused by: java.lang.NullPointerException\r\n    at java.util.Objects.requireNonNull (Objects.java:221)\r\n    at java.util.Optional.<init> (Optional.java:107)\r\n    at java.util.Optional.of (Optional.java:120)\r\n    at com.google.cloud.tools.jib.maven.MavenProjectProperties.getSpringBootRepackageConfiguration(MavenProjectProperties.java:571)\r\n    at com.google.cloud.tools.jib.maven.MavenProjectProperties.getJarArtifact (MavenProjectProperties.java:524)\r\n    at com.google.cloud.tools.jib.maven.MavenProjectProperties.createJibContainerBuilder (MavenProjectProperties.java:283)\r\n    at com.google.cloud.tools.jib.plugins.common.PluginConfigurationProcessor.processCommonConfiguration (PluginConfigurationProcessor.java:398)\r\n    at com.google.cloud.tools.jib.plugins.common.PluginConfigurationProcessor.processCommonConfiguration (PluginConfigurationProcessor.java:455)\r\n    at com.google.cloud.tools.jib.plugins.common.PluginConfigurationProcessor.createJibBuildRunnerForRegistryImage (PluginConfigurationProcessor.java:274)\r\n    at com.google.cloud.tools.jib.maven.BuildImageMojo.execute (BuildImageMojo.java:102)\r\n    at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo (DefaultBuildPluginManager.java:137)\r\n    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:210)\r\n    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:156)\r\n    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:148)\r\n    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:117)\r\n    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:81)\r\n    at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build (SingleThreadedBuilder.java:56)\r\n    at org.apache.maven.lifecycle.internal.LifecycleStarter.execute (LifecycleStarter.java:128)\r\n    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:305)\r\n    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:192)\r\n    at org.apache.maven.DefaultMaven.execute (DefaultMaven.java:105)\r\n    at org.apache.maven.cli.MavenCli.execute (MavenCli.java:957)\r\n    at org.apache.maven.cli.MavenCli.doMain (MavenCli.java:289)\r\n    at org.apache.maven.cli.MavenCli.main (MavenCli.java:193)\r\n    at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0 (Native Method)\r\n    at jdk.internal.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)\r\n    at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)\r\n    at java.lang.reflect.Method.invoke (Method.java:566)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced (Launcher.java:282)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.launch (Launcher.java:225)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode (Launcher.java:406)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.main (Launcher.java:347)\r\n[ERROR] \r\n```\r\n\r\n**Additional Information**: <!-- Any additional information that may be helpful -->\r\n\r\nIt may be connected with https://github.com/GoogleContainerTools/jib/issues/2565\n",
+                "distance": 0,
+                "title": "jib-maven-plugin:2.5.0:build failed - NullPointerException in getSpringBootRepackageConfiguration",
+                "name": "root",
+                "path": [],
+                "issue_id": "root",
+                "similarity": 2.0,
+                "type": "issue"
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "2687",
+                "type": "issue",
+                "content": "**Environment**:\r\n\r\n- *Jib version:* 2.5.0\r\n- *Build tool:* maven:3.6.3-amazoncorretto-11\r\n- *OS:* Amazon Linux 2\r\n\r\n\r\n**Description of the issue**:\r\n\r\nAfter upgrading from 2.4.0 to 2.5.0 we have NullPointerException during build. It looks that the issue is in getSpringBootRepackageConfiguration when spring-boot-maven-plugin configuration section is not provided.\r\n\r\n\r\n**Steps to reproduce**:\r\n\r\nUse spring-boot-maven-plugin without configuration section (we also don't have this section in our parent pom): \r\n\r\n    <build>\r\n        <plugins>\r\n            <plugin>\r\n                <groupId>org.springframework.boot</groupId>\r\n                <artifactId>spring-boot-maven-plugin</artifactId>\r\n            </plugin>\r\n\r\n\r\n**Workaround**:\r\n\r\nJust add configuration (may be empty):\r\n\r\n    <build>\r\n        <plugins>\r\n            <plugin>\r\n                <groupId>org.springframework.boot</groupId>\r\n                <artifactId>spring-boot-maven-plugin</artifactId>\r\n                <configuration></configuration>\r\n            </plugin>\r\n\r\n\r\n**Log output**:\r\n```\r\n[ERROR] Failed to execute goal com.google.cloud.tools:jib-maven-plugin:2.5.0:build (default-cli) on project my-service: Execution default-cli of goal com.google.cloud.tools:jib-maven-plugin:2.5.0:build failed. NullPointerException -> [Help 1]\r\norg.apache.maven.lifecycle.LifecycleExecutionException: Failed to execute goal com.google.cloud.tools:jib-maven-plugin:2.5.0:build (default-cli) on project notification-sender-service: Execution default-cli of goal com.google.cloud.tools:jib-maven-plugin:2.5.0:build failed.\r\n    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:215)\r\n    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:156)\r\n    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:148)\r\n    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:117)\r\n    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:81)\r\n    at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build (SingleThreadedBuilder.java:56)\r\n    at org.apache.maven.lifecycle.internal.LifecycleStarter.execute (LifecycleStarter.java:128)\r\n    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:305)\r\n    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:192)\r\n    at org.apache.maven.DefaultMaven.execute (DefaultMaven.java:105)\r\n    at org.apache.maven.cli.MavenCli.execute (MavenCli.java:957)\r\n    at org.apache.maven.cli.MavenCli.doMain (MavenCli.java:289)\r\n    at org.apache.maven.cli.MavenCli.main (MavenCli.java:193)\r\n    at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0 (Native Method)\r\n    at jdk.internal.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)\r\n    at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)\r\n    at java.lang.reflect.Method.invoke (Method.java:566)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced (Launcher.java:282)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.launch (Launcher.java:225)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode (Launcher.java:406)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.main (Launcher.java:347)\r\nCaused by: org.apache.maven.plugin.PluginExecutionException: Execution default-cli of goal com.google.cloud.tools:jib-maven-plugin:2.5.0:build failed.\r\n    at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo (DefaultBuildPluginManager.java:148)\r\n    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:210)\r\n    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:156)\r\n    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:148)\r\n    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:117)\r\n    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:81)\r\n    at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build (SingleThreadedBuilder.java:56)\r\n    at org.apache.maven.lifecycle.internal.LifecycleStarter.execute (LifecycleStarter.java:128)\r\n    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:305)\r\n    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:192)\r\n    at org.apache.maven.DefaultMaven.execute (DefaultMaven.java:105)\r\n    at org.apache.maven.cli.MavenCli.execute (MavenCli.java:957)\r\n    at org.apache.maven.cli.MavenCli.doMain (MavenCli.java:289)\r\n    at org.apache.maven.cli.MavenCli.main (MavenCli.java:193)\r\n    at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0 (Native Method)\r\n    at jdk.internal.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)\r\n    at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)\r\n    at java.lang.reflect.Method.invoke (Method.java:566)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced (Launcher.java:282)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.launch (Launcher.java:225)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode (Launcher.java:406)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.main (Launcher.java:347)\r\nCaused by: java.lang.NullPointerException\r\n    at java.util.Objects.requireNonNull (Objects.java:221)\r\n    at java.util.Optional.<init> (Optional.java:107)\r\n    at java.util.Optional.of (Optional.java:120)\r\n    at com.google.cloud.tools.jib.maven.MavenProjectProperties.getSpringBootRepackageConfiguration(MavenProjectProperties.java:571)\r\n    at com.google.cloud.tools.jib.maven.MavenProjectProperties.getJarArtifact (MavenProjectProperties.java:524)\r\n    at com.google.cloud.tools.jib.maven.MavenProjectProperties.createJibContainerBuilder (MavenProjectProperties.java:283)\r\n    at com.google.cloud.tools.jib.plugins.common.PluginConfigurationProcessor.processCommonConfiguration (PluginConfigurationProcessor.java:398)\r\n    at com.google.cloud.tools.jib.plugins.common.PluginConfigurationProcessor.processCommonConfiguration (PluginConfigurationProcessor.java:455)\r\n    at com.google.cloud.tools.jib.plugins.common.PluginConfigurationProcessor.createJibBuildRunnerForRegistryImage (PluginConfigurationProcessor.java:274)\r\n    at com.google.cloud.tools.jib.maven.BuildImageMojo.execute (BuildImageMojo.java:102)\r\n    at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo (DefaultBuildPluginManager.java:137)\r\n    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:210)\r\n    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:156)\r\n    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:148)\r\n    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:117)\r\n    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:81)\r\n    at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build (SingleThreadedBuilder.java:56)\r\n    at org.apache.maven.lifecycle.internal.LifecycleStarter.execute (LifecycleStarter.java:128)\r\n    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:305)\r\n    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:192)\r\n    at org.apache.maven.DefaultMaven.execute (DefaultMaven.java:105)\r\n    at org.apache.maven.cli.MavenCli.execute (MavenCli.java:957)\r\n    at org.apache.maven.cli.MavenCli.doMain (MavenCli.java:289)\r\n    at org.apache.maven.cli.MavenCli.main (MavenCli.java:193)\r\n    at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0 (Native Method)\r\n    at jdk.internal.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)\r\n    at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)\r\n    at java.lang.reflect.Method.invoke (Method.java:566)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced (Launcher.java:282)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.launch (Launcher.java:225)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode (Launcher.java:406)\r\n    at org.codehaus.plexus.classworlds.launcher.Launcher.main (Launcher.java:347)\r\n[ERROR] \r\n```\r\n\r\n**Additional Information**: <!-- Any additional information that may be helpful -->\r\n\r\nIt may be connected with https://github.com/GoogleContainerTools/jib/issues/2565\n\n\nComment by chanseokoh:\nSorry, this is from #2526. \r\n\r\nI can't reproduce this. (I am interested in seeing a reproducible sample project to understand why this can happen so that we can prevent similar issues in the future, but it's totally up to you.) However, it's an easy fix anyway.",
+                "source_code": null,
+                "distance": 0.25,
+                "title": "jib-maven-plugin:2.5.0:build failed - NullPointerException in getSpringBootRepackageConfiguration",
+                "name": "issue#2687",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#2687"
+                    }
+                ],
+                "similarity": 0.8801117367933934,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "2688",
+                "type": "issue",
+                "content": "Fixes #2687.\n\n",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "Fix NPE when Spring Boot Maven Plugin doesn't have <configuration>",
+                "name": "pr#2688",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#2687"
+                    },
+                    {
+                        "start_node": "issue#2687",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "pr#2688"
+                    }
+                ],
+                "similarity": 0.39711332146377265,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "2526",
+                "type": "issue",
+                "content": "\n\n",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "Core release v0.15.0",
+                "name": "pr#2526",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#2687"
+                    },
+                    {
+                        "start_node": "issue#2687",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "pr#2526"
+                    }
+                ],
+                "similarity": 0.18396258932185516,
+                "end_line": null,
+                "signature": null
+            }
+        ]
+    },
+    "artifact_stats": {
+        "skipped_due_to_time": 10,
+        "valid_related_items": 35
+    }
+}

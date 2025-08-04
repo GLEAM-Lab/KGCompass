@@ -1,0 +1,89 @@
+Based on the issue, the problem is that dollar signs (`$`) in POJO property names are not properly escaped during XML serialization/deserialization, causing parsing errors when reading back the XML.
+
+The fix needs to be implemented in the XML serialization/deserialization logic to properly handle special characters like `$` in property names. Looking at the code, this would likely involve changes to `FromXmlParser` and/or `ToXmlGenerator` classes.
+
+Here's the proposed fix to properly escape/unescape special characters in XML element names:
+
+```java
+### playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java
+- start_line : 722
+- end_line : 743
+<<<<<<< SEARCH
+    public void writeRawValue(String text) throws IOException {
+        // [dataformat-xml#39]
+        if (_stax2Emulation) {
+            _reportUnimplementedStax2("writeRawValue");
+        }
+        try {
+            _verifyValueWrite("write raw value");
+            if (_nextName == null) {
+                handleMissingName();
+            }
+
+            if (_nextIsAttribute) {
+                _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), text);
+            } else {
+                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                _xmlWriter.writeRaw(text);
+                _xmlWriter.writeEndElement();
+            }
+        } catch (XMLStreamException e) {
+            StaxUtil.throwAsGenerationException(e, this);
+        }
+    }
+=======
+    public void writeRawValue(String text) throws IOException {
+        // [dataformat-xml#39]
+        if (_stax2Emulation) {
+            _reportUnimplementedStax2("writeRawValue");
+        }
+        try {
+            _verifyValueWrite("write raw value");
+            if (_nextName == null) {
+                handleMissingName();
+            }
+
+            String localPart = _nextName.getLocalPart();
+            // Escape special characters in element names
+            localPart = localPart.replace("$", "_x0024_");
+
+            if (_nextIsAttribute) {
+                _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), localPart, text);
+            } else {
+                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), localPart);
+                _xmlWriter.writeRaw(text);
+                _xmlWriter.writeEndElement();
+            }
+        } catch (XMLStreamException e) {
+            StaxUtil.throwAsGenerationException(e, this);
+        }
+    }
+>>>>>>> REPLACE
+```
+
+```java
+### playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java
+- start_line : 885
+- end_line : 885
+<<<<<<< SEARCH
+    public String nextTextValue() throws IOException
+=======
+    public String nextTextValue() throws IOException {
+        String text = _xmlTokens.nextText();
+        // Unescape special characters in element names
+        if (text != null && text.contains("_x0024_")) {
+            text = text.replace("_x0024_", "$");
+        }
+        return text;
+    }
+>>>>>>> REPLACE
+```
+
+This fix:
+1. Escapes `$` characters in XML element names during serialization by replacing them with `_x0024_` (the XML escape sequence for `$`)
+2. Unescapes them back to `$` during deserialization
+3. Maintains all other existing functionality while adding proper handling of special characters
+
+The changes follow XML naming conventions where special characters should be escaped using the `_xXXXX_` pattern (where XXXX is the Unicode hex value of the character). This ensures the XML remains valid while preserving the original property names in the Java objects.
+
+Note that this is a minimal fix focusing just on the `$` character issue mentioned in the bug report. A more comprehensive solution might handle other special characters as well, but that would require more extensive changes and testing.

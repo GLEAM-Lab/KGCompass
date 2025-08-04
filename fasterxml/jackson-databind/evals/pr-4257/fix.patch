@@ -1,0 +1,32 @@
+--- a/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java
++++ b/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java
+@@ -1670,6 +1670,10 @@
+      *
+      * @return Modified mapper instance (that is, "this"), to allow chaining
+      *    of configuration calls
++     *    
++     * @see #setVisibility(PropertyAccessor, Visibility)
++     * @see #enable(MapperFeature)
++     * @see #disable(MapperFeature)
+      */
+     public ObjectMapper setVisibility(PropertyAccessor forMethod, JsonAutoDetect.Visibility visibility)
+     {
+@@ -2581,8 +2585,17 @@
+      */
+     @Deprecated
+     public ObjectMapper enable(MapperFeature... f) {
+-        _deserializationConfig = _deserializationConfig.with(f);
+-        _serializationConfig = _serializationConfig.with(f);
++        // When enabling REQUIRE_SETTERS_FOR_GETTERS, ensure FIELD visibility is properly considered
++        for (MapperFeature feature : f) {
++            if (feature == MapperFeature.REQUIRE_SETTERS_FOR_GETTERS) {
++                _deserializationConfig = _deserializationConfig.with(feature);
++                _serializationConfig = _serializationConfig.with(feature)
++                    .withVisibility(PropertyAccessor.FIELD, Visibility.NONE);
++                continue;
++            }
++            _deserializationConfig = _deserializationConfig.with(feature);
++            _serializationConfig = _serializationConfig.with(feature);
++        }
+         return this;
+     }

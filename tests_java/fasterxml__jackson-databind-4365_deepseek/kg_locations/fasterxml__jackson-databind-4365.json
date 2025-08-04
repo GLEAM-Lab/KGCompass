@@ -1,0 +1,1525 @@
+{
+    "related_entities": {
+        "methods": [
+            {
+                "start_line": 168,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static AnnotationIntrospector pair(AnnotationIntrospector a1, AnnotationIntrospector a2) {\n        return new AnnotationIntrospectorPair(a1, a2);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "pair",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "pair"
+                    }
+                ],
+                "similarity": 0.13673840679994803,
+                "end_line": 170,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.pair(AnnotationIntrospector a1, AnnotationIntrospector a2): AnnotationIntrospector"
+            },
+            {
+                "start_line": 1489,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonCreator.Mode findCreatorAnnotation(MapperConfig<?> config, Annotated ann) {\n        // 13-Sep-2016, tatu: for backwards compatibility, implement using delegation\n        ///   (remove from version AFTER 2.9)\n        if (hasCreatorAnnotation(ann)) {\n            JsonCreator.Mode mode = findCreatorBinding(ann);\n            if (mode == null) {\n                mode = JsonCreator.Mode.DEFAULT;\n            }\n            return mode;\n        }\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findCreatorAnnotation",
+                "documentation": "/**\n     * Method called to check whether potential Creator (constructor or static factory\n     * method) has explicit annotation to indicate it as actual Creator; and if so,\n     * which {@link com.fasterxml.jackson.annotation.JsonCreator.Mode} to use.\n     *<p>\n     * NOTE: caller needs to consider possibility of both `null` (no annotation found)\n     * and {@link com.fasterxml.jackson.annotation.JsonCreator.Mode#DISABLED} (annotation found,\n     * but disabled); latter is necessary as marker in case multiple introspectors are chained,\n     * as well as possibly as when using mix-in annotations.\n     *\n     * @param config Configuration settings in effect (for serialization or deserialization)\n     * @param ann Annotated accessor (usually constructor or static method) to check\n     *\n     * @return Creator mode found, if any; {@code null} if none\n     *\n     * @since 2.9\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findCreatorAnnotation"
+                    }
+                ],
+                "similarity": 0.13317449432819647,
+                "end_line": 1500,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findCreatorAnnotation(MapperConfig config, Annotated ann): JsonCreator"
+            },
+            {
+                "start_line": 1077,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Boolean hasAnyGetter(Annotated ann) {\n        // 21-Nov-2016, tatu: Delegate in 2.9; remove redirect from later versions\n        if (ann instanceof AnnotatedMethod) {\n            if (hasAnyGetterAnnotation((AnnotatedMethod) ann)) {\n                return true;\n            }\n        }\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "hasAnyGetter",
+                "documentation": "/**\n     * Method for checking whether given method has an annotation\n     * that suggests that the method is to serve as \"any setter\";\n     * method to be used for accessing set of miscellaneous \"extra\"\n     * properties, often bound with matching \"any setter\" method.\n     *\n     * @param ann Annotated entity to check\n     *\n     * @return True if such annotation is found (and is not disabled),\n     *   false otherwise\n     *\n     * @since 2.9\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "hasAnyGetter"
+                    }
+                ],
+                "similarity": 0.11526102051198282,
+                "end_line": 1085,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.hasAnyGetter(Annotated ann): Boolean"
+            },
+            {
+                "start_line": 1422,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public PropertyName findNameForDeserialization(Annotated ann) {\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findNameForDeserialization",
+                "documentation": "/**\n     * Method for checking whether given property accessors (method,\n     * field) has an annotation that suggests property name to use\n     * for deserialization (reading JSON into POJOs).\n     * Should return null if no annotation\n     * is found; otherwise a non-null name (possibly\n     * {@link PropertyName#USE_DEFAULT}, which means \"use default heuristics\").\n     *\n     * @param ann Annotated entity to check\n     *\n     * @return Name to use if found; {@code null} if not.\n     *\n     * @since 2.1\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findNameForDeserialization"
+                    }
+                ],
+                "similarity": 0.11521782547452898,
+                "end_line": 1424,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findNameForDeserialization(Annotated ann): PropertyName"
+            },
+            {
+                "start_line": 1020,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public PropertyName findNameForSerialization(Annotated a) {\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findNameForSerialization",
+                "documentation": "/**\n     * Method for checking whether given property accessors (method,\n     * field) has an annotation that suggests property name to use\n     * for serialization.\n     * Should return null if no annotation\n     * is found; otherwise a non-null name (possibly\n     * {@link PropertyName#USE_DEFAULT}, which means \"use default heuristics\").\n     *\n     * @param a Property accessor to check\n     *\n     * @return Name to use if found; null if not.\n     *\n     * @since 2.1\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findNameForSerialization"
+                    }
+                ],
+                "similarity": 0.1126806140781933,
+                "end_line": 1022,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findNameForSerialization(Annotated a): PropertyName"
+            },
+            {
+                "start_line": 1054,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Boolean hasAsValue(Annotated a) {\n        // 20-Nov-2016, tatu: Delegate in 2.9; remove redirect from later versions\n        if (a instanceof AnnotatedMethod) {\n            if (hasAsValueAnnotation((AnnotatedMethod) a)) {\n                return true;\n            }\n        }\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "hasAsValue",
+                "documentation": "/**\n     * Method for checking whether given method has an annotation\n     * that suggests that the return value of annotated method\n     * should be used as \"the value\" of the object instance; usually\n     * serialized as a primitive value such as String or number.\n     *\n     * @return {@link Boolean#TRUE} if such annotation is found and is not disabled;\n     *   {@link Boolean#FALSE} if disabled annotation (block) is found (to indicate\n     *   accessor is definitely NOT to be used \"as value\"); or `null` if no\n     *   information found.\n     *\n     * @since 2.9\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "hasAsValue"
+                    }
+                ],
+                "similarity": 0.11004498584236555,
+                "end_line": 1062,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.hasAsValue(Annotated a): Boolean"
+            },
+            {
+                "start_line": 642,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JacksonInject.Value findInjectableValue(AnnotatedMember m) {\n        // 05-Apr-2017, tatu: Just for 2.9, call deprecated method to help\n        //    with some cases of overrides for legacy code\n        Object id = findInjectableValueId(m);\n        if (id != null) {\n            return JacksonInject.Value.forId(id);\n        }\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findInjectableValue",
+                "documentation": "/**\n     * Method called to find out whether given member expectes a value\n     * to be injected, and if so, what is the identifier of the value\n     * to use during injection.\n     * Type if identifier needs to be compatible with provider of\n     * values (of type {@link InjectableValues}); often a simple String\n     * id is used.\n     *\n     * @param m Member to check\n     *\n     * @return Identifier of value to inject, if any; null if no injection\n     *   indicator is found\n     *\n     * @since 2.9\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findInjectableValue"
+                    }
+                ],
+                "similarity": 0.10803106720686155,
+                "end_line": 650,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findInjectableValue(AnnotatedMember m): JacksonInject"
+            },
+            {
+                "start_line": 211,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Collection<AnnotationIntrospector> allIntrospectors(Collection<AnnotationIntrospector> result) {\n        result.add(this);\n        return result;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "allIntrospectors",
+                "documentation": "/**\n     * Method that can be used to collect all \"real\" introspectors that\n     * this introspector contains, if any; or this introspector\n     * if it is not a container. Used to get access to all container\n     * introspectors in their priority order.\n     *<p>\n     * Default implementation adds this introspector in result; this usually\n     * works for sub-classes, except for proxy or delegating \"container\n     * introspectors\" which need to override implementation.\n     *\n     * @param result Container to add introspectors to\n     *\n     * @return Passed in {@code Collection} filled with introspectors as explained\n     *    above\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "allIntrospectors"
+                    }
+                ],
+                "similarity": 0.10567021758694978,
+                "end_line": 214,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.allIntrospectors(Collection result): Collection"
+            },
+            {
+                "start_line": 355,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonIncludeProperties.Value findPropertyInclusionByName(MapperConfig<?> config, Annotated ann) {\n        return JsonIncludeProperties.Value.all();\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findPropertyInclusionByName",
+                "documentation": "/**\n     * Method for finding information about names of properties to included.\n     * This is typically used to strictly limit properties to include based\n     * on fully defined set of names (\"allow-listing\"), as opposed to excluding\n     * potential properties by exclusion (\"deny-listing\").\n     *\n     * @param config Configuration settings in effect (for serialization or deserialization)\n     * @param ann Annotated entity (Class, Accessor) to introspect\n     *\n     * @return Property inclusion settings to use;\n     *   {@code JsonIncludeProperties.Value.all()} for defaults (should not return {@code null})\n     *\n     * @since 2.12\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findPropertyInclusionByName"
+                    }
+                ],
+                "similarity": 0.10428310166059698,
+                "end_line": 357,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findPropertyInclusionByName(MapperConfig config, Annotated ann): JsonIncludeProperties"
+            },
+            {
+                "start_line": 945,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonInclude.Value findPropertyInclusion(Annotated a) {\n        return JsonInclude.Value.empty();\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findPropertyInclusion",
+                "documentation": "/**\n     * Method for checking inclusion criteria for a type (Class) or property (yes, method\n     * name is bit unfortunate -- not just for properties!).\n     * In case of class, acts as the default for properties POJO contains; for properties\n     * acts as override for class defaults and possible global defaults.\n     *\n     * @since 2.6\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findPropertyInclusion"
+                    }
+                ],
+                "similarity": 0.10317384952854648,
+                "end_line": 947,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findPropertyInclusion(Annotated a): JsonInclude"
+            },
+            {
+                "start_line": 164,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static AnnotationIntrospector nopInstance() {\n        return NopAnnotationIntrospector.instance;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "nopInstance",
+                "documentation": "/**\n     * Factory method for accessing \"no operation\" implementation\n     * of introspector: instance that will never find any annotation-based\n     * configuration.\n     *\n     * @return \"no operation\" instance\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "nopInstance"
+                    }
+                ],
+                "similarity": 0.10284684357864815,
+                "end_line": 166,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.nopInstance(): AnnotationIntrospector"
+            },
+            {
+                "start_line": 1454,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonSetter.Value findSetterInfo(Annotated ann) {\n        return JsonSetter.Value.empty();\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findSetterInfo",
+                "documentation": "/**\n     * Method for finding possible settings for property, given annotations\n     * on an accessor.\n     *\n     * @param ann Annotated entity to check\n     *\n     * @return Setter info value found, if any;\n     *   {@code JsonSetter.Value.empty()} if none (should not return {@code null})\n     *\n     * @since 2.9\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findSetterInfo"
+                    }
+                ],
+                "similarity": 0.10163649770781973,
+                "end_line": 1456,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findSetterInfo(Annotated ann): JsonSetter"
+            },
+            {
+                "start_line": 616,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public NameTransformer findUnwrappingNameTransformer(AnnotatedMember member) { return null; }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findUnwrappingNameTransformer",
+                "documentation": "/**\n     * Method called to check whether given property is marked to be \"unwrapped\"\n     * when being serialized (and appropriately handled in reverse direction,\n     * i.e. expect unwrapped representation during deserialization).\n     * Return value is the name transformation to use, if wrapping/unwrapping\n     * should  be done, or null if not -- note that transformation may simply\n     * be identity transformation (no changes).\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findUnwrappingNameTransformer"
+                    }
+                ],
+                "similarity": 0.1006412206426716,
+                "end_line": 616,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findUnwrappingNameTransformer(AnnotatedMember member): NameTransformer"
+            },
+            {
+                "start_line": 750,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public String findImplicitPropertyName(AnnotatedMember member) { return null; }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findImplicitPropertyName",
+                "documentation": "/**\n     * Method for finding implicit name for a property that given annotated\n     * member (field, method, creator parameter) may represent.\n     * This is different from explicit, annotation-based property name, in that\n     * it is \"weak\" and does not either proof that a property exists (for example,\n     * if visibility is not high enough), or override explicit names.\n     * In practice this method is used to introspect optional names for creator\n     * parameters (which may or may not be available and cannot be detected\n     * by standard databind); or to provide alternate name mangling for\n     * fields, getters and/or setters.\n     *\n     * @since 2.4\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findImplicitPropertyName"
+                    }
+                ],
+                "similarity": 0.10011315589622395,
+                "end_line": 750,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findImplicitPropertyName(AnnotatedMember member): String"
+            },
+            {
+                "start_line": 1327,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Object findDeserializationContentConverter(AnnotatedMember a) {\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findDeserializationContentConverter",
+                "documentation": "/**\n     * Method for finding {@link Converter} that annotated property\n     * has indicated needs to be used for values of container type\n     * (this also means that method should only be called for properties\n     * of container types, List/Map/array properties).\n     *<p>\n     * If not null, either has to be actual\n     * {@link Converter} instance, or class for such converter;\n     * and resulting converter will be used after Jackson has deserializer\n     * data into intermediate type (Converter input type), and Converter\n     * needs to convert this into its target type to be set as property value.\n     *<p>\n     * Other notes are same as those for {@link #findDeserializationConverter}\n     *\n     * @param a Annotated property (field, method) to check.\n     *\n     * @since 2.2\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findDeserializationContentConverter"
+                    }
+                ],
+                "similarity": 0.09863352572276556,
+                "end_line": 1329,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findDeserializationContentConverter(AnnotatedMember a): Object"
+            },
+            {
+                "start_line": 987,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Boolean findSerializationSortAlphabetically(Annotated ann) {\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findSerializationSortAlphabetically",
+                "documentation": "/**\n     * Method for checking whether an annotation indicates that serialized properties\n     * for which no explicit is defined should be alphabetically (lexicograpically)\n     * ordered\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findSerializationSortAlphabetically"
+                    }
+                ],
+                "similarity": 0.0981655598388927,
+                "end_line": 989,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findSerializationSortAlphabetically(Annotated ann): Boolean"
+            },
+            {
+                "start_line": 497,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonTypeInfo.Value findPolymorphicTypeInfo(MapperConfig<?> config, Annotated ann) {\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findPolymorphicTypeInfo",
+                "documentation": "/**\n     * Method for checking whether given Class or Property Accessor specifies\n     * polymorphic type-handling information, to indicate need for polymorphic\n     * handling.\n     *\n     * @param config Effective mapper configuration in use\n     * @param ann Annotated entity to introspect\n     *\n     * @since 2.16 (backported from Jackson 3.0)\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findPolymorphicTypeInfo"
+                    }
+                ],
+                "similarity": 0.09788341099062428,
+                "end_line": 499,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findPolymorphicTypeInfo(MapperConfig config, Annotated ann): JsonTypeInfo"
+            },
+            {
+                "start_line": 700,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public PropertyName findWrapperName(Annotated ann) { return null; }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findWrapperName",
+                "documentation": "/**\n     * Method used to check if specified property has annotation that indicates\n     * that it should be wrapped in an element; and if so, name to use.\n     * Note that not all serializers and deserializers support use this method:\n     * currently (2.1) it is only used by XML-backed handlers.\n     *\n     * @return Wrapper name to use, if any, or {@link PropertyName#USE_DEFAULT}\n     *   to indicate that no wrapper element should be used.\n     *\n     * @since 2.1\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findWrapperName"
+                    }
+                ],
+                "similarity": 0.09766881929706608,
+                "end_line": 700,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findWrapperName(Annotated ann): PropertyName"
+            },
+            {
+                "start_line": 625,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public boolean hasIgnoreMarker(AnnotatedMember m) { return false; }",
+                "distance": 1.25,
+                "title": null,
+                "name": "hasIgnoreMarker",
+                "documentation": "/**\n     * Method called to check whether given property is marked to\n     * be ignored. This is used to determine whether to ignore\n     * properties, on per-property basis, usually combining\n     * annotations from multiple accessors (getters, setters, fields,\n     * constructor parameters).\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "hasIgnoreMarker"
+                    }
+                ],
+                "similarity": 0.09708663538502488,
+                "end_line": 625,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.hasIgnoreMarker(AnnotatedMember m): boolean"
+            },
+            {
+                "start_line": 933,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Object findSerializationContentConverter(AnnotatedMember a) {\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findSerializationContentConverter",
+                "documentation": "/**\n     * Method for finding {@link Converter} that annotated property\n     * has indicated needs to be used for values of container type\n     * (this also means that method should only be called for properties\n     * of container types, List/Map/array properties).\n     *<p>\n     * If not null, either has to be actual\n     * {@link Converter} instance, or class for such converter;\n     * and resulting converter will be used first to convert property\n     * value to converter target type, and then serializer for that\n     * type is used for actual serialization.\n     *<p>\n     * Other notes are same as those for {@link #findSerializationConverter}\n     *\n     * @param a Annotated property (field, method) to check.\n     *\n     * @since 2.2\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findSerializationContentConverter"
+                    }
+                ],
+                "similarity": 0.09659724543444026,
+                "end_line": 935,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findSerializationContentConverter(AnnotatedMember a): Object"
+            },
+            {
+                "start_line": 760,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public List<PropertyName> findPropertyAliases(Annotated ann) { return null; }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findPropertyAliases",
+                "documentation": "/**\n     * Method called to find if given property has alias(es) defined.\n     *\n     * @return `null` if member has no information; otherwise a `List` (possibly\n     *   empty) of aliases to use.\n     *\n     * @since 2.9\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findPropertyAliases"
+                    }
+                ],
+                "similarity": 0.09640661022439251,
+                "end_line": 760,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findPropertyAliases(Annotated ann): List"
+            },
+            {
+                "start_line": 427,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public String[] findPropertiesToIgnore(Annotated ac, boolean forSerialization) {\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findPropertiesToIgnore",
+                "documentation": "/**\n     * @param forSerialization True if requesting properties to ignore for serialization;\n     *   false if for deserialization\n     * @param ac Annotated class to introspect\n     *\n     * @return Array of names of properties to ignore\n     *\n     * @since 2.6\n     *\n     * @deprecated Since 2.8, use {@link #findPropertyIgnoralByName} instead\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findPropertiesToIgnore"
+                    }
+                ],
+                "similarity": 0.09438688051401123,
+                "end_line": 429,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findPropertiesToIgnore(Annotated ac, boolean forSerialization): String[]"
+            },
+            {
+                "start_line": 1305,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Object findDeserializationConverter(Annotated a) {\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findDeserializationConverter",
+                "documentation": "/**\n     * Method for finding {@link Converter} that annotated entity\n     * (property or class) has indicated to be used as part of\n     * deserialization.\n     * If not null, either has to be actual\n     * {@link Converter} instance, or class for such converter;\n     * and resulting converter will be used after Jackson has deserializer\n     * data into intermediate type (Converter input type), and Converter\n     * needs to convert this into its target type to be set as property value.\n     *<p>\n     * This feature is typically used to convert intermediate Jackson types\n     * (that default deserializers can produce) into custom type instances.\n     *<p>\n     * Note also that this feature does not necessarily work well with polymorphic\n     * type handling, or object identity handling; if such features are needed\n     * an explicit deserializer is usually better way to handle deserialization.\n     *\n     * @param a Annotated property (field, method) or class to check for\n     *   annotations\n     *\n     * @since 2.2\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findDeserializationConverter"
+                    }
+                ],
+                "similarity": 0.0943786270629893,
+                "end_line": 1307,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findDeserializationConverter(Annotated a): Object"
+            },
+            {
+                "start_line": 192,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Collection<AnnotationIntrospector> allIntrospectors() {\n        return Collections.singletonList(this);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "allIntrospectors",
+                "documentation": "/**\n     * Method that can be used to collect all \"real\" introspectors that\n     * this introspector contains, if any; or this introspector\n     * if it is not a container. Used to get access to all container\n     * introspectors in their priority order.\n     *<p>\n     * Default implementation returns a Singleton list with this introspector\n     * as contents.\n     * This usually works for sub-classes, except for proxy or delegating \"container\n     * introspectors\" which need to override implementation.\n     *\n     * @return Collection of all introspectors starting with this one, in case\n     *    multiple introspectors are chained\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "allIntrospectors"
+                    }
+                ],
+                "similarity": 0.09402192654662833,
+                "end_line": 194,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.allIntrospectors(): Collection"
+            },
+            {
+                "start_line": 771,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonProperty.Access findPropertyAccess(Annotated ann) { return null; }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findPropertyAccess",
+                "documentation": "/**\n     * Method for finding optional access definition for a property, annotated\n     * on one of its accessors. If a definition for read-only, write-only\n     * or read-write cases, visibility rules may be modified. Note, however,\n     * that even more specific annotations (like one for ignoring specific accessor)\n     * may further override behavior of the access definition.\n     *\n     * @since 2.6\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findPropertyAccess"
+                    }
+                ],
+                "similarity": 0.0936208184586468,
+                "end_line": 771,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findPropertyAccess(Annotated ann): JsonProperty"
+            },
+            {
+                "start_line": 454,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonIgnoreProperties.Value findPropertyIgnorals(Annotated ac) {\n        return JsonIgnoreProperties.Value.empty();\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findPropertyIgnorals",
+                "documentation": "/**\n     * @param ac Annotated class to introspect\n     *\n     * @since 2.8\n     * @deprecated 2.12, use {@link #findPropertyIgnoralByName} instead.\n     *\n     * @return Property ignoral settings to use;\n     *   {@code JsonIgnoreProperties.Value.empty()} for defaults (should not return {@code null})\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findPropertyIgnorals"
+                    }
+                ],
+                "similarity": 0.09261204682484084,
+                "end_line": 456,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findPropertyIgnorals(Annotated ac): JsonIgnoreProperties"
+            },
+            {
+                "start_line": 911,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Object findSerializationConverter(Annotated a) {\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findSerializationConverter",
+                "documentation": "/**\n     * Method for finding {@link Converter} that annotated entity\n     * (property or class) has indicated to be used as part of\n     * serialization. If not null, either has to be actual\n     * {@link Converter} instance, or class for such converter;\n     * and resulting converter will be used first to convert property\n     * value to converter target type, and then serializer for that\n     * type is used for actual serialization.\n     *<p>\n     * This feature is typically used to convert internal values into types\n     * that Jackson can convert.\n     *<p>\n     * Note also that this feature does not necessarily work well with polymorphic\n     * type handling, or object identity handling; if such features are needed\n     * an explicit serializer is usually better way to handle serialization.\n     *\n     * @param a Annotated property (field, method) or class to check for\n     *   annotations\n     *\n     * @since 2.2\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findSerializationConverter"
+                    }
+                ],
+                "similarity": 0.0925418358376111,
+                "end_line": 913,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findSerializationConverter(Annotated a): Object"
+            },
+            {
+                "start_line": 781,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public AnnotatedMethod resolveSetterConflict(MapperConfig<?> config,",
+                "distance": 1.25,
+                "title": null,
+                "name": "resolveSetterConflict",
+                "documentation": "/**\n     * Method called in cases where a class has two methods eligible to be used\n     * for the same logical property, and default logic is not enough to figure\n     * out clear precedence. Introspector may try to choose one to use; or, if\n     * unable, return `null` to indicate it cannot resolve the problem.\n     *\n     * @since 2.7\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "resolveSetterConflict"
+                    }
+                ],
+                "similarity": 0.09235630418644179,
+                "end_line": 781,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.resolveSetterConflict(MapperConfig config, AnnotatedMethod setter1, AnnotatedMethod setter2): AnnotatedMethod"
+            },
+            {
+                "start_line": 874,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Object findNullSerializer(Annotated am) {\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findNullSerializer",
+                "documentation": "/**\n     * Method for getting a serializer definition for serializer to use\n     * for nulls (null values) of associated property or type.\n     *\n     * @since 2.3\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findNullSerializer"
+                    }
+                ],
+                "similarity": 0.09218312489428113,
+                "end_line": 876,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findNullSerializer(Annotated am): Object"
+            },
+            {
+                "start_line": 978,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public String[] findSerializationPropertyOrder(AnnotatedClass ac) {\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findSerializationPropertyOrder",
+                "documentation": "/**\n     * Method for accessing defined property serialization order (which may be\n     * partial). May return null if no ordering is defined.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findSerializationPropertyOrder"
+                    }
+                ],
+                "similarity": 0.08937909689742543,
+                "end_line": 980,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findSerializationPropertyOrder(AnnotatedClass ac): String[]"
+            },
+            {
+                "start_line": 1237,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public boolean hasAnyGetterAnnotation(AnnotatedMethod am) {\n        return false;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "hasAnyGetterAnnotation",
+                "documentation": "/**\n     * @param am Annotated method to check\n     *\n     * @deprecated Since 2.9 Use {@link #hasAnyGetter} instead\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "hasAnyGetterAnnotation"
+                    }
+                ],
+                "similarity": 0.08779558425160529,
+                "end_line": 1239,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.hasAnyGetterAnnotation(AnnotatedMethod am): boolean"
+            },
+            {
+                "start_line": 278,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ObjectIdInfo findObjectReferenceInfo(Annotated ann, ObjectIdInfo objectIdInfo) {\n        return objectIdInfo;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findObjectReferenceInfo",
+                "documentation": "/**\n     * Method for figuring out additional properties of an Object Identity reference\n     *\n     * @param ann Annotated entity to introspect\n     * @param objectIdInfo (optional) Base Object Id information, if any; {@code null} if none\n     *\n     * @return {@link ObjectIdInfo} augmented with possible additional information\n     *\n     * @since 2.1\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findObjectReferenceInfo"
+                    }
+                ],
+                "similarity": 0.08746535315652165,
+                "end_line": 280,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findObjectReferenceInfo(Annotated ann, ObjectIdInfo objectIdInfo): ObjectIdInfo"
+            },
+            {
+                "start_line": 710,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public String findPropertyDefaultValue(Annotated ann) { return null; }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findPropertyDefaultValue",
+                "documentation": "/**\n     * Method for finding suggested default value (as simple textual serialization)\n     * for the property. While core databind does not make any use of it, it is exposed\n     * for extension modules to use: an expected use is generation of schema representations\n     * and documentation.\n     *\n     * @since 2.5\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findPropertyDefaultValue"
+                    }
+                ],
+                "similarity": 0.08739883326659247,
+                "end_line": 710,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findPropertyDefaultValue(Annotated ann): String"
+            },
+            {
+                "start_line": 817,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public PropertyName findRenameByField(MapperConfig<?> config,",
+                "distance": 1.25,
+                "title": null,
+                "name": "findRenameByField",
+                "documentation": "/**\n     * Method called on fields that are eligible candidates for properties\n     * (that is, non-static member fields), but not necessarily selected (may\n     * or may not be visible), to let fields affect name linking.\n     * Call will be made after finding implicit name (which by default is just\n     * name of the field, but may be overridden by introspector), but before\n     * discovering other accessors.\n     * If non-null name returned, it is to be used to find other accessors (getters,\n     * setters, creator parameters) and replace their implicit names with that\n     * of field's implicit name (assuming they differ).\n     *<p>\n     * Specific example (and initial use case is for support Kotlin's \"is getter\"\n     * matching (see\n     * <a href=\"https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html\">Kotling Interop</a>\n     * for details), in which field like '{@code isOpen}' would have implicit name of\n     * \"isOpen\", match getter {@code getOpen()} and setter {@code setOpen(boolean)},\n     * but use logical external name of \"isOpen\" (and not implicit name of getter/setter, \"open\"!).\n     * To achieve this, field implicit name needs to remain \"isOpen\" but this method needs\n     * to return name {@code PropertyName.construct(\"open\")}: doing so will \"pull in\" getter\n     * and/or setter, and rename them as \"isOpen\".\n     *\n     * @param config Effective mapper configuration in use\n     * @param f Field to check\n     * @param implName Implicit name of the field; usually name of field itself but not always,\n     *    used as the target name for accessors to rename.\n     *\n     * @return Name used to find other accessors to rename, if any; {@code null} to indicate\n     *    no renaming\n     *\n     * @since 2.11\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findRenameByField"
+                    }
+                ],
+                "similarity": 0.087056359645823,
+                "end_line": 817,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findRenameByField(MapperConfig config, AnnotatedField f, PropertyName implName): PropertyName"
+            },
+            {
+                "start_line": 685,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonFormat.Value findFormat(Annotated memberOrClass) {\n        return JsonFormat.Value.empty();\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findFormat",
+                "documentation": "/**\n     * Method for finding format annotations for property or class.\n     * Return value is typically used by serializers and/or\n     * deserializers to customize presentation aspects of the\n     * serialized value.\n     *\n     * @since 2.1\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findFormat"
+                    }
+                ],
+                "similarity": 0.0869880393719249,
+                "end_line": 687,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findFormat(Annotated memberOrClass): JsonFormat"
+            },
+            {
+                "start_line": 1547,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public boolean hasAnySetterAnnotation(AnnotatedMethod am) {\n        return false;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "hasAnySetterAnnotation",
+                "documentation": "/**\n     * @param am Annotated method to check\n     *\n     * @deprecated Since 2.9 use {@link #hasAnySetter} instead.\n     *\n     * @return {@code true} if \"any-setter\" annotation was found; {@code false} otherwise\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "hasAnySetterAnnotation"
+                    }
+                ],
+                "similarity": 0.08669796474527701,
+                "end_line": 1549,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.hasAnySetterAnnotation(AnnotatedMethod am): boolean"
+            },
+            {
+                "start_line": 997,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void findAndAddVirtualProperties(MapperConfig<?> config, AnnotatedClass ac,",
+                "distance": 1.25,
+                "title": null,
+                "name": "findAndAddVirtualProperties",
+                "documentation": "/**\n     * Method for adding possible virtual properties to be serialized along\n     * with regular properties.\n     *\n     * @since 2.5\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findAndAddVirtualProperties"
+                    }
+                ],
+                "similarity": 0.08624489340094524,
+                "end_line": 997,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findAndAddVirtualProperties(MapperConfig config, AnnotatedClass ac, List properties): void"
+            },
+            {
+                "start_line": 735,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Integer findPropertyIndex(Annotated ann) { return null; }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findPropertyIndex",
+                "documentation": "/**\n     * Method used to check whether specified property member (accessor\n     * or mutator) defines numeric index, and if so, what is the index value.\n     * Possible use cases for index values included use by underlying data format\n     * (some binary formats mandate use of index instead of name) and ordering\n     * of properties (for documentation, or during serialization).\n     *\n     * @since 2.4\n     *\n     * @return Explicitly specified index for the property, if any\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findPropertyIndex"
+                    }
+                ],
+                "similarity": 0.08620217783180317,
+                "end_line": 735,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findPropertyIndex(Annotated ann): Integer"
+            },
+            {
+                "start_line": 1602,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected boolean _hasAnnotation(Annotated ann, Class<? extends Annotation> annoClass) {\n        return ann.hasAnnotation(annoClass);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_hasAnnotation",
+                "documentation": "/**\n     * Method that should be used by sub-classes for ALL\n     * annotation existence access;\n     * overridable so  that sub-classes may, if they choose to, mangle actual access to\n     * block access (\"hide\" annotations) or perhaps change value seen.\n     *<p>\n     * Default implementation is simply:\n     *<code>\n     *  return annotated.hasAnnotation(annoClass);\n     *</code>\n     *\n     * @param ann Annotated entity to check for specified annotation\n     * @param annoClass Type of annotation to find\n     *\n     * @return {@code true} if specified annotation exists in given entity; {@code false} if not\n     *\n     * @since 2.5\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_hasAnnotation"
+                    }
+                ],
+                "similarity": 0.08576725792189822,
+                "end_line": 1604,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector._hasAnnotation(Annotated ann, Class annoClass): boolean"
+            },
+            {
+                "start_line": 657,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Boolean hasRequiredMarker(AnnotatedMember m) { return null; }",
+                "distance": 1.25,
+                "title": null,
+                "name": "hasRequiredMarker",
+                "documentation": "/**\n     * Method that can be called to check whether this member has\n     * an annotation that suggests whether value for matching property\n     * is required or not.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "hasRequiredMarker"
+                    }
+                ],
+                "similarity": 0.08533957614138023,
+                "end_line": 657,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.hasRequiredMarker(AnnotatedMember m): Boolean"
+            },
+            {
+                "start_line": 886,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonSerialize.Typing findSerializationTyping(Annotated a) {\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findSerializationTyping",
+                "documentation": "/**\n     * Method for accessing declared typing mode annotated (if any).\n     * This is used for type detection, unless more granular settings\n     * (such as actual exact type; or serializer to use which means\n     * no type information is needed) take precedence.\n     *\n     * @return Typing mode to use, if annotation is found; null otherwise\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findSerializationTyping"
+                    }
+                ],
+                "similarity": 0.08524869208335474,
+                "end_line": 888,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findSerializationTyping(Annotated a): JsonSerialize"
+            },
+            {
+                "start_line": 335,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonIgnoreProperties.Value findPropertyIgnoralByName(MapperConfig<?> config, Annotated ann)",
+                "distance": 1.25,
+                "title": null,
+                "name": "findPropertyIgnoralByName",
+                "documentation": "/**\n     * Method for finding information about properties to ignore either by\n     * name, or by more general specification (\"ignore all unknown\").\n     * This method combines multiple aspects of ignorals and deprecates\n     * earlier methods such as\n     * {@link #findPropertiesToIgnore(Annotated, boolean)} and\n     * {@link #findIgnoreUnknownProperties(AnnotatedClass)}.\n     *\n     * @param config Configuration settings in effect (for serialization or deserialization)\n     * @param ann Annotated entity (Class, Accessor) to introspect\n     *\n     * @return Property ignoral settings to use;\n     *   {@code JsonIgnoreProperties.Value.empty()} for defaults (should not return {@code null})\n     *\n     * @since 2.12 (to replace {@code findPropertyIgnorals()})\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findPropertyIgnoralByName"
+                    }
+                ],
+                "similarity": 0.08474406806616352,
+                "end_line": 335,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findPropertyIgnoralByName(MapperConfig config, Annotated ann): JsonIgnoreProperties"
+            },
+            {
+                "start_line": 1468,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Boolean findMergeInfo(Annotated ann) {\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findMergeInfo",
+                "documentation": "/**\n     * Method for finding merge settings for property, if any.\n     *\n     * @param ann Annotated entity to check\n     *\n     * @return {@code Boolean.TRUE} or {@code Boolean.FALSE} if explicit\n     *    merge enable/disable found; {@code null} otherwise.\n     *\n     * @since 2.9\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findMergeInfo"
+                    }
+                ],
+                "similarity": 0.08466530553356416,
+                "end_line": 1470,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findMergeInfo(Annotated ann): Boolean"
+            },
+            {
+                "start_line": 722,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public String findPropertyDescription(Annotated ann) { return null; }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findPropertyDescription",
+                "documentation": "/**\n     * Method used to check whether specified property member (accessor\n     * or mutator) defines human-readable description to use for documentation.\n     * There are no further definitions for contents; for example, whether\n     * these may be marked up using HTML is not defined.\n     *\n     * @return Human-readable description, if any.\n     *\n     * @since 2.3\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findPropertyDescription"
+                    }
+                ],
+                "similarity": 0.08387170688042138,
+                "end_line": 722,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findPropertyDescription(Annotated ann): String"
+            },
+            {
+                "start_line": 1618,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected boolean _hasOneOf(Annotated ann, Class<? extends Annotation>[] annoClasses) {\n        return ann.hasOneOf(annoClasses);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_hasOneOf",
+                "documentation": "/**\n     * Alternative lookup method that is used to see if annotation has at least one of\n     * annotations of types listed in second argument.\n     *\n     * @param ann Annotated entity to check for specified annotation\n     * @param annoClasses Types of annotation to find\n     *\n     * @return {@code true} if at least one of specified annotation exists in given entity;\n     *    {@code false} otherwise\n     *\n     * @since 2.7\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_hasOneOf"
+                    }
+                ],
+                "similarity": 0.08337360762108388,
+                "end_line": 1620,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector._hasOneOf(Annotated ann, Class[] annoClasses): boolean"
+            },
+            {
+                "start_line": 852,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Object findKeySerializer(Annotated am) {\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findKeySerializer",
+                "documentation": "/**\n     * Method for getting a serializer definition for keys of associated {@code java.util.Map} property.\n     * Type of definition is either instance (of type {@link JsonSerializer})\n     * or Class (of type  {@code Class<JsonSerializer>});\n     * if value of different type is returned, a runtime exception may be thrown by caller.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findKeySerializer"
+                    }
+                ],
+                "similarity": 0.08188865410025614,
+                "end_line": 854,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findKeySerializer(Annotated am): Object"
+            },
+            {
+                "start_line": 442,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Boolean findIgnoreUnknownProperties(AnnotatedClass ac) { return null; }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findIgnoreUnknownProperties",
+                "documentation": "/**\n     * Method for checking whether an annotation indicates that all unknown properties\n     * should be ignored.\n     *\n     * @param ac Annotated class to introspect\n     *\n     * @return True if class has something indicating \"ignore [all] unknown properties\"\n     *\n     * @deprecated Since 2.8, use {@link #findPropertyIgnoralByName} instead\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findIgnoreUnknownProperties"
+                    }
+                ],
+                "similarity": 0.08187338177699581,
+                "end_line": 442,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findIgnoreUnknownProperties(AnnotatedClass ac): Boolean"
+            },
+            {
+                "start_line": 476,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public VisibilityChecker<?> findAutoDetectVisibility(AnnotatedClass ac,",
+                "distance": 1.25,
+                "title": null,
+                "name": "findAutoDetectVisibility",
+                "documentation": "/**\n     * Method for checking if annotations indicate changes to minimum visibility levels\n     * needed for auto-detecting property elements (fields, methods, constructors).\n     * A baseline checker is given, and introspector is to either return it as is\n     * (if no annotations are found), or build and return a derived instance (using\n     * checker's build methods).\n     *\n     * @param ac Annotated class to introspect\n     * @param checker Default visibility settings in effect before any override\n     *\n     * @return Visibility settings after possible annotation-based overrides\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findAutoDetectVisibility"
+                    }
+                ],
+                "similarity": 0.08170885497200678,
+                "end_line": 476,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findAutoDetectVisibility(AnnotatedClass ac, VisibilityChecker checker): VisibilityChecker"
+            },
+            {
+                "start_line": 1266,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Object findKeyDeserializer(Annotated am) {\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findKeyDeserializer",
+                "documentation": "/**\n     * Method for getting a deserializer definition for keys of\n     * associated <code>Map</code> property.\n     * Type of definition is either instance (of type {@link JsonDeserializer})\n     * or Class (of type  {@code Class<JsonDeserializer>});\n     * if value of different\n     * type is returned, a runtime exception may be thrown by caller.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findKeyDeserializer"
+                    }
+                ],
+                "similarity": 0.08163092922210885,
+                "end_line": 1268,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findKeyDeserializer(Annotated am): Object"
+            },
+            {
+                "start_line": 383,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Object findNamingStrategy(AnnotatedClass ac) { return null; }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findNamingStrategy",
+                "documentation": "/**\n     * Method for finding {@link PropertyNamingStrategy} for given\n     * class, if any specified by annotations; and if so, either return\n     * a {@link PropertyNamingStrategy} instance, or Class to use for\n     * creating instance\n     *\n     * @param ac Annotated class to introspect\n     *\n     * @return Sub-class or instance of {@link PropertyNamingStrategy}, if one\n     *   is specified for given class; null if not.\n     *\n     * @since 2.1\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "AnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "AnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findNamingStrategy"
+                    }
+                ],
+                "similarity": 0.08129305150774743,
+                "end_line": 383,
+                "signature": "com.fasterxml.jackson.databind.AnnotationIntrospector.findNamingStrategy(AnnotatedClass ac): Object"
+            }
+        ],
+        "classes": [],
+        "issues": [
+            {
+                "content": "### Describe your Issue\n\nIf a property has multiple naming annotations -- such as standard `@JsonProperty`, and `@JacksonXmlProperty` from `jackson-dataformat-xml` -- and there are 2 `AnnotationIntrospector`s, then `AnnotationIntrospectorPair` should merge parts so that if the Primary introspector has no value (empty String or null), value from secondary should be used, for:\r\n\r\n1. Local name\r\n2. Namespace\r\n\r\nso that, for example:\r\n\r\n```\r\n@JacksonXmlProperty(isAttribute=true)\r\n@JsonProperty(namespace=\"uri:ns1\", value=\"prop\")\r\npublic int value;\r\n```\r\n\r\nwhere first annotation has precedence (annotation introspector that handles it is the first introspector configured for `AnnotationIntrospectorPair`) we should have localName and namespace from `@JsonProperty` since `JacksonXmlProperty` defines neither (that is, has defaults of \"\").\r\nCurrently this is not the case.\r\n\n",
+                "distance": 0,
+                "title": "`@JsonProperty` and equivalents should merge with `AnnotationIntrospectorPair`",
+                "name": "root",
+                "path": [],
+                "issue_id": "root",
+                "similarity": 2.0,
+                "type": "issue"
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "4364",
+                "type": "issue",
+                "content": "### Describe your Issue\n\nIf a property has multiple naming annotations -- such as standard `@JsonProperty`, and `@JacksonXmlProperty` from `jackson-dataformat-xml` -- and there are 2 `AnnotationIntrospector`s, then `AnnotationIntrospectorPair` should merge parts so that if the Primary introspector has no value (empty String or null), value from secondary should be used, for:\r\n\r\n1. Local name\r\n2. Namespace\r\n\r\nso that, for example:\r\n\r\n```\r\n@JacksonXmlProperty(isAttribute=true)\r\n@JsonProperty(namespace=\"uri:ns1\", value=\"prop\")\r\npublic int value;\r\n```\r\n\r\nwhere first annotation has precedence (annotation introspector that handles it is the first introspector configured for `AnnotationIntrospectorPair`) we should have localName and namespace from `@JsonProperty` since `JacksonXmlProperty` defines neither (that is, has defaults of \"\").\r\nCurrently this is not the case.\r\n\n\n",
+                "source_code": null,
+                "distance": 0.25,
+                "title": "`@JsonProperty` and equivalents should merge with `AnnotationIntrospectorPair`",
+                "name": "issue#4364",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#4364"
+                    }
+                ],
+                "similarity": 0.7523564428380074,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "628",
+                "type": "issue",
+                "content": "All the `ObjectMapper.readValue()` methods are missing Javadoc so it's not clear what value they return in case of failure. Specifically, what happens if the file is missing? The root node contains the wrong type? The file exists but is empty? Am I supposed to expect null? Or an exception? Or nothing? :)\n\n\n\nComment by cowtowncoder:\nIn case of failure, exception will be thrown. This would cover missing file, or mismatch. Missing file would probably produce `FileNotFoundException` (an `IOException` sub-class). Mismatch should produce `JsonMappingException`.\nFinally, empty `File` should throw a `JsonMappingException` as there is no value to map.\n\nSo return value should only exist in case databinder is able to find content to Map, and it maps cleanly to the target type.\n\nPull requests accepted for documentation improvements; but I'll keep this in mind for additions if/when I work on these methods.\n\n\nComment by cowtowncoder:\nTried to improve javadocs. PRs welcome for further improvements.\n\n\nComment by cowwoc:\n@cowtowncoder Thank you very much for the update. The only nitpick is that normally exceptions are documented using `@throws` instead of an inline description. That said, the text helps a lot! Thanks again.\n\n\nComment by cowtowncoder:\nTrue, I'll go ahead and see if I can improve it wrt annotations part.\n",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "Document ObjectMapper.readValue()",
+                "name": "issue#628",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#4364"
+                    },
+                    {
+                        "start_node": "issue#4364",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#628"
+                    }
+                ],
+                "similarity": 0.24520057810144852,
+                "end_line": null,
+                "signature": null
+            }
+        ]
+    },
+    "artifact_stats": {
+        "skipped_due_to_time": 6,
+        "valid_related_items": 23
+    }
+}

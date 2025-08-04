@@ -1,0 +1,50 @@
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
+@@ -377,7 +377,7 @@
+      */
+ 
+     @Deprecated // since 2.12, use overloaded variant that does NOT take target type
+-    protected final boolean _parseBooleanPrimitive(DeserializationContext ctxt,
++    protected final boolean _parseBooleanPrimitive(DeserializationContext ctxt, JsonParser p, Class<?> targetType) throws IOException
+             JsonParser p, Class<?> targetType) throws IOException {
+         return _parseBooleanPrimitive(p, ctxt);
+     }
+@@ -386,7 +386,7 @@
+      * @param ctxt Deserialization context for accessing configuration
+      * @param p Underlying parser
+      */
+-    protected final boolean _parseBooleanPrimitive(JsonParser p, DeserializationContext ctxt)
++    protected final boolean _parseBooleanPrimitive(JsonParser p, DeserializationContext ctxt) throws IOException
+             throws IOException
+     {
+         String text;
+@@ -496,7 +496,7 @@
+      *
+      * @since 2.12
+      */
+-    protected final Boolean _parseBoolean(JsonParser p, DeserializationContext ctxt,
++    protected final Boolean _parseBoolean(JsonParser p, DeserializationContext ctxt, Class<?> targetType) throws IOException
+             Class<?> targetType)
+         throws IOException
+     {
+@@ -2039,7 +2039,19 @@
+         //     but for now just fall through
+     }
+ 
+-    protected void _verifyEndArrayForSingle(JsonParser p, DeserializationContext ctxt) throws IOException
++    protected void _verifyEndArrayForSingle(JsonParser p, DeserializationContext ctxt) throws IOException {
++        if (ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)) {
++            if (p.getParsingContext().inArray()) {
++                ctxt.reportInputMismatch(handledType(),
++                    "Cannot unwrap array - already at nesting level %d (max allowed %d)",
++                    p.getParsingContext().getNestingDepth(),
++                    ctxt.getMaxNestingDepth());
++            }
++            if (p.nextToken() != JsonToken.END_ARRAY) {
++                handleMissingEndArrayForSingle(p, ctxt);
++            }
++        }
++    }
+     {
+         JsonToken t = p.nextToken();
+         if (t != JsonToken.END_ARRAY) {

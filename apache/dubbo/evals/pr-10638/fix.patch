@@ -1,0 +1,13 @@
+--- a/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java
++++ b/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java
+@@ -129,6 +129,10 @@
+ 
+         if (pojo instanceof Class) {
+             return ((Class) pojo).getName();
++        }
++        
++        if (pojo instanceof LocalDateTime || pojo instanceof LocalDate || pojo instanceof LocalTime) {
++            return pojo.toString();
+         }
+ 
+         Object o = history.get(pojo);

@@ -1,0 +1,37 @@
+Based on the issue, the bug is in `JsonWriter.java` where the `value(double)` method doesn't respect the `lenient` flag when checking for NaN/Infinity values, while the `value(Number)` method does. This creates an inconsistency where you can write these special values through boxing but not directly.
+
+Here's the fix to make `value(double)` respect the `lenient` flag like `value(Number)` does:
+
+```java
+### playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonWriter.java
+- start_line : 493
+- end_line : 501
+<<<<<<< SEARCH
+  public JsonWriter value(double value) throws IOException {
+    if (Double.isNaN(value) || Double.isInfinite(value)) {
+      throw new IllegalArgumentException("Numeric values must be finite, but was " + value);
+    }
+    writeDeferredName();
+    beforeValue();
+    out.append(Double.toString(value));
+    return this;
+  }
+=======
+  public JsonWriter value(double value) throws IOException {
+    if (!lenient && (Double.isNaN(value) || Double.isInfinite(value))) {
+      throw new IllegalArgumentException("Numeric values must be finite, but was " + value);
+    }
+    writeDeferredName();
+    beforeValue();
+    out.append(Double.toString(value));
+    return this;
+  }
+>>>>>>> REPLACE
+```
+
+This change:
+1. Adds the `!lenient` check to match the behavior of `value(Number)`
+2. Only throws the exception when not in lenient mode
+3. Maintains all other functionality exactly the same
+
+The fix ensures consistent behavior between both methods - they will both allow NaN/Infinity values when in lenient mode, and both reject them when not in lenient mode. This removes the need to box doubles just to write these special values.

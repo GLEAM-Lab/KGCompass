@@ -1,0 +1,22 @@
+--- a/src/main/java/com/fasterxml/jackson/databind/node/ObjectNode.java
++++ b/src/main/java/com/fasterxml/jackson/databind/node/ObjectNode.java
+@@ -75,18 +75,7 @@
+         if (ptr != null) {
+             return withObject(ptr);
+         }
+-        JsonNode n = _children.get(exprOrProperty);
+-        if (n != null) {
+-            if (n instanceof ObjectNode) {
+-                return (ObjectNode) n;
+-            }
+-            throw new UnsupportedOperationException("Property '" + exprOrProperty
+-                + "' has value that is not of type `ObjectNode` (but `" + n
+-                .getClass().getName() + "`)");
+-        }
+-        ObjectNode result = objectNode();
+-        _children.put(exprOrProperty, result);
+-        return result;
++        return withObjectProperty(exprOrProperty);
+     }
+ 
+     @SuppressWarnings("unchecked")

@@ -1,0 +1,29 @@
+Based on the issue, the problem is that when `JsonFactory.setStreamReadConstraints()` is called, it doesn't update the symbol table (`_rootCharSymbols`) with the new constraints. The symbol table is created once during initialization and never updated when constraints change.
+
+The fix needs to update the symbol table when new constraints are set. Here are the necessary edits:
+
+```java
+### playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java
+- start_line : 872
+- end_line : 875
+<<<<<<< SEARCH
+    public JsonFactory setStreamReadConstraints(StreamReadConstraints src) {
+        _streamReadConstraints = Objects.requireNonNull(src);
+        return this;
+    }
+=======
+    public JsonFactory setStreamReadConstraints(StreamReadConstraints src) {
+        _streamReadConstraints = Objects.requireNonNull(src);
+        if (_rootCharSymbols != null) {
+            _rootCharSymbols = CharsToNameCanonicalizer.createRoot(this);
+        }
+        return this;
+    }
+>>>>>>> REPLACE
+```
+
+This change ensures that whenever stream read constraints are updated via `setStreamReadConstraints()`, the symbol table is recreated with the new constraints. The recreation is done by calling `createRoot()` again, which will pick up the new constraints from the factory.
+
+The fix maintains backward compatibility while ensuring the constraints are properly applied to the symbol table. The null check for `_rootCharSymbols` is just defensive programming in case the method is called before initialization (though that shouldn't happen in normal usage).
+
+This matches the behavior seen when using the builder approach, where the symbol table is created with the correct constraints during construction. Now both approaches will work consistently.

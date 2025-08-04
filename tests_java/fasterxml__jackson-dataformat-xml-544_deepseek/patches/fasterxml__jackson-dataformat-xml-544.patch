@@ -1,0 +1,32 @@
+Based on the issue description, this appears to be a bug in Jackson's XML handling where `@JacksonXmlText` annotation is not being respected when paired with `@JsonRawValue`. The issue occurs in the XML serialization logic where these two annotations conflict in their handling.
+
+Since no specific code files were provided, I'll make an educated guess about where this fix would need to be implemented. The issue likely stems from the XML serialization logic in Jackson's dataformat-xml module, specifically in how it handles text content versus element content when both annotations are present.
+
+The fix would need to ensure that when both `@JacksonXmlText` and `@JsonRawValue` are present, the XML text content handling takes precedence over the raw value wrapping. Here's a proposed fix:
+
+```java
+### com/fasterxml/jackson/dataformat/xml/ser/XmlBeanPropertyWriter.java
+<<<<<<< SEARCH
+        if (_isText) {
+            jgen.writeRawValue(value);
+        } else {
+            _serializeAsElement(value, jgen, provider);
+        }
+=======
+        if (_isText) {
+            // For text content, write directly without wrapping even if JsonRawValue is present
+            jgen.writeRaw(value.toString());
+        } else {
+            _serializeAsElement(value, jgen, provider);
+        }
+>>>>>>> REPLACE
+```
+
+This change modifies the behavior when `_isText` (which comes from `@JacksonXmlText`) is true to write the raw content directly without JSON raw value processing. The key differences are:
+
+1. Uses `writeRaw()` instead of `writeRawValue()` to avoid JSON-specific processing
+2. Explicitly converts the value to String to ensure proper XML text content handling
+
+This should make the XML text content take precedence over the JSON raw value handling, producing the expected output where the XML content is written directly as text content of the parent element rather than being wrapped in a `<value>` element.
+
+Note: Without access to the actual source files, this is a speculative fix based on the described behavior. The exact location and implementation might need adjustment based on the actual codebase structure.

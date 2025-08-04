@@ -1,0 +1,2134 @@
+{
+    "related_entities": {
+        "methods": [
+            {
+                "start_line": 212,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public String[] findEnumValues(Class<?> enumType, Enum<?>[] enumValues, String[] names) {\n        HashMap<String,String> expl = null;\n        for (Field f : enumType.getDeclaredFields()) {\n            if (!f.isEnumConstant()) {\n                continue;\n            }\n            JsonProperty prop = f.getAnnotation(JsonProperty.class);\n            if (prop == null) {\n                continue;\n            }\n            String n = prop.value();\n            if (n.isEmpty()) {\n                continue;\n            }\n            if (expl == null) {\n                expl = new HashMap<String,String>();\n            }\n            expl.put(f.getName(), n);\n        }\n        // and then stitch them together if and as necessary\n        if (expl != null) {\n            for (int i = 0, end = enumValues.length; i < end; ++i) {\n                String defName = enumValues[i].name();\n                String explValue = expl.get(defName);\n                if (explValue != null) {\n                    names[i] = explValue;\n                }\n            }\n        }\n        return names;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findEnumValues",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findEnumValues"
+                    }
+                ],
+                "similarity": 0.11170754005324723,
+                "end_line": 242,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector.findEnumValues(Class enumType, Enum[] enumValues, String[] names): String[]"
+            },
+            {
+                "start_line": 422,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Object findEnumNamingStrategy(MapperConfig<?> config, AnnotatedClass ac) {\n        EnumNaming ann = _findAnnotation(ac, EnumNaming.class);\n        return (ann == null) ? null : ann.value();\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findEnumNamingStrategy",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findEnumNamingStrategy"
+                    }
+                ],
+                "similarity": 0.09076706336758669,
+                "end_line": 425,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector.findEnumNamingStrategy(MapperConfig config, AnnotatedClass ac): Object"
+            },
+            {
+                "start_line": 887,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private JsonInclude.Value _refinePropertyInclusion(Annotated a, JsonInclude.Value value) {\n        JsonSerialize ann = _findAnnotation(a, JsonSerialize.class);\n        if (ann != null) {\n            switch (ann.include()) {\n            case ALWAYS:\n                return value.withValueInclusion(JsonInclude.Include.ALWAYS);\n            case NON_NULL:\n                return value.withValueInclusion(JsonInclude.Include.NON_NULL);\n            case NON_DEFAULT:\n                return value.withValueInclusion(JsonInclude.Include.NON_DEFAULT);\n            case NON_EMPTY:\n                return value.withValueInclusion(JsonInclude.Include.NON_EMPTY);\n            case DEFAULT_INCLUSION:\n            default:\n            }\n        }\n        return value;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_refinePropertyInclusion",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_refinePropertyInclusion"
+                    }
+                ],
+                "similarity": 0.08999545387038628,
+                "end_line": 904,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector._refinePropertyInclusion(Annotated a, JsonInclude value): JsonInclude"
+            },
+            {
+                "start_line": 185,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public String findEnumValue(Enum<?> value)",
+                "distance": 1.25,
+                "title": null,
+                "name": "findEnumValue",
+                "documentation": "/**\n     * Since 2.6, we have supported use of {@link JsonProperty} for specifying\n     * explicit serialized name\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findEnumValue"
+                    }
+                ],
+                "similarity": 0.08569782608128255,
+                "end_line": 185,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector.findEnumValue(Enum value): String"
+            },
+            {
+                "start_line": 296,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void findEnumAliases(MapperConfig<?> config, AnnotatedClass annotatedClass,",
+                "distance": 1.25,
+                "title": null,
+                "name": "findEnumAliases",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findEnumAliases"
+                    }
+                ],
+                "similarity": 0.08566114883339943,
+                "end_line": 296,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector.findEnumAliases(MapperConfig config, AnnotatedClass annotatedClass, Enum[] enumValues, String[][] aliasList): void"
+            },
+            {
+                "start_line": 1487,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonCreator.Mode findCreatorAnnotation(MapperConfig<?> config, Annotated a) {\n        JsonCreator ann = _findAnnotation(a, JsonCreator.class);\n        if (ann != null) {\n            return ann.mode();\n        }\n        if (_cfgConstructorPropertiesImpliesCreator\n                && config.isEnabled(MapperFeature.INFER_CREATOR_FROM_CONSTRUCTOR_PROPERTIES)\n            ) {\n            if (a instanceof AnnotatedConstructor) {\n                if (_java7Helper != null) {\n                    Boolean b = _java7Helper.hasCreatorAnnotation(a);\n                    if ((b != null) && b.booleanValue()) {\n                        // 13-Sep-2016, tatu: Judgment call, but I don't think JDK ever implies\n                        //    use of delegate; assumes as-properties implicitly\n                        return JsonCreator.Mode.PROPERTIES;\n                    }\n                }\n            }\n        }\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findCreatorAnnotation",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findCreatorAnnotation"
+                    }
+                ],
+                "similarity": 0.08535466740124198,
+                "end_line": 1507,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector.findCreatorAnnotation(MapperConfig config, Annotated a): JsonCreator"
+            },
+            {
+                "start_line": 329,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Enum<?> findDefaultEnumValue(AnnotatedClass annotatedClass, Enum<?>[] enumValues) {\n        for (Annotated field : annotatedClass.fields()) {\n            if (!field.getType().isEnumType()) {\n                continue;\n            }\n            JsonEnumDefaultValue found = _findAnnotation(field, JsonEnumDefaultValue.class);\n            if (found == null) {\n                continue;\n            }\n            // Return the \"first\" enum with annotation\n            for (Enum<?> enumValue : enumValues) {\n                if (enumValue.name().equals(field.getName())) {\n                    return enumValue;\n                }\n            }\n        }\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findDefaultEnumValue",
+                "documentation": "/**\n     * Finds the Enum value that should be considered the default value, if possible.\n     * <p>\n     * This implementation relies on {@link JsonEnumDefaultValue} annotation to determine the default value if present.\n     *\n     * @param annotatedClass The Enum class to scan for the default value annotation.\n     * @return null if none found or it's not possible to determine one.\n     * @since 2.16\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findDefaultEnumValue"
+                    }
+                ],
+                "similarity": 0.0844532365238704,
+                "end_line": 346,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector.findDefaultEnumValue(AnnotatedClass annotatedClass, Enum[] enumValues): Enum"
+            },
+            {
+                "start_line": 986,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public <T> T readValue(JsonParser p, JavaType type) throws IOException {\n        JsonDeserializer<Object> deser = findRootValueDeserializer(type);\n        if (deser == null) {\n            return reportBadDefinition(type,\n                    \"Could not find JsonDeserializer for type \"+ClassUtil.getTypeDescription(type));\n        }\n        return (T) deser.deserialize(p, this);\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "readValue",
+                "documentation": "/**\n     * @since 2.4\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    }
+                ],
+                "similarity": 0.08405027661999077,
+                "end_line": 993,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.readValue(JsonParser p, JavaType type): T"
+            },
+            {
+                "start_line": 1308,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JavaType refineDeserializationType(final MapperConfig<?> config,",
+                "distance": 1.25,
+                "title": null,
+                "name": "refineDeserializationType",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "refineDeserializationType"
+                    }
+                ],
+                "similarity": 0.08375481258752242,
+                "end_line": 1308,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector.refineDeserializationType(MapperConfig config, Annotated a, JavaType baseType): JavaType"
+            },
+            {
+                "start_line": 245,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public String[] findEnumValues(MapperConfig<?> config, AnnotatedClass annotatedClass,",
+                "distance": 1.25,
+                "title": null,
+                "name": "findEnumValues",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findEnumValues"
+                    }
+                ],
+                "similarity": 0.07772584246656816,
+                "end_line": 245,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector.findEnumValues(MapperConfig config, AnnotatedClass annotatedClass, Enum[] enumValues, String[] names): String[]"
+            },
+            {
+                "start_line": 158,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public boolean isAnnotationBundle(Annotation ann) {\n        // 22-Sep-2015, tatu: Caching here has modest effect on JavaSE, and only\n        //   mostly in degenerate cases where introspection used more often than\n        //   it should (like recreating ObjectMapper once per read/write).\n        //   But it may be more beneficial on platforms like Android (should verify)\n        final Class<?> type = ann.annotationType();\n        final String typeName = type.getName();\n        Boolean b = _annotationsInside.get(typeName);\n        if (b == null) {\n            b = type.getAnnotation(JacksonAnnotationsInside.class) != null;\n            _annotationsInside.putIfAbsent(typeName, b);\n        }\n        return b.booleanValue();\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "isAnnotationBundle",
+                "documentation": "/**\n     * Annotations with meta-annotation {@link JacksonAnnotationsInside}\n     * are considered bundles.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "isAnnotationBundle"
+                    }
+                ],
+                "similarity": 0.07560173037664686,
+                "end_line": 171,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector.isAnnotationBundle(Annotation ann): boolean"
+            },
+            {
+                "start_line": 932,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JavaType refineSerializationType(final MapperConfig<?> config,",
+                "distance": 1.25,
+                "title": null,
+                "name": "refineSerializationType",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "refineSerializationType"
+                    }
+                ],
+                "similarity": 0.07263728804393053,
+                "end_line": 932,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector.refineSerializationType(MapperConfig config, Annotated a, JavaType baseType): JavaType"
+            },
+            {
+                "start_line": 567,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JacksonInject.Value findInjectableValue(AnnotatedMember m) {\n        JacksonInject ann = _findAnnotation(m, JacksonInject.class);\n        if (ann == null) {\n            return null;\n        }\n        // Empty String means that we should use name of declared value class.\n        JacksonInject.Value v = JacksonInject.Value.from(ann);\n        if (!v.hasId()) {\n            Object id;\n            // slight complication; for setters, type\n            if (!(m instanceof AnnotatedMethod)) {\n                id = m.getRawType().getName();\n            } else {\n                AnnotatedMethod am = (AnnotatedMethod) m;\n                if (am.getParameterCount() == 0) { // getter\n                    id = m.getRawType().getName();\n                } else { // setter\n                    id = am.getRawParameterType(0).getName();\n                }\n            }\n            v = v.withId(id);\n        }\n        return v;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findInjectableValue",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findInjectableValue"
+                    }
+                ],
+                "similarity": 0.07072755376103794,
+                "end_line": 590,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector.findInjectableValue(AnnotatedMember m): JacksonInject"
+            },
+            {
+                "start_line": 272,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void findEnumAliases(Class<?> enumType, Enum<?>[] enumValues, String[][] aliasList)",
+                "distance": 1.25,
+                "title": null,
+                "name": "findEnumAliases",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findEnumAliases"
+                    }
+                ],
+                "similarity": 0.0693544907180465,
+                "end_line": 272,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector.findEnumAliases(Class enumType, Enum[] enumValues, String[][] aliasList): void"
+            },
+            {
+                "start_line": 610,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/DeserializerCache.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonDeserializer<Object> _handleUnknownValueDeserializer(DeserializationContext ctxt, JavaType type)",
+                "distance": 1.5,
+                "title": null,
+                "name": "_handleUnknownValueDeserializer",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "_createAndCache2"
+                    },
+                    {
+                        "start_node": "_createAndCache2",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializerCache"
+                    },
+                    {
+                        "start_node": "DeserializerCache",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_handleUnknownValueDeserializer"
+                    }
+                ],
+                "similarity": 0.06831394067609538,
+                "end_line": 610,
+                "signature": "com.fasterxml.jackson.databind.deser.DeserializerCache._handleUnknownValueDeserializer(DeserializationContext ctxt, JavaType type): JsonDeserializer"
+            },
+            {
+                "start_line": 460,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public List<PropertyName> findPropertyAliases(Annotated m) {\n        JsonAlias ann = _findAnnotation(m, JsonAlias.class);\n        if (ann == null) {\n            return null;\n        }\n        String[] strs = ann.value();\n        final int len = strs.length;\n        if (len == 0) {\n            return Collections.emptyList();\n        }\n        List<PropertyName> result = new ArrayList<>(len);\n        for (int i = 0; i < len; ++i) {\n            result.add(PropertyName.construct(strs[i]));\n        }\n        return result;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findPropertyAliases",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findPropertyAliases"
+                    }
+                ],
+                "similarity": 0.06766167137903997,
+                "end_line": 475,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector.findPropertyAliases(Annotated m): List"
+            },
+            {
+                "start_line": 569,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/DeserializerCache.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private boolean _hasCustomHandlers(JavaType t) {\n        if (t.isContainerType()) {\n            // First: value types may have both value and type handlers\n            JavaType ct = t.getContentType();\n            if (ct != null) {\n                if ((ct.getValueHandler() != null) || (ct.getTypeHandler() != null)) {\n                    return true;\n                }\n            }\n            // Second: map(-like) types may have value handler for key (but not type; keys are untyped)\n            if (t.isMapLikeType()) {\n                JavaType kt = t.getKeyType();\n                if (kt.getValueHandler() != null) {\n                    return true;\n                }\n            }\n        }\n        return false;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "_hasCustomHandlers",
+                "documentation": "/**\n     * Helper method used to prevent both caching and cache lookups for structured\n     * types that have custom value handlers\n     *\n     * @since 2.8.11\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "_createAndCache2"
+                    },
+                    {
+                        "start_node": "_createAndCache2",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializerCache"
+                    },
+                    {
+                        "start_node": "DeserializerCache",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "_hasCustomHandlers"
+                    }
+                ],
+                "similarity": 0.06669513575692285,
+                "end_line": 587,
+                "signature": "com.fasterxml.jackson.databind.deser.DeserializerCache._hasCustomHandlers(JavaType t): boolean"
+            },
+            {
+                "start_line": 336,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/DeserializerCache.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonDeserializer<Object> _createDeserializer(DeserializationContext ctxt,",
+                "distance": 1.5,
+                "title": null,
+                "name": "_createDeserializer",
+                "documentation": "/**\n     * Method that does the heavy lifting of checking for per-type annotations,\n     * find out full type, and figure out which actual factory method\n     * to call.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "_createAndCache2"
+                    },
+                    {
+                        "start_node": "_createAndCache2",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializerCache"
+                    },
+                    {
+                        "start_node": "DeserializerCache",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "_createDeserializer"
+                    }
+                ],
+                "similarity": 0.06642558110487251,
+                "end_line": 336,
+                "signature": "com.fasterxml.jackson.databind.deser.DeserializerCache._createDeserializer(DeserializationContext ctxt, DeserializerFactory factory, JavaType type): JsonDeserializer"
+            },
+            {
+                "start_line": 612,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public boolean hasValueDeserializerFor(JavaType type, AtomicReference<Throwable> cause) {\n        try {\n            return _cache.hasValueDeserializerFor(this, _factory, type);\n        } catch (DatabindException e) {\n            if (cause != null) {\n                cause.set(e);\n            }\n        } catch (RuntimeException e) {\n            if (cause == null) { // earlier behavior\n                throw e;\n            }\n            cause.set(e);\n        }\n        return false;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "hasValueDeserializerFor",
+                "documentation": "/**\n     * Method for checking whether we could find a deserializer\n     * for given type.\n     *\n     * @param type Type to check\n     * @param cause (optional) Reference set to root cause if no deserializer\n     *    could be found due to exception (to find the reason for failure)\n     *\n     * @since 2.3\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "hasValueDeserializerFor"
+                    }
+                ],
+                "similarity": 0.06599612245205982,
+                "end_line": 626,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.hasValueDeserializerFor(JavaType type, AtomicReference cause): boolean"
+            },
+            {
+                "start_line": 111,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JacksonAnnotationIntrospector() { }",
+                "distance": 1.0,
+                "title": null,
+                "name": "JacksonAnnotationIntrospector",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    }
+                ],
+                "similarity": 0.06599201250861865,
+                "end_line": 111,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector()"
+            },
+            {
+                "start_line": 241,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/DeserializerCache.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonDeserializer<Object> _createAndCacheValueDeserializer(DeserializationContext ctxt,",
+                "distance": 1.5,
+                "title": null,
+                "name": "_createAndCacheValueDeserializer",
+                "documentation": "/**\n     * Method that will try to create a deserializer for given type,\n     * and resolve and cache it if necessary\n     *\n     * @param ctxt Currently active deserialization context\n     * @param type Type of property to deserialize\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "_createAndCache2"
+                    },
+                    {
+                        "start_node": "_createAndCache2",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializerCache"
+                    },
+                    {
+                        "start_node": "DeserializerCache",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_createAndCacheValueDeserializer"
+                    }
+                ],
+                "similarity": 0.06423126711941808,
+                "end_line": 241,
+                "signature": "com.fasterxml.jackson.databind.deser.DeserializerCache._createAndCacheValueDeserializer(DeserializationContext ctxt, DeserializerFactory factory, JavaType type): JsonDeserializer"
+            },
+            {
+                "start_line": 279,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/DeserializerCache.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonDeserializer<Object> _createAndCache2(DeserializationContext ctxt,",
+                "distance": 1.0,
+                "title": null,
+                "name": "_createAndCache2",
+                "documentation": "/**\n     * Method that handles actual construction (via factory) and caching (both\n     * intermediate and eventual)\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "_createAndCache2"
+                    }
+                ],
+                "similarity": 0.06402347239128407,
+                "end_line": 279,
+                "signature": "com.fasterxml.jackson.databind.deser.DeserializerCache._createAndCache2(DeserializationContext ctxt, DeserializerFactory factory, JavaType type): JsonDeserializer"
+            },
+            {
+                "start_line": 667,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonTypeInfo.Value findPolymorphicTypeInfo(MapperConfig<?> config, Annotated ann)",
+                "distance": 1.25,
+                "title": null,
+                "name": "findPolymorphicTypeInfo",
+                "documentation": "/**\n     * @since 2.16 (backported from Jackson 3.0)\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findPolymorphicTypeInfo"
+                    }
+                ],
+                "similarity": 0.06349483484447839,
+                "end_line": 667,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector.findPolymorphicTypeInfo(MapperConfig config, Annotated ann): JsonTypeInfo"
+            },
+            {
+                "start_line": 1019,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public <T> T readPropertyValue(JsonParser p, BeanProperty prop, JavaType type) throws IOException {\n        JsonDeserializer<Object> deser = findContextualValueDeserializer(type, prop);\n        if (deser == null) {\n            return reportBadDefinition(type, String.format(\n                    \"Could not find JsonDeserializer for type %s (via property %s)\",\n                    ClassUtil.getTypeDescription(type), ClassUtil.nameOf(prop)));\n        }\n        return (T) deser.deserialize(p, this);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "readPropertyValue",
+                "documentation": "/**\n     * Same as {@link #readPropertyValue(JsonParser, BeanProperty, Class)} but with\n     * fully resolved {@link JavaType} as target: needs to be used for generic types,\n     * for example.\n     *\n     * @since 2.4\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "readPropertyValue"
+                    }
+                ],
+                "similarity": 0.06262869470290773,
+                "end_line": 1027,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.readPropertyValue(JsonParser p, BeanProperty prop, JavaType type): T"
+            },
+            {
+                "start_line": 223,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/DeserializerCache.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonDeserializer<Object> _findCachedDeserializer(JavaType type)",
+                "distance": 1.5,
+                "title": null,
+                "name": "_findCachedDeserializer",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "_createAndCache2"
+                    },
+                    {
+                        "start_node": "_createAndCache2",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializerCache"
+                    },
+                    {
+                        "start_node": "DeserializerCache",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "_findCachedDeserializer"
+                    }
+                ],
+                "similarity": 0.06219978202200397,
+                "end_line": 223,
+                "signature": "com.fasterxml.jackson.databind.deser.DeserializerCache._findCachedDeserializer(JavaType type): JsonDeserializer"
+            },
+            {
+                "start_line": 315,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Enum<?> findDefaultEnumValue(Class<Enum<?>> enumCls) {\n        return ClassUtil.findFirstAnnotatedEnumValue(enumCls, JsonEnumDefaultValue.class);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findDefaultEnumValue",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findDefaultEnumValue"
+                    }
+                ],
+                "similarity": 0.06205707637146543,
+                "end_line": 317,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector.findDefaultEnumValue(Class enumCls): Enum"
+            },
+            {
+                "start_line": 262,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected DeserializationContext(DeserializationContext src) {\n        _cache = src._cache.emptyCopy();\n        _factory = src._factory;\n\n        _config = src._config;\n        _featureFlags = src._featureFlags;\n        _readCapabilities = src._readCapabilities;\n        _view = src._view;\n        _injectableValues = src._injectableValues;\n        _attributes = null;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "DeserializationContext",
+                "documentation": "/**\n     * Copy-constructor for use with <code>copy()</code> by {@link ObjectMapper#copy()}.\n     * Only called on blueprint objects.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    }
+                ],
+                "similarity": 0.061610313396510505,
+                "end_line": 272,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext(DeserializationContext src)"
+            },
+            {
+                "start_line": 295,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/EnumSerializer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected static EnumValues constructEnumNamingStrategyValues(SerializationConfig config, Class<Enum<?>> enumClass,",
+                "distance": 2.25,
+                "title": null,
+                "name": "constructEnumNamingStrategyValues",
+                "documentation": "/**\n     * Factory method used to resolve an instance of {@link EnumValues}\n     * with {@link EnumNamingStrategy} applied for the target class.\n     *\n     * @since 2.15\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findEnumNamingStrategy"
+                    },
+                    {
+                        "start_node": "findEnumNamingStrategy",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "constructEnumNamingStrategyValues"
+                    }
+                ],
+                "similarity": 0.061591270282477274,
+                "end_line": 295,
+                "signature": "com.fasterxml.jackson.databind.ser.std.EnumSerializer.constructEnumNamingStrategyValues(SerializationConfig config, Class enumClass, AnnotatedClass annotatedClass): EnumValues"
+            },
+            {
+                "start_line": 1400,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public PropertyName findNameForDeserialization(Annotated a)",
+                "distance": 1.25,
+                "title": null,
+                "name": "findNameForDeserialization",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findNameForDeserialization"
+                    }
+                ],
+                "similarity": 0.06095736120303325,
+                "end_line": 1400,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector.findNameForDeserialization(Annotated a): PropertyName"
+            },
+            {
+                "start_line": 1064,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private final Boolean _findSortAlpha(Annotated ann) {\n        JsonPropertyOrder order = _findAnnotation(ann, JsonPropertyOrder.class);\n        // 23-Jun-2015, tatu: as per [databind#840], let's only consider\n        //  `true` to have any significance.\n        if ((order != null) && order.alphabetic()) {\n            return Boolean.TRUE;\n        }\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_findSortAlpha",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_findSortAlpha"
+                    }
+                ],
+                "similarity": 0.06074573230949083,
+                "end_line": 1072,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector._findSortAlpha(Annotated ann): Boolean"
+            },
+            {
+                "start_line": 633,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public final JsonDeserializer<Object> findContextualValueDeserializer(JavaType type,",
+                "distance": 1.5,
+                "title": null,
+                "name": "findContextualValueDeserializer",
+                "documentation": "/**\n     * Method for finding a value deserializer, and creating a contextual\n     * version if necessary, for value reached via specified property.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findContextualValueDeserializer"
+                    }
+                ],
+                "similarity": 0.06074177970424775,
+                "end_line": 633,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.findContextualValueDeserializer(JavaType type, BeanProperty prop): JsonDeserializer"
+            },
+            {
+                "start_line": 621,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/DeserializerCache.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected KeyDeserializer _handleUnknownKeyDeserializer(DeserializationContext ctxt, JavaType type)",
+                "distance": 1.5,
+                "title": null,
+                "name": "_handleUnknownKeyDeserializer",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "_createAndCache2"
+                    },
+                    {
+                        "start_node": "_createAndCache2",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializerCache"
+                    },
+                    {
+                        "start_node": "DeserializerCache",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_handleUnknownKeyDeserializer"
+                    }
+                ],
+                "similarity": 0.06066513587866671,
+                "end_line": 621,
+                "signature": "com.fasterxml.jackson.databind.deser.DeserializerCache._handleUnknownKeyDeserializer(DeserializationContext ctxt, JavaType type): KeyDeserializer"
+            },
+            {
+                "start_line": 1676,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void reportWrongTokenException(JsonDeserializer<?> deser,",
+                "distance": 1.5,
+                "title": null,
+                "name": "reportWrongTokenException",
+                "documentation": "/**\n     * Method for deserializers to call\n     * when the token encountered was of type different than what <b>should</b>\n     * be seen at that position, usually within a sequence of expected tokens.\n     * Note that this method will throw a {@link JsonMappingException} and no\n     * recovery is attempted (via {@link DeserializationProblemHandler}, as\n     * problem is considered to be difficult to recover from, in general.\n     *\n     * @since 2.9\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "reportWrongTokenException"
+                    }
+                ],
+                "similarity": 0.060504342696837375,
+                "end_line": 1676,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.reportWrongTokenException(JsonDeserializer deser, JsonToken expToken, String msg, Object msgArgs): void"
+            },
+            {
+                "start_line": 1712,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void reportWrongTokenException(Class<?> targetType,",
+                "distance": 1.5,
+                "title": null,
+                "name": "reportWrongTokenException",
+                "documentation": "/**\n     * Method for deserializers to call\n     * when the token encountered was of type different than what <b>should</b>\n     * be seen at that position, usually within a sequence of expected tokens.\n     * Note that this method will throw a {@link JsonMappingException} and no\n     * recovery is attempted (via {@link DeserializationProblemHandler}, as\n     * problem is considered to be difficult to recover from, in general.\n     *\n     * @since 2.9\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "reportWrongTokenException"
+                    }
+                ],
+                "similarity": 0.06026559672754018,
+                "end_line": 1712,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.reportWrongTokenException(Class targetType, JsonToken expToken, String msg, Object msgArgs): void"
+            },
+            {
+                "start_line": 818,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public abstract JsonDeserializer<Object> deserializerInstance(Annotated annotated,",
+                "distance": 1.5,
+                "title": null,
+                "name": "deserializerInstance",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "deserializerInstance"
+                    }
+                ],
+                "similarity": 0.060046064932910564,
+                "end_line": 818,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.deserializerInstance(Annotated annotated, Object deserDef): JsonDeserializer"
+            },
+            {
+                "start_line": 383,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/DeserializerCache.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonDeserializer<?> _createDeserializer2(DeserializationContext ctxt,",
+                "distance": 1.5,
+                "title": null,
+                "name": "_createDeserializer2",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "_createAndCache2"
+                    },
+                    {
+                        "start_node": "_createAndCache2",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializerCache"
+                    },
+                    {
+                        "start_node": "DeserializerCache",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_createDeserializer2"
+                    }
+                ],
+                "similarity": 0.059776252493891215,
+                "end_line": 383,
+                "signature": "com.fasterxml.jackson.databind.deser.DeserializerCache._createDeserializer2(DeserializationContext ctxt, DeserializerFactory factory, JavaType type, BeanDescription beanDesc): JsonDeserializer"
+            },
+            {
+                "start_line": 1464,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Object handleUnexpectedToken(Class<?> instClass, JsonToken t,",
+                "distance": 1.5,
+                "title": null,
+                "name": "handleUnexpectedToken",
+                "documentation": "/**\n     * Method that deserializers should call if the first token of the value to\n     * deserialize is of unexpected type (that is, type of token that deserializer\n     * cannot handle). This could occur, for example, if a Number deserializer\n     * encounter {@link JsonToken#START_ARRAY} instead of\n     * {@link JsonToken#VALUE_NUMBER_INT} or {@link JsonToken#VALUE_NUMBER_FLOAT}.\n     *\n     * @param instClass Type that was to be instantiated\n     * @param t Token encountered that does match expected\n     * @param p Parser that points to the JSON value to decode\n     *\n     * @return Object that should be constructed, if any; has to be of type <code>instClass</code>\n     *\n     * @since 2.8\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "handleUnexpectedToken"
+                    }
+                ],
+                "similarity": 0.059713474464688304,
+                "end_line": 1464,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.handleUnexpectedToken(Class instClass, JsonToken t, JsonParser p, String msg, Object msgArgs): Object"
+            },
+            {
+                "start_line": 1506,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Object handleUnexpectedToken(JavaType targetType, JsonToken t,",
+                "distance": 1.5,
+                "title": null,
+                "name": "handleUnexpectedToken",
+                "documentation": "/**\n     * Method that deserializers should call if the first token of the value to\n     * deserialize is of unexpected type (that is, type of token that deserializer\n     * cannot handle). This could occur, for example, if a Number deserializer\n     * encounter {@link JsonToken#START_ARRAY} instead of\n     * {@link JsonToken#VALUE_NUMBER_INT} or {@link JsonToken#VALUE_NUMBER_FLOAT}.\n     *\n     * @param targetType Type that was to be instantiated\n     * @param t Token encountered that does not match expected\n     * @param p Parser that points to the JSON value to decode\n     *\n     * @return Object that should be constructed, if any; has to be of type <code>instClass</code>\n     *\n     * @since 2.10\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "handleUnexpectedToken"
+                    }
+                ],
+                "similarity": 0.05965399752672908,
+                "end_line": 1506,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.handleUnexpectedToken(JavaType targetType, JsonToken t, JsonParser p, String msg, Object msgArgs): Object"
+            },
+            {
+                "start_line": 2462,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected EnumResolver constructEnumNamingStrategyResolver(DeserializationConfig config, Class<?> enumClass,",
+                "distance": 2.25,
+                "title": null,
+                "name": "constructEnumNamingStrategyResolver",
+                "documentation": "/**\n     * Factory method used to resolve an instance of {@link CompactStringObjectMap}\n     * with {@link EnumNamingStrategy} applied for the target class.\n     *\n     * @since 2.15\n     * @deprecated Since 2.16: use {@link #constructEnumNamingStrategyResolver(DeserializationConfig, AnnotatedClass)} instead.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findEnumNamingStrategy"
+                    },
+                    {
+                        "start_node": "findEnumNamingStrategy",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "constructEnumNamingStrategyResolver"
+                    }
+                ],
+                "similarity": 0.059462812023296785,
+                "end_line": 2462,
+                "signature": "com.fasterxml.jackson.databind.deser.BasicDeserializerFactory.constructEnumNamingStrategyResolver(DeserializationConfig config, Class enumClass, AnnotatedClass annotatedClass): EnumResolver"
+            },
+            {
+                "start_line": 1916,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonMappingException wrongTokenException(JsonParser p, Class<?> targetType,",
+                "distance": 1.5,
+                "title": null,
+                "name": "wrongTokenException",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "wrongTokenException"
+                    }
+                ],
+                "similarity": 0.059255790679751584,
+                "end_line": 1916,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.wrongTokenException(JsonParser p, Class targetType, JsonToken expToken, String extra): JsonMappingException"
+            },
+            {
+                "start_line": 531,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonFormat.Value findFormat(Annotated ann) {\n        JsonFormat f = _findAnnotation(ann, JsonFormat.class);\n        // NOTE: could also just call `JsonFormat.Value.from()` with `null`\n        // too, but that returns \"empty\" instance\n        return (f == null)  ? null : JsonFormat.Value.from(f);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findFormat",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findFormat"
+                    }
+                ],
+                "similarity": 0.0591134193853795,
+                "end_line": 536,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector.findFormat(Annotated ann): JsonFormat"
+            },
+            {
+                "start_line": 2444,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected EnumResolver constructEnumNamingStrategyResolver(DeserializationConfig config,",
+                "distance": 2.25,
+                "title": null,
+                "name": "constructEnumNamingStrategyResolver",
+                "documentation": "/**\n     * Factory method used to resolve an instance of {@link CompactStringObjectMap}\n     * with {@link EnumNamingStrategy} applied for the target class.\n     *\n     * @since 2.16\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findEnumNamingStrategy"
+                    },
+                    {
+                        "start_node": "findEnumNamingStrategy",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "constructEnumNamingStrategyResolver"
+                    }
+                ],
+                "similarity": 0.058941092685667724,
+                "end_line": 2444,
+                "signature": "com.fasterxml.jackson.databind.deser.BasicDeserializerFactory.constructEnumNamingStrategyResolver(DeserializationConfig config, AnnotatedClass annotatedClass): EnumResolver"
+            },
+            {
+                "start_line": 1039,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonNode readTree(JsonParser p) throws IOException {\n        JsonToken t = p.currentToken();\n        if (t == null) {\n            t = p.nextToken();\n            if (t == null) {\n                return getNodeFactory().missingNode();\n            }\n        }\n        if (t == JsonToken.VALUE_NULL) {\n            return getNodeFactory().nullNode();\n        }\n        return (JsonNode) findRootValueDeserializer(_config.constructType(JsonNode.class))\n                .deserialize(p, this);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "readTree",
+                "documentation": "/**\n     * Convenience method for reading the value that passed {@link JsonParser}\n     * points to as a {@link JsonNode}.\n     *\n     * @param p Parser that points to the first token of the value to read\n     *\n     * @return Value read as {@link JsonNode}\n     *\n     * @since 2.10\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "readTree"
+                    }
+                ],
+                "similarity": 0.058822959974603274,
+                "end_line": 1052,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.readTree(JsonParser p): JsonNode"
+            },
+            {
+                "start_line": 1694,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void reportWrongTokenException(JavaType targetType,",
+                "distance": 1.5,
+                "title": null,
+                "name": "reportWrongTokenException",
+                "documentation": "/**\n     * Method for deserializers to call\n     * when the token encountered was of type different than what <b>should</b>\n     * be seen at that position, usually within a sequence of expected tokens.\n     * Note that this method will throw a {@link JsonMappingException} and no\n     * recovery is attempted (via {@link DeserializationProblemHandler}, as\n     * problem is considered to be difficult to recover from, in general.\n     *\n     * @since 2.9\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "reportWrongTokenException"
+                    }
+                ],
+                "similarity": 0.05839849214489335,
+                "end_line": 1694,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.reportWrongTokenException(JavaType targetType, JsonToken expToken, String msg, Object msgArgs): void"
+            },
+            {
+                "start_line": 463,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/DeserializerCache.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonDeserializer<Object> findConvertingDeserializer(DeserializationContext ctxt,",
+                "distance": 1.5,
+                "title": null,
+                "name": "findConvertingDeserializer",
+                "documentation": "/**\n     * Helper method that will check whether given annotated entity (usually class,\n     * but may also be a property accessor) indicates that a {@link Converter} is to\n     * be used; and if so, to construct and return suitable serializer for it.\n     * If not, will simply return given serializer as is.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "_createAndCache2"
+                    },
+                    {
+                        "start_node": "_createAndCache2",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializerCache"
+                    },
+                    {
+                        "start_node": "DeserializerCache",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "findConvertingDeserializer"
+                    }
+                ],
+                "similarity": 0.05825739474248773,
+                "end_line": 463,
+                "signature": "com.fasterxml.jackson.databind.deser.DeserializerCache.findConvertingDeserializer(DeserializationContext ctxt, Annotated a, JsonDeserializer deser): JsonDeserializer"
+            },
+            {
+                "start_line": 1827,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public <T> T reportBadCoercion(JsonDeserializer<?> src,",
+                "distance": 1.5,
+                "title": null,
+                "name": "reportBadCoercion",
+                "documentation": "/**\n     * Helper method used to indicate a problem with input in cases where specific\n     * input coercion was not allowed.\n     *\n     * @since 2.12\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "reportBadCoercion"
+                    }
+                ],
+                "similarity": 0.05809806680880013,
+                "end_line": 1827,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.reportBadCoercion(JsonDeserializer src, Class targetType, Object inputValue, String msg, Object msgArgs): T"
+            },
+            {
+                "start_line": 1134,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public boolean handleUnknownProperty(JsonParser p, JsonDeserializer<?> deser,",
+                "distance": 1.5,
+                "title": null,
+                "name": "handleUnknownProperty",
+                "documentation": "/**\n     * Method that deserializers should call if they encounter an unrecognized\n     * property (and once that is not explicitly designed as ignorable), to\n     * inform possibly configured {@link DeserializationProblemHandler}s and\n     * let it handle the problem.\n     *\n     * @return True if there was a configured problem handler that was able to handle the\n     *   problem\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "handleUnknownProperty"
+                    }
+                ],
+                "similarity": 0.058090707277670336,
+                "end_line": 1134,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.handleUnknownProperty(JsonParser p, JsonDeserializer deser, Object instanceOrClass, String propName): boolean"
+            },
+            {
+                "start_line": 907,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonSerialize.Typing findSerializationTyping(Annotated a)",
+                "distance": 1.25,
+                "title": null,
+                "name": "findSerializationTyping",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findSerializationTyping"
+                    }
+                ],
+                "similarity": 0.05793406225662772,
+                "end_line": 907,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector.findSerializationTyping(Annotated a): JsonSerialize"
+            },
+            {
+                "start_line": 978,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public <T> T readValue(JsonParser p, Class<T> type) throws IOException {\n        return readValue(p, getTypeFactory().constructType(type));\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "readValue",
+                "documentation": "/**\n     * Convenience method that may be used by composite or container deserializers,\n     * for reading one-off values contained (for sequences, it is more efficient\n     * to actually fetch deserializer once for the whole collection).\n     *<p>\n     * NOTE: when deserializing values of properties contained in composite types,\n     * rather use {@link #readPropertyValue(JsonParser, BeanProperty, Class)};\n     * this method does not allow use of contextual annotations.\n     *\n     * @since 2.4\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    }
+                ],
+                "similarity": 0.05788773497821524,
+                "end_line": 980,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.readValue(JsonParser p, Class type): T"
+            },
+            {
+                "start_line": 1247,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Object findDeserializer(Annotated a)",
+                "distance": 1.25,
+                "title": null,
+                "name": "findDeserializer",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JacksonAnnotationIntrospector"
+                    },
+                    {
+                        "start_node": "JacksonAnnotationIntrospector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findDeserializer"
+                    }
+                ],
+                "similarity": 0.05785940953204378,
+                "end_line": 1247,
+                "signature": "com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector.findDeserializer(Annotated a): Object"
+            }
+        ],
+        "classes": [],
+        "issues": [
+            {
+                "content": "### Search before asking\n\n- [X] I searched in the [issues](https://github.com/FasterXML/jackson-databind/issues) and found nothing similar.\n\n### Describe the bug\n\nWhen using a mapper with a `PropertyNamingStrategy` configured, the following exception is thrown when trying to deserialize an enum that contains a field with the same name as one of the enum constants:\r\n\r\n```\r\n\r\ncom.fasterxml.jackson.databind.exc.InvalidDefinitionException: Multiple fields representing property \"foo\": tech.picnic.config.util.EnumDeserializationTest$SomeEnum#FOO vs tech.picnic.config.util.EnumDeserializationTest$SomeEnum#foo\r\n at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 1]\r\n\tat com.fasterxml.jackson.databind.exc.InvalidDefinitionException.from(InvalidDefinitionException.java:67)\r\n\tat com.fasterxml.jackson.databind.DeserializationContext.reportBadDefinition(DeserializationContext.java:1887)\r\n\tat com.fasterxml.jackson.databind.deser.DeserializerCache._createAndCache2(DeserializerCache.java:289)\r\n\tat com.fasterxml.jackson.databind.deser.DeserializerCache._createAndCacheValueDeserializer(DeserializerCache.java:265)\r\n\tat com.fasterxml.jackson.databind.deser.DeserializerCache.findValueDeserializer(DeserializerCache.java:163)\r\n[...]\r\n```\r\n\r\nIt seems that [now enum constants are also considered fields](https://github.com/FasterXML/jackson-databind/blob/\nCommit: 4afceacea960d5339b796feae5cfbc2ed39e2033\nAuthor: Tatu Saloranta\nDate: 2024-01-05 04:56:00+00:00\n\nMessage:\nAdd `TokenBuffer` support for `JsonParser.getNumberTypeFP()`\n\nModified files:\n- Modified: src/main/java/com/fasterxml/jackson/databind/util/TokenBuffer.java\n   Added: 12 lines\n- Modified: src/test/java/com/fasterxml/jackson/databind/testutil/DatabindTestUtil.java\n   Removed: 3 lines\n- Renamed: src/test/java/com/fasterxml/jackson/databind/testutil/UnlimitedLookupCache.java\n   Added: 3 lines\n   Removed: 1 lines\n- Modified: src/test/java/com/fasterxml/jackson/databind/type/ContainerTypesTest.java\n   Added: 1 lines\n   Removed: 1 lines\n- Modified: src/test/java/com/fasterxml/jackson/databind/util/TokenBufferTest.java\n   Added: 7 lines\n/src/main/java/com/fasterxml/jackson/databind/introspect/AnnotatedFieldCollector.java#L127-L130), which can clash with an enum's field when they are renamed. See also https://github.com/FasterXML/jackson-databind/commit/\nCommit: 2134584da8e43853e1f982d01b05359927680b9c\nAuthor: Kim, Joo Hyuk\nDate: 2023-06-16 00:41:26+00:00\n\nMessage:\nHandle `Enum` introspection of values and aliases via `AnnotatedClass` instead of `Class<?>` (#3832)\n\nModified files:\n- Modified: src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java\n   Added: 39 lines\n- Modified: src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java\n   Added: 1 lines\n   Removed: 3 lines\n- Modified: src/main/java/com/fasterxml/jackson/databind/introspect/AnnotatedFieldCollector.java\n   Added: 4 lines\n- Modified: src/main/java/com/fasterxml/jackson/databind/introspect/AnnotationIntrospectorPair.java\n   Added: 15 lines\n- Modified: src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java\n   Added: 42 lines\n- Modified: src/main/java/com/fasterxml/jackson/databind/ser/BasicSerializerFactory.java\n   Added: 28 lines\n- Modified: src/main/java/com/fasterxml/jackson/databind/util/EnumResolver.java\n   Added: 57 lines\n- Added: src/test/java/com/fasterxml/jackson/databind/deser/enums/EnumDeserMixin2787Test.java\n   Added: 152 lines\n- Modified: src/test/java/com/fasterxml/jackson/databind/introspect/TestJacksonAnnotationIntrospector.java\n   Added: 11 lines\n- Removed: src/test/java/com/fasterxml/jackson/failing/EnumDeserialization2787Test.java\n   Removed: 42 lines\n.\n\n### Version Information\n\n2.16.1\n\n### Reproduction\n\n\r\n```java\r\n  @Test\r\n  void shouldDeserialize() throws IOException {\r\n    var objectMapper =\r\n            JsonMapper.builder()\r\n              .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)\r\n              .build();\r\n    assertThat(objectMapper.readValue(\"\\\"FOO\\\"\", SomeEnum.class))\r\n            .isEqualTo(SomeEnum.FOO);\r\n  }\r\n\r\n  enum SomeEnum {\r\n    FOO(0);\r\n\r\n    public final int foo;\r\n\r\n    SomeEnum(int foo) {\r\n      this.foo = foo;\r\n    }\r\n  }\r\n``` \r\n\n\n### Expected behavior\n\nSimilar to Jackson 2.15.3, I would expect this enum to be deserializable given we don't specify any mixins on the constants.\n\n### Additional context\n\nThe reproduction case above has a public field, but the issue is also apparent if the field is private and the following visibility is configured:\r\n\r\n```java\r\n  .visibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE)\r\n  .visibility(PropertyAccessor.CREATOR, JsonAutoDetect.Visibility.ANY)\r\n  .visibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)\r\n```\n",
+                "distance": 0,
+                "title": "Problem deserializing some type of Enums when using `PropertyNamingStrategy`",
+                "name": "root",
+                "path": [],
+                "issue_id": "root",
+                "similarity": 2.0,
+                "type": "issue"
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "4302",
+                "type": "issue",
+                "content": "### Search before asking\n\n- [X] I searched in the [issues](https://github.com/FasterXML/jackson-databind/issues) and found nothing similar.\n\n### Describe the bug\n\nWhen using a mapper with a `PropertyNamingStrategy` configured, the following exception is thrown when trying to deserialize an enum that contains a field with the same name as one of the enum constants:\r\n\r\n```\r\n\r\ncom.fasterxml.jackson.databind.exc.InvalidDefinitionException: Multiple fields representing property \"foo\": tech.picnic.config.util.EnumDeserializationTest$SomeEnum#FOO vs tech.picnic.config.util.EnumDeserializationTest$SomeEnum#foo\r\n at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 1]\r\n\tat com.fasterxml.jackson.databind.exc.InvalidDefinitionException.from(InvalidDefinitionException.java:67)\r\n\tat com.fasterxml.jackson.databind.DeserializationContext.reportBadDefinition(DeserializationContext.java:1887)\r\n\tat com.fasterxml.jackson.databind.deser.DeserializerCache._createAndCache2(DeserializerCache.java:289)\r\n\tat com.fasterxml.jackson.databind.deser.DeserializerCache._createAndCacheValueDeserializer(DeserializerCache.java:265)\r\n\tat com.fasterxml.jackson.databind.deser.DeserializerCache.findValueDeserializer(DeserializerCache.java:163)\r\n[...]\r\n```\r\n\r\nIt seems that [now enum constants are also considered fields](https://github.com/FasterXML/jackson-databind/blob/4afceacea960d5339b796feae5cfbc2ed39e2033/src/main/java/com/fasterxml/jackson/databind/introspect/AnnotatedFieldCollector.java#L127-L130), which can clash with an enum's field when they are renamed. See also https://github.com/FasterXML/jackson-databind/commit/2134584da8e43853e1f982d01b05359927680b9c.\n\n### Version Information\n\n2.16.1\n\n### Reproduction\n\n\r\n```java\r\n  @Test\r\n  void shouldDeserialize() throws IOException {\r\n    var objectMapper =\r\n            JsonMapper.builder()\r\n              .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)\r\n              .build();\r\n    assertThat(objectMapper.readValue(\"\\\"FOO\\\"\", SomeEnum.class))\r\n            .isEqualTo(SomeEnum.FOO);\r\n  }\r\n\r\n  enum SomeEnum {\r\n    FOO(0);\r\n\r\n    public final int foo;\r\n\r\n    SomeEnum(int foo) {\r\n      this.foo = foo;\r\n    }\r\n  }\r\n``` \r\n\n\n### Expected behavior\n\nSimilar to Jackson 2.15.3, I would expect this enum to be deserializable given we don't specify any mixins on the constants.\n\n### Additional context\n\nThe reproduction case above has a public field, but the issue is also apparent if the field is private and the following visibility is configured:\r\n\r\n```java\r\n  .visibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE)\r\n  .visibility(PropertyAccessor.CREATOR, JsonAutoDetect.Visibility.ANY)\r\n  .visibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)\r\n```\n\n\nComment by cowtowncoder:\nOk that does sound like a bug. Thank you for reporting it.\r\n\r\nAnd special thank you for including reproduction (unit test).\r\n\n\nComment by cowtowncoder:\n@JooHyukKim Probably due to refactoring, hopefully there is an easy fix given it is easy to reproduce.\n\nComment by JooHyukKim:\nBy intution, I thought we would just skip renaming if target field is enum.\r\nProbably, inside `POJOPropertiesCollector._renameUsing()`, but I am not 100% yet if it would cover all cases.\n\nComment by cowtowncoder:\n> By intuition, I thought we would just skip renaming if target field is enum. Probably, inside `POJOPropertiesCollector._renameUsing()`, but I am not 100% yet if it would cover all cases.\r\n\r\nNot ideal (conceptually), but yes that sound like a straight-forward way to do it.\r\nFundamental problem being that Enums are really very different from POJOs, so general POJO handling can't really work. Except if/when \"enums as POJOs\" serialization is enabled, in which case some of processing is needed.\r\nSo because of this change like you suggested probably is the way to go.\r\n",
+                "source_code": null,
+                "distance": 0.25,
+                "title": "Problem deserializing some type of Enums when using `PropertyNamingStrategy`",
+                "name": "issue#4302",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#4302"
+                    }
+                ],
+                "similarity": 0.7956179264868489,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "3832",
+                "type": "issue",
+                "content": "### Motivation\r\n\r\nThis PR provides more information to `AnnotationIntrospector` for `Enum` introspection by passing in `MapperConfig` and `AnnotatedClass`.\r\n\r\nPrior to this PR, `Enum`s have been directly handled from class declaration itself, using `Class.getDeclaredFields()`([\ud83d\udd17 check link for reference](https://github.com/FasterXML/jackson-databind/blob/fdcaf2eab8343c50fada1fe0c1885c8831677bde/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java#L248)).  Old way of handling `Enum`s not only creates isolation from Jackson's rich functionality, but also down to the kind of basic functionalities such as simple mix-ins which created issues such as #2787.\r\n\r\n### Modifications\r\n\r\n- `AnnotatedFieldCollector` : consider enums as fields.\r\n- new API AnnotationIntrospector.findEnumValues(MapperConfig<?>, Enum<?>[], String[], AnnotatedClass)`.\r\n- new API AnnotationIntrospector.findEnumAlias(MapperConfig<?>, Enum<?>[], String[], AnnotatedClass)`.\r\n- `BasicSerializerFactory` : Remove enum self-rerence when handled via `JsonFormat.Shape.Object`\r\n- `BasicDeserializerFactory` : Pass in more information for EnumResolver construction\r\n\r\n### Original PR message (just for reference)\r\n\r\n    This pull request resolves issue #2787 by allowing mix-ins for Enum classes new \r\n    EnumResolver.constructForMixIn(DeserializationConfig config, Class<?> enumCls, Class<?> mixInCls).\n\n\nComment by cowtowncoder:\nOk, so I probably should have mentioned earlier that I do  not want mix-in handling logic to be added outside of where it is done currently. So (de)serializers, factories that produce them should ideally not have to know anything about existence of mix-ins but would rather just look for annotations. Part of the challenge is that otherwise `EnumResolver` etc need to duplicate lookups for a growing set of annotations.\r\n\r\nWe can leave this PR open, just in case my thinking evolves. I realize that structure of Enum types as bytecode is kind of interesting and challenging to reconcile with POJOs, for example.\r\n\r\n\n\nComment by JooHyukKim:\n>  I realize that structure of Enum types as bytecode is kind of interesting and challenging to reconcile with POJOs,\r\n\r\n@cowtowncoder Thinking further, I think what you saying is this -- Why @JsonProperty and @JsonAlias annotations from a mix-in class do not override those from the deserialization target class for Enum types, as Enum classes have a different nature than POJOs that prevents using POJO mix-in handling on them.\r\n\r\n\r\n\r\n\n\nComment by JooHyukKim:\n- Would our issue be solved much easier in 3.x? Because, #2550\n\nComment by cowtowncoder:\nOk aside from that `@JsonFormat` thing that needs to go elsewhere, this looks like it might work in general. I don't think we can get this in 2.15 (too risky at this point wrt API changes) but can continue work.\r\nI'll add some smaller notes for changes.\r\n\n\nComment by JooHyukKim:\n> in 2.15 (too risky at this point wrt API changes) but can continue work.\r\n\r\nGreat, sounds like a plan! \ud83d\udc4d\ud83c\udffb For the meantime, is there anything I can do to make our change more stable?\n\nComment by cowtowncoder:\n> > in 2.15 (too risky at this point wrt API changes) but can continue work.\r\n> \r\n> Great, sounds like a plan! \ud83d\udc4d\ud83c\udffb For the meantime, is there anything I can do to make our change more stable?\r\n\r\nNo, just need to figure out how to remove special handling from `AnnotatedFieldCollector` (to resolve test failures some other way)\r\n\r\n\n\nComment by cowtowncoder:\nOk so I don't think this can make it in 2.16, and I think while some may be reusable other parts need rework.\r\n\r\nBut one thing I CAN still do for 2.15 is add support for `AnnotationIntrospector` methods to pass `AnnotatedClass` (instead of plain `Class<?>`), so some changes are done ahead of time.\r\n\n\nComment by cowtowncoder:\nActually, started to attempt changes to `AnnotationIntrospector` I realized that changes are rather extensive; and PR does not quite solve the problem of calles from `StdKeyDeserializer` to `EnumResolver`: quite a bit of changes are needed.\r\nIt is all doable but I realized that it's bit late in 2.15 Release Candidate phase to make changes to APIs so I will postpone any work until 2.16.\r\n\r\nBut I'll add notes on things that can slightly simplify signatures.\r\n\n\nComment by JooHyukKim:\n> But I'll add notes on things that can slightly simplify signatures.\r\n\r\nSeems like first task is to merge current 2.15 version. Later today I will merge 2.15 version into this branch and apply the reviews @cowtowncoder \ud83d\ude4f\ud83c\udffc Thank you again!\n\nComment by JooHyukKim:\nI apologize for accidentally pressing close button \ud83e\udd72\n\nComment by cowtowncoder:\n> > But I'll add notes on things that can slightly simplify signatures.\r\n> \r\n> Seems like first task is to merge current 2.15 version. Later today I will merge 2.15 version into this branch and apply the reviews @cowtowncoder \ud83d\ude4f\ud83c\udffc Thank you again!\r\n\r\nJust to make sure: the plan is not to merge in the full implementation but at most some refactoring that will be needed in 2.16. But it gets tricky wrt backwards-compatibility, and short period for testing since rc3 will be the last release candidate users can test wrt compatibility.\r\n\r\nSo need to be careful with changes to call patterns too, this late in the release process.\r\n\r\n\n\nComment by cowtowncoder:\nOk I did some rearranging of `EnumResolver` but not significant amounts.\r\n\r\nI also realized that instead of `AnnotatedClass`, it probably makes sense to pass `BeanDescription`: that is what is always introspected for (de)serializers (and what factories have). There's still the challenge of what to do with `StdKeyDeserializer`; it may need to do introspection via `DeserializationConfig`.\r\n\r\n\n\nComment by JooHyukKim:\n> I also realized that instead of AnnotatedClass, it probably makes sense to pass BeanDescription: that is what is always introspected for (de)serializers (and what factories have).\r\n\r\nYou mean pass `BeanDescription` to our new `AnnotationIntrospector`'s `findEnumValues()` and `findEnumAliases()` methods, right?\r\n\r\n> There's still the challenge of what to do with StdKeyDeserializer; it may need to do introspection via DeserializationConfig.\r\n\r\nIs this about `StdKeyDeserializer.EnumKD` classs? I do not think we need to do introspection. EnumKD's are constructed only [here in BasicDeserializerFactory](https://github.com/FasterXML/jackson-databind/blob/39fdb63607a0e7a6dbf9d6be84fe7e380e661dcb/src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java#L1939-L1947) and within the same method, [BeanDescription is already introspected.](https://github.com/FasterXML/jackson-databind/blob/39fdb63607a0e7a6dbf9d6be84fe7e380e661dcb/src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java#L1900).\n\nComment by cowtowncoder:\n> > I also realized that instead of AnnotatedClass, it probably makes sense to pass BeanDescription: that is what is always introspected for (de)serializers (and what factories have).\r\n> \r\n> You mean pass `BeanDescription` to our new `AnnotationIntrospector`'s `findEnumValues()` and `findEnumAliases()` methods, right?\r\n\r\nAh no. `AnnotationIntrospector` should get `AnnotatedXxx` values. But methods in `EnumResolver` might as well take `BeanDescription`.\r\n\r\n> \r\n> > There's still the challenge of what to do with StdKeyDeserializer; it may need to do introspection via DeserializationConfig.\r\n> \r\n> Is this about `StdKeyDeserializer.EnumKD` classs? I do not think we need to do introspection. EnumKD's are constructed only [here in BasicDeserializerFactory](https://github.com/FasterXML/jackson-databind/blob/39fdb63607a0e7a6dbf9d6be84fe7e380e661dcb/src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java#L1939-L1947) and within the same method, [BeanDescription is already introspected.](https://github.com/FasterXML/jackson-databind/blob/39fdb63607a0e7a6dbf9d6be84fe7e380e661dcb/src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java#L1900).\r\n\r\nRight but it seemed like they'd need to call methods in `EnumResolver` that would expected `AnnotatedClass` (or `BeanDescription`). I could be mistaken here tho.\r\n\n\nComment by JooHyukKim:\nI shifted direction of this PR and modified PR title and description accordingly, after studying this issue. \r\n\r\nMay I ask for your opinion, @cowtowncoder?\n\nComment by cowtowncoder:\n@JooHyukKim I hope to get back to this one Really Soon Now -- and I think your approach looks good from what I see.\r\nBut I do want to review this well. \r\n\r\nThank you once again for doing such a good job in taking feedback and finding ever improving solutions. I REALLY appreciate your diligence and persistence.\r\n\n\nComment by JooHyukKim:\n> Looks pretty good, added a minor comment. Hoping to approve and merge tomorrow. Phew!\r\n\r\nThanks, \ud83d\ude06\ud83d\udc4d\ud83c\udffb I applied all your comments (became much cleaner)\n\nComment by JooHyukKim:\n> LGTM! \r\n\r\nThank you again for the thorough and solid insightful reviews, @cowtowncoder!\r\n\r\nFYI, I plan on looking around in the project where we can leverage the new `enum`-related `AnnotationIntrospector` API. And also move away from using now-deprecated APIs. \r\n\r\nPlz let me know if you need a hand merging this PR into `master`, or have any other suggestions or ideas. \ud83d\ude4f\ud83c\udffc\ud83d\ude4f\ud83c\udffc\n\nComment by cowtowncoder:\n@JooHyukKim Agreed. I need to know merge 2.16->master, but I did mark old methods as deprecated and ideally should retrofit methods that call it to avoid them wherever possible.\n\nComment by cowtowncoder:\n@JooHyukKim Was able to merge it.\r\n\r\nNoticed one other follow-up item: AnnotationIntrospector.findDefaultEnumValue() also takes `Class`, not `AnnotatedClass`.\r\nSo mix-ins wouldn't work.\r\n\r\nBut I guess it's not a big deal at this point.\r\n\n\nComment by JooHyukKim:\n> Noticed one other follow-up item: AnnotationIntrospector.findDefaultEnumValue() also takes `Class`, not `AnnotatedClass`.\r\n\r\nI wrote an issue #3990 to keep more PRs in one place \ud83d\udc4d\ud83c\udffb. Will add this one also.",
+                "source_code": null,
+                "distance": 0.25,
+                "title": "Handle `Enum` introspection of values and aliases via `AnnotatedClass` instead of `Class<?>`",
+                "name": "pr#3832",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#3832"
+                    }
+                ],
+                "similarity": 0.6741607648459826,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "2787",
+                "type": "issue",
+                "content": "1. create java enum like this\r\n```\r\npublic enum SomeEnum {\r\n    none,\r\n    tax10,\r\n    tax20\r\n}\r\n```\r\n\r\n2. create mixin for enum\r\n```\r\npublic enum  SomeEnumMixin {\r\n    @JsonProperty(\"zero\")\r\n    none,\r\n    @JsonProperty(\"TypTyp\")\r\n    tax10,\r\n    @JsonProperty(\"PytPyt\")\r\n    tax20\r\n}\r\n```\r\n\r\n3. register mixin via `.addMixIn(SomeEnum.class, SomeEnumMixin.class)`\r\n\r\n4. try to deserialize sometithing\r\n\r\nObjectMapper throws NullPointerException\r\n```\r\njava.lang.NullPointerException\r\n\tat com.fasterxml.jackson.databind.introspect.AnnotatedFieldCollector._addFieldMixIns(AnnotatedFieldCollector.java:117)\r\n\tat com.fasterxml.jackson.databind.introspect.AnnotatedFieldCollector._findFields(AnnotatedFieldCollector.java:94)\r\n\tat com.fasterxml.jackson.databind.introspect.AnnotatedFieldCollector.collect(AnnotatedFieldCollector.java:48)\r\n\tat com.fasterxml.jackson.databind.introspect.AnnotatedFieldCollector.collectFields(AnnotatedFieldCollector.java:43)\r\n\tat com.fasterxml.jackson.databind.introspect.AnnotatedClass._fields(AnnotatedClass.java:366)\r\n\tat com.fasterxml.jackson.databind.introspect.AnnotatedClass.fields(AnnotatedClass.java:338)\r\n\tat com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector._addFields(POJOPropertiesCollector.java:393)\r\n\tat com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector.collectAll(POJOPropertiesCollector.java:322)\r\n\tat com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector.getPropertyMap(POJOPropertiesCollector.java:287)\r\n\tat com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector.getProperties(POJOPropertiesCollector.java:186)\r\n\tat com.fasterxml.jackson.databind.introspect.BasicBeanDescription._properties(BasicBeanDescription.java:164)\r\n\tat com.fasterxml.jackson.databind.introspect.BasicBeanDescription.findProperties(BasicBeanDescription.java:239)\r\n\tat com.fasterxml.jackson.databind.deser.BasicDeserializerFactory._findCreatorsFromProperties(BasicDeserializerFactory.java:292)\r\n\tat com.fasterxml.jackson.databind.deser.BasicDeserializerFactory._constructDefaultValueInstantiator(BasicDeserializerFactory.java:276)\r\n\tat com.fasterxml.jackson.databind.deser.BasicDeserializerFactory.createEnumDeserializer(BasicDeserializerFactory.java:1472)\r\n\tat com.fasterxml.jackson.databind.deser.DeserializerCache._createDeserializer2(DeserializerCache.java:371)\r\n\tat com.fasterxml.jackson.databind.deser.DeserializerCache._createDeserializer(DeserializerCache.java:349)\r\n\tat com.fasterxml.jackson.databind.deser.DeserializerCache._createAndCache2(DeserializerCache.java:264)\r\n\tat com.fasterxml.jackson.databind.deser.DeserializerCache._createAndCacheValueDeserializer(DeserializerCache.java:244)\r\n\tat com.fasterxml.jackson.databind.deser.DeserializerCache.findValueDeserializer(DeserializerCache.java:142)\r\n\tat com.fasterxml.jackson.databind.DeserializationContext.findNonContextualValueDeserializer(DeserializationContext.java:481)\r\n\tat com.fasterxml.jackson.databind.deser.BeanDeserializerBase.resolve(BeanDeserializerBase.java:497)\r\n\tat com.fasterxml.jackson.databind.deser.std.DelegatingDeserializer.resolve(DelegatingDeserializer.java:58)\r\n\tat com.fasterxml.jackson.databind.deser.DeserializerCache._createAndCache2(DeserializerCache.java:293)\r\n\tat com.fasterxml.jackson.databind.deser.DeserializerCache._createAndCacheValueDeserializer(DeserializerCache.java:244)\r\n\tat com.fasterxml.jackson.databind.deser.DeserializerCache.findValueDeserializer(DeserializerCache.java:142)\r\n\tat com.fasterxml.jackson.databind.DeserializationContext.findRootValueDeserializer(DeserializationContext.java:491)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper._findRootDeserializer(ObjectMapper.java:4669)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:4478)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3434)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3402)\r\n```\r\n\r\n\r\nI've tested on 2.11.0 and 2.11.1\n\n\nComment by cowtowncoder:\nOk I can reproduce this.\r\n\r\nAlso checked same failure occurs on 2.10 at least.\n\nComment by cowtowncoder:\nSo, as per commit message, added failing test; and fixed NPE part.\r\n\r\nHowever, functionality will not work as expected, most likely because of the way JDK implements `Enum`s under the hood; entries may look like fields or perhaps instance methods but are neither if I remember correctly -- so mix-in handling functionality may not be able to attach annotations as expected to them yet (class annotations work fine and are tested).\r\n\r\nI hope to resolve the second problem too, hence leaving this issue open.\r\n\r\nAnd the problem itself is that when buffering content that can not yet be used (both for polymorphic subtype handling and for dealing with unwrapped content), it is not known that type will be needed as `BigDecimal` -- so it will be buffered as `Double` (with somewhat lower overhead).\r\nWhile it would be possible to force storage of all floating-point values as `BigDecimal`, in theory, one nasty consequence but that binary formats with efficient storage format for 32- and 64-bit values would be heavily penalized by conversions between 2- and 10-based FP numbers. So it would be good to figure out something better; in case of textual format it might even make sense to defer number parsing.\r\n\r\nBut I do not know a good way yet; and changes likely need to go in a new minor version anyway (2.12.0 at earliest).\r\n\r\n\n\nComment by cowtowncoder:\nAh. The problem is that unlike POJO properties that are discovered using `AnnotatedField` / `-Method` and so on -- on which mix-ins are applied -- enum names are detected directly from fields that Enum declares, by `JacksonAnnotationIntrospector`. This means mix-ins are not indeed applied.\r\n\r\nThis should be fixed but will be bit bigger undertaking as it requires changes to `AnnotationIntrospector` interface, for one.\r\nThat means it can not be fixed for versions earlier than 2.12.0.\r\n\n\nComment by ianbrandt:\nIt looks like [2.15](https://github.com/FasterXML/jackson/wiki/Jackson-Release-2.15) will bring support for lowercasing of serialized enums per #3053, which is one use case I have for enum mix-ins. I'd rather configure the output case on a per-mix-in basis, so I'd still very much appreciate this feature.\n\nComment by cowtowncoder:\nIt would be great to get this fixed but right now there is no good plan to do that, unfortunately.\r\n\r\nBut if anyone wants to tackle it, I'd be happy to help get PR ready.\r\n\r\n/cc @JooHyukKim this would be another Enum-related challenge. :)\r\n\n\nComment by JooHyukKim:\n@cowtowncoder thankssss for the mention! Like you thought, I did try tackling already \ud83e\udd23. \r\n\r\nThat time I got caught up with other PR, but now that you mention it, I will go back to it now. Do you think below method would be the right place to start? \r\n\r\nhttps://github.com/FasterXML/jackson-databind/blob/95f29d2818634be6e7a396d5d2cb1d9dcb12997e/src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java#L1664\r\n\r\nAnd possibly somewhere in that method, do introspection like...\r\n\r\n```java\r\nClass<?> mixInClass = ctxt.getConfig().findMixInClassFor(type.getRawClass());\r\nJavaType mixInType = ctxt.constructType(mixInClass);\r\n```\r\n\r\nthen pass in additional lookup for the construction of an EnumDeserializer?\n\nComment by cowtowncoder:\n@JooHyukKim Ideally it would all work through standard mix-in handling and not enum-specific handling. But then again, that may be difficult in its own way.\r\nFWTW with POJOs `AnnotatedClass` already has all mix-ins mixed in.\r\n\r\nI think a starting challenge is figuring out what Enum values look like, to find how mix-ins apply. \r\nI don't remember exactly what entries are (methods?), esp. in case of method overrides but they were not quite what I expected.\n\nComment by ianbrandt:\nI realized I have a need to sometimes de-snake-case and rename in addition to lowercase my enum values, so it's really exciting to see the pending PR for this. Mix-ins should prove a lot nicer than writing custom serializers and deserializers. \ud83c\udf89\n\nComment by JooHyukKim:\n@ianbrandt Thank you for the support! \ud83d\ude4f\ud83c\udffc Though probably we might have to write code over again, you could say it's in progress. \n\nComment by cowtowncoder:\nIf we could figure out how to match Enum class structure for annotation flattening, that'd be great. I forget exact way Enum values map to \"regular\" class constructs but it was somewhat non-intuitive (i.e. they had to sort of hack it back in Java .... 1.4? or whenever they were added)\n\nComment by JooHyukKim:\nI will go check. \ud83d\ude46\ud83c\udffd\u200d\u2642\ufe0f\ud83d\ude46\ud83c\udffd\u200d\u2642\ufe0f As far as I know,\r\n\r\n1. Each Enums values are compiled as  \u2018public static final SOME_VALUE\u2019.\r\n2. Since they are fields, annotation flattening should be done in \u2018AnnotatedFieldCollector\u2019.\r\n3. \u201cAnnotation Flattening\u201d means apply all annotations of matching fields from mixin class to target class. This is what you mean right? @cowtowncoder \n\nComment by cowtowncoder:\n@JooHyukKim correct, that's the idea. Change existing machinery to support mix-ins for Enums in general way (both for Enum class and enum values).\r\n\r\nMain concerns/questions are just that:\r\n\r\n1. When using overrides in enum definition, do definitions change (there's some sub-classing involved as I recall, but maybe it won't affect annotation handling)\r\n2. From users POV, how should mix-ins look like? Do they have to create throw-away `Enum` types; or just know to specify `static` Fields with matching names? Basically, not trying to specify, say, `Method`s as those would not match (or should they? I guess with enough work it's possible but could get ugly).\r\n\r\n\n\nComment by JooHyukKim:\n> @jinwookh correct, that's t\r\n\r\nI think someone else is tagged \ud83d\ude05here. \n\nComment by cowtowncoder:\n> > ... correct, that's t\r\n> \r\n> I think someone else is tagged \ud83d\ude05here.\r\n\r\nSorry. Auto-completion for the win. :-/\r\n\n\nComment by JooHyukKim:\n> I realized I have a need to sometimes de-snake-case and rename in addition to lowercase my enum values, so it's really exciting to see the pending PR for this. Mix-ins should prove a lot nicer than writing custom serializers and deserializers. \ud83c\udf89\r\n\r\nI just realized there might be a feature that might satisfy your needs, @ianbrandt ! \ud83d\udc4d\ud83c\udffb\r\n\r\nThere is a recent PR https://github.com/FasterXML/jackson-databind/pull/3792 that features naming strategy for `enum`'s. Check below code for example usage. If your desired naming conversion is not supported, but is general enough, I think we can discuss a new `EnumNamingStrategy` in a new issue.\r\n\r\n```java\r\n@EnumNaming(EnumNamingStrategies.CamelCaseStrategy.class)\r\n    static enum EnumFlavorA {\r\n        PEANUT_BUTTER, // handled as peanutButter\r\n        SALTED_CARAMEL, // as saltedCaramel\r\n        @JsonEnumDefaultValue\r\n        VANILLA; // \r\n    }\r\n```\n\nComment by JooHyukKim:\nIt seems this issue can be closed now, addressed by #3990 ?\n\nComment by cowtowncoder:\nYes, included as fixed in 2.16.0-rc1 release notes, just forgot to close issue itself.",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "Mix-ins do not work for `Enum`s",
+                "name": "issue#2787",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#3832"
+                    },
+                    {
+                        "start_node": "pr#3832",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "issue#2787"
+                    }
+                ],
+                "similarity": 0.5277843572244909,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "3990",
+                "type": "issue",
+                "content": "## Motivation \r\n\r\nSince #3832 introduced handling of `Enum` values as `Annotated` which allowed more dynamic handling of `Enum` types. But as of writing, such improvement is not retrofitted to all parts within our project.\r\n\r\nThis issue will serve as parent issue to keep futre improvements in one place.\r\n\r\n## Work Status\r\n\r\n## Merged/Closed\r\n\r\n\r\n\r\n### Introspection/Annotations/mixins\r\n- (very first) #3832\r\n- #4025\r\n\r\n### Deserialization (EnumResolver)\r\n- #4032\r\n- #4033 \r\n- #4034\r\n- #4000\r\n\r\n### Serialization (EnumValues)\r\n- #4039\r\n- #4040\r\n- #3991 \r\n\n\n\nComment by JooHyukKim:\nI think this issue has been resolved. Also Jackson 3.x branch seems cleaner now.\r\n\r\nDo you think there is anything else to do before closing, @cowtowncoder?\n\nComment by cowtowncoder:\nIt does sound like we are done -- there may still be some minor bugs, missing handling, but it sounds like known issues have been resolved.\r\n",
+                "source_code": null,
+                "distance": 0.75,
+                "title": "Apply improved handling of `Enum` to all part",
+                "name": "issue#3990",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#3832"
+                    },
+                    {
+                        "start_node": "pr#3832",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "issue#3990"
+                    }
+                ],
+                "similarity": 0.5208883981233612,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "3991",
+                "type": "issue",
+                "content": "parent issue : #3990 \r\n\r\n### Motivation\r\n\r\nsince #3832, `Enum` can be handled via `AnnotatedClass`, but the improvement was not included on the serialization part. This PR exactly does that.\r\n\r\n### Modifications\r\n\r\n- Deprecate `constructFromName(MapperConfig<?>, Class<Enum<?>>)` method.\r\n- Implement `constructFromName(MapperConfig<?>, AnnotatedClass)` method.\n\n",
+                "source_code": null,
+                "distance": 0.75,
+                "title": "Improve `Enum` serialization via `AnnotatedClass`",
+                "name": "pr#3991",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#3832"
+                    },
+                    {
+                        "start_node": "pr#3832",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "pr#3991"
+                    }
+                ],
+                "similarity": 0.47441300652766294,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "3866",
+                "type": "issue",
+                "content": "- regards to discussion in https://github.com/FasterXML/jackson-databind/pull/3832#discussion_r1159254244      \r\n\n\n",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "Refactor `EnumResolver` internal methods to simplify method signature",
+                "name": "pr#3866",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#3832"
+                    },
+                    {
+                        "start_node": "pr#3832",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "pr#3866"
+                    }
+                ],
+                "similarity": 0.4562834897622553,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "4311",
+                "type": "issue",
+                "content": "fixes #4302.\r\n\n\n",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "Make `PropertyNamingStrategy` skip renaming on `Enum`s",
+                "name": "pr#4311",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#4302"
+                    },
+                    {
+                        "start_node": "issue#4302",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "pr#4311"
+                    }
+                ],
+                "similarity": 0.4497752467872068,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "2550",
+                "type": "issue",
+                "content": "The way Enum introspection works via `AnnotationIntrospection` in 2.x is fragmented and results in multiple passes along related but unconnected pieces; first for primary names, then for default values, and then for aliases. Since information is mostly the same it would make sense to change handling to be at slightly higher level, combination logical pieces.\r\n\r\nIt would either make sense to combine everything into just one combo method, or, possible two:\r\n\r\n1. Method that just discovers all accessors (in case of Enums, `Field`s), return as ordered List or array of `AnnotatedField`s\r\n2. Method that given result of (1) will further determine names, aliases, and possible default value\r\n\r\nOne additional benefit from rewrite is that it could allow supporting mix-in override: in 2.x mix-ins do not work for Enums as far as I understand code (since it by-passes `AnnotatedField` and directly operates on basic JDK `Field` instances instead).\r\n\r\n\n\n",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "(3.x) Rewrite Annotation introspection methods for Enum handling",
+                "name": "issue#2550",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#3832"
+                    },
+                    {
+                        "start_node": "pr#3832",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "issue#2550"
+                    }
+                ],
+                "similarity": 0.44746620737777276,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "4036",
+                "type": "issue",
+                "content": "When `DeserializationFeature.READ_ENUMS_USING_TO_STRING` is enabled, the enum deserializer neglects inspecting `@JsonProperty`; see the test case, it succeeds if `READ_ENUMS_USING_TO_STRING` is disabled and would fail with `READ_ENUMS_USING_TO_STRING` enabled (without this patch).\r\n\n\n\nComment by cowtowncoder:\nHmmm. I guess this is a reasonable request as `@JsonProperty` should override not just `Enum.name()` provided value but also `Enum.toString()`.\r\n\r\nCan not fully validate suggested fix (although it makes sense); @JooHyukKim knows better I think having rewritten most of this code very recently.\r\n\n\nComment by iProdigy:\nWhen `@JsonProperty` is applied, `WRITE_ENUMS_USING_TO_STRING` ought to use the overriding string rather than `Enum#toString`, in my opinion (let me know if you disagree @cowtowncoder) - should I tackle this in another PR or here?\r\n\n\nComment by JooHyukKim:\n>  I guess this is a reasonable request as @JsonProperty should override not just Enum.name() provided value but also Enum.toString().\r\n\r\nCan we use \"improve\" instead of \"fix\" in the title, @iProdigy ? Because some (bug) fixes can be merged back to 2.15, it's better not to look back and look for what bug we are trying to fix here. WDYT, @cowtowncoder ?\r\n\r\n> Can not fully validate suggested fix (although it makes sense); @JooHyukKim knows better I think having rewritten most of this code very recently.\r\n\r\nI will take a look, seems straightforward though.\n\nComment by JooHyukKim:\n>  I guess this is a reasonable request as @JsonProperty should override not just Enum.name() provided value but also Enum.toString().\r\n\r\nIt's a straightforward, so I think it work just fine. @cowtowncoder. How about backporting to 2.15?\n\nComment by cowtowncoder:\nI think that for safety wrt avoiding regression, we should not try backporting improvements to behavior here.\r\n\r\n@iProdigy yes I agree that name from `@JsonProperty` should override one from default/implicit, whether that is `name()` or `toString()`. That's the whole point here, right?\r\n\r\n@JooHyukKim behavior of deprecated methods is something we could do either way, no strong opinion (that is; can fix, can leave without fix, as long as methods no longer called from within databind itself).\r\n\r\n\n\nComment by iProdigy:\n> That's the whole point here, right?\r\n\r\nAgreed, shall I update this PR with the serialization side or create a separate PR?\r\n\n\nComment by cowtowncoder:\n@iProdigy Ah! Sorry, missed the ser/deser part. Yeah, I think separate PR might make sense -- but either way is fine with me.\r\n\n\nComment by cowtowncoder:\nOk one last thing @iProdigy -- if you havent been asked for (and sent) CLA, from:\r\n\r\nhttps://github.com/FasterXML/jackson/blob/master/contributor-agreement.pdf\r\n\r\nwe'd need that before merging the first contribution (once we have it, it's good for any number of contributions).\r\nThe usual way is to print, fill & sign, scan/photo, email to `info` at fasterxml dot com.\r\nOnce that's in, I can review and merge PRs. Apologies for this part of process but it's fortunately one-time thing (and if you already sent one just remind me of name/date and I'll check).\r\n\r\n\n\nComment by iProdigy:\n@cowtowncoder Just sent the signed CLA to that inbox!\r\n\n\nComment by JooHyukKim:\nLGTM!\n\nComment by JooHyukKim:\n> @JooHyukKim behavior of deprecated methods is something we could do either way, no strong opinion (that is; can fix, can leave without fix, as long as methods no longer called from within databind itself).\r\n\r\nIf that's the case, may I suggest \"not\" to make modifications in deprecated methods? For following reasons...\r\n\r\n1. Compliates going back and forth versions (like 2.15, 2.16, 3.0..). Too much attention spent.\r\n2. To encourage newer version usage.\r\n\r\nWDYT? /cc @cowtowncoder @iProdigy \n\nComment by iProdigy:\nIt's worth noting that the deprecated `EnumResolver.constructUsingToString` is still called by:\r\n\r\n* `StdKeyDeserializer` **IF** `_byToStringResolver` is `null` \r\n* `EnumDeserializer` **IF** `_lookupByToString` is `null`\r\n\r\nThat said, these scenarios shouldn't (?) occur on 2.16, so updating the deprecated method may not be necessary\n\nComment by cowtowncoder:\nCLA received; will look over once more, then merge.\r\n\r\nAs to deprecated methods; yeah, need to be careful but at least existing unit test suite can catch some obvious issues.\r\nBut test coverage is not great for use of various types as `Map` keys, especially with \"advanced\" use cases (like use of annotations) so I guess it's hard choice. Adding handling for something not tested is not significantly better for long term than leaving things as are.\r\n\n\nComment by cowtowncoder:\n@JooHyukKim Good points in favor of NOT adding support, I concur.\n\nComment by JooHyukKim:\n@iProdigy Deleted earlier comment, because I thought we finished something before actually checking \ud83d\ude06. Anyways, thank you also!",
+                "source_code": null,
+                "distance": 1.0,
+                "title": "Use `@JsonProperty` for Enum values also when `READ_ENUMS_USING_TO_STRING` enabled",
+                "name": "pr#4036",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#3832"
+                    },
+                    {
+                        "start_node": "pr#3832",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "issue#3990"
+                    },
+                    {
+                        "start_node": "issue#3990",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#4036"
+                    }
+                ],
+                "similarity": 0.4100066405737181,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "3053",
+                "type": "issue",
+                "content": "**Is your feature request related to a problem? Please describe.**\r\nJava enums are usually defined as `UPPER_CASE_WITH_UNDERSCORE`. This is not a standard in endpoints, as these rather use `lower_case_with_underscore`. There is already feature for `ACCEPT_CASE_INSENSITIVE_ENUMS`, which helps with deserialization, the feature for serialization is however currently missing. Only option is using `@JsonProperty` or `toString()` serialization.\r\n\r\n**Describe the solution you'd like**\r\nI would like to have `SerializationFeature.WRITE_ENUM_LOWERCASED`.\r\n\r\n**Usage example**\r\nAny API endpoint.\r\n\n\n\nComment by vojkny:\nSee proposed PR.\n\nComment by cowtowncoder:\nI don't think I'll accept this as a `SerializationFeature` as it is little bit too specific (I know, there are some ENUM-specific ones already but I'd rather want to get rid of them).\r\nBut there probably should be separate `EnumConfig` / `EnumFeature` set for things to configure Enum handling with.\r\n\r\nOr, alternatively, have something like `PropertyNamingStrategy` but for Enum values.\r\n\r\nI'll keep this issue open but the solution will need to be something other than another `SerializationFeature` (which very likely also would require matching `DeserializationFeature`).\r\n\n\nComment by kdankert:\nI see you removed the to evaluate label on this issue. Is this going to be implemented soon, when is Jackson 2.13 going to be released, as the information in the wiki don't seem to be right anymore.\n\nComment by cowtowncoder:\n@kdankert I probably will not have time to work on this any time soon unfortunately. \r\n\r\n2.13 will be released whenever it might be ready: versions are not scheduled based on time. But before release there will be one or more Release Candidates and announcements will typically be sent on dev mailing list (as well as via `FasterXML` Twitter account.).\r\n\n\nComment by kdankert:\nNo problem, thanks for the update.\n\nComment by vojkny:\nNote that I solved it temporarily with custom serializer:\r\n\r\n```kotlin\r\npackage net.goout.jackson\r\n\r\nimport com.fasterxml.jackson.core.JsonGenerator\r\nimport com.fasterxml.jackson.databind.SerializerProvider\r\nimport com.fasterxml.jackson.databind.module.SimpleModule\r\nimport com.fasterxml.jackson.databind.ser.std.StdSerializer\r\n\r\nval lowerCaseEnumJacksonSerializerModule = SimpleModule().also {\r\n    val lowerCaseEnumKeySerializer = object : StdSerializer<Enum<*>>(Enum::class.java) {\r\n        override fun serialize(value: Enum<*>?, json: JsonGenerator, provider: SerializerProvider) {\r\n            json.writeFieldName(value?.name?.toLowerCase())\r\n        }\r\n    }\r\n    val lowerCaseEnumValueSerializer = object : StdSerializer<Enum<*>>(Enum::class.java) {\r\n        override fun serialize(value: Enum<*>?, json: JsonGenerator, provider: SerializerProvider) {\r\n            json.writeString(value?.name?.toLowerCase())\r\n        }\r\n    }\r\n    it.addKeySerializer(Enum::class.java, lowerCaseEnumKeySerializer)\r\n    it.addSerializer(Enum::class.java, lowerCaseEnumValueSerializer)\r\n}\r\n```\n\nComment by ZeroOne3010:\nSo Jackson 2.14 is out and I'm unable to use this feature, the new `SerializationFeature.WRITE_ENUMS_LOWERCASED` enum value is not there yet. Should the label be updated or am I doing something wrong?\n\nComment by cowtowncoder:\n@ZeroOne3010 Unfortunately this feature did not make it in due to timing constraints, all the other work. I changed the label -- it is intended to show release targeted, but is not binding (i.e. aspirational, not constraining)\n\nComment by ZeroOne3010:\n@cowtowncoder OK, no worries, thanks for the clarification! I can wait. :) \n\nComment by cowtowncoder:\nImplemented via #3776.\r\n",
+                "source_code": null,
+                "distance": 1.0,
+                "title": "Allow serializing enums to lowercase (`EnumFeature.WRITE_ENUMS_TO_LOWERCASE`)",
+                "name": "issue#3053",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#3832"
+                    },
+                    {
+                        "start_node": "pr#3832",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "issue#2787"
+                    },
+                    {
+                        "start_node": "issue#2787",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#3053"
+                    }
+                ],
+                "similarity": 0.4034908241586244,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "4040",
+                "type": "issue",
+                "content": "Serialization complement of #4037\r\n\n\n\nComment by cowtowncoder:\nThank you again @iProdigy for this and other PRs! 2.16 will have much improved handling thanks to these fixes, as well as earlier work by @JooHyukKim. ",
+                "source_code": null,
+                "distance": 1.25,
+                "title": "Use `@JsonProperty` over `EnumNamingStrategy` for Enum serialization",
+                "name": "pr#4040",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#3832"
+                    },
+                    {
+                        "start_node": "pr#3832",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "issue#3990"
+                    },
+                    {
+                        "start_node": "issue#3990",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#4040"
+                    }
+                ],
+                "similarity": 0.376004626716206,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "4025",
+                "type": "issue",
+                "content": "parent issue : #3990\r\n\r\n## Motivation\r\n\r\nCurrently, `@JsonEnumDefaultValue` is internally introspected via\r\n\r\n```java\r\nClassUtil.findFirstAnnotatedEnumValue(Class<Enum<?>>, JsonEnumDefaultValue.class);\r\n```\r\n... which does not allow mixins.\r\n\r\n## Note\r\n\r\nSome non-deprecated `EnumResolver` construction methods still use the old\r\n\r\n```java\r\n_enumDefault(AnnotationIntrospector intr, Class<?> enumCls)\r\n```\r\n... method namely\r\n\r\n- `EnumResolver.constructUsingIndex()`\r\n- `EnumResolver.constructUsingMethod()`\r\n- `EnumResolver.constructUsingEnumNamingStrategy()`\r\n\r\nIf this PR is accepted (=merged), can we discuss how we should approach the rest of them?\n\n\nComment by JooHyukKim:\n@cowtowncoder Did you see the CI failing with `StackOverflowError`? [GH Actions link](https://github.com/FasterXML/jackson-databind/actions/runs/5509614221/jobs/10042591313) here. I am trying to look into it also.\r\n\r\nMight be false alarm. \n\nComment by cowtowncoder:\n@JooHyukKim Yes; you probably created PR before changes in 2.16 yesterday that resolved SOE. So that's basically false alarm here.\n\nComment by cowtowncoder:\nHmmh. Rather difficult merge from 2.16 to master.... :-(\n\nComment by JooHyukKim:\n> Hmmh. Rather difficult merge from 2.16 to master.... :-(\r\n\r\nNeed a hand? \n\nComment by cowtowncoder:\n@JooHyukKim Let me see, I'll try once more first :)\r\n\n\nComment by cowtowncoder:\nOk, managed to merge it, but `EnumResolver` calls deprecated introspection method (old `findDefaultEnumValue()`) so could not yet remove it from 3.0.\r\n\n\nComment by JooHyukKim:\n> Ok, managed to merge it, but EnumResolver calls deprecated introspection method (old findDefaultEnumValue()) so could not yet remove it from 3.0.\r\n\r\nGreat \ud83d\udc4d\ud83c\udffb And to remove usage of deprecated `findDefaultEnumValue()`, we need a couple more revisions on methods listed  below (as mentioned above in the [PR Note](https://github.com/FasterXML/jackson-databind/pull/4025#issue-1796957378))\r\n\r\n- `EnumResolver.constructUsingIndex()`\r\n- `EnumResolver.constructUsingMethod()`\r\n- `EnumResolver.constructUsingEnumNamingStrategy()`\r\n\r\nI will make a series of PR's to achieve so. But, in case you want it all in one PR (maybe for time effeciency), let me know \u270c\ud83c\udffc\u270c\ud83c\udffc \r\nThank you again! @cowtowncoder \n\nComment by JooHyukKim:\nFollow-up, with #4032 #4033 #4034 , we achieved the following.\r\n\r\n- Removed all usage of`AI.findDefaultEnumValue(Class<Enum<?>>)` and retrofitted the new with `AnnotatedClass`, from non-deprecated methods. \r\n- Made implementions inside `EnumResolver` look pretty much the same.\r\n- EnumResolver is more Jacksonized via `AnnotatedClass`\r\n\r\nI made three separate PR's to help easy forward merge \ud83d\ude42 (hopefully...!) \r\nHope it all makes sense, thanks \ud83d\ude4f\ud83c\udffc\r\n\r\n/cc @cowtowncoder \n\nComment by cowtowncoder:\nThank yu @JooHyukKim ! I'll go over those soon. +1 for separate PRs!",
+                "source_code": null,
+                "distance": 1.25,
+                "title": "Improve handling of `@JsonEnumDefaultValue` via `AnnotatedClass`",
+                "name": "pr#4025",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#3832"
+                    },
+                    {
+                        "start_node": "pr#3832",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "issue#3990"
+                    },
+                    {
+                        "start_node": "issue#3990",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#4025"
+                    }
+                ],
+                "similarity": 0.3706673626777043,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "4000",
+                "type": "issue",
+                "content": "parent issue : #3990 \r\n\r\n### Note\r\n\r\nThis PR might have been called as... \"Deprecate lazy initialization of `EnumResolver _byToStringResolver` in EnumDeserializers\" -- I was 50/50 on this.\r\n\r\n### Motivation\r\n\r\nThis PR will...\r\n\r\n1. Effectively remove the last usage of deprecated `AnnotationIntrospector.findEnumAliases(Class<?>, Enum<?>[], String[][])`\r\n2. Deprecate unncessary locking in `_getToStringLookup`\r\n\r\n### Modifications\r\n\r\n- Initialize  `EnumResolver _byToStringResolver` during construction, not lazily.\r\n- Deprecate old `EnumResolver.constructUsingToString(DeserializationConfig, Class<?>)`\r\n- Implement new `EnumResolver.constructUsingToString(DeserializationConfig, AnnotatedClass)`\n\n\nComment by cowtowncoder:\nThank you @JooHyukKim ! I decided to remove couple of \"added in 2.15, deprecated in 2.16\" methods given that they were internal and unlikely to be used by anything outside databind. Also added those `@Deprecated` markers.\r\nAnd now will try to merge to 3.0/master :)\r\n\n\nComment by JooHyukKim:\n> I decided to remove couple of \"added in 2.15, deprecated in 2.16\" methods given that they were internal and unlikely to be used by anything outside databind.\r\n\r\nEven better \ud83d\udc4d\ud83c\udffb Sounds great,  Thank you! @cowtowncoder \n\nComment by cowtowncoder:\nOk nice; took a while to merge to `master`, but was able to remove a few deprecated method, volatile state. Good job!",
+                "source_code": null,
+                "distance": 1.25,
+                "title": "Implement new `EnumResolver.constructUsingToString(DeserializationConfig, AnnotatedClass)` instead of `(DeserializationConfig, Class<?>)`",
+                "name": "pr#4000",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#3832"
+                    },
+                    {
+                        "start_node": "pr#3832",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "issue#3990"
+                    },
+                    {
+                        "start_node": "issue#3990",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#4000"
+                    }
+                ],
+                "similarity": 0.34664361609488853,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "4034",
+                "type": "issue",
+                "content": "parent issue : #3990\r\n\r\n## Motivation\r\n- Follow up of #4025\r\n- This PR will effectively make implementions inside `EnumResolver` look more the same\r\n- Retrofit the new `AnnotationIntrospector.findDefaultEnumValue(AnnotatedClass, Enum<?>[])`.\r\n\r\n## Modification\r\n- Same as motivation\n\n\nComment by cowtowncoder:\nThank you @JooHyukKim !\r\n\r\nThe only (?) call to deprecated lookup now seems to be from `EnumResolver`:\r\n\r\n```\r\n    @Deprecated\r\n    public static EnumResolver constructUsingIndex(DeserializationConfig config,\r\n            Class<Enum<?>> enumCls0)\r\n```\r\n\r\nor rather, only thing called by non-deprecated code -- everything else is from deprecated methods.\r\nWith 2.x we need to keep deprecated methods around for a bit, but for master/3.0 we are almost done. :)\r\n\r\n\r\n\r\n",
+                "source_code": null,
+                "distance": 1.25,
+                "title": "Implement new `EnumResolver.constructUsingMethod()` via `AnnotatedClass` instead of `Class<?>`",
+                "name": "pr#4034",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#3832"
+                    },
+                    {
+                        "start_node": "pr#3832",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "issue#3990"
+                    },
+                    {
+                        "start_node": "issue#3990",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#4034"
+                    }
+                ],
+                "similarity": 0.3284964976604303,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "4032",
+                "type": "issue",
+                "content": "parent issue : #3990\r\n\r\n## Motivation\r\n- Follow up of #4025\r\n- This PR will effectively make implementions inside `EnumResolver` look more the same\r\n- Retrofit the new `AnnotationIntrospector.findDefaultEnumValue(AnnotatedClass, Enum<?>[])`.\r\n\r\n## Modification\r\n- Same as motivation\n\n",
+                "source_code": null,
+                "distance": 1.25,
+                "title": "Implement new `EnumResolver.constructUsingEnumNamingStrategy()` via `AnnotatedClass` instead of `Class<?>`",
+                "name": "pr#4032",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#3832"
+                    },
+                    {
+                        "start_node": "pr#3832",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "issue#3990"
+                    },
+                    {
+                        "start_node": "issue#3990",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#4032"
+                    }
+                ],
+                "similarity": 0.3240897081661112,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "4039",
+                "type": "issue",
+                "content": "Serialization complement of #4036\n\n\nComment by iProdigy:\n@JooHyukKim Could you also review this PR please?",
+                "source_code": null,
+                "distance": 1.25,
+                "title": "Use `@JsonProperty` and lowercase feature when serializing Enums despite write using toString()",
+                "name": "pr#4039",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#3832"
+                    },
+                    {
+                        "start_node": "pr#3832",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "issue#3990"
+                    },
+                    {
+                        "start_node": "issue#3990",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#4039"
+                    }
+                ],
+                "similarity": 0.32129826196126493,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "4033",
+                "type": "issue",
+                "content": "parent issue : #3990\r\n\r\n## Motivation\r\n- Follow up of #4025\r\n- This PR will effectively make implementions inside `EnumResolver` look more the same\r\n- Retrofit the new `AnnotationIntrospector.findDefaultEnumValue(AnnotatedClass, Enum<?>[])`.\r\n\r\n## Modification\r\n- Same as motivation\n\n",
+                "source_code": null,
+                "distance": 1.25,
+                "title": "Implement new `EnumResolver.constructUsingIndex()` via `AnnotatedClass` instead of `Class<?>`",
+                "name": "pr#4033",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#3832"
+                    },
+                    {
+                        "start_node": "pr#3832",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "issue#3990"
+                    },
+                    {
+                        "start_node": "issue#3990",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#4033"
+                    }
+                ],
+                "similarity": 0.2945714859566746,
+                "end_line": null,
+                "signature": null
+            }
+        ]
+    },
+    "artifact_stats": {
+        "skipped_due_to_time": 12,
+        "valid_related_items": 113
+    }
+}

@@ -1,0 +1,2114 @@
+{
+  "related_entities": {
+    "methods": [
+      {
+        "start_line": 112,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected ReferenceTypeSerializer(ReferenceTypeSerializer<?> base, BeanProperty property,",
+        "distance": 1.0,
+        "title": null,
+        "name": "ReferenceTypeSerializer",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          }
+        ],
+        "similarity": 0.1667122553756258,
+        "end_line": 112,
+        "signature": "com.fasterxml.jackson.databind.ser.std.ReferenceTypeSerializer(ReferenceTypeSerializer base, BeanProperty property, TypeSerializer vts, JsonSerializer valueSer, NameTransformer unwrapper, Object suppressableValue, boolean suppressNulls)"
+      },
+      {
+        "start_line": 97,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ReferenceTypeSerializer(ReferenceType fullType, boolean staticTyping,",
+        "distance": 1.0,
+        "title": null,
+        "name": "ReferenceTypeSerializer",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          }
+        ],
+        "similarity": 0.15682631893345525,
+        "end_line": 97,
+        "signature": "com.fasterxml.jackson.databind.ser.std.ReferenceTypeSerializer(ReferenceType fullType, boolean staticTyping, TypeSerializer vts, JsonSerializer ser)"
+      },
+      {
+        "start_line": 369,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void serialize(T ref, JsonGenerator g, SerializerProvider provider)",
+        "distance": 1.25,
+        "title": null,
+        "name": "serialize",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "serialize"
+          }
+        ],
+        "similarity": 0.14099494222730613,
+        "end_line": 369,
+        "signature": "com.fasterxml.jackson.databind.ser.std.ReferenceTypeSerializer.serialize(T ref, JsonGenerator g, SerializerProvider provider): void"
+      },
+      {
+        "start_line": 130,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonSerializer<T> unwrappingSerializer(NameTransformer transformer) {\n        JsonSerializer<Object> valueSer = _valueSerializer;\n        if (valueSer != null) {\n            // 09-Dec-2019, tatu: [databind#2565] Can not assume that serializer in\n            //    question actually can unwrap\n            valueSer = valueSer.unwrappingSerializer(transformer);\n            if (valueSer == _valueSerializer) {\n                return this;\n            }\n        }\n        NameTransformer unwrapper = (_unwrapper == null) ? transformer\n                : NameTransformer.chainedTransformer(transformer, _unwrapper);\n        if ((_valueSerializer == valueSer) && (_unwrapper == unwrapper)) {\n            return this;\n        }\n        return withResolved(_property, _valueTypeSerializer, valueSer, unwrapper);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "unwrappingSerializer",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "unwrappingSerializer"
+          }
+        ],
+        "similarity": 0.14021485873483547,
+        "end_line": 146,
+        "signature": "com.fasterxml.jackson.databind.ser.std.ReferenceTypeSerializer.unwrappingSerializer(NameTransformer transformer): JsonSerializer"
+      },
+      {
+        "start_line": 176,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public abstract ReferenceTypeSerializer<T> withContentInclusion(Object suppressableValue,",
+        "distance": 1.25,
+        "title": null,
+        "name": "withContentInclusion",
+        "documentation": "/**\n     * Mutant factory method called to create a differently constructed instance,\n     * specifically with different exclusion rules for contained value.\n     *<p>\n     * NOTE: caller has verified that there are changes, so implementations\n     * need NOT check if a new instance is needed.\n     *\n     * @since 2.9\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withContentInclusion"
+          }
+        ],
+        "similarity": 0.13980012339422357,
+        "end_line": 176,
+        "signature": "com.fasterxml.jackson.databind.ser.std.ReferenceTypeSerializer.withContentInclusion(Object suppressableValue, boolean suppressNulls): ReferenceTypeSerializer"
+      },
+      {
+        "start_line": 163,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected abstract ReferenceTypeSerializer<T> withResolved(BeanProperty prop,",
+        "distance": 1.25,
+        "title": null,
+        "name": "withResolved",
+        "documentation": "/**\n     * Mutant factory method called when changes are needed; should construct\n     * newly configured instance with new values as indicated.\n     *<p>\n     * NOTE: caller has verified that there are changes, so implementations\n     * need NOT check if a new instance is needed.\n     *\n     * @since 2.9\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "withResolved"
+          }
+        ],
+        "similarity": 0.1338098735365358,
+        "end_line": 163,
+        "signature": "com.fasterxml.jackson.databind.ser.std.ReferenceTypeSerializer.withResolved(BeanProperty prop, TypeSerializer vts, JsonSerializer valueSer, NameTransformer unwrapper): ReferenceTypeSerializer"
+      },
+      {
+        "start_line": 450,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private final JsonSerializer<Object> _findCachedSerializer(SerializerProvider provider,",
+        "distance": 1.25,
+        "title": null,
+        "name": "_findCachedSerializer",
+        "documentation": "/**\n     * Helper method that encapsulates logic of retrieving and caching required\n     * serializer.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_findCachedSerializer"
+          }
+        ],
+        "similarity": 0.12209921317262462,
+        "end_line": 450,
+        "signature": "com.fasterxml.jackson.databind.ser.std.ReferenceTypeSerializer._findCachedSerializer(SerializerProvider provider, Class rawType): JsonSerializer"
+      },
+      {
+        "start_line": 391,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void serializeWithType(T ref,",
+        "distance": 1.25,
+        "title": null,
+        "name": "serializeWithType",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "serializeWithType"
+          }
+        ],
+        "similarity": 0.11695753054245217,
+        "end_line": 391,
+        "signature": "com.fasterxml.jackson.databind.ser.std.ReferenceTypeSerializer.serializeWithType(T ref, JsonGenerator g, SerializerProvider provider, TypeSerializer typeSer): void"
+      },
+      {
+        "start_line": 198,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonSerializer<?> createContextual(SerializerProvider provider,",
+        "distance": 1.25,
+        "title": null,
+        "name": "createContextual",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          }
+        ],
+        "similarity": 0.11551036323063829,
+        "end_line": 198,
+        "signature": "com.fasterxml.jackson.databind.ser.std.ReferenceTypeSerializer.createContextual(SerializerProvider provider, BeanProperty property): JsonSerializer"
+      },
+      {
+        "start_line": 283,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected boolean _useStatic(SerializerProvider provider, BeanProperty property,",
+        "distance": 1.25,
+        "title": null,
+        "name": "_useStatic",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_useStatic"
+          }
+        ],
+        "similarity": 0.11398699946269637,
+        "end_line": 283,
+        "signature": "com.fasterxml.jackson.databind.ser.std.ReferenceTypeSerializer._useStatic(SerializerProvider provider, BeanProperty property, JavaType referredType): boolean"
+      },
+      {
+        "start_line": 477,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private final JsonSerializer<Object> _findSerializer(SerializerProvider provider,",
+        "distance": 1.25,
+        "title": null,
+        "name": "_findSerializer",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          }
+        ],
+        "similarity": 0.11289885753526377,
+        "end_line": 477,
+        "signature": "com.fasterxml.jackson.databind.ser.std.ReferenceTypeSerializer._findSerializer(SerializerProvider provider, JavaType type, BeanProperty prop): JsonSerializer"
+      },
+      {
+        "start_line": 427,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void acceptJsonFormatVisitor(JsonFormatVisitorWrapper visitor, JavaType typeHint)",
+        "distance": 1.25,
+        "title": null,
+        "name": "acceptJsonFormatVisitor",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "acceptJsonFormatVisitor"
+          }
+        ],
+        "similarity": 0.11153648277272621,
+        "end_line": 427,
+        "signature": "com.fasterxml.jackson.databind.ser.std.ReferenceTypeSerializer.acceptJsonFormatVisitor(JsonFormatVisitorWrapper visitor, JavaType typeHint): void"
+      },
+      {
+        "start_line": 37,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/AtomicReferenceSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected ReferenceTypeSerializer<AtomicReference<?>> withResolved(BeanProperty prop,",
+        "distance": 2.25,
+        "title": null,
+        "name": "withResolved",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "withResolved"
+          }
+        ],
+        "similarity": 0.09592749138604827,
+        "end_line": 37,
+        "signature": "com.fasterxml.jackson.databind.ser.std.AtomicReferenceSerializer.withResolved(BeanProperty prop, TypeSerializer vts, JsonSerializer valueSer, NameTransformer unwrapper): ReferenceTypeSerializer"
+      },
+      {
+        "start_line": 189,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected abstract Object _getReferencedIfPresent(T value);",
+        "distance": 1.25,
+        "title": null,
+        "name": "_getReferencedIfPresent",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "serialize"
+          },
+          {
+            "start_node": "serialize",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_getReferencedIfPresent"
+          }
+        ],
+        "similarity": 0.09574564485622901,
+        "end_line": 189,
+        "signature": "com.fasterxml.jackson.databind.ser.std.ReferenceTypeSerializer._getReferencedIfPresent(T value): Object"
+      },
+      {
+        "start_line": 351,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean isUnwrappingSerializer() {\n        return (_unwrapper != null);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "isUnwrappingSerializer",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isUnwrappingSerializer"
+          }
+        ],
+        "similarity": 0.09563118464654087,
+        "end_line": 353,
+        "signature": "com.fasterxml.jackson.databind.ser.std.ReferenceTypeSerializer.isUnwrappingSerializer(): boolean"
+      },
+      {
+        "start_line": 187,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected abstract Object _getReferenced(T value);",
+        "distance": 1.25,
+        "title": null,
+        "name": "_getReferenced",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "isEmpty"
+          },
+          {
+            "start_node": "isEmpty",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_getReferenced"
+          }
+        ],
+        "similarity": 0.09034694594959593,
+        "end_line": 187,
+        "signature": "com.fasterxml.jackson.databind.ser.std.ReferenceTypeSerializer._getReferenced(T value): Object"
+      },
+      {
+        "start_line": 358,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JavaType getReferredType() {\n        return _referredType;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getReferredType",
+        "documentation": "/**\n     * @since 2.9\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "getReferredType"
+          }
+        ],
+        "similarity": 0.08585738406800003,
+        "end_line": 360,
+        "signature": "com.fasterxml.jackson.databind.ser.std.ReferenceTypeSerializer.getReferredType(): JavaType"
+      },
+      {
+        "start_line": 185,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected abstract boolean _isValuePresent(T value);",
+        "distance": 1.25,
+        "title": null,
+        "name": "_isValuePresent",
+        "documentation": "/**\n     * Method called to see if there is a value present or not.\n     * Note that value itself may still be `null`, even if present,\n     * if referential type allows three states (absent, present-null,\n     * present-non-null); some only allow two (absent, present-non-null).\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "_isValuePresent"
+          }
+        ],
+        "similarity": 0.08388957420092685,
+        "end_line": 185,
+        "signature": "com.fasterxml.jackson.databind.ser.std.ReferenceTypeSerializer._isValuePresent(T value): boolean"
+      },
+      {
+        "start_line": 496,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/StdSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonSerializer<?> findAnnotatedContentSerializer(SerializerProvider serializers,",
+        "distance": 2.25,
+        "title": null,
+        "name": "findAnnotatedContentSerializer",
+        "documentation": "/**\n     * Convenience method for finding out possibly configured content value serializer.\n     *\n     * @since 2.7.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "findAnnotatedContentSerializer"
+          }
+        ],
+        "similarity": 0.08247770609444026,
+        "end_line": 496,
+        "signature": "com.fasterxml.jackson.databind.ser.std.StdSerializer.findAnnotatedContentSerializer(SerializerProvider serializers, BeanProperty property): JsonSerializer"
+      },
+      {
+        "start_line": 71,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/AtomicReferenceSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected Object _getReferencedIfPresent(AtomicReference<?> value) {\n        return value.get();\n    }",
+        "distance": 2.25,
+        "title": null,
+        "name": "_getReferencedIfPresent",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "serialize"
+          },
+          {
+            "start_node": "serialize",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_getReferencedIfPresent"
+          }
+        ],
+        "similarity": 0.07646922844609444,
+        "end_line": 73,
+        "signature": "com.fasterxml.jackson.databind.ser.std.AtomicReferenceSerializer._getReferencedIfPresent(AtomicReference value): Object"
+      },
+      {
+        "start_line": 66,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/AtomicReferenceSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected Object _getReferenced(AtomicReference<?> value) {\n        return value.get();\n    }",
+        "distance": 2.25,
+        "title": null,
+        "name": "_getReferenced",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "isEmpty"
+          },
+          {
+            "start_node": "isEmpty",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_getReferenced"
+          }
+        ],
+        "similarity": 0.07638566337067067,
+        "end_line": 68,
+        "signature": "com.fasterxml.jackson.databind.ser.std.AtomicReferenceSerializer._getReferenced(AtomicReference value): Object"
+      },
+      {
+        "start_line": 27,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/AtomicReferenceSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected AtomicReferenceSerializer(AtomicReferenceSerializer base, BeanProperty property,",
+        "distance": 2.75,
+        "title": null,
+        "name": "AtomicReferenceSerializer",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "isEmpty"
+          },
+          {
+            "start_node": "isEmpty",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_getReferenced"
+          },
+          {
+            "start_node": "_getReferenced",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "AtomicReferenceSerializer"
+          },
+          {
+            "start_node": "AtomicReferenceSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "AtomicReferenceSerializer"
+          }
+        ],
+        "similarity": 0.07470079441221432,
+        "end_line": 27,
+        "signature": "com.fasterxml.jackson.databind.ser.std.AtomicReferenceSerializer(AtomicReferenceSerializer base, BeanProperty property, TypeSerializer vts, JsonSerializer valueSer, NameTransformer unwrapper, Object suppressableValue, boolean suppressNulls)"
+      },
+      {
+        "start_line": 21,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/AtomicReferenceSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public AtomicReferenceSerializer(ReferenceType fullType, boolean staticTyping,",
+        "distance": 2.75,
+        "title": null,
+        "name": "AtomicReferenceSerializer",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "isEmpty"
+          },
+          {
+            "start_node": "isEmpty",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_getReferenced"
+          },
+          {
+            "start_node": "_getReferenced",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "AtomicReferenceSerializer"
+          },
+          {
+            "start_node": "AtomicReferenceSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "AtomicReferenceSerializer"
+          }
+        ],
+        "similarity": 0.07417300415002911,
+        "end_line": 21,
+        "signature": "com.fasterxml.jackson.databind.ser.std.AtomicReferenceSerializer(ReferenceType fullType, boolean staticTyping, TypeSerializer vts, JsonSerializer ser)"
+      },
+      {
+        "start_line": 46,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/AtomicReferenceSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ReferenceTypeSerializer<AtomicReference<?>> withContentInclusion(Object suppressableValue,",
+        "distance": 2.75,
+        "title": null,
+        "name": "withContentInclusion",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withContentInclusion"
+          }
+        ],
+        "similarity": 0.07350453677679285,
+        "end_line": 46,
+        "signature": "com.fasterxml.jackson.databind.ser.std.AtomicReferenceSerializer.withContentInclusion(Object suppressableValue, boolean suppressNulls): ReferenceTypeSerializer"
+      },
+      {
+        "start_line": 1239,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/MapSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private final JsonSerializer<Object> _findSerializer(SerializerProvider provider,",
+        "distance": 2.25,
+        "title": null,
+        "name": "_findSerializer",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          }
+        ],
+        "similarity": 0.06773931452115826,
+        "end_line": 1239,
+        "signature": "com.fasterxml.jackson.databind.ser.std.MapSerializer._findSerializer(SerializerProvider provider, Object value): JsonSerializer"
+      },
+      {
+        "start_line": 323,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean isEmpty(SerializerProvider provider, T value)",
+        "distance": 1.25,
+        "title": null,
+        "name": "isEmpty",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "isEmpty"
+          }
+        ],
+        "similarity": 0.06726765030308843,
+        "end_line": 323,
+        "signature": "com.fasterxml.jackson.databind.ser.std.ReferenceTypeSerializer.isEmpty(SerializerProvider provider, T value): boolean"
+      },
+      {
+        "start_line": 397,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/StdSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonSerializer<?> findConvertingContentSerializer(SerializerProvider provider,",
+        "distance": 2.75,
+        "title": null,
+        "name": "findConvertingContentSerializer",
+        "documentation": "/**\n     * @deprecated Since 2.9 use {link {@link #findContextualConvertingSerializer} instead\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "findAnnotatedContentSerializer"
+          },
+          {
+            "start_node": "findAnnotatedContentSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "StdSerializer"
+          },
+          {
+            "start_node": "StdSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "findConvertingContentSerializer"
+          }
+        ],
+        "similarity": 0.06511747898789615,
+        "end_line": 397,
+        "signature": "com.fasterxml.jackson.databind.ser.std.StdSerializer.findConvertingContentSerializer(SerializerProvider provider, BeanProperty prop, JsonSerializer existingSerializer): JsonSerializer"
+      },
+      {
+        "start_line": 364,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/StdSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonSerializer<?> findContextualConvertingSerializer(SerializerProvider provider,",
+        "distance": 2.75,
+        "title": null,
+        "name": "findContextualConvertingSerializer",
+        "documentation": "/**\n     * Helper method that can be used to see if specified property has annotation\n     * indicating that a converter is to be used for contained values (contents\n     * of structured types; array/List/Map values)\n     *\n     * @param existingSerializer (optional) configured content\n     *    serializer if one already exists.\n     *\n     * @since 2.9\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "findAnnotatedContentSerializer"
+          },
+          {
+            "start_node": "findAnnotatedContentSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "StdSerializer"
+          },
+          {
+            "start_node": "StdSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "findContextualConvertingSerializer"
+          }
+        ],
+        "similarity": 0.06383811045650194,
+        "end_line": 364,
+        "signature": "com.fasterxml.jackson.databind.ser.std.StdSerializer.findContextualConvertingSerializer(SerializerProvider provider, BeanProperty property, JsonSerializer existingSerializer): JsonSerializer"
+      },
+      {
+        "start_line": 624,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/MapSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonSerializer<?> getContentSerializer() {\n        return _valueSerializer;\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "getContentSerializer",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getContentSerializer"
+          }
+        ],
+        "similarity": 0.06319054919129814,
+        "end_line": 626,
+        "signature": "com.fasterxml.jackson.databind.ser.std.MapSerializer.getContentSerializer(): JsonSerializer"
+      },
+      {
+        "start_line": 452,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/MapSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public MapSerializer withContentInclusion(Object suppressableValue) {\n        return new MapSerializer(this, _valueTypeSerializer, suppressableValue, _suppressNulls);\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "withContentInclusion",
+        "documentation": "/**\n     * @deprecated since 2.9\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withContentInclusion"
+          }
+        ],
+        "similarity": 0.062070237056702796,
+        "end_line": 454,
+        "signature": "com.fasterxml.jackson.databind.ser.std.MapSerializer.withContentInclusion(Object suppressableValue): MapSerializer"
+      },
+      {
+        "start_line": 99,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/StdSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public abstract void serialize(T value, JsonGenerator gen, SerializerProvider provider)",
+        "distance": 2.75,
+        "title": null,
+        "name": "serialize",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "serialize"
+          }
+        ],
+        "similarity": 0.060424585931048935,
+        "end_line": 99,
+        "signature": "com.fasterxml.jackson.databind.ser.std.StdSerializer.serialize(T value, JsonGenerator gen, SerializerProvider provider): void"
+      },
+      {
+        "start_line": 358,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/MapSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public MapSerializer withContentInclusion(Object suppressableValue, boolean suppressNulls) {\n        if ((suppressableValue == _suppressableValue) && (suppressNulls == _suppressNulls)) {\n            return this;\n        }\n        _ensureOverride(\"withContentInclusion\");\n        return new MapSerializer(this, _valueTypeSerializer, suppressableValue, suppressNulls);\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "withContentInclusion",
+        "documentation": "/**\n     * Mutant factory for constructing an instance with different inclusion strategy\n     * for content (Map values).\n     *\n     * @since 2.9\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withContentInclusion"
+          }
+        ],
+        "similarity": 0.06001169256487461,
+        "end_line": 364,
+        "signature": "com.fasterxml.jackson.databind.ser.std.MapSerializer.withContentInclusion(Object suppressableValue, boolean suppressNulls): MapSerializer"
+      },
+      {
+        "start_line": 526,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/StdSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected boolean isDefaultSerializer(JsonSerializer<?> serializer) {\n        return ClassUtil.isJacksonStdImpl(serializer);\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "isDefaultSerializer",
+        "documentation": "/**\n     * Method that can be called to determine if given serializer is the default\n     * serializer Jackson uses; as opposed to a custom serializer installed by\n     * a module or calling application. Determination is done using\n     * {@link JacksonStdImpl} annotation on serializer class.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "findAnnotatedContentSerializer"
+          },
+          {
+            "start_node": "findAnnotatedContentSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "StdSerializer"
+          },
+          {
+            "start_node": "StdSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isDefaultSerializer"
+          }
+        ],
+        "similarity": 0.0586198333309709,
+        "end_line": 528,
+        "signature": "com.fasterxml.jackson.databind.ser.std.StdSerializer.isDefaultSerializer(JsonSerializer serializer): boolean"
+      },
+      {
+        "start_line": 310,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/MapSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public MapSerializer _withValueTypeSerializer(TypeSerializer vts) {\n        if (_valueTypeSerializer == vts) {\n            return this;\n        }\n        _ensureOverride(\"_withValueTypeSerializer\");\n        return new MapSerializer(this, vts, _suppressableValue, _suppressNulls);\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "_withValueTypeSerializer",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_withValueTypeSerializer"
+          }
+        ],
+        "similarity": 0.05822359763148105,
+        "end_line": 316,
+        "signature": "com.fasterxml.jackson.databind.ser.std.MapSerializer._withValueTypeSerializer(TypeSerializer vts): MapSerializer"
+      },
+      {
+        "start_line": 113,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/StdSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void acceptJsonFormatVisitor(JsonFormatVisitorWrapper visitor, JavaType typeHint)",
+        "distance": 2.75,
+        "title": null,
+        "name": "acceptJsonFormatVisitor",
+        "documentation": "/**\n     * Default implementation specifies no format. This behavior is usually\n     * overriden by custom serializers.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "acceptJsonFormatVisitor"
+          }
+        ],
+        "similarity": 0.05733329098595514,
+        "end_line": 113,
+        "signature": "com.fasterxml.jackson.databind.ser.std.StdSerializer.acceptJsonFormatVisitor(JsonFormatVisitorWrapper visitor, JavaType typeHint): void"
+      },
+      {
+        "start_line": 881,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/MapSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void serializeFieldsUsing(Map<?,?> value, JsonGenerator gen, SerializerProvider provider,",
+        "distance": 2.75,
+        "title": null,
+        "name": "serializeFieldsUsing",
+        "documentation": "/**\n     * Method called to serialize fields, when the value type is statically known,\n     * so that value serializer is passed and does not need to be fetched from\n     * provider.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "serializeFieldsUsing"
+          }
+        ],
+        "similarity": 0.05703981838195463,
+        "end_line": 881,
+        "signature": "com.fasterxml.jackson.databind.ser.std.MapSerializer.serializeFieldsUsing(Map value, JsonGenerator gen, SerializerProvider provider, JsonSerializer ser): void"
+      },
+      {
+        "start_line": 79,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/StdSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected StdSerializer(StdSerializer<?> src) {\n        _handledType = (Class<T>) src._handledType;\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "StdSerializer",
+        "documentation": "/**\n     * @since 2.6\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "findAnnotatedContentSerializer"
+          },
+          {
+            "start_node": "findAnnotatedContentSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "StdSerializer"
+          },
+          {
+            "start_node": "StdSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "StdSerializer"
+          }
+        ],
+        "similarity": 0.055476665722336456,
+        "end_line": 81,
+        "signature": "com.fasterxml.jackson.databind.ser.std.StdSerializer(StdSerializer src)"
+      },
+      {
+        "start_line": 774,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/MapSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void serializeFields(Map<?,?> value, JsonGenerator gen, SerializerProvider provider)",
+        "distance": 2.75,
+        "title": null,
+        "name": "serializeFields",
+        "documentation": "/**\n     * General-purpose serialization for contents, where we do not necessarily know\n     * the value serialization, but\n     * we do know that no value suppression is needed (which simplifies processing a bit)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "serializeFields"
+          }
+        ],
+        "similarity": 0.05490536196738035,
+        "end_line": 774,
+        "signature": "com.fasterxml.jackson.databind.ser.std.MapSerializer.serializeFields(Map value, JsonGenerator gen, SerializerProvider provider): void"
+      },
+      {
+        "start_line": 982,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/MapSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void serializeTypedFields(Map<?,?> value, JsonGenerator gen, SerializerProvider provider,",
+        "distance": 2.75,
+        "title": null,
+        "name": "serializeTypedFields",
+        "documentation": "/**\n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "serializeTypedFields"
+          }
+        ],
+        "similarity": 0.054109706673170666,
+        "end_line": 982,
+        "signature": "com.fasterxml.jackson.databind.ser.std.MapSerializer.serializeTypedFields(Map value, JsonGenerator gen, SerializerProvider provider, Object suppressableValue): void"
+      },
+      {
+        "start_line": 479,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/MapSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonSerializer<?> createContextual(SerializerProvider provider,",
+        "distance": 2.75,
+        "title": null,
+        "name": "createContextual",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          }
+        ],
+        "similarity": 0.053684365572795795,
+        "end_line": 479,
+        "signature": "com.fasterxml.jackson.databind.ser.std.MapSerializer.createContextual(SerializerProvider provider, BeanProperty property): JsonSerializer"
+      },
+      {
+        "start_line": 705,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/MapSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonSerializer<?> getKeySerializer() {\n        return _keySerializer;\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "getKeySerializer",
+        "documentation": "/**\n     * Accessor for currently assigned key serializer. Note that\n     * this may return null during construction of <code>MapSerializer</code>:\n     * depedencies are resolved during {@link #createContextual} method\n     * (which can be overridden by custom implementations), but for some\n     * dynamic types, it is possible that serializer is only resolved\n     * during actual serialization.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getKeySerializer"
+          }
+        ],
+        "similarity": 0.05330163619963612,
+        "end_line": 707,
+        "signature": "com.fasterxml.jackson.databind.ser.std.MapSerializer.getKeySerializer(): JsonSerializer"
+      },
+      {
+        "start_line": 192,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/StdSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void visitStringFormat(JsonFormatVisitorWrapper visitor, JavaType typeHint,",
+        "distance": 2.75,
+        "title": null,
+        "name": "visitStringFormat",
+        "documentation": "/**\n     * Helper method that calls necessary visit method(s) to indicate that the\n     * underlying JSON type is JSON String, but that there is a more refined\n     * logical type\n     *\n     * @since 2.7\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "findAnnotatedContentSerializer"
+          },
+          {
+            "start_node": "findAnnotatedContentSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "StdSerializer"
+          },
+          {
+            "start_node": "StdSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "visitStringFormat"
+          }
+        ],
+        "similarity": 0.05260230401196714,
+        "end_line": 192,
+        "signature": "com.fasterxml.jackson.databind.ser.std.StdSerializer.visitStringFormat(JsonFormatVisitorWrapper visitor, JavaType typeHint, JsonValueFormat format): void"
+      },
+      {
+        "start_line": 716,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/MapSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void serialize(Map<?,?> value, JsonGenerator gen, SerializerProvider provider)",
+        "distance": 2.75,
+        "title": null,
+        "name": "serialize",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "serialize"
+          }
+        ],
+        "similarity": 0.05200274511134404,
+        "end_line": 716,
+        "signature": "com.fasterxml.jackson.databind.ser.std.MapSerializer.serialize(Map value, JsonGenerator gen, SerializerProvider provider): void"
+      },
+      {
+        "start_line": 1118,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/MapSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void acceptJsonFormatVisitor(JsonFormatVisitorWrapper visitor, JavaType typeHint)",
+        "distance": 2.75,
+        "title": null,
+        "name": "acceptJsonFormatVisitor",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "acceptJsonFormatVisitor"
+          }
+        ],
+        "similarity": 0.051837472832798284,
+        "end_line": 1118,
+        "signature": "com.fasterxml.jackson.databind.ser.std.MapSerializer.acceptJsonFormatVisitor(JsonFormatVisitorWrapper visitor, JavaType typeHint): void"
+      },
+      {
+        "start_line": 1042,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/MapSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void serializeFilteredAnyProperties(SerializerProvider provider, JsonGenerator gen,",
+        "distance": 2.75,
+        "title": null,
+        "name": "serializeFilteredAnyProperties",
+        "documentation": "/**\n     * Helper method used when we have a JSON Filter to use AND contents are\n     * \"any properties\" of a POJO.\n     *\n     * @param bean Enclosing POJO that has any-getter used to obtain \"any properties\"\n     *\n     * @since 2.9\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "serializeFilteredAnyProperties"
+          }
+        ],
+        "similarity": 0.05172690312294981,
+        "end_line": 1042,
+        "signature": "com.fasterxml.jackson.databind.ser.std.MapSerializer.serializeFilteredAnyProperties(SerializerProvider provider, JsonGenerator gen, Object bean, Map value, PropertyFilter filter, Object suppressableValue): void"
+      },
+      {
+        "start_line": 725,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/MapSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void serializeWithType(Map<?,?> value, JsonGenerator gen, SerializerProvider provider,",
+        "distance": 2.75,
+        "title": null,
+        "name": "serializeWithType",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "serializeWithType"
+          }
+        ],
+        "similarity": 0.0515160154025618,
+        "end_line": 725,
+        "signature": "com.fasterxml.jackson.databind.ser.std.MapSerializer.serializeWithType(Map value, JsonGenerator gen, SerializerProvider provider, TypeSerializer typeSer): void"
+      },
+      {
+        "start_line": 142,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/StdSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonNode getSchema(SerializerProvider provider, Type typeHint, boolean isOptional)",
+        "distance": 2.75,
+        "title": null,
+        "name": "getSchema",
+        "documentation": "/**\n     * Default implementation simply claims type is \"string\"; usually\n     * overriden by custom serializers.\n     *\n     * @deprecated Since 2.15, we recommend use of external\n     * <a href=\"https://github.com/FasterXML/jackson-module-jsonSchema\">JSON Schema generator module</a>\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "findAnnotatedContentSerializer"
+          },
+          {
+            "start_node": "findAnnotatedContentSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "StdSerializer"
+          },
+          {
+            "start_node": "StdSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getSchema"
+          }
+        ],
+        "similarity": 0.05126762206135099,
+        "end_line": 142,
+        "signature": "com.fasterxml.jackson.databind.ser.std.StdSerializer.getSchema(SerializerProvider provider, Type typeHint, boolean isOptional): JsonNode"
+      },
+      {
+        "start_line": 180,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/StdSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void visitStringFormat(JsonFormatVisitorWrapper visitor, JavaType typeHint)",
+        "distance": 2.75,
+        "title": null,
+        "name": "visitStringFormat",
+        "documentation": "/**\n     * Helper method that calls necessary visit method(s) to indicate that the\n     * underlying JSON type is JSON String.\n     *\n     * @since 2.7\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "findAnnotatedContentSerializer"
+          },
+          {
+            "start_node": "findAnnotatedContentSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "StdSerializer"
+          },
+          {
+            "start_node": "StdSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "visitStringFormat"
+          }
+        ],
+        "similarity": 0.051137373458566296,
+        "end_line": 180,
+        "signature": "com.fasterxml.jackson.databind.ser.std.StdSerializer.visitStringFormat(JsonFormatVisitorWrapper visitor, JavaType typeHint): void"
+      },
+      {
+        "start_line": 751,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/MapSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void serializeWithoutTypeInfo(Map<?, ?> value, JsonGenerator gen, SerializerProvider provider) throws IOException {\n        if (!value.isEmpty()) {\n            if (_sortKeys || provider.isEnabled(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)) {\n                value = _orderEntries(value, gen, provider);\n            }\n            PropertyFilter pf;\n            if ((_filterId != null) && (pf = findPropertyFilter(provider, _filterId, value)) != null) {\n                serializeFilteredFields(value, gen, provider, pf, _suppressableValue);\n            } else if ((_suppressableValue != null) || _suppressNulls) {\n                serializeOptionalFields(value, gen, provider, _suppressableValue);\n            } else if (_valueSerializer != null) {\n                serializeFieldsUsing(value, gen, provider, _valueSerializer);\n            } else {\n                serializeFields(value, gen, provider);\n            }\n        }\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "serializeWithoutTypeInfo",
+        "documentation": "/**\n     * General-purpose serialization for contents without writing object type. Will suppress, filter and\n     * use custom serializers.\n     *<p>\n     * Public since it also is called by {@code AnyGetterWriter}.\n     *\n     * @since 2.11\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "serializeWithoutTypeInfo"
+          }
+        ],
+        "similarity": 0.05107945387588818,
+        "end_line": 767,
+        "signature": "com.fasterxml.jackson.databind.ser.std.MapSerializer.serializeWithoutTypeInfo(Map value, JsonGenerator gen, SerializerProvider provider): void"
+      },
+      {
+        "start_line": 818,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ser/std/MapSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void serializeOptionalFields(Map<?,?> value, JsonGenerator gen, SerializerProvider provider,",
+        "distance": 2.75,
+        "title": null,
+        "name": "serializeOptionalFields",
+        "documentation": "/**\n     * Serialization method called when exclusion filtering needs to be applied.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReferenceTypeSerializer"
+          },
+          {
+            "start_node": "ReferenceTypeSerializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "createContextual"
+          },
+          {
+            "start_node": "createContextual",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "_findSerializer"
+          },
+          {
+            "start_node": "_findSerializer",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "MapSerializer"
+          },
+          {
+            "start_node": "MapSerializer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "serializeOptionalFields"
+          }
+        ],
+        "similarity": 0.05096960729240061,
+        "end_line": 818,
+        "signature": "com.fasterxml.jackson.databind.ser.std.MapSerializer.serializeOptionalFields(Map value, JsonGenerator gen, SerializerProvider provider, Object suppressableValue): void"
+      }
+    ],
+    "classes": [],
+    "issues": [
+      {
+        "content": "### Describe your Issue\r\n\r\n(note: root cause for https://github.com/FasterXML/jackson-modules-java8/issues/294)\r\n\r\nLooks like `contentConverter` property of `@JsonSerialize` annotation is not supported for `AtomicReference`: and since functionality comes from `ReferenceTypeSerializer` like also other \"reference\" types (JDK8 and Guava `Optional`s).\n",
+        "distance": 0,
+        "title": "`AtomicReference` serializer does not support `@JsonSerialize(contentConverter=...)`",
+        "name": "root",
+        "path": [],
+        "issue_id": "root",
+        "similarity": 2.0,
+        "type": "issue"
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "4337",
+        "type": "issue",
+        "content": "### Describe your Issue\r\n\r\n(note: root cause for https://github.com/FasterXML/jackson-modules-java8/issues/294)\r\n\r\nLooks like `contentConverter` property of `@JsonSerialize` annotation is not supported for `AtomicReference`: and since functionality comes from `ReferenceTypeSerializer` like also other \"reference\" types (JDK8 and Guava `Optional`s).\n\n",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "`AtomicReference` serializer does not support `@JsonSerialize(contentConverter=...)`",
+        "name": "issue#4337",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#4337"
+          }
+        ],
+        "similarity": 0.873100694256002,
+        "end_line": null,
+        "signature": null
+      }
+    ]
+  },
+  "artifact_stats": {
+    "skipped_due_to_time": 3,
+    "valid_related_items": 12
+  }
+}

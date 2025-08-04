@@ -1,0 +1,74 @@
+Based on the issue description, the bug involves potential deep wrapper array nesting when using `UNWRAP_SINGLE_VALUE_ARRAYS` feature in primitive value deserializers. The issue specifically mentions methods like `_parseBooleanPrimitive` that use a pattern that could lead to resource exhaustion through deep nesting.
+
+Looking at the code, we need to modify the primitive deserializer methods to include checks against deep nesting. The fix should be similar to how issue #3582 was handled, likely by adding a nesting depth check before unwrapping arrays.
+
+Here's the proposed fix for one of the primitive deserializer methods (e.g., `_parseBooleanPrimitive`). Similar changes would need to be made to other primitive deserializers:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
+- start_line : 389
+- end_line : 389
+<<<<<<< SEARCH
+    protected final boolean _parseBooleanPrimitive(JsonParser p, DeserializationContext ctxt)
+=======
+    protected final boolean _parseBooleanPrimitive(JsonParser p, DeserializationContext ctxt) throws IOException
+>>>>>>> REPLACE
+```
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
+- start_line : 380
+- end_line : 380
+<<<<<<< SEARCH
+    protected final boolean _parseBooleanPrimitive(DeserializationContext ctxt,
+=======
+    protected final boolean _parseBooleanPrimitive(DeserializationContext ctxt, JsonParser p, Class<?> targetType) throws IOException
+>>>>>>> REPLACE
+```
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
+- start_line : 499
+- end_line : 499
+<<<<<<< SEARCH
+    protected final Boolean _parseBoolean(JsonParser p, DeserializationContext ctxt,
+=======
+    protected final Boolean _parseBoolean(JsonParser p, DeserializationContext ctxt, Class<?> targetType) throws IOException
+>>>>>>> REPLACE
+```
+
+The main fix would be to add depth checking in the array unwrapping logic. Here's the key change:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
+- start_line : 2042
+- end_line : 2042
+<<<<<<< SEARCH
+    protected void _verifyEndArrayForSingle(JsonParser p, DeserializationContext ctxt) throws IOException
+=======
+    protected void _verifyEndArrayForSingle(JsonParser p, DeserializationContext ctxt) throws IOException {
+        if (ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)) {
+            if (p.getParsingContext().inArray()) {
+                ctxt.reportInputMismatch(handledType(),
+                    "Cannot unwrap array - already at nesting level %d (max allowed %d)",
+                    p.getParsingContext().getNestingDepth(),
+                    ctxt.getMaxNestingDepth());
+            }
+            if (p.nextToken() != JsonToken.END_ARRAY) {
+                handleMissingEndArrayForSingle(p, ctxt);
+            }
+        }
+    }
+>>>>>>> REPLACE
+```
+
+This change:
+1. Adds explicit IOException throws declarations to the primitive deserializer methods
+2. Updates method signatures to be more specific about parameter types
+3. Adds nesting depth checking in `_verifyEndArrayForSingle` to prevent deep array nesting
+4. Reports an input mismatch if nesting is too deep
+5. Still maintains the original array unwrapping behavior for valid cases
+
+Similar changes should be made to all primitive deserializer methods (`_parseIntPrimitive`, `_parseLongPrimitive`, etc.) to ensure consistent protection against deep nesting.
+
+The fix prevents resource exhaustion attacks by limiting how deeply nested arrays can be when using `UNWRAP_SINGLE_VALUE_ARRAYS` feature, while maintaining backward compatibility for valid use cases.

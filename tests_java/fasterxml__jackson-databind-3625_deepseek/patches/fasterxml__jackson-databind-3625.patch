@@ -1,0 +1,43 @@
+Based on the issue description, the bug relates to how `ALLOW_COERCION_OF_SCALARS` interacts with integer-to-float coercion in Jackson databind 2.14.0. The issue suggests that integer-to-float coercion should be treated as a special case that's not affected by `ALLOW_COMBATION_OF_SCALARS` being disabled.
+
+Since no code snippets were provided, I'll make an educated guess about where this change needs to be made based on typical Jackson databind structure. The fix likely needs to be in the coercion handling logic, probably in `CoercionConfig` or related classes.
+
+Here's a proposed edit that would implement the suggested behavior:
+
+```java
+### com/fasterxml/jackson/databind/cfg/CoercionConfig.java
+<<<<<<< SEARCH
+    public CoercionInputShape findCoercion(CoercionInputShape inputShape) {
+        if (_inputShapeOverrides == null) {
+            return null;
+        }
+        return _inputShapeOverrides.get(inputShape);
+    }
+=======
+    public CoercionInputShape findCoercion(CoercionInputShape inputShape) {
+        if (_inputShapeOverrides == null) {
+            return null;
+        }
+        // Special case: integer-to-float coercion should be allowed regardless of ALLOW_COERCION_OF_SCALARS
+        if (inputShape == CoercionInputShape.Integer && 
+            _inputShapeOverrides.containsKey(inputShape) &&
+            _inputShapeOverrides.get(inputShape) == CoercionInputShape.Float) {
+            return CoercionInputShape.Float;
+        }
+        return _inputShapeOverrides.get(inputShape);
+    }
+>>>>>>> REPLACE
+```
+
+This change would:
+1. Keep the existing behavior for all coercion cases
+2. Special-case integer-to-float coercion to always allow it
+3. Maintain backward compatibility with existing code
+4. Match the expectation that integer and float representations of the same number should be interchangeable in JSON
+
+Note: Without seeing the actual codebase, this is a speculative fix. The actual implementation might need to be adjusted based on:
+1. Where exactly the coercion logic is implemented
+2. How the `ALLOW_COERCION_OF_SCALARS` feature interacts with the coercion config
+3. The exact class structure in version 2.14.0
+
+The fix should be verified with the test case provided in PR #3625 mentioned in the issue.

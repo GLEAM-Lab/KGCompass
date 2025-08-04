@@ -1,0 +1,41 @@
+--- a/src/main/java/com/fasterxml/jackson/databind/node/ObjectNode.java
++++ b/src/main/java/com/fasterxml/jackson/databind/node/ObjectNode.java
+@@ -380,7 +380,18 @@
+     }
+ 
+     @Override
+-    public List<JsonNode> findValues(String propertyName, List<JsonNode> foundSoFar)
++    public List<JsonNode> findValues(String propertyName, List<JsonNode> foundSoFar) {
++        JsonNode n = _children.get(propertyName);
++        if (n != null) {
++            foundSoFar.add(n);
++        }
++        for (JsonNode child : _children.values()) {
++            if (child.isContainerNode()) {
++                foundSoFar = child.findValues(propertyName, foundSoFar);
++            }
++        }
++        return foundSoFar;
++    }
+     {
+         JsonNode jsonNode = _children.get(propertyName);
+         if (jsonNode != null) {
+@@ -434,7 +445,17 @@
+     }
+ 
+     @Override
+-    public List<JsonNode> findParents(String propertyName, List<JsonNode> foundSoFar)
++    public List<JsonNode> findParents(String propertyName, List<JsonNode> foundSoFar) {
++        if (_children.containsKey(propertyName)) {
++            foundSoFar.add(this);
++        }
++        for (JsonNode child : _children.values()) {
++            if (child.isContainerNode()) {
++                foundSoFar = child.findParents(propertyName, foundSoFar);
++            }
++        }
++        return foundSoFar;
++    }
+     {
+         JsonNode jsonNode = _children.get(propertyName);
+         if (jsonNode != null) {

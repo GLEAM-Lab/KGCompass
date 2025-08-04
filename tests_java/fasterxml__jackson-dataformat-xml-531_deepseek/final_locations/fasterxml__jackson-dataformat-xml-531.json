@@ -1,0 +1,1730 @@
+{
+  "related_entities": {
+    "methods": [
+      {
+        "start_line": 272,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public XmlMapper setDefaultUseWrapper(boolean state) {\n        // ser and deser configs should usually have the same introspector, so:\n        AnnotationIntrospector ai0 = getDeserializationConfig().getAnnotationIntrospector();\n        for (AnnotationIntrospector ai : ai0.allIntrospectors()) {\n            if (ai instanceof JacksonXmlAnnotationIntrospector) {\n                ((JacksonXmlAnnotationIntrospector) ai).setDefaultUseWrapper(state);\n            }\n        }\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "setDefaultUseWrapper",
+        "documentation": "/**\n     * Since 2.7\n     * \n     * @deprecated Since 2.10 use {@link Builder#defaultUseWrapper(boolean)} instead\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setDefaultUseWrapper"
+          }
+        ],
+        "similarity": 0.12185518398269381,
+        "end_line": 281,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.setDefaultUseWrapper(boolean state): XmlMapper"
+      },
+      {
+        "start_line": 373,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void writeValue(XMLStreamWriter w0, Object value) throws IOException {\n        @SuppressWarnings(\"resource\")\n        ToXmlGenerator g = getFactory().createGenerator(w0);\n        super.writeValue(g, value);\n        // NOTE: above call should do flush(); and we should NOT close here.\n        // Finally, 'g' has no buffers to release.\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "writeValue",
+        "documentation": "/**\n     * Method for serializing given value using specific {@link XMLStreamReader}:\n     * useful when building large XML files by binding individual items, one at\n     * a time.\n     * \n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "writeValue"
+          }
+        ],
+        "similarity": 0.11466196057424226,
+        "end_line": 379,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.writeValue(XMLStreamWriter w0, Object value): void"
+      },
+      {
+        "start_line": 1416,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _skipEndElement() throws IOException {\n        try {\n            _xmlTokens.skipEndElement();\n        } catch (XMLStreamException e) {\n            StaxUtil.throwAsParseException(e, this);\n        } catch (Exception e) {\n            throw new JsonParseException(this, e.getMessage(), e);\n        }\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_skipEndElement",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_skipEndElement"
+          }
+        ],
+        "similarity": 0.10235516152357618,
+        "end_line": 1424,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser._skipEndElement(): void"
+      },
+      {
+        "start_line": 1404,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected int _nextToken() throws IOException {\n        try {\n            return _xmlTokens.next();\n        } catch (XMLStreamException e) {\n            return StaxUtil.throwAsParseException(e, this);\n        } catch (IllegalStateException e) {\n            // 08-Apr-2021, tatu: Should improve on this, wrt better information\n            //   on issue.\n            throw new JsonParseException(this, e.getMessage(), e);\n        }\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_nextToken",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_nextToken"
+          }
+        ],
+        "similarity": 0.10168702788289191,
+        "end_line": 1414,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser._nextToken(): int"
+      },
+      {
+        "start_line": 262,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void setXMLTextElementName(String name) {\n        ((XmlFactory) _jsonFactory).setXMLTextElementName(name);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "setXMLTextElementName",
+        "documentation": "/**\n     * Method called by {@link JacksonXmlModule} to pass configuration\n     * information to {@link XmlFactory}, during registration; NOT\n     * exposed as public method since configuration should be done\n     * via {@link JacksonXmlModule}.\n     * \n     * @since 2.1\n     *\n     * @deprecated Since 2.10 use {@link Builder#nameForTextElement(String)} instead\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setXMLTextElementName"
+          }
+        ],
+        "similarity": 0.09700976390376478,
+        "end_line": 264,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.setXMLTextElementName(String name): void"
+      },
+      {
+        "start_line": 148,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public XmlMapper(JacksonXmlModule module) {\n        this(new XmlFactory(), module);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "XmlMapper",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          }
+        ],
+        "similarity": 0.09398115018083203,
+        "end_line": 150,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper(JacksonXmlModule module)"
+      },
+      {
+        "start_line": 314,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper disable(ToXmlGenerator.Feature f) {\n        ((XmlFactory)_jsonFactory).disable(f);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "disable",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          }
+        ],
+        "similarity": 0.09061498786255726,
+        "end_line": 317,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.disable(ToXmlGenerator f): ObjectMapper"
+      },
+      {
+        "start_line": 195,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected XmlMapper(XmlMapper src) {\n        super(src);\n        _xmlModule = src._xmlModule;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "XmlMapper",
+        "documentation": "/**\n     * @since 2.8.9\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          }
+        ],
+        "similarity": 0.09048058804808513,
+        "end_line": 198,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper(XmlMapper src)"
+      },
+      {
+        "start_line": 319,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper disable(FromXmlParser.Feature f) {\n        ((XmlFactory)_jsonFactory).disable(f);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "disable",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          }
+        ],
+        "similarity": 0.09026225155225841,
+        "end_line": 322,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.disable(FromXmlParser f): ObjectMapper"
+      },
+      {
+        "start_line": 133,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public XmlMapper(XMLInputFactory inputF, XMLOutputFactory outF) {\n        this(new XmlFactory(inputF, outF));\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "XmlMapper",
+        "documentation": "/**\n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          }
+        ],
+        "similarity": 0.08684132949305663,
+        "end_line": 135,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper(XMLInputFactory inputF, XMLOutputFactory outF)"
+      },
+      {
+        "start_line": 304,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper enable(ToXmlGenerator.Feature f) {\n        ((XmlFactory)_jsonFactory).enable(f);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "enable",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enable"
+          }
+        ],
+        "similarity": 0.08557783278453669,
+        "end_line": 307,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.enable(ToXmlGenerator f): ObjectMapper"
+      },
+      {
+        "start_line": 294,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper configure(ToXmlGenerator.Feature f, boolean state) {\n        ((XmlFactory)_jsonFactory).configure(f, state);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "configure",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "configure"
+          }
+        ],
+        "similarity": 0.08501856866839055,
+        "end_line": 297,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.configure(ToXmlGenerator f, boolean state): ObjectMapper"
+      },
+      {
+        "start_line": 309,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper enable(FromXmlParser.Feature f) {\n        ((XmlFactory)_jsonFactory).enable(f);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "enable",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enable"
+          }
+        ],
+        "similarity": 0.0839058645909127,
+        "end_line": 312,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.enable(FromXmlParser f): ObjectMapper"
+      },
+      {
+        "start_line": 299,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper configure(FromXmlParser.Feature f, boolean state) {\n        ((XmlFactory)_jsonFactory).configure(f, state);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "configure",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "configure"
+          }
+        ],
+        "similarity": 0.08203902809055194,
+        "end_line": 302,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.configure(FromXmlParser f, boolean state): ObjectMapper"
+      },
+      {
+        "start_line": 1207,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public double getDoubleValue() throws IOException {\n        if ((_numTypesValid & NR_DOUBLE) == 0) {\n            if (_numTypesValid == NR_UNKNOWN) {\n                _checkNumericValue(NR_DOUBLE);\n            }\n        }\n        return _convertNumberToDouble();\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getDoubleValue",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getDoubleValue"
+          }
+        ],
+        "similarity": 0.08158221991289087,
+        "end_line": 1214,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.getDoubleValue(): double"
+      },
+      {
+        "start_line": 1138,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Number getNumberValue() throws IOException {\n        if (_numTypesValid == NR_UNKNOWN) {\n            _checkNumericValue(NR_UNKNOWN); // will also check event type\n        }\n        // Only integer types supported so...\n\n        if ((_numTypesValid & NR_INT) != 0) {\n            return _numberInt;\n        }\n        if ((_numTypesValid & NR_LONG) != 0) {\n            return _numberLong;\n        }\n        if ((_numTypesValid & NR_BIGINT) != 0) {\n            return _numberBigInt;\n        }\n        _throwInternal();\n        return null;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getNumberValue",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getNumberValue"
+          }
+        ],
+        "similarity": 0.08108289480433079,
+        "end_line": 1155,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.getNumberValue(): Number"
+      },
+      {
+        "start_line": 140,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public XmlMapper(XMLInputFactory inputF) {\n        this(new XmlFactory(inputF));\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "XmlMapper",
+        "documentation": "/**\n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          }
+        ],
+        "similarity": 0.08106733126391469,
+        "end_line": 142,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper(XMLInputFactory inputF)"
+      },
+      {
+        "start_line": 126,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public XmlMapper() {\n        this(new XmlFactory());\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "XmlMapper",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          }
+        ],
+        "similarity": 0.08051112841323584,
+        "end_line": 128,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper()"
+      },
+      {
+        "start_line": 210,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static XmlMapper.Builder xmlBuilder() {\n        return new XmlMapper.Builder(new XmlMapper());\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "xmlBuilder",
+        "documentation": "/**\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "xmlBuilder"
+          }
+        ],
+        "similarity": 0.07975357799301898,
+        "end_line": 212,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.xmlBuilder(): XmlMapper"
+      },
+      {
+        "start_line": 144,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public XmlMapper(XmlFactory xmlFactory) {\n        this(xmlFactory, DEFAULT_XML_MODULE);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "XmlMapper",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          }
+        ],
+        "similarity": 0.07876105567998969,
+        "end_line": 146,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper(XmlFactory xmlFactory)"
+      },
+      {
+        "start_line": 393,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonParser overrideFormatFeatures(int values, int mask) {\n        _formatFeatures = (_formatFeatures & ~mask) | (values & mask);\n        _xmlTokens.setFormatFeatures(_formatFeatures);\n        return this;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "overrideFormatFeatures",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "overrideFormatFeatures"
+          }
+        ],
+        "similarity": 0.07656523121448977,
+        "end_line": 397,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.overrideFormatFeatures(int values, int mask): JsonParser"
+      },
+      {
+        "start_line": 152,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public XmlMapper(XmlFactory xmlFactory, JacksonXmlModule module)",
+        "distance": 1.25,
+        "title": null,
+        "name": "XmlMapper",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          }
+        ],
+        "similarity": 0.07418842244113309,
+        "end_line": 152,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper(XmlFactory xmlFactory, JacksonXmlModule module)"
+      },
+      {
+        "start_line": 224,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static XmlMapper.Builder builder(XmlFactory streamFactory) {\n        return new XmlMapper.Builder(new XmlMapper(streamFactory));\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "builder",
+        "documentation": "/**\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "builder"
+          }
+        ],
+        "similarity": 0.07247997878203331,
+        "end_line": 226,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.builder(XmlFactory streamFactory): XmlMapper"
+      },
+      {
+        "start_line": 885,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public String nextTextValue() throws IOException",
+        "distance": 1.5,
+        "title": null,
+        "name": "nextTextValue",
+        "documentation": "/**\n     * Method overridden to support more reliable deserialization of\n     * String collections.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextTextValue"
+          }
+        ],
+        "similarity": 0.07205602916729315,
+        "end_line": 885,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.nextTextValue(): String"
+      },
+      {
+        "start_line": 337,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> T readValue(XMLStreamReader r, Class<T> valueType) throws IOException {\n        return readValue(r, _typeFactory.constructType(valueType));\n    } ",
+        "distance": 1.25,
+        "title": null,
+        "name": "readValue",
+        "documentation": "/**\n     * Method for reading a single XML value from given XML-specific input\n     * source; useful for incremental data-binding, combining traversal using\n     * basic Stax {@link XMLStreamReader} with data-binding by Jackson.\n     * \n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readValue"
+          }
+        ],
+        "similarity": 0.07160064521760175,
+        "end_line": 339,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.readValue(XMLStreamReader r, Class valueType): T"
+      },
+      {
+        "start_line": 1184,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public BigInteger getBigIntegerValue() throws IOException {\n        if ((_numTypesValid & NR_BIGINT) == 0) {\n            if (_numTypesValid == NR_UNKNOWN) {\n                _checkNumericValue(NR_BIGINT);\n            }\n            if ((_numTypesValid & NR_BIGINT) == 0) {\n                _convertNumberToBigInteger();\n            }\n        }\n        return _numberBigInt;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getBigIntegerValue",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getBigIntegerValue"
+          }
+        ],
+        "similarity": 0.0700232117675447,
+        "end_line": 1194,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.getBigIntegerValue(): BigInteger"
+      },
+      {
+        "start_line": 217,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static XmlMapper.Builder builder() {\n        return new XmlMapper.Builder(new XmlMapper());\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "builder",
+        "documentation": "/**\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "builder"
+          }
+        ],
+        "similarity": 0.06991257956225652,
+        "end_line": 219,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.builder(): XmlMapper"
+      },
+      {
+        "start_line": 348,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> T readValue(XMLStreamReader r, TypeReference<T> valueTypeRef) throws IOException {\n        return readValue(r, _typeFactory.constructType(valueTypeRef));\n    } ",
+        "distance": 1.25,
+        "title": null,
+        "name": "readValue",
+        "documentation": "/**\n     * Method for reading a single XML value from given XML-specific input\n     * source; useful for incremental data-binding, combining traversal using\n     * basic Stax {@link XMLStreamReader} with data-binding by Jackson.\n     * \n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readValue"
+          }
+        ],
+        "similarity": 0.06976018508951606,
+        "end_line": 350,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.readValue(XMLStreamReader r, TypeReference valueTypeRef): T"
+      },
+      {
+        "start_line": 1217,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public BigDecimal getDecimalValue() throws IOException {\n        if ((_numTypesValid & NR_BIGDECIMAL) == 0) {\n            if (_numTypesValid == NR_UNKNOWN) {\n                _checkNumericValue(NR_BIGDECIMAL);\n            }\n        }\n        return _convertNumberToBigDecimal();\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getDecimalValue",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getDecimalValue"
+          }
+        ],
+        "similarity": 0.06974194396286451,
+        "end_line": 1224,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.getDecimalValue(): BigDecimal"
+      },
+      {
+        "start_line": 318,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void setXMLTextElementName(String name) {\n        _cfgNameForTextElement = name;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "setXMLTextElementName",
+        "documentation": "/**\n     * @since 2.1\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setXMLTextElementName"
+          }
+        ],
+        "similarity": 0.06945207682192799,
+        "end_line": 320,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.setXMLTextElementName(String name): void"
+      },
+      {
+        "start_line": 473,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlFactory.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonParser createParser(String content) throws IOException {\n        Reader r = new StringReader(content);\n        IOContext ctxt = _createContext(_createContentReference(r), true);\n        if (_inputDecorator != null) {\n            r = _inputDecorator.decorate(ctxt, r);\n        }\n        return _createParser(r, ctxt);\n    }",
+        "distance": 2.25,
+        "title": null,
+        "name": "createParser",
+        "documentation": "/**\n     * Overridden just to prevent trying to optimize access via char array;\n     * while nice idea, problem is that we don't have proper hooks to ensure\n     * that temporary buffer gets recycled; so let's just use StringReader.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "createParser"
+          }
+        ],
+        "similarity": 0.06875219772603633,
+        "end_line": 480,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlFactory.createParser(String content): JsonParser"
+      },
+      {
+        "start_line": 1171,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public long getLongValue() throws IOException {\n        if ((_numTypesValid & NR_LONG) == 0) {\n            if (_numTypesValid == NR_UNKNOWN) {\n                _checkNumericValue(NR_LONG);\n            }\n            if ((_numTypesValid & NR_LONG) == 0) {\n                _convertNumberToLong();\n            }\n        }\n        return _numberLong;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getLongValue",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getLongValue"
+          }
+        ],
+        "similarity": 0.06872646888380658,
+        "end_line": 1181,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.getLongValue(): long"
+      },
+      {
+        "start_line": 1122,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public NumberType getNumberType() throws IOException {\n        if (_numTypesValid == NR_UNKNOWN) {\n            _checkNumericValue(NR_UNKNOWN); // will also check event type\n        }\n        // Only integer types supported so...\n        \n        if ((_numTypesValid & NR_INT) != 0) {\n            return NumberType.INT;\n        }\n        if ((_numTypesValid & NR_LONG) != 0) {\n            return NumberType.LONG;\n        }\n        return NumberType.BIG_INTEGER;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getNumberType",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getNumberType"
+          }
+        ],
+        "similarity": 0.06865548997726699,
+        "end_line": 1135,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.getNumberType(): NumberType"
+      },
+      {
+        "start_line": 50,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/XmlSerializerProvider.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected XmlSerializerProvider(XmlSerializerProvider src) {\n        super(src);\n        // 21-May-2018, tatu: As per [dataformat-xml#282], should NOT really copy\n        //    root name lookup as that may link back to diff version, configuration\n        _rootNameLookup = new XmlRootNameLookup();\n    }",
+        "distance": 2.25,
+        "title": null,
+        "name": "XmlSerializerProvider",
+        "documentation": "/**\n     * @since 2.8.9\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "XmlSerializerProvider"
+          }
+        ],
+        "similarity": 0.06849428884018728,
+        "end_line": 55,
+        "signature": "com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider(XmlSerializerProvider src)"
+      },
+      {
+        "start_line": 1228,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected final void _checkNumericValue(int expType) throws IOException {\n        if (_currToken == JsonToken.VALUE_NUMBER_INT) {\n            return;\n        }\n        _reportError(\"Current token (\"+currentToken()+\") not numeric, can not use numeric value accessors\");\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_checkNumericValue",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_checkNumericValue"
+          }
+        ],
+        "similarity": 0.06805925427313367,
+        "end_line": 1233,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser._checkNumericValue(int expType): void"
+      },
+      {
+        "start_line": 1400,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private <T> T _internalErrorUnknownToken(Object token) {\n        throw new IllegalStateException(\"Internal error: unrecognized XmlTokenStream token: \"+token);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_internalErrorUnknownToken",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_internalErrorUnknownToken"
+          }
+        ],
+        "similarity": 0.06742809211687399,
+        "end_line": 1402,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser._internalErrorUnknownToken(Object token): T"
+      },
+      {
+        "start_line": 1158,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public int getIntValue() throws IOException {\n        if ((_numTypesValid & NR_INT) == 0) {\n            if (_numTypesValid == NR_UNKNOWN) { // not parsed at all\n                _checkNumericValue(NR_INT); // will also check event type\n            }\n            if ((_numTypesValid & NR_INT) == 0) { // wasn't an int natively?\n                _convertNumberToInt(); // let's make it so, if possible\n            }\n        }\n        return _numberInt;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getIntValue",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getIntValue"
+          }
+        ],
+        "similarity": 0.06674226716640687,
+        "end_line": 1168,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.getIntValue(): int"
+      },
+      {
+        "start_line": 1076,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Object getEmbeddedObject() throws IOException {\n        // no way to embed POJOs for now...\n        return null;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getEmbeddedObject",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getEmbeddedObject"
+          }
+        ],
+        "similarity": 0.06550137349950742,
+        "end_line": 1079,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.getEmbeddedObject(): Object"
+      },
+      {
+        "start_line": 362,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public FromXmlParser disable(Feature f) {\n        _formatFeatures &= ~f.getMask();\n        _xmlTokens.setFormatFeatures(_formatFeatures);\n        return this;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "disable",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          }
+        ],
+        "similarity": 0.06505448951421058,
+        "end_line": 366,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.disable(Feature f): FromXmlParser"
+      },
+      {
+        "start_line": 466,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void addVirtualWrapping(Set<String> namesToWrap) {\n        addVirtualWrapping(namesToWrap, false);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "addVirtualWrapping",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "addVirtualWrapping"
+          }
+        ],
+        "similarity": 0.06279966577956961,
+        "end_line": 468,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.addVirtualWrapping(Set namesToWrap): void"
+      },
+      {
+        "start_line": 552,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonLocation getCurrentLocation() {\n        return _xmlTokens.getCurrentLocation();\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getCurrentLocation",
+        "documentation": "/**\n     * Method that returns location of the last processed character;\n     * usually for error reporting purposes\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getCurrentLocation"
+          }
+        ],
+        "similarity": 0.06241158571883617,
+        "end_line": 554,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.getCurrentLocation(): JsonLocation"
+      },
+      {
+        "start_line": 1386,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _releaseBuffers() throws IOException {\n        // anything we can/must release? Underlying parser should do all of it, for now?\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_releaseBuffers",
+        "documentation": "/**\n     * Method called to release internal buffers owned by the base\n     * parser.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_releaseBuffers"
+          }
+        ],
+        "similarity": 0.06226098022684099,
+        "end_line": 1388,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser._releaseBuffers(): void"
+      },
+      {
+        "start_line": 290,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public XmlFactory getFactory() {\n        return (XmlFactory) _jsonFactory;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getFactory",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getFactory"
+          }
+        ],
+        "similarity": 0.061877423185205366,
+        "end_line": 292,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.getFactory(): XmlFactory"
+      },
+      {
+        "start_line": 372,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public FromXmlParser configure(Feature f, boolean state) {\n        if (state) {\n            enable(f);\n        } else {\n            disable(f);\n        }\n        return this;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "configure",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "configure"
+          }
+        ],
+        "similarity": 0.06147258103933554,
+        "end_line": 379,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.configure(Feature f, boolean state): FromXmlParser"
+      },
+      {
+        "start_line": 356,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public FromXmlParser enable(Feature f) {\n        _formatFeatures |= f.getMask();\n        _xmlTokens.setFormatFeatures(_formatFeatures);\n        return this;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "enable",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enable"
+          }
+        ],
+        "similarity": 0.06041784803830144,
+        "end_line": 360,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.enable(Feature f): FromXmlParser"
+      },
+      {
+        "start_line": 335,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean requiresCustomCodec() {\n        return true;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "requiresCustomCodec",
+        "documentation": "/**\n     * XML format does require support from custom {@link ObjectCodec}\n     * (that is, {@link XmlMapper}), so need to return true here.\n     * \n     * @return True since XML format does require support from codec\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "requiresCustomCodec"
+          }
+        ],
+        "similarity": 0.06040382345937158,
+        "end_line": 337,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.requiresCustomCodec(): boolean"
+      },
+      {
+        "start_line": 39,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/util/XmlRootNameLookup.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected Object readResolve() {\n        // just need to make 100% sure it gets set to non-null, that's all\n        // 05-Jan-2020, tatu: How is that possibly, you ask? JDK serialization, that's how\n        //   (it by-passes calls to constructors, as well as initializers)\n        //   ... and if you don't believe, try commenting it out and see test failure you get\n        if (_rootNames == null) {\n            return new XmlRootNameLookup();\n        }\n        return this;\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "readResolve",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "XmlRootNameLookup"
+          },
+          {
+            "start_node": "XmlRootNameLookup",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "XmlRootNameLookup"
+          },
+          {
+            "start_node": "XmlRootNameLookup",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readResolve"
+          }
+        ],
+        "similarity": 0.05925637562394662,
+        "end_line": 48,
+        "signature": "com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup.readResolve(): Object"
+      },
+      {
+        "start_line": 1197,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public float getFloatValue() throws IOException {\n        if ((_numTypesValid & NR_FLOAT) == 0) {\n            if (_numTypesValid == NR_UNKNOWN) {\n                _checkNumericValue(NR_FLOAT);\n            }\n        }\n        return _convertNumberToFloat();\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getFloatValue",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getFloatValue"
+          }
+        ],
+        "similarity": 0.05787249367832312,
+        "end_line": 1204,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.getFloatValue(): float"
+      },
+      {
+        "start_line": 442,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void addVirtualWrapping(Set<String> namesToWrap0, boolean caseInsensitive)",
+        "distance": 1.5,
+        "title": null,
+        "name": "addVirtualWrapping",
+        "documentation": "/**\n     * Method that may be called to indicate that specified names\n     * (only local parts retained currently: this may be changed in\n     * future) should be considered \"auto-wrapping\", meaning that\n     * they will be doubled to contain two opening elements, two\n     * matching closing elements. This is needed for supporting\n     * handling of so-called \"unwrapped\" array types, something\n     * XML mappings like JAXB often use.\n     *<p>\n     * NOTE: this method is considered part of internal implementation\n     * interface, and it is <b>NOT</b> guaranteed to remain unchanged\n     * between minor versions (it is however expected not to change in\n     * patch versions). So if you have to use it, be prepared for\n     * possible additional work.\n     * \n     * @since 2.12\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "addVirtualWrapping"
+          }
+        ],
+        "similarity": 0.05738724826826645,
+        "end_line": 442,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.addVirtualWrapping(Set namesToWrap0, boolean caseInsensitive): void"
+      },
+      {
+        "start_line": 722,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void writeRawValue(String text) throws IOException {\n        // [dataformat-xml#39]\n        if (_stax2Emulation) {\n            _reportUnimplementedStax2(\"writeRawValue\");\n        }\n        try {\n            _verifyValueWrite(\"write raw value\");\n            if (_nextName == null) {\n                handleMissingName();\n            }\n\n            if (_nextIsAttribute) {\n                _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), text);\n            } else {\n                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());\n                _xmlWriter.writeRaw(text);\n                _xmlWriter.writeEndElement();\n            }\n        } catch (XMLStreamException e) {\n            StaxUtil.throwAsGenerationException(e, this);\n        }\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "writeRawValue",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enable"
+          },
+          {
+            "start_node": "enable",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "configure"
+          },
+          {
+            "start_node": "configure",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ToXmlGenerator"
+          },
+          {
+            "start_node": "ToXmlGenerator",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "writeRawValue"
+          }
+        ],
+        "similarity": 0.05725899161078378,
+        "end_line": 743,
+        "signature": "com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator.writeRawValue(String text): void"
+      }
+    ],
+    "classes": [],
+    "issues": [
+      {
+        "content": "Example:\r\n\r\n```java\r\npackage it;\r\n\r\nimport com.fasterxml.jackson.core.JsonProcessingException;\r\nimport com.fasterxml.jackson.dataformat.xml.XmlMapper;\r\n\r\npublic class Dollar {\r\n\r\n    public static class DTO {\r\n        public String thisStringIs$Fancy$ = \"Hello World!\";\r\n    }\r\n\r\n    public static void main(String ... args) throws JsonProcessingException {\r\n        DTO dto = new DTO();\r\n\r\n        XmlMapper mapper = new XmlMapper();\r\n\r\n        final String res = mapper.writeValueAsString(dto);\r\n\r\n        // <DTO><thisStringIs$Fancy$>Hello World!</thisStringIs$Fancy$></DTO>\r\n        System.out.println(res);\r\n\r\n        // ERROR!\r\n        // com.fasterxml.jackson.core.JsonParseException: Unexpected character '$' (code 36) excepted space, or '>' or \"/>\"\r\n        mapper.readValue(res, DTO.class);\r\n    }\r\n\r\n}\r\n```\r\n\r\njackson version: 2.13.2\n",
+        "distance": 0,
+        "title": "Dollars in POJO property names are not escaped on serialization",
+        "name": "root",
+        "path": [],
+        "issue_id": "root",
+        "similarity": 2.0,
+        "type": "issue"
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "529",
+        "type": "issue",
+        "content": "our api response default content type is changed to XML unexpectedly when I add below dependency in pom.xml, it should be application/json. and I don't know it will change it. could you please fix this issue? Thanks\r\n\r\n```\r\n<dependency>\r\n\t<groupId>com.fasterxml.jackson.dataformat</groupId>\r\n\t<artifactId>jackson-dataformat-xml</artifactId>\r\n\t<version>2.12.2</version>\r\n</dependency>\r\n```\r\n\n\n\nComment by cowtowncoder:\nJackson cannot change the content type on its own so something else changing it.\r\nI suggest you try a Spring user forum maybe they can help you.\r\n\r\nOr if you want to reach out to users of Jackson, mailing list would be:\r\n\r\nhttps://groups.google.com/g/jackson-user\r\n\r\nHowever, issue tracker is not a good way to ask usage questions like this.\r\n\r\n\r\n\r\n",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "Spring 5 -jackson-dataformat-xml forces @ResponseBody with XML",
+        "name": "issue#529",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#529"
+          }
+        ],
+        "similarity": 0.2395187670710629,
+        "end_line": null,
+        "signature": null
+      }
+    ]
+  },
+  "artifact_stats": {
+    "skipped_due_to_time": 0,
+    "valid_related_items": 6
+  }
+}

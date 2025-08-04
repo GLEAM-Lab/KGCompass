@@ -1,0 +1,1572 @@
+{
+    "related_entities": {
+        "methods": [
+            {
+                "start_line": 34,
+                "file_path": "playground/apache__dubbo/dubbo-demo/dubbo-demo-triple/src/main/java/org/apache/dubbo/demo/consumer/ApiConsumer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static void main(String[] args) throws InterruptedException, IOException {\n        ReferenceConfig<GreeterService> referenceConfig = new ReferenceConfig<>();\n        referenceConfig.setInterface(GreeterService.class);\n        referenceConfig.setCheck(false);\n        referenceConfig.setProtocol(CommonConstants.TRIPLE);\n        referenceConfig.setLazy(true);\n        referenceConfig.setTimeout(100000);\n\n        DubboBootstrap bootstrap = DubboBootstrap.getInstance();\n        bootstrap.application(new ApplicationConfig(\"dubbo-demo-triple-api-consumer\"))\n            .registry(new RegistryConfig(\"zookeeper://127.0.0.1:2181\"))\n            .protocol(new ProtocolConfig(CommonConstants.TRIPLE, -1))\n            .reference(referenceConfig)\n            .start();\n\n        GreeterService greeterService = referenceConfig.get();\n        System.out.println(\"dubbo referenceConfig started\");\n        try {\n            final HelloReply reply = greeterService.sayHello(HelloRequest.newBuilder()\n                .setName(\"triple\")\n                .build());\n            TimeUnit.SECONDS.sleep(1);\n            System.out.println(\"Reply: \" + reply.getMessage());\n\n            CompletableFuture<String> sayHelloAsync = greeterService.sayHelloAsync(\"triple\");\n            System.out.println(\"Async Reply: \"+sayHelloAsync.get());\n        } catch (Throwable t) {\n            t.printStackTrace();\n        }\n        System.in.read();\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "main",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "main"
+                    }
+                ],
+                "similarity": 0.14837625485620368,
+                "end_line": 64,
+                "signature": "org.apache.dubbo.demo.consumer.ApiConsumer.main(String[] args): void"
+            },
+            {
+                "start_line": 30,
+                "file_path": "playground/apache__dubbo/dubbo-demo/dubbo-demo-triple/src/main/java/org/apache/dubbo/demo/consumer/ApiWrapperConsumer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static void main(String[] args) throws IOException {\n        ReferenceConfig<GreeterWrapperService> referenceConfig = new ReferenceConfig<>();\n        referenceConfig.setInterface(GreeterWrapperService.class);\n        referenceConfig.setCheck(false);\n        referenceConfig.setProtocol(\"tri\");\n        referenceConfig.setLazy(true);\n\n        DubboBootstrap bootstrap = DubboBootstrap.getInstance();\n        bootstrap.application(new ApplicationConfig(\"dubbo-demo-triple-api-wrapper-consumer\"))\n            .registry(new RegistryConfig(\"zookeeper://127.0.0.1:2181\"))\n            .protocol(new ProtocolConfig(CommonConstants.TRIPLE, -1))\n            .reference(referenceConfig)\n            .start();\n\n        final GreeterWrapperService greeterWrapperService = referenceConfig.get();\n        System.out.println(\"dubbo referenceConfig started\");\n        long st = System.currentTimeMillis();\n        String reply = greeterWrapperService.sayHello(\"haha\");\n        // 4MB response\n        System.out.println(\"Reply length:\" + reply.length() + \" cost:\" + (System.currentTimeMillis() - st));\n        System.in.read();\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "main",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "main"
+                    }
+                ],
+                "similarity": 0.14077973926864612,
+                "end_line": 51,
+                "signature": "org.apache.dubbo.demo.consumer.ApiWrapperConsumer.main(String[] args): void"
+            },
+            {
+                "start_line": 293,
+                "file_path": "playground/apache__dubbo/dubbo-registry/dubbo-registry-api/src/main/java/org/apache/dubbo/registry/integration/DynamicDirectory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void destroy() {\n        if (isDestroyed()) {\n            return;\n        }\n\n        // unregister.\n        try {\n            if (getRegisteredConsumerUrl() != null && registry != null && registry.isAvailable()) {\n                registry.unregister(getRegisteredConsumerUrl());\n            }\n        } catch (Throwable t) {\n            // 1-8: Failed to unregister / unsubscribe url on destroy.\n            logger.warn(REGISTRY_FAILED_DESTROY_UNREGISTER_URL, \"\", \"\",\n                \"unexpected error when unregister service \" + serviceKey + \" from registry: \" + registry.getUrl(), t);\n        }\n\n        // unsubscribe.\n        try {\n            if (getSubscribeUrl() != null && registry != null && registry.isAvailable()) {\n                registry.unsubscribe(getSubscribeUrl(), this);\n            }\n        } catch (Throwable t) {\n            // 1-8: Failed to unregister / unsubscribe url on destroy.\n            logger.warn(REGISTRY_FAILED_DESTROY_UNREGISTER_URL, \"\", \"\",\n                \"unexpected error when unsubscribe service \" + serviceKey + \" from registry: \" + registry.getUrl(), t);\n        }\n\n        ExtensionLoader<AddressListener> addressListenerExtensionLoader = getUrl().getOrDefaultModuleModel().getExtensionLoader(AddressListener.class);\n        List<AddressListener> supportedListeners = addressListenerExtensionLoader.getActivateExtension(getUrl(), (String[]) null);\n        if (CollectionUtils.isNotEmpty(supportedListeners)) {\n            for (AddressListener addressListener : supportedListeners) {\n                addressListener.destroy(getConsumerUrl(), this);\n            }\n        }\n\n        synchronized (this) {\n            try {\n                destroyAllInvokers();\n            } catch (Throwable t) {\n                // 1-15 - Failed to destroy service.\n                logger.warn(REGISTRY_FAILED_DESTROY_SERVICE, \"\", \"\",\n                    \"Failed to destroy service \" + serviceKey, t);\n            }\n            routerChain.destroy();\n            invokersChangedListener = null;\n            serviceListener = null;\n\n            super.destroy(); // must be executed after unsubscribing\n        }\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "destroy",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "destroy"
+                    }
+                ],
+                "similarity": 0.13286648346959617,
+                "end_line": 342,
+                "signature": "org.apache.dubbo.registry.integration.DynamicDirectory.destroy(): void"
+            },
+            {
+                "start_line": 203,
+                "file_path": "playground/apache__dubbo/dubbo-config/dubbo-config-api/src/main/java/org/apache/dubbo/config/metadata/ConfigurableMetadataServiceExporter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private String getRelatedOrDefaultProtocol() {\n        String protocol = \"\";\n        // <dubbo:consumer/>\n        List<ModuleModel> moduleModels = applicationModel.getPubModuleModels();\n        protocol = moduleModels.stream()\n            .map(ModuleModel::getConfigManager)\n            .map(ModuleConfigManager::getConsumers)\n            .filter(CollectionUtils::isNotEmpty)\n            .flatMap(Collection::stream)\n            .map(ConsumerConfig::getProtocol)\n            .filter(StringUtils::isNotEmpty)\n            .filter(p -> !UNACCEPTABLE_PROTOCOL.contains(p))\n            .findFirst()\n            .orElse(\"\");\n        // <dubbo:provider/>\n        if (StringUtils.isEmpty(protocol)) {\n            Stream<ProviderConfig> providerConfigStream = moduleModels.stream()\n                .map(ModuleModel::getConfigManager)\n                .map(ModuleConfigManager::getProviders)\n                .filter(CollectionUtils::isNotEmpty)\n                .flatMap(Collection::stream);\n            protocol = providerConfigStream\n                .filter((providerConfig) -> providerConfig.getProtocol() != null || CollectionUtils.isNotEmpty(providerConfig.getProtocols()))\n                .map(providerConfig -> {\n                    if (providerConfig.getProtocol() != null && StringUtils.isNotEmpty(providerConfig.getProtocol().getName())) {\n                        return providerConfig.getProtocol().getName();\n                    } else {\n                        return providerConfig.getProtocols().stream()\n                            .map(ProtocolConfig::getName)\n                            .filter(StringUtils::isNotEmpty)\n                            .findFirst()\n                            .orElse(\"\");\n                    }\n                })\n                .filter(StringUtils::isNotEmpty)\n                .filter(p -> !UNACCEPTABLE_PROTOCOL.contains(p))\n                .findFirst()\n                .orElse(\"\");\n        }\n        // <dubbo:protocol/>\n        if (StringUtils.isEmpty(protocol)) {\n            Collection<ProtocolConfig> protocols = applicationModel.getApplicationConfigManager().getProtocols();\n            if (CollectionUtils.isNotEmpty(protocols)) {\n                protocol = protocols.stream()\n                    .map(ProtocolConfig::getName)\n                    .filter(StringUtils::isNotEmpty)\n                    .filter(p -> !UNACCEPTABLE_PROTOCOL.contains(p))\n                    .findFirst()\n                    .orElse(\"\");\n            }\n        }\n        // <dubbo:application/>\n        if (StringUtils.isEmpty(protocol)) {\n            protocol = getApplicationConfig().getProtocol();\n            if (StringUtils.isEmpty(protocol)) {\n                Map<String, String> params = getApplicationConfig().getParameters();\n                if (CollectionUtils.isNotEmptyMap(params)) {\n                    protocol = params.get(APPLICATION_PROTOCOL_KEY);\n                }\n            }\n        }\n        return StringUtils.isNotEmpty(protocol) && !UNACCEPTABLE_PROTOCOL.contains(protocol) ? protocol : DUBBO_PROTOCOL;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getRelatedOrDefaultProtocol",
+                "documentation": "/**\n     * Get other configured protocol from environment in priority order. If get nothing, use default dubbo.\n     *\n     * @return\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "unexport"
+                    },
+                    {
+                        "start_node": "unexport",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ConfigurableMetadataServiceExporter"
+                    },
+                    {
+                        "start_node": "ConfigurableMetadataServiceExporter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getRelatedOrDefaultProtocol"
+                    }
+                ],
+                "similarity": 0.1285313469820489,
+                "end_line": 265,
+                "signature": "org.apache.dubbo.config.metadata.ConfigurableMetadataServiceExporter.getRelatedOrDefaultProtocol(): String"
+            },
+            {
+                "start_line": 301,
+                "file_path": "playground/apache__dubbo/dubbo-config/dubbo-config-api/src/main/java/org/apache/dubbo/config/ServiceConfig.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private void checkAndUpdateSubConfigs() {\n\n        // Use default configs defined explicitly with global scope\n        completeCompoundConfigs();\n\n        checkProtocol();\n\n        // init some null configuration.\n        List<ConfigInitializer> configInitializers = this.getExtensionLoader(ConfigInitializer.class)\n            .getActivateExtension(URL.valueOf(\"configInitializer://\", getScopeModel()), (String[]) null);\n        configInitializers.forEach(e -> e.initServiceConfig(this));\n\n        // if protocol is not injvm checkRegistry\n        if (!isOnlyInJvm()) {\n            checkRegistry();\n        }\n\n        if (StringUtils.isEmpty(interfaceName)) {\n            throw new IllegalStateException(\"<dubbo:service interface=\\\"\\\" /> interface not allow null!\");\n        }\n\n        if (ref instanceof GenericService) {\n            interfaceClass = GenericService.class;\n            if (StringUtils.isEmpty(generic)) {\n                generic = Boolean.TRUE.toString();\n            }\n        } else {\n            try {\n                if (getInterfaceClassLoader() != null) {\n                    interfaceClass = Class.forName(interfaceName, true, getInterfaceClassLoader());\n                } else {\n                    interfaceClass = Class.forName(interfaceName, true, Thread.currentThread().getContextClassLoader());\n                }\n            } catch (ClassNotFoundException e) {\n                throw new IllegalStateException(e.getMessage(), e);\n            }\n            checkRef();\n            generic = Boolean.FALSE.toString();\n        }\n        if (local != null) {\n            if (\"true\".equals(local)) {\n                local = interfaceName + \"Local\";\n            }\n            Class<?> localClass;\n            try {\n                localClass = ClassUtils.forNameWithThreadContextClassLoader(local);\n            } catch (ClassNotFoundException e) {\n                throw new IllegalStateException(e.getMessage(), e);\n            }\n            if (!interfaceClass.isAssignableFrom(localClass)) {\n                throw new IllegalStateException(\"The local implementation class \" + localClass.getName() + \" not implement interface \" + interfaceName);\n            }\n        }\n        if (stub != null) {\n            if (\"true\".equals(stub)) {\n                stub = interfaceName + \"Stub\";\n            }\n            Class<?> stubClass;\n            try {\n                stubClass = ClassUtils.forNameWithThreadContextClassLoader(stub);\n            } catch (ClassNotFoundException e) {\n                throw new IllegalStateException(e.getMessage(), e);\n            }\n            if (!interfaceClass.isAssignableFrom(stubClass)) {\n                throw new IllegalStateException(\"The stub implementation class \" + stubClass.getName() + \" not implement interface \" + interfaceName);\n            }\n        }\n        checkStubAndLocal(interfaceClass);\n        ConfigValidationUtils.checkMock(interfaceClass, this);\n        ConfigValidationUtils.validateServiceConfig(this);\n        postProcessConfig();\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "checkAndUpdateSubConfigs",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "unexport"
+                    },
+                    {
+                        "start_node": "unexport",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "ServiceConfig"
+                    },
+                    {
+                        "start_node": "ServiceConfig",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "checkAndUpdateSubConfigs"
+                    }
+                ],
+                "similarity": 0.12350291823642287,
+                "end_line": 372,
+                "signature": "org.apache.dubbo.config.ServiceConfig.checkAndUpdateSubConfigs(): void"
+            },
+            {
+                "start_line": 31,
+                "file_path": "playground/apache__dubbo/dubbo-demo/dubbo-demo-triple/src/main/java/org/apache/dubbo/demo/provider/ApiWrapperProvider.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static void main(String[] args) throws IOException {\n        ServiceConfig<GreeterWrapperService> serviceConfig = new ServiceConfig<>();\n        serviceConfig.setInterface(GreeterWrapperService.class);\n        serviceConfig.setRef(new GreeterWrapperServiceImpl());\n\n        DubboBootstrap bootstrap = DubboBootstrap.getInstance();\n        bootstrap.application(new ApplicationConfig(\"dubbo-demo-triple-api-wrapper-provider\"))\n            .registry(new RegistryConfig(\"zookeeper://127.0.0.1:2181\"))\n            .protocol(new ProtocolConfig(CommonConstants.TRIPLE, -1))\n            .service(serviceConfig)\n            .start()\n            .await();\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "main",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "main"
+                    }
+                ],
+                "similarity": 0.12256631951255298,
+                "end_line": 43,
+                "signature": "org.apache.dubbo.demo.provider.ApiWrapperProvider.main(String[] args): void"
+            },
+            {
+                "start_line": 216,
+                "file_path": "playground/apache__dubbo/dubbo-config/dubbo-config-api/src/main/java/org/apache/dubbo/config/deploy/DefaultModuleDeployer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public synchronized void postDestroy() throws IllegalStateException {\n        if (isStopped()) {\n            return;\n        }\n        unexportServices();\n        unreferServices();\n\n        ModuleServiceRepository serviceRepository = moduleModel.getServiceRepository();\n        if (serviceRepository != null) {\n            List<ConsumerModel> consumerModels = serviceRepository.getReferredServices();\n\n            for (ConsumerModel consumerModel : consumerModels) {\n                try {\n                    if (consumerModel.getDestroyRunner() != null) {\n                        consumerModel.getDestroyRunner().run();\n                    }\n                } catch (Throwable t) {\n                    logger.error(CONFIG_UNABLE_DESTROY_MODEL, \"there are problems with the custom implementation.\", \"\", \"Unable to destroy model: consumerModel.\", t);\n                }\n            }\n\n            List<ProviderModel> exportedServices = serviceRepository.getExportedServices();\n            for (ProviderModel providerModel : exportedServices) {\n                try {\n                    if (providerModel.getDestroyRunner() != null) {\n                        providerModel.getDestroyRunner().run();\n                    }\n                } catch (Throwable t) {\n                    logger.error(CONFIG_UNABLE_DESTROY_MODEL, \"there are problems with the custom implementation.\", \"\", \"Unable to destroy model: providerModel.\", t);\n                }\n            }\n            serviceRepository.destroy();\n        }\n        onModuleStopped();\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "postDestroy",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "postDestroy"
+                    }
+                ],
+                "similarity": 0.12212556147367959,
+                "end_line": 250,
+                "signature": "org.apache.dubbo.config.deploy.DefaultModuleDeployer.postDestroy(): void"
+            },
+            {
+                "start_line": 143,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/rpc/model/ApplicationModel.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void onDestroy() {\n        synchronized (instLock) {\n            // 1. remove from frameworkModel\n            frameworkModel.removeApplication(this);\n\n            // 2. pre-destroy, set stopping\n            if (deployer != null) {\n                // destroy registries and unregister services from registries first to notify consumers to stop consuming this instance.\n                deployer.preDestroy();\n            }\n\n            // 3. Try to destroy protocols to stop this instance from receiving new requests from connections\n            frameworkModel.tryDestroyProtocols();\n\n            // 4. destroy application resources\n            for (ModuleModel moduleModel : new ArrayList<>(moduleModels)) {\n                if (moduleModel != internalModule) {\n                    moduleModel.destroy();\n                }\n            }\n            // 5. destroy internal module later\n            internalModule.destroy();\n\n            // 6. post-destroy, release registry resources\n            if (deployer != null) {\n                deployer.postDestroy();\n            }\n\n            // 7. destroy other resources (e.g. ZookeeperTransporter )\n            notifyDestroy();\n\n            if (environment != null) {\n                environment.destroy();\n                environment = null;\n            }\n            if (configManager != null) {\n                configManager.destroy();\n                configManager = null;\n            }\n            if (serviceRepository != null) {\n                serviceRepository.destroy();\n                serviceRepository = null;\n            }\n\n            // 8. destroy framework if none application\n            frameworkModel.tryDestroy();\n        }\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "onDestroy",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "onDestroy"
+                    }
+                ],
+                "similarity": 0.12157782994971027,
+                "end_line": 190,
+                "signature": "org.apache.dubbo.rpc.model.ApplicationModel.onDestroy(): void"
+            },
+            {
+                "start_line": 816,
+                "file_path": "playground/apache__dubbo/dubbo-config/dubbo-config-api/src/main/java/org/apache/dubbo/config/deploy/DefaultApplicationDeployer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void postDestroy() {\n        synchronized (destroyLock) {\n            // expect application model is destroyed before here\n            if (isStopped()) {\n                return;\n            }\n            try {\n                destroyRegistries();\n                destroyMetadataReports();\n\n                executeShutdownCallbacks();\n\n                // TODO should we close unused protocol server which only used by this application?\n                // protocol server will be closed on all applications of same framework are stopped currently, but no associate to application\n                // see org.apache.dubbo.config.deploy.FrameworkModelCleaner#destroyProtocols\n                // see org.apache.dubbo.config.bootstrap.DubboBootstrapMultiInstanceTest#testMultiProviderApplicationStopOneByOne\n\n                // destroy all executor services\n                destroyExecutorRepository();\n\n                onStopped();\n            } catch (Throwable ex) {\n                String msg = getIdentifier() + \" an error occurred while stopping application: \" + ex.getMessage();\n                onFailed(msg, ex);\n            }\n        }\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "postDestroy",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "postDestroy"
+                    }
+                ],
+                "similarity": 0.1215186294514288,
+                "end_line": 842,
+                "signature": "org.apache.dubbo.config.deploy.DefaultApplicationDeployer.postDestroy(): void"
+            },
+            {
+                "start_line": 51,
+                "file_path": "playground/apache__dubbo/dubbo-demo/dubbo-demo-native/dubbo-demo-native-provider/src/main/java/org/apache/dubbo/demo/graalvm/provider/Application.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static void startWithBootstrap() {\n        DubboBootstrap bootstrap = DubboBootstrap.getInstance();\n\n        ApplicationConfig applicationConfig = new ApplicationConfig(\"dubbo-demo-api-provider\");\n        applicationConfig.setQosEnable(false);\n        applicationConfig.setCompiler(\"jdk\");\n        Map<String, String> m = new HashMap<>(1);\n        m.put(\"proxy\", \"jdk\");\n        applicationConfig.setParameters(m);\n\n        ServiceConfig<DemoService> service = new ServiceConfig<>();\n        service.setInterface(DemoService.class);\n        service.setRef(new DemoServiceImpl());\n\n        ProtocolConfig protocolConfig = new ProtocolConfig(CommonConstants.DUBBO, -1);\n        protocolConfig.setSerialization(\"fastjson2\");\n        bootstrap.application(applicationConfig)\n            .registry(new RegistryConfig(\"zookeeper://127.0.0.1:2181\"))\n            .protocol(protocolConfig)\n            .service(service)\n            .start()\n            .await();\n\n        System.out.println(\"dubbo service started\");\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "startWithBootstrap",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "main"
+                    },
+                    {
+                        "start_node": "main",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Application"
+                    },
+                    {
+                        "start_node": "Application",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "startWithBootstrap"
+                    }
+                ],
+                "similarity": 0.11819562021731006,
+                "end_line": 75,
+                "signature": "org.apache.dubbo.demo.graalvm.provider.Application.startWithBootstrap(): void"
+            },
+            {
+                "start_line": 36,
+                "file_path": "playground/apache__dubbo/dubbo-demo/dubbo-demo-generic-call/src/main/java/org/apache/dubbo/demo/consumer/GenericApplication.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static void runWithBootstrap(String[] args) {\n        ReferenceConfig<GenericService> reference = new ReferenceConfig<>();\n        reference.setInterface(\"org.apache.dubbo.demo.DemoService\");\n\n        String param = \"dubbo generic invoke\";\n\n        if (args.length > 0 && CommonConstants.GENERIC_SERIALIZATION_GSON.equals(args[0])) {\n            reference.setGeneric(CommonConstants.GENERIC_SERIALIZATION_GSON);\n            param = JsonUtils.getJson().toJson(param + \" gson\");\n        } else {\n            reference.setGeneric(\"true\");\n        }\n\n        ApplicationConfig applicationConfig = new ApplicationConfig(\"demo-consumer\");\n\n        MetadataReportConfig metadataReportConfig = new MetadataReportConfig();\n        metadataReportConfig.setAddress(\"zookeeper://127.0.0.1:2181\");\n\n        DubboBootstrap bootstrap = DubboBootstrap.getInstance();\n        bootstrap.application(applicationConfig)\n            .registry(new RegistryConfig(\"zookeeper://127.0.0.1:2181\"))\n            .protocol(new ProtocolConfig(CommonConstants.DUBBO, -1))\n            .reference(reference)\n            .start();\n\n        // generic invoke\n        GenericService genericService = bootstrap.getCache().get(reference);\n        while (true) {\n            try {\n                Object genericInvokeResult = genericService.$invoke(\"sayHello\", new String[]{String.class.getName()},\n                    new Object[]{param});\n                System.out.println(genericInvokeResult);\n                Thread.sleep(1000);\n            } catch (Exception e) {\n                e.printStackTrace();\n            }\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "runWithBootstrap",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "main"
+                    },
+                    {
+                        "start_node": "main",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "GenericApplication"
+                    },
+                    {
+                        "start_node": "GenericApplication",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "runWithBootstrap"
+                    }
+                ],
+                "similarity": 0.11772587766323457,
+                "end_line": 73,
+                "signature": "org.apache.dubbo.demo.consumer.GenericApplication.runWithBootstrap(String[] args): void"
+            },
+            {
+                "start_line": 106,
+                "file_path": "playground/apache__dubbo/dubbo-remoting/dubbo-remoting-netty/src/main/java/org/apache/dubbo/remoting/transport/netty/NettyServer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void doClose() throws Throwable {\n        try {\n            if (channel != null) {\n                // unbind.\n                channel.close();\n            }\n        } catch (Throwable e) {\n            logger.warn(TRANSPORT_FAILED_CLOSE, \"\", \"\", e.getMessage(), e);\n        }\n        try {\n            Collection<org.apache.dubbo.remoting.Channel> channels = getChannels();\n            if (CollectionUtils.isNotEmpty(channels)) {\n                for (org.apache.dubbo.remoting.Channel channel : channels) {\n                    try {\n                        channel.close();\n                    } catch (Throwable e) {\n                        logger.warn(TRANSPORT_FAILED_CLOSE, \"\", \"\", e.getMessage(), e);\n                    }\n                }\n            }\n        } catch (Throwable e) {\n            logger.warn(TRANSPORT_FAILED_CLOSE, \"\", \"\", e.getMessage(), e);\n        }\n        try {\n            if (bootstrap != null) {\n                // release external resource.\n                bootstrap.releaseExternalResources();\n            }\n        } catch (Throwable e) {\n            logger.warn(TRANSPORT_FAILED_CLOSE, \"\", \"\", e.getMessage(), e);\n        }\n        try {\n            if (channels != null) {\n                channels.clear();\n            }\n        } catch (Throwable e) {\n            logger.warn(TRANSPORT_FAILED_CLOSE, \"\", \"\", e.getMessage(), e);\n        }\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "doClose",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "doClose"
+                    }
+                ],
+                "similarity": 0.1172553563854229,
+                "end_line": 144,
+                "signature": "org.apache.dubbo.remoting.transport.netty.NettyServer.doClose(): void"
+            },
+            {
+                "start_line": 30,
+                "file_path": "playground/apache__dubbo/dubbo-demo/dubbo-demo-spring-boot/dubbo-demo-spring-boot-provider/src/main/java/org/apache/dubbo/springboot/demo/provider/ProviderApplication.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static void main(String[] args) throws Exception {\n        SpringApplication.run(ProviderApplication.class, args);\n        System.out.println(\"dubbo service started\");\n        new CountDownLatch(1).await();\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "main",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "main"
+                    }
+                ],
+                "similarity": 0.11662475411731055,
+                "end_line": 34,
+                "signature": "org.apache.dubbo.springboot.demo.provider.ProviderApplication.main(String[] args): void"
+            },
+            {
+                "start_line": 159,
+                "file_path": "playground/apache__dubbo/dubbo-remoting/dubbo-remoting-netty4/src/main/java/org/apache/dubbo/remoting/transport/netty4/NettyServer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void doClose() throws Throwable {\n        try {\n            if (channel != null) {\n                // unbind.\n                channel.close();\n            }\n        } catch (Throwable e) {\n            logger.warn(TRANSPORT_FAILED_CLOSE, \"\", \"\", e.getMessage(), e);\n        }\n        try {\n            Collection<Channel> channels = getChannels();\n            if (CollectionUtils.isNotEmpty(channels)) {\n                for (Channel channel : channels) {\n                    try {\n                        channel.close();\n                    } catch (Throwable e) {\n                        logger.warn(TRANSPORT_FAILED_CLOSE, \"\", \"\", e.getMessage(), e);\n                    }\n                }\n            }\n        } catch (Throwable e) {\n            logger.warn(TRANSPORT_FAILED_CLOSE, \"\", \"\", e.getMessage(), e);\n        }\n        try {\n            if (bootstrap != null) {\n                long timeout = serverShutdownTimeoutMills;\n                long quietPeriod = Math.min(2000L, timeout);\n                Future<?> bossGroupShutdownFuture = bossGroup.shutdownGracefully(quietPeriod, timeout, MILLISECONDS);\n                Future<?> workerGroupShutdownFuture = workerGroup.shutdownGracefully(quietPeriod, timeout, MILLISECONDS);\n                bossGroupShutdownFuture.syncUninterruptibly();\n                workerGroupShutdownFuture.syncUninterruptibly();\n            }\n        } catch (Throwable e) {\n            logger.warn(TRANSPORT_FAILED_CLOSE, \"\", \"\", e.getMessage(), e);\n        }\n        try {\n            if (channels != null) {\n                channels.clear();\n            }\n        } catch (Throwable e) {\n            logger.warn(TRANSPORT_FAILED_CLOSE, \"\", \"\", e.getMessage(), e);\n        }\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "doClose",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "doClose"
+                    }
+                ],
+                "similarity": 0.1164404075503113,
+                "end_line": 201,
+                "signature": "org.apache.dubbo.remoting.transport.netty4.NettyServer.doClose(): void"
+            },
+            {
+                "start_line": 29,
+                "file_path": "playground/apache__dubbo/dubbo-demo/dubbo-demo-triple/src/main/java/org/apache/dubbo/demo/provider/ApiProvider.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static void main(String[] args) throws InterruptedException {\n        ServiceConfig<GreeterService> serviceConfig = new ServiceConfig<>();\n        serviceConfig.setInterface(GreeterService.class);\n        serviceConfig.setRef(new GreeterServiceImpl());\n\n        DubboBootstrap bootstrap = DubboBootstrap.getInstance();\n        bootstrap.application(new ApplicationConfig(\"dubbo-demo-triple-api-provider\"))\n            .registry(new RegistryConfig(\"zookeeper://127.0.0.1:2181\"))\n            .protocol(new ProtocolConfig(CommonConstants.TRIPLE, -1))\n            .service(serviceConfig)\n            .start()\n            .await();\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "main",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "main"
+                    }
+                ],
+                "similarity": 0.11496660459036476,
+                "end_line": 41,
+                "signature": "org.apache.dubbo.demo.provider.ApiProvider.main(String[] args): void"
+            },
+            {
+                "start_line": 111,
+                "file_path": "playground/apache__dubbo/dubbo-remoting/dubbo-remoting-netty4/src/main/java/org/apache/dubbo/remoting/transport/netty4/NettyPortUnificationServer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void doOpen() {\n        bootstrap = new ServerBootstrap();\n\n        bossGroup = NettyEventLoopFactory.eventLoopGroup(1, EVENT_LOOP_BOSS_POOL_NAME);\n        workerGroup = NettyEventLoopFactory.eventLoopGroup(\n            getUrl().getPositiveParameter(IO_THREADS_KEY, Constants.DEFAULT_IO_THREADS),\n            EVENT_LOOP_WORKER_POOL_NAME);\n\n        final boolean enableSsl = getUrl().getParameter(SSL_ENABLED_KEY, false);\n        final SslContext sslContext;\n        if (enableSsl) {\n            sslContext = SslContexts.buildServerSslContext(getUrl());\n        } else {\n            sslContext = null;\n        }\n        bootstrap.group(bossGroup, workerGroup)\n            .channel(NettyEventLoopFactory.serverSocketChannelClass())\n            .option(ChannelOption.SO_REUSEADDR, Boolean.TRUE)\n            .childOption(ChannelOption.TCP_NODELAY, Boolean.TRUE)\n            .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)\n            .childHandler(new ChannelInitializer<SocketChannel>() {\n                @Override\n                protected void initChannel(SocketChannel ch) throws Exception {\n                    // Do not add idle state handler here, because it should be added in the protocol handler.\n                    final ChannelPipeline p = ch.pipeline();\n                    final NettyPortUnificationServerHandler puHandler;\n                    puHandler = new NettyPortUnificationServerHandler(getUrl(), sslContext, true, getProtocols(),\n                        NettyPortUnificationServer.this, NettyPortUnificationServer.this.dubboChannels,\n                        getSupportedUrls(), getSupportedHandlers());\n                    p.addLast(\"negotiation-protocol\", puHandler);\n                }\n            });\n        // bind\n\n        String bindIp = getUrl().getParameter(Constants.BIND_IP_KEY, getUrl().getHost());\n        int bindPort = getUrl().getParameter(Constants.BIND_PORT_KEY, getUrl().getPort());\n        if (getUrl().getParameter(ANYHOST_KEY, false) || NetUtils.isInvalidLocalHost(bindIp)) {\n            bindIp = ANYHOST_VALUE;\n        }\n        InetSocketAddress bindAddress = new InetSocketAddress(bindIp, bindPort);\n        ChannelFuture channelFuture = bootstrap.bind(bindAddress);\n        channelFuture.syncUninterruptibly();\n        channel = channelFuture.channel();\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "doOpen",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "doClose"
+                    },
+                    {
+                        "start_node": "doClose",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "NettyPortUnificationServer"
+                    },
+                    {
+                        "start_node": "NettyPortUnificationServer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "doOpen"
+                    }
+                ],
+                "similarity": 0.11419754138696521,
+                "end_line": 154,
+                "signature": "org.apache.dubbo.remoting.transport.netty4.NettyPortUnificationServer.doOpen(): void"
+            },
+            {
+                "start_line": 217,
+                "file_path": "playground/apache__dubbo/dubbo-registry/dubbo-registry-api/src/main/java/org/apache/dubbo/registry/integration/RegistryDirectory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private void refreshInvoker(List<URL> invokerUrls) {\n        Assert.notNull(invokerUrls, \"invokerUrls should not be null\");\n\n        if (invokerUrls.size() == 1\n            && invokerUrls.get(0) != null\n            && EMPTY_PROTOCOL.equals(invokerUrls.get(0).getProtocol())) {\n            this.forbidden = true; // Forbid to access\n            routerChain.setInvokers(BitList.emptyList());\n            destroyAllInvokers(); // Close all invokers\n        } else {\n            this.forbidden = false; // Allow to access\n\n            if (invokerUrls == Collections.<URL>emptyList()) {\n                invokerUrls = new ArrayList<>();\n            }\n            // use local reference to avoid NPE as this.cachedInvokerUrls will be set null by destroyAllInvokers().\n            Set<URL> localCachedInvokerUrls = this.cachedInvokerUrls;\n            if (invokerUrls.isEmpty()) {\n                if(CollectionUtils.isNotEmpty(localCachedInvokerUrls)){\n                    // 1-4 Empty address.\n                    logger.warn(REGISTRY_EMPTY_ADDRESS, \"configuration \", \"\",\n                        \"Service\" + serviceKey + \" received empty address list with no EMPTY protocol set, trigger empty protection.\");\n\n                    invokerUrls.addAll(localCachedInvokerUrls);\n                }\n            } else {\n                localCachedInvokerUrls = new HashSet<>();\n                localCachedInvokerUrls.addAll(invokerUrls);//Cached invoker urls, convenient for comparison\n                this.cachedInvokerUrls = localCachedInvokerUrls;\n            }\n            if (invokerUrls.isEmpty()) {\n                return;\n            }\n\n            // use local reference to avoid NPE as this.urlInvokerMap will be set null concurrently at destroyAllInvokers().\n            Map<URL, Invoker<T>> localUrlInvokerMap = this.urlInvokerMap;\n            // can't use local reference as oldUrlInvokerMap's mappings might be removed directly at toInvokers().\n            Map<URL, Invoker<T>> oldUrlInvokerMap = null;\n            if (localUrlInvokerMap != null) {\n                // the initial capacity should be set greater than the maximum number of entries divided by the load factor to avoid resizing.\n                oldUrlInvokerMap = new LinkedHashMap<>(Math.round(1 + localUrlInvokerMap.size() / DEFAULT_HASHMAP_LOAD_FACTOR));\n                localUrlInvokerMap.forEach(oldUrlInvokerMap::put);\n            }\n            Map<URL, Invoker<T>> newUrlInvokerMap = toInvokers(oldUrlInvokerMap, invokerUrls);// Translate url list to Invoker map\n\n            /*\n             * If the calculation is wrong, it is not processed.\n             *\n             * 1. The protocol configured by the client is inconsistent with the protocol of the server.\n             *    eg: consumer protocol = dubbo, provider only has other protocol services(rest).\n             * 2. The registration center is not robust and pushes illegal specification data.\n             *\n             */\n            if (CollectionUtils.isEmptyMap(newUrlInvokerMap)) {\n\n                // 3-1 - Failed to convert the URL address into Invokers.\n\n                logger.error(\n                    PROXY_FAILED_CONVERT_URL, \"inconsistency between the client protocol and the protocol of the server\",\n                    \"\", \"urls to invokers error\",\n                    new IllegalStateException(\n                        \"urls to invokers error. invokerUrls.size :\" +\n                            invokerUrls.size() + \", invoker.size :0. urls :\" + invokerUrls.toString()));\n\n                return;\n            }\n\n            List<Invoker<T>> newInvokers = Collections.unmodifiableList(new ArrayList<>(newUrlInvokerMap.values()));\n            this.setInvokers(multiGroup ? new BitList<>(toMergeInvokerList(newInvokers)) : new BitList<>(newInvokers));\n            // pre-route and build cache\n            routerChain.setInvokers(this.getInvokers());\n            this.urlInvokerMap = newUrlInvokerMap;\n\n            try {\n                destroyUnusedInvokers(oldUrlInvokerMap, newUrlInvokerMap); // Close the unused Invoker\n            } catch (Exception e) {\n                logger.warn(REGISTRY_FAILED_DESTROY_SERVICE, \"\", \"\", \"destroyUnusedInvokers error. \", e);\n            }\n\n            // notify invokers refreshed\n            this.invokersChanged();\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "refreshInvoker",
+                "documentation": "/**\n     * Convert the invokerURL list to the Invoker Map. The rules of the conversion are as follows:\n     * <ol>\n     * <li> If URL has been converted to invoker, it is no longer re-referenced and obtained directly from the cache,\n     * and notice that any parameter changes in the URL will be re-referenced.</li>\n     * <li>If the incoming invoker list is not empty, it means that it is the latest invoker list.</li>\n     * <li>If the list of incoming invokerUrl is empty, It means that the rule is only a override rule or a route\n     * rule, which needs to be re-contrasted to decide whether to re-reference.</li>\n     * </ol>\n     *\n     * @param invokerUrls this parameter can't be null\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "destroy"
+                    },
+                    {
+                        "start_node": "destroy",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "RegistryDirectory"
+                    },
+                    {
+                        "start_node": "RegistryDirectory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "refreshInvoker"
+                    }
+                ],
+                "similarity": 0.11392931441201386,
+                "end_line": 299,
+                "signature": "org.apache.dubbo.registry.integration.RegistryDirectory.refreshInvoker(List invokerUrls): void"
+            },
+            {
+                "start_line": 460,
+                "file_path": "playground/apache__dubbo/dubbo-registry/dubbo-registry-api/src/main/java/org/apache/dubbo/registry/integration/RegistryDirectory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private URL mergeUrl(URL providerUrl) {\n        if (providerUrl instanceof ServiceAddressURL) {\n            providerUrl = overrideWithConfigurator(providerUrl);\n        } else {\n            providerUrl = moduleModel.getApplicationModel().getBeanFactory().getBean(ClusterUtils.class).mergeUrl(providerUrl, queryMap); // Merge the consumer side parameters\n            providerUrl = overrideWithConfigurator(providerUrl);\n            providerUrl = providerUrl.addParameter(Constants.CHECK_KEY, String.valueOf(false)); // Do not check whether the connection is successful or not, always create Invoker!\n        }\n\n        // FIXME, kept for mock\n        if (providerUrl.hasParameter(MOCK_KEY) || providerUrl.getAnyMethodParameter(MOCK_KEY) != null) {\n            providerUrl = providerUrl.removeParameter(TAG_KEY);\n        }\n\n        if ((providerUrl.getPath() == null || providerUrl.getPath()\n            .length() == 0) && DUBBO_PROTOCOL.equals(providerUrl.getProtocol())) { // Compatible version 1.0\n            //fix by tony.chenl DUBBO-44\n            String path = directoryUrl.getServiceInterface();\n            if (path != null) {\n                int i = path.indexOf('/');\n                if (i >= 0) {\n                    path = path.substring(i + 1);\n                }\n                i = path.lastIndexOf(':');\n                if (i >= 0) {\n                    path = path.substring(0, i);\n                }\n                providerUrl = providerUrl.setPath(path);\n            }\n        }\n        return providerUrl;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "mergeUrl",
+                "documentation": "/**\n     * Merge url parameters. the order is: override > -D >Consumer > Provider\n     *\n     * @param providerUrl\n     * @return\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "destroy"
+                    },
+                    {
+                        "start_node": "destroy",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "RegistryDirectory"
+                    },
+                    {
+                        "start_node": "RegistryDirectory",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "mergeUrl"
+                    }
+                ],
+                "similarity": 0.1126457463445714,
+                "end_line": 491,
+                "signature": "org.apache.dubbo.registry.integration.RegistryDirectory.mergeUrl(URL providerUrl): URL"
+            },
+            {
+                "start_line": 157,
+                "file_path": "playground/apache__dubbo/dubbo-remoting/dubbo-remoting-netty4/src/main/java/org/apache/dubbo/remoting/transport/netty4/NettyPortUnificationServer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void doClose() {\n\n        try {\n            if (channel != null) {\n                // unbind.\n                channel.close();\n                channel = null;\n            }\n\n        } catch (Throwable e) {\n            logger.warn(TRANSPORT_FAILED_CLOSE, \"\", \"\", \"Interrupted while shutting down\", e);\n        }\n\n        try {\n            Collection<Channel> channels = getChannels();\n            if (CollectionUtils.isNotEmpty(channels)) {\n                for (Channel channel : channels) {\n                    try {\n                        channel.close();\n                    } catch (Throwable e) {\n                        logger.warn(TRANSPORT_FAILED_CLOSE, \"\", \"\", e.getMessage(), e);\n                    }\n                }\n            }\n        } catch (Throwable e) {\n            logger.warn(TRANSPORT_FAILED_CLOSE, \"\", \"\", e.getMessage(), e);\n        }\n\n        for (WireProtocol protocol : getProtocols()) {\n            protocol.close();\n        }\n\n        try {\n            if (bootstrap != null) {\n                long timeout = serverShutdownTimeoutMills;\n                long quietPeriod = Math.min(2000L, timeout);\n                Future<?> bossGroupShutdownFuture = bossGroup.shutdownGracefully(quietPeriod,\n                    timeout, MILLISECONDS);\n                Future<?> workerGroupShutdownFuture = workerGroup.shutdownGracefully(quietPeriod,\n                    timeout, MILLISECONDS);\n                bossGroupShutdownFuture.awaitUninterruptibly(timeout, MILLISECONDS);\n                workerGroupShutdownFuture.awaitUninterruptibly(timeout, MILLISECONDS);\n            }\n        } catch (Throwable e) {\n            logger.warn(TRANSPORT_FAILED_CLOSE, \"\", \"\", e.getMessage(), e);\n        }\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "doClose",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "doClose"
+                    }
+                ],
+                "similarity": 0.11212133485107895,
+                "end_line": 203,
+                "signature": "org.apache.dubbo.remoting.transport.netty4.NettyPortUnificationServer.doClose(): void"
+            },
+            {
+                "start_line": 77,
+                "file_path": "playground/apache__dubbo/dubbo-spring-boot/dubbo-spring-boot-compatible/autoconfigure/src/main/java/org/apache/dubbo/spring/boot/context/event/DubboConfigBeanDefinitionConflictApplicationListener.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private void resolveUniqueApplicationConfigBean(BeanDefinitionRegistry registry, ListableBeanFactory beanFactory) {\n\n        String[] beansNames = beanNamesForTypeIncludingAncestors(beanFactory, ApplicationConfig.class);\n\n        if (beansNames.length < 2) { // If the number of ApplicationConfig beans is less than two, return immediately.\n            return;\n        }\n\n        Environment environment = beanFactory.getBean(ENVIRONMENT_BEAN_NAME, Environment.class);\n\n        // Remove ApplicationConfig Beans that are configured by \"dubbo.application.*\"\n        Stream.of(beansNames)\n            .filter(beansName -> isConfiguredApplicationConfigBeanName(environment, beansName))\n            .forEach(registry::removeBeanDefinition);\n\n        beansNames = beanNamesForTypeIncludingAncestors(beanFactory, ApplicationConfig.class);\n\n        if (beansNames.length > 1) {\n            throw new IllegalStateException(String.format(\"There are more than one instances of %s, whose bean definitions : %s\",\n                ApplicationConfig.class.getSimpleName(),\n                Stream.of(beansNames)\n                    .map(registry::getBeanDefinition)\n                    .collect(Collectors.toList()))\n            );\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "resolveUniqueApplicationConfigBean",
+                "documentation": "/**\n     * Resolve the unique {@link ApplicationConfig} Bean\n     *\n     * @param registry    {@link BeanDefinitionRegistry} instance\n     * @param beanFactory {@link ConfigurableListableBeanFactory} instance\n     * @see EnableDubboConfig\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "onApplicationEvent"
+                    },
+                    {
+                        "start_node": "onApplicationEvent",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DubboConfigBeanDefinitionConflictApplicationListener"
+                    },
+                    {
+                        "start_node": "DubboConfigBeanDefinitionConflictApplicationListener",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "resolveUniqueApplicationConfigBean"
+                    }
+                ],
+                "similarity": 0.111213716731902,
+                "end_line": 102,
+                "signature": "org.apache.dubbo.spring.boot.context.event.DubboConfigBeanDefinitionConflictApplicationListener.resolveUniqueApplicationConfigBean(BeanDefinitionRegistry registry, ListableBeanFactory beanFactory): void"
+            },
+            {
+                "start_line": 105,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/rpc/model/FrameworkModel.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void onDestroy() {\n        synchronized (instLock) {\n            if (defaultInstance == this) {\n                // NOTE: During destroying the default FrameworkModel, the FrameworkModel.defaultModel() or ApplicationModel.defaultModel()\n                // will return a broken model, maybe cause unpredictable problem.\n                if (LOGGER.isInfoEnabled()) {\n                    LOGGER.info(\"Destroying default framework model: \" + getDesc());\n                }\n            }\n\n            if (LOGGER.isInfoEnabled()) {\n                LOGGER.info(getDesc() + \" is destroying ...\");\n            }\n\n            // destroy all application model\n            for (ApplicationModel applicationModel : new ArrayList<>(applicationModels)) {\n                applicationModel.destroy();\n            }\n            // check whether all application models are destroyed\n            checkApplicationDestroy();\n\n            // notify destroy and clean framework resources\n            // see org.apache.dubbo.config.deploy.FrameworkModelCleaner\n            notifyDestroy();\n\n            if (LOGGER.isInfoEnabled()) {\n                LOGGER.info(getDesc() + \" is destroyed\");\n            }\n\n            // remove from allInstances and reset default FrameworkModel\n            synchronized (globalLock) {\n                allInstances.remove(this);\n                resetDefaultFrameworkModel();\n            }\n\n            // if all FrameworkModels are destroyed, clean global static resources, shutdown dubbo completely\n            destroyGlobalResources();\n        }\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "onDestroy",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "onDestroy"
+                    }
+                ],
+                "similarity": 0.1112072267301678,
+                "end_line": 143,
+                "signature": "org.apache.dubbo.rpc.model.FrameworkModel.onDestroy(): void"
+            },
+            {
+                "start_line": 214,
+                "file_path": "playground/apache__dubbo/dubbo-registry/dubbo-registry-nacos/src/main/java/org/apache/dubbo/registry/nacos/NacosRegistry.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private void doSubscribe(final URL url, final NacosAggregateListener listener, final Set<String> serviceNames) {\n        try {\n            if (isServiceNamesWithCompatibleMode(url)) {\n\n                /**\n                 * Get all instances with serviceNames to avoid instance overwrite and but with empty instance mentioned\n                 * in https://github.com/apache/dubbo/issues/5885 and https://github.com/apache/dubbo/issues/5899\n                 *\n                 * namingService.getAllInstances with {@link org.apache.dubbo.registry.support.AbstractRegistry#registryUrl}\n                 * default {@link DEFAULT_GROUP}\n                 *\n                 * in https://github.com/apache/dubbo/issues/5978\n                 */\n                for (String serviceName : serviceNames) {\n                    List<Instance> instances = namingService.getAllInstances(serviceName,\n                        getUrl().getGroup(Constants.DEFAULT_GROUP));\n                    notifySubscriber(url, serviceName, listener, instances);\n                }\n                for (String serviceName : serviceNames) {\n                    subscribeEventListener(serviceName, url, listener);\n                }\n            } else {\n                for (String serviceName : serviceNames) {\n                    List<Instance> instances = new LinkedList<>();\n                    instances.addAll(namingService.getAllInstances(serviceName\n                        , getUrl().getGroup(Constants.DEFAULT_GROUP)));\n                    String serviceInterface = serviceName;\n                    String[] segments = serviceName.split(SERVICE_NAME_SEPARATOR, -1);\n                    if (segments.length == 4) {\n                        serviceInterface = segments[SERVICE_INTERFACE_INDEX];\n                    }\n                    URL subscriberURL = url.setPath(serviceInterface).addParameters(INTERFACE_KEY, serviceInterface,\n                        CHECK_KEY, String.valueOf(false));\n                    notifySubscriber(subscriberURL, serviceName, listener, instances);\n                    subscribeEventListener(serviceName, subscriberURL, listener);\n                }\n            }\n        } catch (Throwable cause) {\n            throw new RpcException(\"Failed to subscribe \" + url + \" to nacos \" + getUrl() + \", cause: \" + cause.getMessage(), cause);\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "doSubscribe",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "destroy"
+                    },
+                    {
+                        "start_node": "destroy",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "NacosRegistry"
+                    },
+                    {
+                        "start_node": "NacosRegistry",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "doSubscribe"
+                    }
+                ],
+                "similarity": 0.10664360989922568,
+                "end_line": 254,
+                "signature": "org.apache.dubbo.registry.nacos.NacosRegistry.doSubscribe(URL url, NacosAggregateListener listener, Set serviceNames): void"
+            },
+            {
+                "start_line": 42,
+                "file_path": "playground/apache__dubbo/dubbo-demo/dubbo-demo-api/dubbo-demo-api-consumer/src/main/java/org/apache/dubbo/demo/consumer/Application.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static void runWithBootstrap() {\n        ReferenceConfig<DemoService> reference = new ReferenceConfig<>();\n        reference.setInterface(DemoService.class);\n        reference.setGeneric(\"true\");\n\n        DubboBootstrap bootstrap = DubboBootstrap.getInstance();\n        bootstrap.application(new ApplicationConfig(\"dubbo-demo-api-consumer\"))\n            .registry(new RegistryConfig(\"zookeeper://127.0.0.1:2181\"))\n            .protocol(new ProtocolConfig(CommonConstants.DUBBO, -1))\n            .reference(reference)\n            .start();\n\n        DemoService demoService = bootstrap.getCache().get(reference);\n        String message = demoService.sayHello(\"dubbo\");\n        System.out.println(message);\n\n        // generic invoke\n        GenericService genericService = (GenericService) demoService;\n        Object genericInvokeResult = genericService.$invoke(\"sayHello\", new String[]{String.class.getName()},\n            new Object[]{\"dubbo generic invoke\"});\n        System.out.println(genericInvokeResult);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "runWithBootstrap",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "main"
+                    },
+                    {
+                        "start_node": "main",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Application"
+                    },
+                    {
+                        "start_node": "Application",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "runWithBootstrap"
+                    }
+                ],
+                "similarity": 0.10656030823582265,
+                "end_line": 63,
+                "signature": "org.apache.dubbo.demo.consumer.Application.runWithBootstrap(): void"
+            },
+            {
+                "start_line": 54,
+                "file_path": "playground/apache__dubbo/dubbo-config/dubbo-config-spring/src/main/java/org/apache/dubbo/config/spring/context/DubboConfigApplicationListener.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void onApplicationEvent(DubboConfigInitEvent event) {\n        if (nullSafeEquals(applicationContext, event.getSource())) {\n            // It's expected to be notified at org.springframework.context.support.AbstractApplicationContext.registerListeners(),\n            // before loading non-lazy singleton beans. At this moment, all BeanFactoryPostProcessor have been processed,\n            if (initialized.compareAndSet(false, true)) {\n                initDubboConfigBeans();\n            }\n        }\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "onApplicationEvent",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "onApplicationEvent"
+                    }
+                ],
+                "similarity": 0.10493898768563285,
+                "end_line": 62,
+                "signature": "org.apache.dubbo.config.spring.context.DubboConfigApplicationListener.onApplicationEvent(DubboConfigInitEvent event): void"
+            },
+            {
+                "start_line": 80,
+                "file_path": "playground/apache__dubbo/dubbo-config/dubbo-config-spring/src/main/java/org/apache/dubbo/config/spring/context/DubboBootstrapApplicationListener.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void onApplicationEvent(ApplicationEvent event) {\n        if (isOriginalEventSource(event)) {\n            if (event instanceof DubboConfigInitEvent) {\n                // This event will be notified at AbstractApplicationContext.registerListeners(),\n                // init dubbo config beans before spring singleton beans\n                initDubboConfigBeans();\n            } else if (event instanceof ApplicationContextEvent) {\n                this.onApplicationContextEvent((ApplicationContextEvent) event);\n            }\n        }\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "onApplicationEvent",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "onApplicationEvent"
+                    }
+                ],
+                "similarity": 0.10433409834317049,
+                "end_line": 90,
+                "signature": "org.apache.dubbo.config.spring.context.DubboBootstrapApplicationListener.onApplicationEvent(ApplicationEvent event): void"
+            },
+            {
+                "start_line": 57,
+                "file_path": "playground/apache__dubbo/dubbo-remoting/dubbo-remoting-api/src/main/java/org/apache/dubbo/remoting/transport/dispatcher/ChannelEventRunnable.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void run() {\n        InternalThreadLocalMap internalThreadLocalMap = InternalThreadLocalMap.getAndRemove();\n        try {\n            if (state == ChannelState.RECEIVED) {\n                try {\n                    handler.received(channel, message);\n                } catch (Exception e) {\n                    logger.warn(INTERNAL_ERROR, \"unknown error in remoting module\", \"\", \"ChannelEventRunnable handle \" + state + \" operation error, channel is \" + channel\n                        + \", message is \" + message, e);\n                }\n            } else {\n                switch (state) {\n                    case CONNECTED:\n                        try {\n                            handler.connected(channel);\n                        } catch (Exception e) {\n                            logger.warn(INTERNAL_ERROR, \"unknown error in remoting module\", \"\", \"ChannelEventRunnable handle \" + state + \" operation error, channel is \" + channel, e);\n                        }\n                        break;\n                    case DISCONNECTED:\n                        try {\n                            handler.disconnected(channel);\n                        } catch (Exception e) {\n                            logger.warn(INTERNAL_ERROR, \"unknown error in remoting module\", \"\", \"ChannelEventRunnable handle \" + state + \" operation error, channel is \" + channel, e);\n                        }\n                        break;\n                    case SENT:\n                        try {\n                            handler.sent(channel, message);\n                        } catch (Exception e) {\n                            logger.warn(INTERNAL_ERROR, \"unknown error in remoting module\", \"\", \"ChannelEventRunnable handle \" + state + \" operation error, channel is \" + channel\n                                + \", message is \" + message, e);\n                        }\n                        break;\n                    case CAUGHT:\n                        try {\n                            handler.caught(channel, exception);\n                        } catch (Exception e) {\n                            logger.warn(INTERNAL_ERROR, \"unknown error in remoting module\", \"\", \"ChannelEventRunnable handle \" + state + \" operation error, channel is \" + channel\n                                + \", message is: \" + message + \", exception is \" + exception, e);\n                        }\n                        break;\n                    default:\n                        logger.warn(INTERNAL_ERROR, \"unknown error in remoting module\", \"\", \"unknown state: \" + state + \", message is \" + message);\n                }\n            }\n        } finally {\n            InternalThreadLocalMap.set(internalThreadLocalMap);\n        }\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "run",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "run"
+                    }
+                ],
+                "similarity": 0.10377254684131923,
+                "end_line": 106,
+                "signature": "org.apache.dubbo.remoting.transport.dispatcher.ChannelEventRunnable.run(): void"
+            },
+            {
+                "start_line": 228,
+                "file_path": "playground/apache__dubbo/dubbo-config/dubbo-config-api/src/main/java/org/apache/dubbo/config/deploy/DefaultApplicationDeployer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private void startConfigCenter() {\n\n        // load application config\n        configManager.loadConfigsOfTypeFromProps(ApplicationConfig.class);\n\n        // try set model name\n        if (StringUtils.isBlank(applicationModel.getModelName())) {\n            applicationModel.setModelName(applicationModel.tryGetApplicationName());\n        }\n\n        // load config centers\n        configManager.loadConfigsOfTypeFromProps(ConfigCenterConfig.class);\n\n        useRegistryAsConfigCenterIfNecessary();\n\n        // check Config Center\n        Collection<ConfigCenterConfig> configCenters = configManager.getConfigCenters();\n        if (CollectionUtils.isEmpty(configCenters)) {\n            ConfigCenterConfig configCenterConfig = new ConfigCenterConfig();\n            configCenterConfig.setScopeModel(applicationModel);\n            configCenterConfig.refresh();\n            ConfigValidationUtils.validateConfigCenterConfig(configCenterConfig);\n            if (configCenterConfig.isValid()) {\n                configManager.addConfigCenter(configCenterConfig);\n                configCenters = configManager.getConfigCenters();\n            }\n        } else {\n            for (ConfigCenterConfig configCenterConfig : configCenters) {\n                configCenterConfig.refresh();\n                ConfigValidationUtils.validateConfigCenterConfig(configCenterConfig);\n            }\n        }\n\n        if (CollectionUtils.isNotEmpty(configCenters)) {\n            CompositeDynamicConfiguration compositeDynamicConfiguration = new CompositeDynamicConfiguration();\n            for (ConfigCenterConfig configCenter : configCenters) {\n                // Pass config from ConfigCenterBean to environment\n                environment.updateExternalConfigMap(configCenter.getExternalConfiguration());\n                environment.updateAppExternalConfigMap(configCenter.getAppExternalConfiguration());\n\n                // Fetch config from remote config center\n                compositeDynamicConfiguration.addConfiguration(prepareEnvironment(configCenter));\n            }\n            environment.setDynamicConfiguration(compositeDynamicConfiguration);\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "startConfigCenter",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "postDestroy"
+                    },
+                    {
+                        "start_node": "postDestroy",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DefaultApplicationDeployer"
+                    },
+                    {
+                        "start_node": "DefaultApplicationDeployer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "startConfigCenter"
+                    }
+                ],
+                "similarity": 0.10116022989374346,
+                "end_line": 273,
+                "signature": "org.apache.dubbo.config.deploy.DefaultApplicationDeployer.startConfigCenter(): void"
+            },
+            {
+                "start_line": 169,
+                "file_path": "playground/apache__dubbo/dubbo-registry/dubbo-registry-nacos/src/main/java/org/apache/dubbo/registry/nacos/NacosRegistry.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void doRegister(URL url) {\n        try {\n            if (PROVIDER_SIDE.equals(url.getSide()) || getUrl().getParameter(REGISTER_CONSUMER_URL_KEY, false)) {\n                String serviceName = getServiceName(url);\n                Instance instance = createInstance(url);\n                /**\n                 *  namingService.registerInstance with {@link org.apache.dubbo.registry.support.AbstractRegistry#registryUrl}\n                 *  default {@link DEFAULT_GROUP}\n                 *\n                 * in https://github.com/apache/dubbo/issues/5978\n                 */\n                namingService.registerInstance(serviceName,\n                    getUrl().getGroup(Constants.DEFAULT_GROUP), instance);\n            } else {\n                logger.info(\"Please set 'dubbo.registry.parameters.register-consumer-url=true' to turn on consumer url registration.\");\n            }\n        } catch (Throwable cause) {\n            throw new RpcException(\"Failed to register \" + url + \" to nacos \" + getUrl() + \", cause: \" + cause.getMessage(), cause);\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "doRegister",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "destroy"
+                    },
+                    {
+                        "start_node": "destroy",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "NacosRegistry"
+                    },
+                    {
+                        "start_node": "NacosRegistry",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "doRegister"
+                    }
+                ],
+                "similarity": 0.101086654381217,
+                "end_line": 188,
+                "signature": "org.apache.dubbo.registry.nacos.NacosRegistry.doRegister(URL url): void"
+            },
+            {
+                "start_line": 72,
+                "file_path": "playground/apache__dubbo/dubbo-remoting/dubbo-remoting-netty/src/main/java/org/apache/dubbo/remoting/transport/netty/NettyServer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void doOpen() throws Throwable {\n        NettyHelper.setNettyLoggerFactory();\n        ExecutorService boss = Executors.newCachedThreadPool(new NamedThreadFactory(EVENT_LOOP_BOSS_POOL_NAME, true));\n        ExecutorService worker = Executors.newCachedThreadPool(new NamedThreadFactory(EVENT_LOOP_WORKER_POOL_NAME, true));\n        ChannelFactory channelFactory = new NioServerSocketChannelFactory(boss, worker, getUrl().getPositiveParameter(IO_THREADS_KEY, Constants.DEFAULT_IO_THREADS));\n        bootstrap = new ServerBootstrap(channelFactory);\n\n        final NettyHandler nettyHandler = new NettyHandler(getUrl(), this);\n        channels = nettyHandler.getChannels();\n        // https://issues.jboss.org/browse/NETTY-365\n        // https://issues.jboss.org/browse/NETTY-379\n        // final Timer timer = new HashedWheelTimer(new NamedThreadFactory(\"NettyIdleTimer\", true));\n        bootstrap.setOption(\"child.tcpNoDelay\", true);\n        bootstrap.setOption(\"backlog\", getUrl().getPositiveParameter(BACKLOG_KEY, Constants.DEFAULT_BACKLOG));\n        bootstrap.setPipelineFactory(new ChannelPipelineFactory() {\n            @Override\n            public ChannelPipeline getPipeline() {\n                NettyCodecAdapter adapter = new NettyCodecAdapter(getCodec(), getUrl(), NettyServer.this);\n                ChannelPipeline pipeline = Channels.pipeline();\n                /*int idleTimeout = getIdleTimeout();\n                if (idleTimeout > 10000) {\n                    pipeline.addLast(\"timer\", new IdleStateHandler(timer, idleTimeout / 1000, 0, 0));\n                }*/\n                pipeline.addLast(\"decoder\", adapter.getDecoder());\n                pipeline.addLast(\"encoder\", adapter.getEncoder());\n                pipeline.addLast(\"handler\", nettyHandler);\n                return pipeline;\n            }\n        });\n        // bind\n        channel = bootstrap.bind(getBindAddress());\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "doOpen",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "doClose"
+                    },
+                    {
+                        "start_node": "doClose",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "NettyServer"
+                    },
+                    {
+                        "start_node": "NettyServer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "doOpen"
+                    }
+                ],
+                "similarity": 0.10070532331254392,
+                "end_line": 103,
+                "signature": "org.apache.dubbo.remoting.transport.netty.NettyServer.doOpen(): void"
+            },
+            {
+                "start_line": 116,
+                "file_path": "playground/apache__dubbo/dubbo-config/dubbo-config-api/src/main/java/org/apache/dubbo/config/metadata/ConfigurableMetadataServiceExporter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private ProtocolConfig generateMetadataProtocol() {\n        // protocol always defaults to dubbo if not specified and no related\n        String specifiedProtocol = getSpecifiedProtocol();\n        // port can not being determined here if not specified\n        Integer port = getSpecifiedPort();\n\n        ProtocolConfig protocolConfig = new ProtocolConfig();\n        protocolConfig.setName(specifiedProtocol);\n        if (port == null || port < -1) {\n            try {\n                if (logger.isInfoEnabled()) {\n                    logger.info(\"Metadata Service Port hasn't been set will use default protocol defined in protocols.\");\n                }\n\n                Protocol protocol = applicationModel.getExtensionLoader(Protocol.class).getExtension(specifiedProtocol);\n                if (protocol != null && protocol.getServers() != null) {\n                    Iterator<ProtocolServer> it = protocol.getServers().iterator();\n                    // metadata service may export before normal service export, it.hasNext() will return false.\n                    // so need use specified protocol port.\n                    if (it.hasNext()) {\n                        ProtocolServer server = it.next();\n                        String rawPort = server.getUrl().getParameter(BIND_PORT_KEY);\n                        if (rawPort == null) {\n                            String addr = server.getAddress();\n                            rawPort = addr.substring(addr.indexOf(\":\") + 1);\n                        }\n                        protocolConfig.setPort(Integer.parseInt(rawPort));\n                    } else {\n                        ProtocolConfig specifiedProtocolConfig = getProtocolConfig(specifiedProtocol);\n                        if (specifiedProtocolConfig != null) {\n                            Integer protocolPort = specifiedProtocolConfig.getPort();\n                            if (null != protocolPort && protocolPort != -1) {\n                                protocolConfig.setPort(protocolPort);\n                            }\n                        }\n                    }\n                }\n            } catch (Exception e) {\n                logger.error(CONFIG_FAILED_FIND_PROTOCOL, \"invalid specified \" + specifiedProtocol + \"  protocol\", \"\", \"Failed to find any valid protocol, will use random port to export metadata service.\", e);\n            }\n        } else {\n            protocolConfig.setPort(port);\n        }\n\n        applicationModel.getApplicationConfigManager().getProtocol(specifiedProtocol)\n            .ifPresent(protocolConfig::mergeProtocol);\n\n        if (protocolConfig.getPort() == null) {\n            protocolConfig.setPort(-1);\n        }\n\n        logger.info(\"Using \" + specifiedProtocol + \" protocol to export metadata service on port \" + protocolConfig.getPort());\n\n        return protocolConfig;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "generateMetadataProtocol",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "unexport"
+                    },
+                    {
+                        "start_node": "unexport",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ConfigurableMetadataServiceExporter"
+                    },
+                    {
+                        "start_node": "ConfigurableMetadataServiceExporter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "generateMetadataProtocol"
+                    }
+                ],
+                "similarity": 0.1005148663433754,
+                "end_line": 170,
+                "signature": "org.apache.dubbo.config.metadata.ConfigurableMetadataServiceExporter.generateMetadataProtocol(): ProtocolConfig"
+            },
+            {
+                "start_line": 387,
+                "file_path": "playground/apache__dubbo/dubbo-registry/dubbo-registry-api/src/main/java/org/apache/dubbo/registry/support/CacheableFailbackRegistry.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "        public void run() {\n            logger.info(\"Clearing cached URLs, waiting to clear size \" + waitForRemove.size());\n            int clearCount = 0;\n            try {\n                Iterator<Map.Entry<ServiceAddressURL, Long>> it = waitForRemove.entrySet().iterator();\n                while (it.hasNext()) {\n                    Map.Entry<ServiceAddressURL, Long> entry = it.next();\n                    ServiceAddressURL removeURL = entry.getKey();\n                    long removeTime = entry.getValue();\n                    long current = System.currentTimeMillis();\n                    if (current - removeTime >= cacheClearWaitingThresholdInMillis) {\n                        URLAddress urlAddress = removeURL.getUrlAddress();\n                        URLParam urlParam = removeURL.getUrlParam();\n                        if (current - urlAddress.getTimestamp() >= cacheClearWaitingThresholdInMillis) {\n                            stringAddress.remove(urlAddress.getRawAddress());\n                        }\n                        if (current - urlParam.getTimestamp() >= cacheClearWaitingThresholdInMillis) {\n                            stringParam.remove(urlParam.getRawParam());\n                        }\n                        it.remove();\n                        clearCount++;\n                    }\n                }\n            } catch (Throwable t) {\n                // 1-6 Error when clearing cached URLs.\n\n                logger.error(REGISTRY_FAILED_CLEAR_CACHED_URLS, \"\", \"\",\n                    \"Error occurred when clearing cached URLs\", t);\n\n            } finally {\n                semaphore.release();\n            }\n            logger.info(\"Clear cached URLs, size \" + clearCount);\n\n            if (CollectionUtils.isNotEmptyMap(waitForRemove)) {\n                // move to next schedule\n                if (semaphore.tryAcquire()) {\n                    cacheRemovalScheduler.schedule(new RemovalTask(), cacheRemovalTaskIntervalInMillis, TimeUnit.MILLISECONDS);\n                }\n            }\n        }",
+                "distance": 1.0,
+                "title": null,
+                "name": "run",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "run"
+                    }
+                ],
+                "similarity": 0.09809545837010282,
+                "end_line": 427,
+                "signature": "org.apache.dubbo.registry.support.CacheableFailbackRegistry.RemovalTask.run(): void"
+            },
+            {
+                "start_line": 74,
+                "file_path": "playground/apache__dubbo/dubbo-remoting/dubbo-remoting-zookeeper/src/main/java/org/apache/dubbo/remoting/zookeeper/curator/CuratorZookeeperClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public CuratorZookeeperClient(URL url) {\n        super(url);\n        try {\n            int timeout = url.getParameter(TIMEOUT_KEY, DEFAULT_CONNECTION_TIMEOUT_MS);\n            int sessionExpireMs = url.getParameter(SESSION_KEY, DEFAULT_SESSION_TIMEOUT_MS);\n            CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder()\n                .connectString(url.getBackupAddress())\n                .retryPolicy(new RetryNTimes(1, 1000))\n                .connectionTimeoutMs(timeout)\n                .sessionTimeoutMs(sessionExpireMs);\n            String userInformation = url.getUserInformation();\n            if (StringUtils.isNotEmpty(userInformation)) {\n                builder = builder.authorization(\"digest\", userInformation.getBytes());\n                builder.aclProvider(new ACLProvider() {\n                    @Override\n                    public List<ACL> getDefaultAcl() {\n                        return ZooDefs.Ids.CREATOR_ALL_ACL;\n                    }\n\n                    @Override\n                    public List<ACL> getAclForPath(String path) {\n                        return ZooDefs.Ids.CREATOR_ALL_ACL;\n                    }\n                });\n            }\n            client = builder.build();\n            client.getConnectionStateListenable().addListener(new CuratorConnectionStateListener(url));\n            client.start();\n\n            boolean connected = client.blockUntilConnected(timeout, TimeUnit.MILLISECONDS);\n            if (!connected) {\n                IllegalStateException illegalStateException = new IllegalStateException(\"zookeeper not connected, the address is: \" + url);\n\n                // 5-1 Failed to connect to configuration center.\n                logger.error(CONFIG_FAILED_CONNECT_REGISTRY, \"Zookeeper server offline\", \"\",\n                    \"Failed to connect with zookeeper\", illegalStateException);\n\n                throw illegalStateException;\n            }\n\n            CuratorWatcherImpl.closed = false;\n        } catch (Exception e) {\n            close();\n            throw new IllegalStateException(e.getMessage(), e);\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "CuratorZookeeperClient",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "doClose"
+                    },
+                    {
+                        "start_node": "doClose",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "CuratorZookeeperClient"
+                    },
+                    {
+                        "start_node": "CuratorZookeeperClient",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "CuratorZookeeperClient"
+                    }
+                ],
+                "similarity": 0.09799085059397983,
+                "end_line": 119,
+                "signature": "org.apache.dubbo.remoting.zookeeper.curator.CuratorZookeeperClient(URL url)"
+            },
+            {
+                "start_line": 127,
+                "file_path": "playground/apache__dubbo/dubbo-config/dubbo-config-spring/src/main/java/org/apache/dubbo/config/spring/context/DubboDeployApplicationListener.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private void onContextClosedEvent(ContextClosedEvent event) {\n        try {\n            Object value = moduleModel.getAttribute(ModelConstants.KEEP_RUNNING_ON_SPRING_CLOSED);\n            boolean keepRunningOnClosed = Boolean.parseBoolean(String.valueOf(value));\n            if (!keepRunningOnClosed && !moduleModel.isDestroyed()) {\n                moduleModel.destroy();\n            }\n        } catch (Exception e) {\n            logger.error(CONFIG_STOP_DUBBO_ERROR, \"\", \"\", \"Unexpected error occurred when stop dubbo module: \" + e.getMessage(), e);\n        }\n        // remove context bind cache\n        DubboSpringInitializer.remove(event.getApplicationContext());\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "onContextClosedEvent",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "onContextClosedEvent"
+                    }
+                ],
+                "similarity": 0.09693672709416057,
+                "end_line": 139,
+                "signature": "org.apache.dubbo.config.spring.context.DubboDeployApplicationListener.onContextClosedEvent(ContextClosedEvent event): void"
+            },
+            {
+                "start_line": 35,
+                "file_path": "playground/apache__dubbo/dubbo-demo/dubbo-demo-native/dubbo-demo-native-provider/src/main/java/org/apache/dubbo/demo/graalvm/provider/Application.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static void main(String[] args) throws Exception {\n        System.setProperty(\"dubbo.application.logger\", \"log4j\");\n        System.setProperty(\"native\", \"true\");\n        System.setProperty(\"dubbo.json-framework.prefer\", \"fastjson\");\n        if (isClassic(args)) {\n            startWithExport();\n        } else {\n            startWithBootstrap();\n        }\n        System.in.read();\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "main",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "main"
+                    }
+                ],
+                "similarity": 0.09654347763871919,
+                "end_line": 45,
+                "signature": "org.apache.dubbo.demo.graalvm.provider.Application.main(String[] args): void"
+            },
+            {
+                "start_line": 141,
+                "file_path": "playground/apache__dubbo/dubbo-registry/dubbo-registry-api/src/main/java/org/apache/dubbo/registry/integration/RegistryDirectory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void destroy() {\n        super.destroy();\n        if (moduleModel.getModelEnvironment().getConfiguration().convert(Boolean.class, org.apache.dubbo.registry.Constants.ENABLE_CONFIGURATION_LISTEN, true)) {\n            consumerConfigurationListener.removeNotifyListener(this);\n            if (referenceConfigurationListener != null) {\n                referenceConfigurationListener.stop();\n            }\n        }\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "destroy",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "destroy"
+                    }
+                ],
+                "similarity": 0.09653757942474908,
+                "end_line": 149,
+                "signature": "org.apache.dubbo.registry.integration.RegistryDirectory.destroy(): void"
+            },
+            {
+                "start_line": 89,
+                "file_path": "playground/apache__dubbo/dubbo-configcenter/dubbo-configcenter-zookeeper/src/main/java/org/apache/dubbo/configcenter/support/zookeeper/ZookeeperDynamicConfiguration.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void doClose() throws Exception {\n        // remove data listener\n        Map<String, ZookeeperDataListener> pathKeyListeners = cacheListener.getPathKeyListeners();\n        for (Map.Entry<String, ZookeeperDataListener> entry : pathKeyListeners.entrySet()) {\n            zkClient.removeDataListener(entry.getKey(), entry.getValue());\n        }\n        cacheListener.clear();\n\n        // zkClient is shared in framework, should not close it here\n        // zkClient.close();\n        // See: org.apache.dubbo.remoting.zookeeper.AbstractZookeeperTransporter#destroy()\n        // All zk clients is created and destroyed in ZookeeperTransporter.\n        zkClient = null;\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "doClose",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "doClose"
+                    }
+                ],
+                "similarity": 0.09641303808566344,
+                "end_line": 102,
+                "signature": "org.apache.dubbo.configcenter.support.zookeeper.ZookeeperDynamicConfiguration.doClose(): void"
+            },
+            {
+                "start_line": 96,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/rpc/model/ModuleModel.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void onDestroy() {\n        synchronized (instLock) {\n            // 1. remove from applicationModel\n            applicationModel.removeModule(this);\n\n            // 2. set stopping\n            if (deployer != null) {\n                deployer.preDestroy();\n            }\n\n            // 3. release services\n            if (deployer != null) {\n                deployer.postDestroy();\n            }\n\n            // destroy other resources\n            notifyDestroy();\n\n            if (serviceRepository != null) {\n                serviceRepository.destroy();\n                serviceRepository = null;\n            }\n\n            if (moduleEnvironment != null) {\n                moduleEnvironment.destroy();\n                moduleEnvironment = null;\n            }\n\n            if (moduleConfigManager != null) {\n                moduleConfigManager.destroy();\n                moduleConfigManager = null;\n            }\n\n            // destroy application if none pub module\n            applicationModel.tryDestroy();\n        }\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "onDestroy",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "onDestroy"
+                    }
+                ],
+                "similarity": 0.09610529657740234,
+                "end_line": 132,
+                "signature": "org.apache.dubbo.rpc.model.ModuleModel.onDestroy(): void"
+            },
+            {
+                "start_line": 157,
+                "file_path": "playground/apache__dubbo/dubbo-config/dubbo-config-spring/src/main/java/org/apache/dubbo/config/spring/context/DubboBootstrapApplicationListener.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private void checkCallStackAndInit() {\n        // check call stack whether contains org.springframework.context.support.AbstractApplicationContext.registerListeners()\n        Exception exception = new Exception();\n        StackTraceElement[] stackTrace = exception.getStackTrace();\n        boolean found = false;\n        for (StackTraceElement frame : stackTrace) {\n            if (frame.getMethodName().equals(\"registerListeners\") && frame.getClassName().endsWith(\"AbstractApplicationContext\")) {\n                found = true;\n                break;\n            }\n        }\n        if (found) {\n            // init config beans here, compatible with spring 3.x/4.1.x\n            initDubboConfigBeans();\n        } else {\n            logger.warn(CONFIG_DUBBO_BEAN_INITIALIZER, \"\", \"\", \"DubboBootstrapApplicationListener initialization is unexpected, \" +\n                \"it should be created in AbstractApplicationContext.registerListeners() method\", exception);\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "checkCallStackAndInit",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "onApplicationEvent"
+                    },
+                    {
+                        "start_node": "onApplicationEvent",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "DubboBootstrapApplicationListener"
+                    },
+                    {
+                        "start_node": "DubboBootstrapApplicationListener",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "checkCallStackAndInit"
+                    }
+                ],
+                "similarity": 0.09590934324520056,
+                "end_line": 175,
+                "signature": "org.apache.dubbo.config.spring.context.DubboBootstrapApplicationListener.checkCallStackAndInit(): void"
+            },
+            {
+                "start_line": 43,
+                "file_path": "playground/apache__dubbo/dubbo-demo/dubbo-demo-api/dubbo-demo-api-provider/src/main/java/org/apache/dubbo/demo/provider/Application.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static void startWithBootstrap() {\n        ServiceConfig<DemoServiceImpl> service = new ServiceConfig<>();\n        service.setInterface(DemoService.class);\n        service.setRef(new DemoServiceImpl());\n\n        DubboBootstrap bootstrap = DubboBootstrap.getInstance();\n        bootstrap.application(new ApplicationConfig(\"dubbo-demo-api-provider\"))\n            .registry(new RegistryConfig(\"zookeeper://127.0.0.1:2181\"))\n            .protocol(new ProtocolConfig(CommonConstants.DUBBO, -1))\n            .service(service)\n            .start()\n            .await();\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "startWithBootstrap",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "main"
+                    },
+                    {
+                        "start_node": "main",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Application"
+                    },
+                    {
+                        "start_node": "Application",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "startWithBootstrap"
+                    }
+                ],
+                "similarity": 0.09588033704860287,
+                "end_line": 55,
+                "signature": "org.apache.dubbo.demo.provider.Application.startWithBootstrap(): void"
+            },
+            {
+                "start_line": 448,
+                "file_path": "playground/apache__dubbo/dubbo-config/dubbo-config-api/src/main/java/org/apache/dubbo/config/ServiceConfig.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private Map<String, String> buildAttributes(ProtocolConfig protocolConfig) {\n\n        Map<String, String> map = new HashMap<String, String>();\n        map.put(SIDE_KEY, PROVIDER_SIDE);\n\n        // append params with basic configs,\n        ServiceConfig.appendRuntimeParameters(map);\n        AbstractConfig.appendParameters(map, getApplication());\n        AbstractConfig.appendParameters(map, getModule());\n        // remove 'default.' prefix for configs from ProviderConfig\n        // appendParameters(map, provider, Constants.DEFAULT_KEY);\n        AbstractConfig.appendParameters(map, provider);\n        AbstractConfig.appendParameters(map, protocolConfig);\n        AbstractConfig.appendParameters(map, this);\n        appendMetricsCompatible(map);\n\n        // append params with method configs,\n        if (CollectionUtils.isNotEmpty(getMethods())) {\n            getMethods().forEach(method -> appendParametersWithMethod(method, map));\n        }\n\n        if (isGeneric(generic)) {\n            map.put(GENERIC_KEY, generic);\n            map.put(METHODS_KEY, ANY_VALUE);\n        } else {\n            String revision = Version.getVersion(interfaceClass, version);\n            if (StringUtils.isNotEmpty(revision)) {\n                map.put(REVISION_KEY, revision);\n            }\n\n            String[] methods = methods(interfaceClass);\n            if (methods.length == 0) {\n                logger.warn(CONFIG_NO_METHOD_FOUND, \"\", \"\", \"No method found in service interface: \" + interfaceClass.getName());\n                map.put(METHODS_KEY, ANY_VALUE);\n            } else {\n                List<String> copyOfMethods = new ArrayList<>(Arrays.asList(methods));\n                copyOfMethods.sort(Comparator.naturalOrder());\n                map.put(METHODS_KEY, String.join(COMMA_SEPARATOR, copyOfMethods));\n            }\n        }\n\n        /**\n         * Here the token value configured by the provider is used to assign the value to ServiceConfig#token\n         */\n        if (ConfigUtils.isEmpty(token) && provider != null) {\n            token = provider.getToken();\n        }\n\n        if (!ConfigUtils.isEmpty(token)) {\n            if (ConfigUtils.isDefault(token)) {\n                map.put(TOKEN_KEY, UUID.randomUUID().toString());\n            } else {\n                map.put(TOKEN_KEY, token);\n            }\n        }\n\n        if (ref instanceof ServerService) {\n            map.put(PROXY_KEY, CommonConstants.NATIVE_STUB);\n        }\n\n        return map;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "buildAttributes",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "unexport"
+                    },
+                    {
+                        "start_node": "unexport",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "ServiceConfig"
+                    },
+                    {
+                        "start_node": "ServiceConfig",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "buildAttributes"
+                    }
+                ],
+                "similarity": 0.09563613542513746,
+                "end_line": 509,
+                "signature": "org.apache.dubbo.config.ServiceConfig.buildAttributes(ProtocolConfig protocolConfig): Map"
+            },
+            {
+                "start_line": 77,
+                "file_path": "playground/apache__dubbo/dubbo-demo/dubbo-demo-native/dubbo-demo-native-provider/src/main/java/org/apache/dubbo/demo/graalvm/provider/Application.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static void startWithExport() throws InterruptedException {\n        ApplicationConfig applicationConfig = new ApplicationConfig(\"dubbo-demo-api-provider\");\n        applicationConfig.setQosEnable(false);\n        applicationConfig.setCompiler(\"jdk\");\n\n        Map<String, String> m = new HashMap<>(1);\n        m.put(\"proxy\", \"jdk\");\n        applicationConfig.setParameters(m);\n\n        ModuleModel moduleModel = applicationConfig.getApplicationModel().newModule();\n\n\n        ServiceConfig<DemoService> service = new ServiceConfig<>(moduleModel);\n        service.setInterface(DemoService.class);\n        service.setRef(new DemoServiceImpl());\n\n        service.setApplication(applicationConfig);\n        service.setRegistry(new RegistryConfig(\"zookeeper://127.0.0.1:2181\"));\n        service.export();\n\n        System.out.println(\"dubbo service started\");\n        new CountDownLatch(1).await();\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "startWithExport",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "main"
+                    },
+                    {
+                        "start_node": "main",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Application"
+                    },
+                    {
+                        "start_node": "Application",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "startWithExport"
+                    }
+                ],
+                "similarity": 0.09490866169123638,
+                "end_line": 99,
+                "signature": "org.apache.dubbo.demo.graalvm.provider.Application.startWithExport(): void"
+            },
+            {
+                "start_line": 364,
+                "file_path": "playground/apache__dubbo/dubbo-registry/dubbo-registry-api/src/main/java/org/apache/dubbo/registry/integration/RegistryDirectory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private Map<URL, Invoker<T>> toInvokers(Map<URL, Invoker<T>> oldUrlInvokerMap, List<URL> urls) {\n        Map<URL, Invoker<T>> newUrlInvokerMap = new ConcurrentHashMap<>(urls == null ? 1 : (int) (urls.size() / 0.75f + 1));\n        if (urls == null || urls.isEmpty()) {\n            return newUrlInvokerMap;\n        }\n        String queryProtocols = this.queryMap.get(PROTOCOL_KEY);\n        for (URL providerUrl : urls) {\n            if (!checkProtocolValid(queryProtocols, providerUrl)) {\n                continue;\n            }\n\n            URL url = mergeUrl(providerUrl);\n\n            // Cache key is url that does not merge with consumer side parameters,\n            // regardless of how the consumer combines parameters,\n            // if the server url changes, then refer again\n            Invoker<T> invoker = oldUrlInvokerMap == null ? null : oldUrlInvokerMap.remove(url);\n            if (invoker == null) { // Not in the cache, refer again\n                try {\n                    boolean enabled = true;\n                    if (url.hasParameter(DISABLED_KEY)) {\n                        enabled = !url.getParameter(DISABLED_KEY, false);\n                    } else {\n                        enabled = url.getParameter(ENABLED_KEY, true);\n                    }\n                    if (enabled) {\n                        invoker = protocol.refer(serviceType, url);\n                    }\n                } catch (Throwable t) {\n\n                    // Thrown by AbstractProtocol.optimizeSerialization()\n                    if (t instanceof RpcException && t.getMessage().contains(\"serialization optimizer\")) {\n                        // 4-2 - serialization optimizer class initialization failed.\n                        logger.error(PROTOCOL_FAILED_INIT_SERIALIZATION_OPTIMIZER, \"typo in optimizer class\", \"\",\n                            \"Failed to refer invoker for interface:\" + serviceType + \",url:(\" + url + \")\" + t.getMessage(), t);\n\n                    } else {\n                        // 4-3 - Failed to refer invoker by other reason.\n                        logger.error(PROTOCOL_FAILED_REFER_INVOKER, \"\", \"\",\n                            \"Failed to refer invoker for interface:\" + serviceType + \",url:(\" + url + \")\" + t.getMessage(), t);\n                    }\n                }\n                if (invoker != null) { // Put new invoker in cache\n                    newUrlInvokerMap.put(url, invoker);\n                }\n            } else {\n                newUrlInvokerMap.put(url, invoker);\n            }\n        }\n        return newUrlInvokerMap;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "toInvokers",
+                "documentation": "/**\n     * Turn urls into invokers, and if url has been referred, will not re-reference.\n     * the items that will be put into newUrlInvokeMap will be removed from oldUrlInvokerMap.\n     *\n     * @param oldUrlInvokerMap it might be modified during the process.\n     * @param urls\n     * @return invokers\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "destroy"
+                    },
+                    {
+                        "start_node": "destroy",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "RegistryDirectory"
+                    },
+                    {
+                        "start_node": "RegistryDirectory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "toInvokers"
+                    }
+                ],
+                "similarity": 0.09443980829401526,
+                "end_line": 414,
+                "signature": "org.apache.dubbo.registry.integration.RegistryDirectory.toInvokers(Map oldUrlInvokerMap, List urls): Map"
+            },
+            {
+                "start_line": 70,
+                "file_path": "playground/apache__dubbo/dubbo-remoting/dubbo-remoting-zookeeper-curator5/src/main/java/org/apache/dubbo/remoting/zookeeper/curator5/Curator5ZookeeperClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Curator5ZookeeperClient(URL url) {\n        super(url);\n        try {\n            int timeout = url.getParameter(TIMEOUT_KEY, DEFAULT_CONNECTION_TIMEOUT_MS);\n            int sessionExpireMs = url.getParameter(SESSION_KEY, DEFAULT_SESSION_TIMEOUT_MS);\n            CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder()\n                .connectString(url.getBackupAddress())\n                .retryPolicy(new RetryNTimes(1, 1000))\n                .connectionTimeoutMs(timeout)\n                .sessionTimeoutMs(sessionExpireMs);\n            String userInformation = url.getUserInformation();\n            if (userInformation != null && userInformation.length() > 0) {\n                builder = builder.authorization(\"digest\", userInformation.getBytes());\n                builder.aclProvider(new ACLProvider() {\n                    @Override\n                    public List<ACL> getDefaultAcl() {\n                        return ZooDefs.Ids.CREATOR_ALL_ACL;\n                    }\n\n                    @Override\n                    public List<ACL> getAclForPath(String path) {\n                        return ZooDefs.Ids.CREATOR_ALL_ACL;\n                    }\n                });\n            }\n            client = builder.build();\n            client.getConnectionStateListenable().addListener(new CuratorConnectionStateListener(url));\n            client.start();\n            boolean connected = client.blockUntilConnected(timeout, TimeUnit.MILLISECONDS);\n\n            if (!connected) {\n                IllegalStateException illegalStateException = new IllegalStateException(\"zookeeper not connected, the address is: \" + url);\n\n                // 5-1 Failed to connect to configuration center.\n                logger.error(CONFIG_FAILED_CONNECT_REGISTRY, \"Zookeeper server offline\", \"\",\n                    \"Failed to connect with zookeeper\", illegalStateException);\n\n                throw illegalStateException;\n            }\n\n        } catch (Exception e) {\n            throw new IllegalStateException(e.getMessage(), e);\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "Curator5ZookeeperClient",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "doClose"
+                    },
+                    {
+                        "start_node": "doClose",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Curator5ZookeeperClient"
+                    },
+                    {
+                        "start_node": "Curator5ZookeeperClient",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "Curator5ZookeeperClient"
+                    }
+                ],
+                "similarity": 0.09443205845536878,
+                "end_line": 113,
+                "signature": "org.apache.dubbo.remoting.zookeeper.curator5.Curator5ZookeeperClient(URL url)"
+            },
+            {
+                "start_line": 518,
+                "file_path": "playground/apache__dubbo/dubbo-config/dubbo-config-api/src/main/java/org/apache/dubbo/config/deploy/DefaultApplicationDeployer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private String getRegistryCompatibleAddress(RegistryConfig registryConfig) {\n        String registryAddress = registryConfig.getAddress();\n        String[] addresses = REGISTRY_SPLIT_PATTERN.split(registryAddress);\n        if (ArrayUtils.isEmpty(addresses)) {\n            throw new IllegalStateException(\"Invalid registry address found.\");\n        }\n        String address = addresses[0];\n        // since 2.7.8\n        // Issue : https://github.com/apache/dubbo/issues/6476\n        StringBuilder metadataAddressBuilder = new StringBuilder();\n        URL url = URL.valueOf(address, registryConfig.getScopeModel());\n        String protocolFromAddress = url.getProtocol();\n        if (isEmpty(protocolFromAddress)) {\n            // If the protocol from address is missing, is like :\n            // \"dubbo.registry.address = 127.0.0.1:2181\"\n            String protocolFromConfig = registryConfig.getProtocol();\n            metadataAddressBuilder.append(protocolFromConfig).append(\"://\");\n        }\n        metadataAddressBuilder.append(address);\n        return metadataAddressBuilder.toString();\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getRegistryCompatibleAddress",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "postDestroy"
+                    },
+                    {
+                        "start_node": "postDestroy",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DefaultApplicationDeployer"
+                    },
+                    {
+                        "start_node": "DefaultApplicationDeployer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getRegistryCompatibleAddress"
+                    }
+                ],
+                "similarity": 0.09439001519061918,
+                "end_line": 538,
+                "signature": "org.apache.dubbo.config.deploy.DefaultApplicationDeployer.getRegistryCompatibleAddress(RegistryConfig registryConfig): String"
+            },
+            {
+                "start_line": 663,
+                "file_path": "playground/apache__dubbo/dubbo-config/dubbo-config-api/src/main/java/org/apache/dubbo/config/ServiceConfig.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private URL exportRemote(URL url, List<URL> registryURLs) {\n        if (CollectionUtils.isNotEmpty(registryURLs)) {\n            for (URL registryURL : registryURLs) {\n                if (SERVICE_REGISTRY_PROTOCOL.equals(registryURL.getProtocol())) {\n                    url = url.addParameterIfAbsent(SERVICE_NAME_MAPPING_KEY, \"true\");\n                }\n\n                //if protocol is only injvm ,not register\n                if (LOCAL_PROTOCOL.equalsIgnoreCase(url.getProtocol())) {\n                    continue;\n                }\n\n                url = url.addParameterIfAbsent(DYNAMIC_KEY, registryURL.getParameter(DYNAMIC_KEY));\n                URL monitorUrl = ConfigValidationUtils.loadMonitor(this, registryURL);\n                if (monitorUrl != null) {\n                    url = url.putAttribute(MONITOR_KEY, monitorUrl);\n                }\n\n                // For providers, this is used to enable custom proxy to generate invoker\n                String proxy = url.getParameter(PROXY_KEY);\n                if (StringUtils.isNotEmpty(proxy)) {\n                    registryURL = registryURL.addParameter(PROXY_KEY, proxy);\n                }\n\n                if (logger.isInfoEnabled()) {\n                    if (url.getParameter(REGISTER_KEY, true)) {\n                        logger.info(\"Register dubbo service \" + interfaceClass.getName() + \" url \" + url + \" to registry \" + registryURL.getAddress());\n                    } else {\n                        logger.info(\"Export dubbo service \" + interfaceClass.getName() + \" to url \" + url);\n                    }\n                }\n\n                doExportUrl(registryURL.putAttribute(EXPORT_KEY, url), true);\n            }\n\n        } else {\n\n            if (logger.isInfoEnabled()) {\n                logger.info(\"Export dubbo service \" + interfaceClass.getName() + \" to url \" + url);\n            }\n\n            doExportUrl(url, true);\n        }\n\n\n        return url;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "exportRemote",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "unexport"
+                    },
+                    {
+                        "start_node": "unexport",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "ServiceConfig"
+                    },
+                    {
+                        "start_node": "ServiceConfig",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "exportRemote"
+                    }
+                ],
+                "similarity": 0.09377626240382363,
+                "end_line": 709,
+                "signature": "org.apache.dubbo.config.ServiceConfig.exportRemote(URL url, List registryURLs): URL"
+            },
+            {
+                "start_line": 759,
+                "file_path": "playground/apache__dubbo/dubbo-config/dubbo-config-api/src/main/java/org/apache/dubbo/config/deploy/DefaultApplicationDeployer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private void registerServiceInstance() {\n        try {\n            registered = true;\n            ServiceInstanceMetadataUtils.registerMetadataAndInstance(applicationModel);\n        } catch (Exception e) {\n            logger.error(CONFIG_REGISTER_INSTANCE_ERROR, \"configuration server disconnected\", \"\", \"Register instance error.\", e);\n        }\n        if (registered) {\n            // scheduled task for updating Metadata and ServiceInstance\n            asyncMetadataFuture = frameworkExecutorRepository.getSharedScheduledExecutor().scheduleWithFixedDelay(() -> {\n\n                // ignore refresh metadata on stopping\n                if (applicationModel.isDestroyed()) {\n                    return;\n                }\n                try {\n                    if (!applicationModel.isDestroyed() && registered) {\n                        ServiceInstanceMetadataUtils.refreshMetadataAndInstance(applicationModel);\n                    }\n                } catch (Exception e) {\n                    if (!applicationModel.isDestroyed()) {\n                        logger.error(CONFIG_REFRESH_INSTANCE_ERROR, \"\", \"\", \"Refresh instance and metadata error.\", e);\n                    }\n                }\n            }, 0, ConfigurationUtils.get(applicationModel, METADATA_PUBLISH_DELAY_KEY, DEFAULT_METADATA_PUBLISH_DELAY), TimeUnit.MILLISECONDS);\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "registerServiceInstance",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "postDestroy"
+                    },
+                    {
+                        "start_node": "postDestroy",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DefaultApplicationDeployer"
+                    },
+                    {
+                        "start_node": "DefaultApplicationDeployer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "registerServiceInstance"
+                    }
+                ],
+                "similarity": 0.09339516317399822,
+                "end_line": 785,
+                "signature": "org.apache.dubbo.config.deploy.DefaultApplicationDeployer.registerServiceInstance(): void"
+            },
+            {
+                "start_line": 122,
+                "file_path": "playground/apache__dubbo/dubbo-config/dubbo-config-spring/src/main/java/org/apache/dubbo/config/spring/context/DubboBootstrapApplicationListener.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private void onContextClosedEvent(ContextClosedEvent event) {\n        if (bootstrap.getTakeoverMode() == BootstrapTakeoverMode.SPRING) {\n            // will call dubboBootstrap.stop() through shutdown callback.\n            //bootstrap.getApplicationModel().getBeanFactory().getBean(DubboShutdownHook.class).run();\n            moduleModel.getDeployer().stop();\n        }\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "onContextClosedEvent",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "onContextClosedEvent"
+                    }
+                ],
+                "similarity": 0.09282125142262528,
+                "end_line": 128,
+                "signature": "org.apache.dubbo.config.spring.context.DubboBootstrapApplicationListener.onContextClosedEvent(ContextClosedEvent event): void"
+            },
+            {
+                "start_line": 92,
+                "file_path": "playground/apache__dubbo/dubbo-config/dubbo-config-spring/src/main/java/org/apache/dubbo/config/spring/context/DubboBootstrapApplicationListener.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private void initDubboConfigBeans() {\n        // load DubboConfigBeanInitializer to init config beans\n        if (applicationContext.containsBean(DubboConfigBeanInitializer.BEAN_NAME)) {\n            applicationContext.getBean(DubboConfigBeanInitializer.BEAN_NAME, DubboConfigBeanInitializer.class);\n        } else {\n            logger.warn(CONFIG_DUBBO_BEAN_NOT_FOUND, \"\", \"\", \"Bean '\" + DubboConfigBeanInitializer.BEAN_NAME + \"' was not found\");\n        }\n\n        // All infrastructure config beans are loaded, initialize dubbo here\n        moduleModel.getDeployer().initialize();\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "initDubboConfigBeans",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "onApplicationEvent"
+                    },
+                    {
+                        "start_node": "onApplicationEvent",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "DubboBootstrapApplicationListener"
+                    },
+                    {
+                        "start_node": "DubboBootstrapApplicationListener",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "initDubboConfigBeans"
+                    }
+                ],
+                "similarity": 0.09280162750506339,
+                "end_line": 102,
+                "signature": "org.apache.dubbo.config.spring.context.DubboBootstrapApplicationListener.initDubboConfigBeans(): void"
+            },
+            {
+                "start_line": 48,
+                "file_path": "playground/apache__dubbo/dubbo-demo/dubbo-demo-native/dubbo-demo-native-consumer/src/main/java/com/apache/dubbo/demo/graalvm/consumer/Application.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static void runWithBootstrap() {\n        DubboBootstrap bootstrap = DubboBootstrap.getInstance();\n\n        ApplicationConfig applicationConfig = new ApplicationConfig(\"dubbo-demo-api-consumer\");\n        applicationConfig.setQosEnable(false);\n        applicationConfig.setCompiler(\"jdk\");\n        Map<String, String> m = new HashMap<>(1);\n        m.put(\"proxy\", \"jdk\");\n        applicationConfig.setParameters(m);\n\n        ReferenceConfig<DemoService> reference = new ReferenceConfig<>();\n        reference.setInterface(DemoService.class);\n        reference.setGeneric(\"false\");\n\n        ProtocolConfig protocolConfig = new ProtocolConfig(CommonConstants.DUBBO, -1);\n        protocolConfig.setSerialization(\"fastjson2\");\n        bootstrap.application(applicationConfig)\n            .registry(new RegistryConfig(\"zookeeper://127.0.0.1:2181\"))\n            .protocol(protocolConfig)\n            .reference(reference)\n            .start();\n\n        DemoService demoService = bootstrap.getCache().get(reference);\n        String message = demoService.sayHello(\"Native\");\n        System.out.println(message);\n    }",
+                "distance": 2.0,
+                "title": null,
+                "name": "runWithBootstrap",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "main"
+                    },
+                    {
+                        "start_node": "main",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "runWithBootstrap"
+                    }
+                ],
+                "similarity": 0.09215161803231095,
+                "end_line": 73,
+                "signature": "com.apache.dubbo.demo.graalvm.consumer.Application.runWithBootstrap(): void"
+            },
+            {
+                "start_line": 345,
+                "file_path": "playground/apache__dubbo/dubbo-config/dubbo-config-api/src/main/java/org/apache/dubbo/config/deploy/DefaultApplicationDeployer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private ConfigCenterConfig registryAsConfigCenter(RegistryConfig registryConfig) {\n        String protocol = registryConfig.getProtocol();\n        Integer port = registryConfig.getPort();\n        URL url = URL.valueOf(registryConfig.getAddress(), registryConfig.getScopeModel());\n        String id = \"config-center-\" + protocol + \"-\" + url.getHost() + \"-\" + port;\n        ConfigCenterConfig cc = new ConfigCenterConfig();\n        cc.setId(id);\n        cc.setScopeModel(applicationModel);\n        if (cc.getParameters() == null) {\n            cc.setParameters(new HashMap<>());\n        }\n        if (CollectionUtils.isNotEmptyMap(registryConfig.getParameters())) {\n            cc.getParameters().putAll(registryConfig.getParameters()); // copy the parameters\n        }\n        cc.getParameters().put(CLIENT_KEY, registryConfig.getClient());\n        cc.setProtocol(protocol);\n        cc.setPort(port);\n        if (StringUtils.isNotEmpty(registryConfig.getGroup())) {\n            cc.setGroup(registryConfig.getGroup());\n        }\n        cc.setAddress(getRegistryCompatibleAddress(registryConfig));\n        cc.setNamespace(registryConfig.getGroup());\n        cc.setUsername(registryConfig.getUsername());\n        cc.setPassword(registryConfig.getPassword());\n        if (registryConfig.getTimeout() != null) {\n            cc.setTimeout(registryConfig.getTimeout().longValue());\n        }\n        cc.setHighestPriority(false);\n        return cc;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "registryAsConfigCenter",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "postDestroy"
+                    },
+                    {
+                        "start_node": "postDestroy",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DefaultApplicationDeployer"
+                    },
+                    {
+                        "start_node": "DefaultApplicationDeployer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "registryAsConfigCenter"
+                    }
+                ],
+                "similarity": 0.09215059670356161,
+                "end_line": 374,
+                "signature": "org.apache.dubbo.config.deploy.DefaultApplicationDeployer.registryAsConfigCenter(RegistryConfig registryConfig): ConfigCenterConfig"
+            }
+        ],
+        "classes": [],
+        "issues": [
+            {
+                "content": "### Environment\r\n\r\n* Dubbo version: 3.1.6\r\n* Operating System version: MacOS 13.2.1\r\n* Java version: 1.8.0_362\r\n\r\n### Steps to reproduce this issue\r\n\r\n1. provider\u548cconsumer\u5728\u540c\u4e00\u4e2a\u5e94\u7528\u4e2d\r\n2. application\u914d\u7f6e`dubbo.registry.address = nacos://${spring.cloud.nacos.server-addr}?username=${spring.cloud.nacos.username}&password=${spring.cloud.nacos.password}&namespace=${spring.cloud.nacos.discovery.namespace}`\r\n3. \u5b9e\u9645\u53c2\u6570spring.cloud.nacos.server-addr=10.20.0.100:8848, spring.cloud.nacos.username='', spring.cloud.nacos.password='', spring.cloud.nacos.discovery.namespace=''\r\n4. \u8fd0\u884c\u65f6`dubbo.registry.address`\u89e3\u6790\u4e3a `nacos://10.20.0.100:8848?username=&password=&namespace=`\r\n5. dubbo\u4f1a\u5c06\u6b64url\u53c2\u6570\u89e3\u6790\u4e3ausername=username, password=password, namespace=namespace\r\n\r\n### Expected Behavior\r\n\r\n`dubbo.registry.address`\u7684\u503c`nacos://10.20.0.100:8848?username=&password=&namespace=`\u4e0d\u5e94\u8be5\u5c06\u53c2\u6570\u89e3\u6790\u4e3ausername=username, password=password, namespace=namespace\r\n\r\n\u5e76\u4e14\u80fd\u6b63\u5e38\u542f\u52a8\r\n\r\n### Actual Behavior\r\n\r\nDubbo service register failed, then application exit.\r\n\r\n![image](https://user-images.githubusercontent.com/34986990/223649301-8f42f324-73e6-4ac0-9167-8c7cf32bc195.png)\r\n\r\n```\r\n2023-03-05 22:08:05.702 ERROR 1 --- [com.alibaba.nacos.client.naming.security] n.c.auth.impl.process.HttpLoginProcessor:78 : login failed: {\"code\":403,\"message\":\"unknown user!\",\"header\":{\"header\":{\"Accept-Charset\":\"UTF-8\",\"Connection\":\"keep-alive\",\"Content-Length\":\"13\",\"Content-Security-Policy\":\"script-src 'self'\",\"Content-Type\":\"text/html;charset=UTF-8\",\"Date\":\"Sun, 05 Mar 2023 14:08:05 GMT\",\"Keep-Alive\":\"timeout=60\",\"Vary\":\"Access-Control-Request-Headers\"},\"originalResponseHeader\":{\"Connection\":[\"keep-alive\"],\"Content-Length\":[\"13\"],\"Content-Security-Policy\":[\"script-src 'self'\"],\"Content-Type\":[\"text/html;charset=UTF-8\"],\"Date\":[\"Sun, 05 Mar 2023 14:08:05 GMT\"],\"Keep-Alive\":[\"timeout=60\"],\"Vary\":[\"Access-Control-Request-Headers\",\"Access-Control-Request-Method\",\"Origin\"]},\"charset\":\"UTF-8\"}}\r\n2023-03-05 22:08:07.102  WARN 1 --- [main] .d.registry.integration.RegistryProtocol:? :  [DUBBO] null, dubbo version: 3.1.6, current host: 172.17.0.1, error code: 99-0. This may be caused by unknown error in registry module, go to https://dubbo.apache.org/faq/99/0 to find instructions.\r\n\r\njava.lang.NullPointerException: null\r\n        at org.apache.dubbo.registry.integration.RegistryProtocol$ExporterChangeableWrapper.unexport(RegistryProtocol.java:912)\r\n        at org.apache.dubbo.registry.integration.RegistryProtocol$DestroyableExporter.unexport(RegistryProtocol.java:694)\r\n        at org.apache.dubbo.config.ServiceConfig.unexport(ServiceConfig.java:192)\r\n        at org.apache.dubbo.config.deploy.DefaultModuleDeployer.postDestroy(DefaultModuleDeployer.java:241)\r\n        at org.apache.dubbo.rpc.model.ModuleModel.onDestroy(ModuleModel.java:108)\r\n        at org.apache.dubbo.rpc.model.ScopeModel.destroy(ScopeModel.java:115)\r\n        at org.apache.dubbo.rpc.model.ApplicationModel.onDestroy(ApplicationModel.java:260)\r\n        at org.apache.dubbo.rpc.model.ScopeModel.destroy(ScopeModel.java:115)\r\n        at org.apache.dubbo.rpc.model.ApplicationModel.tryDestroy(ApplicationModel.java:358)\r\n        at org.apache.dubbo.rpc.model.ModuleModel.onDestroy(ModuleModel.java:130)\r\n        at org.apache.dubbo.rpc.model.ScopeModel.destroy(ScopeModel.java:115)\r\n        at org.apache.dubbo.config.spring.context.DubboDeployApplicationListener.onContextClosedEvent(DubboDeployApplicationListener.java:132)\r\n        at org.apache.dubbo.config.spring.context.DubboDeployApplicationListener.onApplicationEvent(DubboDeployApplicationListener.java:104)\r\n        at org.apache.dubbo.config.spring.context.DubboDeployApplicationListener.onApplicationEvent(DubboDeployApplicationListener.java:47)\r\n        at org.springframework.context.event.SimpleApplicationEventMulticaster.doInvokeListener(SimpleApplicationEventMulticaster.java:176)\r\n        at org.springframework.context.event.SimpleApplicationEventMulticaster.invokeListener(SimpleApplicationEventMulticaster.java:169)\r\n        at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:143)\r\n        at org.springframework.context.support.AbstractApplicationContext.publishEvent(AbstractApplicationContext.java:421)\r\n        at org.springframework.context.support.AbstractApplicationContext.publishEvent(AbstractApplicationContext.java:378)\r\n        at org.springframework.context.support.AbstractApplicationContext.doClose(AbstractApplicationContext.java:1058)\r\n        at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.doClose(ServletWebServerApplicationContext.java:174)\r\n        at org.springframework.context.support.AbstractApplicationContext.close(AbstractApplicationContext.java:1021)\r\n        at org.springframework.boot.SpringApplication.handleRunFailure(SpringApplication.java:787)\r\n        at org.springframework.boot.SpringApplication.run(SpringApplication.java:325)\r\n        at org.springframework.boot.builder.SpringApplicationBuilder.run(SpringApplicationBuilder.java:164)\r\n        at com.bwai.callcenter.CallCenterApplication.main(CallCenterApplication.java:39)\r\n        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\r\n        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\r\n        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\r\n        at java.lang.reflect.Method.invoke(Method.java:498)\r\n        at org.springframework.boot.loader.MainMethodRunner.run(MainMethodRunner.java:49)\r\n        at org.springframework.boot.loader.Launcher.launch(Launcher.java:108)\r\n        at org.springframework.boot.loader.Launcher.launch(Launcher.java:58)\r\n        at org.springframework.boot.loader.JarLauncher.main(JarLauncher.java:65)\r\n```\r\n\n",
+                "distance": 0,
+                "title": "Dubbo service auth failed",
+                "name": "root",
+                "path": [],
+                "issue_id": "root",
+                "similarity": 2.0,
+                "type": "issue"
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "11767",
+                "type": "issue",
+                "content": "### Environment\r\n\r\n* Dubbo version: 3.1.6\r\n* Operating System version: MacOS 13.2.1\r\n* Java version: 1.8.0_362\r\n\r\n### Steps to reproduce this issue\r\n\r\n1. provider\u548cconsumer\u5728\u540c\u4e00\u4e2a\u5e94\u7528\u4e2d\r\n2. application\u914d\u7f6e`dubbo.registry.address = nacos://${spring.cloud.nacos.server-addr}?username=${spring.cloud.nacos.username}&password=${spring.cloud.nacos.password}&namespace=${spring.cloud.nacos.discovery.namespace}`\r\n3. \u5b9e\u9645\u53c2\u6570spring.cloud.nacos.server-addr=10.20.0.100:8848, spring.cloud.nacos.username='', spring.cloud.nacos.password='', spring.cloud.nacos.discovery.namespace=''\r\n4. \u8fd0\u884c\u65f6`dubbo.registry.address`\u89e3\u6790\u4e3a `nacos://10.20.0.100:8848?username=&password=&namespace=`\r\n5. dubbo\u4f1a\u5c06\u6b64url\u53c2\u6570\u89e3\u6790\u4e3ausername=username, password=password, namespace=namespace\r\n\r\n### Expected Behavior\r\n\r\n`dubbo.registry.address`\u7684\u503c`nacos://10.20.0.100:8848?username=&password=&namespace=`\u4e0d\u5e94\u8be5\u5c06\u53c2\u6570\u89e3\u6790\u4e3ausername=username, password=password, namespace=namespace\r\n\r\n\u5e76\u4e14\u80fd\u6b63\u5e38\u542f\u52a8\r\n\r\n### Actual Behavior\r\n\r\nDubbo service register failed, then application exit.\r\n\r\n![image](https://user-images.githubusercontent.com/34986990/223649301-8f42f324-73e6-4ac0-9167-8c7cf32bc195.png)\r\n\r\n```\r\n2023-03-05 22:08:05.702 ERROR 1 --- [com.alibaba.nacos.client.naming.security] n.c.auth.impl.process.HttpLoginProcessor:78 : login failed: {\"code\":403,\"message\":\"unknown user!\",\"header\":{\"header\":{\"Accept-Charset\":\"UTF-8\",\"Connection\":\"keep-alive\",\"Content-Length\":\"13\",\"Content-Security-Policy\":\"script-src 'self'\",\"Content-Type\":\"text/html;charset=UTF-8\",\"Date\":\"Sun, 05 Mar 2023 14:08:05 GMT\",\"Keep-Alive\":\"timeout=60\",\"Vary\":\"Access-Control-Request-Headers\"},\"originalResponseHeader\":{\"Connection\":[\"keep-alive\"],\"Content-Length\":[\"13\"],\"Content-Security-Policy\":[\"script-src 'self'\"],\"Content-Type\":[\"text/html;charset=UTF-8\"],\"Date\":[\"Sun, 05 Mar 2023 14:08:05 GMT\"],\"Keep-Alive\":[\"timeout=60\"],\"Vary\":[\"Access-Control-Request-Headers\",\"Access-Control-Request-Method\",\"Origin\"]},\"charset\":\"UTF-8\"}}\r\n2023-03-05 22:08:07.102  WARN 1 --- [main] .d.registry.integration.RegistryProtocol:? :  [DUBBO] null, dubbo version: 3.1.6, current host: 172.17.0.1, error code: 99-0. This may be caused by unknown error in registry module, go to https://dubbo.apache.org/faq/99/0 to find instructions.\r\n\r\njava.lang.NullPointerException: null\r\n        at org.apache.dubbo.registry.integration.RegistryProtocol$ExporterChangeableWrapper.unexport(RegistryProtocol.java:912)\r\n        at org.apache.dubbo.registry.integration.RegistryProtocol$DestroyableExporter.unexport(RegistryProtocol.java:694)\r\n        at org.apache.dubbo.config.ServiceConfig.unexport(ServiceConfig.java:192)\r\n        at org.apache.dubbo.config.deploy.DefaultModuleDeployer.postDestroy(DefaultModuleDeployer.java:241)\r\n        at org.apache.dubbo.rpc.model.ModuleModel.onDestroy(ModuleModel.java:108)\r\n        at org.apache.dubbo.rpc.model.ScopeModel.destroy(ScopeModel.java:115)\r\n        at org.apache.dubbo.rpc.model.ApplicationModel.onDestroy(ApplicationModel.java:260)\r\n        at org.apache.dubbo.rpc.model.ScopeModel.destroy(ScopeModel.java:115)\r\n        at org.apache.dubbo.rpc.model.ApplicationModel.tryDestroy(ApplicationModel.java:358)\r\n        at org.apache.dubbo.rpc.model.ModuleModel.onDestroy(ModuleModel.java:130)\r\n        at org.apache.dubbo.rpc.model.ScopeModel.destroy(ScopeModel.java:115)\r\n        at org.apache.dubbo.config.spring.context.DubboDeployApplicationListener.onContextClosedEvent(DubboDeployApplicationListener.java:132)\r\n        at org.apache.dubbo.config.spring.context.DubboDeployApplicationListener.onApplicationEvent(DubboDeployApplicationListener.java:104)\r\n        at org.apache.dubbo.config.spring.context.DubboDeployApplicationListener.onApplicationEvent(DubboDeployApplicationListener.java:47)\r\n        at org.springframework.context.event.SimpleApplicationEventMulticaster.doInvokeListener(SimpleApplicationEventMulticaster.java:176)\r\n        at org.springframework.context.event.SimpleApplicationEventMulticaster.invokeListener(SimpleApplicationEventMulticaster.java:169)\r\n        at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:143)\r\n        at org.springframework.context.support.AbstractApplicationContext.publishEvent(AbstractApplicationContext.java:421)\r\n        at org.springframework.context.support.AbstractApplicationContext.publishEvent(AbstractApplicationContext.java:378)\r\n        at org.springframework.context.support.AbstractApplicationContext.doClose(AbstractApplicationContext.java:1058)\r\n        at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.doClose(ServletWebServerApplicationContext.java:174)\r\n        at org.springframework.context.support.AbstractApplicationContext.close(AbstractApplicationContext.java:1021)\r\n        at org.springframework.boot.SpringApplication.handleRunFailure(SpringApplication.java:787)\r\n        at org.springframework.boot.SpringApplication.run(SpringApplication.java:325)\r\n        at org.springframework.boot.builder.SpringApplicationBuilder.run(SpringApplicationBuilder.java:164)\r\n        at com.bwai.callcenter.CallCenterApplication.main(CallCenterApplication.java:39)\r\n        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\r\n        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\r\n        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\r\n        at java.lang.reflect.Method.invoke(Method.java:498)\r\n        at org.springframework.boot.loader.MainMethodRunner.run(MainMethodRunner.java:49)\r\n        at org.springframework.boot.loader.Launcher.launch(Launcher.java:108)\r\n        at org.springframework.boot.loader.Launcher.launch(Launcher.java:58)\r\n        at org.springframework.boot.loader.JarLauncher.main(JarLauncher.java:65)\r\n```\r\n\n\n\nComment by AlbumenJ:\nRelated with org/apache/dubbo/common/URLStrParser.java:294\n\nComment by AlbumenJ:\n\u8fd9\u4e2a\u53ef\u80fd\u548c\u4e4b\u524d Activated \u7684\u8bbe\u8ba1\u6709\u5173\uff0c\u4e0d\u8fc7\u5982\u679c\u628a\u8fd9\u4e2a\u903b\u8f91\u53bb\u6389\u80fd\u4e0d\u5f71\u54cd\u73b0\u6709\u7684\u529f\u80fd\u7684\u8bdd\u6211\u5efa\u8bae\u8fd8\u662f\u5220\u6389\n\nComment by AlbumenJ:\n@chickenlj PTAL",
+                "source_code": null,
+                "distance": 0.25,
+                "title": "Dubbo service auth failed",
+                "name": "issue#11767",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#11767"
+                    }
+                ],
+                "similarity": 0.8801117367933934,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "11778",
+                "type": "issue",
+                "content": "## What is the purpose of the change\r\n\r\nWhen value has no value, make sure value is an empty string, rather than assigning the value of name to value\r\n\r\n## Brief changelog\r\n\r\n## Verifying this change\r\n\r\n## Checklist\r\n- [x] Make sure there is a [GitHub_issue](https://github.com/apache/dubbo/issues/11767) \r\n\r\n\n\n",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "Fix bug #11767",
+                "name": "pr#11778",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#11767"
+                    },
+                    {
+                        "start_node": "issue#11767",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "pr#11778"
+                    }
+                ],
+                "similarity": 0.41486746083184745,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "11781",
+                "type": "issue",
+                "content": "## What is the purpose of the change\r\n\r\nWhen value has no value, make sure value is an empty string, rather than assigning the value of name to value\r\n\r\nFor key-value pair `key_name=`, the generated URL parameter should be 'key_name=' rather than `key_name=key_ name`\r\n\r\n## Brief changelog\r\n\r\n## Verifying this change\r\n\r\n## Checklist\r\n- [x] Make sure there is a [GitHub_issue](https://github.com/apache/dubbo/issues/11767) \r\n\r\n\n\n",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "Fix #11767,  restore the original parameter pair instead of giving default value when doing URL.parse.",
+                "name": "pr#11781",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#11767"
+                    },
+                    {
+                        "start_node": "issue#11767",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "pr#11781"
+                    }
+                ],
+                "similarity": 0.3471849672930061,
+                "end_line": null,
+                "signature": null
+            }
+        ]
+    },
+    "artifact_stats": {
+        "skipped_due_to_time": 11,
+        "valid_related_items": 77
+    }
+}

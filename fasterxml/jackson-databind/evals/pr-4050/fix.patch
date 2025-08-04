@@ -1,0 +1,25 @@
+--- a/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java
++++ b/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java
+@@ -3415,7 +3415,21 @@
+      *   {@code null} value node for which {@link JsonNode#isNull()} returns {@code true}.
+      */
+     @SuppressWarnings({ "unchecked", "resource" })
+-    public <T extends JsonNode> T valueToTree(Object fromValue)
++    public <T extends JsonNode> T valueToTree(Object fromValue) throws IllegalArgumentException throws IllegalArgumentException {
++        if (fromValue == null) {
++            return null;
++        }
++        TokenBuffer buf = new TokenBuffer(this, false);
++        try {
++            _serializerProvider(getSerializationConfig()).serializeValue(buf, fromValue);
++            JsonParser p = buf.asParser();
++            T result = (T) readTree(p);
++            p.close();
++            return result;
++        } catch (IOException e) { // should never occur
++            throw new IllegalArgumentException(e.getMessage(), e);
++        }
++    }
+         throws IllegalArgumentException
+     {
+         // [databind#2430]: `null` should become "null node":

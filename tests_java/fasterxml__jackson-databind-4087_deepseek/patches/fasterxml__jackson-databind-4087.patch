@@ -1,0 +1,26 @@
+Based on the issue, the bug is in `ClassUtil.java` where the logic for checking JDK classes before calling `setAccessible()` needs to be modified. The current logic only applies the JDK class check when `evenIfAlreadyPublic` is true, but it should apply it regardless.
+
+Here's the fix:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/util/ClassUtil.java
+- start_line : 994
+- end_line : 996
+<<<<<<< SEARCH
+        if (!isPublic || (evenIfAlreadyPublic && !isJDKClass(declaringClass))) {
+            ao.setAccessible(true);
+        }
+=======
+        if (!isJDKClass(declaringClass) && (!isPublic || evenIfAlreadyPublic)) {
+            ao.setAccessible(true);
+        }
+>>>>>>> REPLACE
+```
+
+This change:
+1. Moves the `!isJDKClass(declaringClass)` check to be evaluated first and unconditionally
+2. Only proceeds with `setAccessible()` if the class is not a JDK class AND either:
+   - The member is not public, OR
+   - We want to force access even if already public (`evenIfAlreadyPublic` is true)
+
+This prevents Jackson from attempting to make JDK internal classes accessible while still maintaining the existing behavior for non-JDK classes. The change matches the suggestion in the issue and will prevent the `InaccessibleObjectException` when dealing with JDK classes like `OptionalInt`.

@@ -1,0 +1,137 @@
+Based on the issue, the bug is that `TreeTypeAdapter` always handles null values (is nullSafe) regardless of the `nullSafe` parameter specified in the `@JsonAdapter` annotation. The issue suggests adding a `nullSafe` parameter to `TreeTypeAdapter` to respect this setting.
+
+Here are the necessary edits:
+
+1. First, modify the TreeTypeAdapter constructor to accept the nullSafe parameter:
+
+```java
+### playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TreeTypeAdapter.java
+- start_line : 52
+- end_line : 52
+<<<<<<< SEARCH
+  public TreeTypeAdapter(JsonSerializer<T> serializer, JsonDeserializer<T> deserializer,
+=======
+  public TreeTypeAdapter(JsonSerializer<T> serializer, JsonDeserializer<T> deserializer, boolean nullSafe,
+>>>>>>> REPLACE
+```
+
+2. Update the create method in SingleTypeFactory to pass the nullSafe parameter:
+
+```java
+### playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TreeTypeAdapter.java
+- start_line : 142
+- end_line : 150
+<<<<<<< SEARCH
+    public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+      boolean matches = exactType != null
+          ? exactType.equals(type) || matchRawType && exactType.getType() == type.getRawType()
+          : hierarchyType.isAssignableFrom(type.getRawType());
+      return matches
+          ? new TreeTypeAdapter<T>((JsonSerializer<T>) serializer,
+              (JsonDeserializer<T>) deserializer, gson, type, this)
+          : null;
+    }
+=======
+    public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+      boolean matches = exactType != null
+          ? exactType.equals(type) || matchRawType && exactType.getType() == type.getRawType()
+          : hierarchyType.isAssignableFrom(type.getRawType());
+      return matches
+          ? new TreeTypeAdapter<T>((JsonSerializer<T>) serializer,
+              (JsonDeserializer<T>) deserializer, false, gson, type, this)
+          : null;
+    }
+>>>>>>> REPLACE
+```
+
+3. Update the write and read methods to respect nullSafe:
+
+```java
+### playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TreeTypeAdapter.java
+- start_line : 72
+- end_line : 83
+<<<<<<< SEARCH
+  @Override public void write(JsonWriter out, T value) throws IOException {
+    if (serializer == null) {
+      delegate().write(out, value);
+      return;
+    }
+    if (value == null) {
+      out.nullValue();
+      return;
+    }
+    JsonElement tree = serializer.serialize(value, typeToken.getType(), context);
+    Streams.write(tree, out);
+  }
+=======
+  @Override public void write(JsonWriter out, T value) throws IOException {
+    if (serializer == null) {
+      delegate().write(out, value);
+      return;
+    }
+    if (value == null) {
+      if (nullSafe) {
+        out.nullValue();
+      } else {
+        throw new JsonSyntaxException("null value not allowed");
+      }
+      return;
+    }
+    JsonElement tree = serializer.serialize(value, typeToken.getType(), context);
+    Streams.write(tree, out);
+  }
+>>>>>>> REPLACE
+```
+
+```java
+### playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TreeTypeAdapter.java
+- start_line : 61
+- end_line : 70
+<<<<<<< SEARCH
+  @Override public T read(JsonReader in) throws IOException {
+    if (deserializer == null) {
+      return delegate().read(in);
+    }
+    JsonElement value = Streams.parse(in);
+    if (value.isJsonNull()) {
+      return null;
+    }
+    return deserializer.deserialize(value, typeToken.getType(), context);
+  }
+=======
+  @Override public T read(JsonReader in) throws IOException {
+    if (deserializer == null) {
+      return delegate().read(in);
+    }
+    JsonElement value = Streams.parse(in);
+    if (value.isJsonNull()) {
+      if (!nullSafe) {
+        throw new JsonSyntaxException("null value not allowed");
+      }
+      return null;
+    }
+    return deserializer.deserialize(value, typeToken.getType(), context);
+  }
+>>>>>>> REPLACE
+```
+
+4. Update the factory methods to pass the nullSafe parameter:
+
+```java
+### playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TreeTypeAdapter.java
+- start_line : 95
+- end_line : 97
+<<<<<<< SEARCH
+  public static TypeAdapterFactory newFactory(TypeToken<?> exactType, Object typeAdapter) {
+    return new SingleTypeFactory(typeAdapter, exactType, false, null);
+  }
+=======
+  public static TypeAdapterFactory newFactory(TypeToken<?> exactType, Object typeAdapter) {
+    return new SingleTypeFactory(typeAdapter, exactType, false, null);
+  }
+>>>>>>> REPLACE
+```
+
+Note: The factory methods don't need to change since they already pass false for nullSafe, which matches the default behavior we want to maintain for backward compatibility. The actual nullSafe parameter will be handled by JsonAdapterAnnotationTypeAdapterFactory.
+
+These changes will make TreeTypeAdapter respect the nullSafe parameter from @JsonAdapter annotation while maintaining backward compatibility with existing code.

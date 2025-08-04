@@ -1,0 +1,1484 @@
+{
+    "related_entities": {
+        "methods": [
+            {
+                "start_line": 298,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected Object readResolve() {\n        Base64Variant base = Base64Variants.valueOf(_name);\n        if ((_writePadding != base._writePadding)\n                || (_paddingChar != base._paddingChar)\n                || (_paddingReadBehaviour != base._paddingReadBehaviour)\n                || (_maxLineLength != base._maxLineLength)\n                || (_writePadding != base._writePadding)\n                ) {\n            return new Base64Variant(base,\n                    _name, _writePadding, _paddingChar, _paddingReadBehaviour, _maxLineLength);\n        }\n        return base;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "readResolve",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "readResolve"
+                    }
+                ],
+                "similarity": 0.14017353685012793,
+                "end_line": 310,
+                "signature": "com.fasterxml.jackson.core.Base64Variant.readResolve(): Object"
+            },
+            {
+                "start_line": 271,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Base64Variant withReadPadding(PaddingReadBehaviour readPadding) {\n        return (readPadding == _paddingReadBehaviour) ? this\n                : new Base64Variant(this, readPadding);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "withReadPadding",
+                "documentation": "/**\n     * @param readPadding Padding read behavior desired\n     *\n     * @return Instance with desired padding read behavior setting (this\n     *   if already has setting; new instance otherwise)\n     *\n     * @since 2.12\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "withReadPadding"
+                    }
+                ],
+                "similarity": 0.1357594430381068,
+                "end_line": 274,
+                "signature": "com.fasterxml.jackson.core.Base64Variant.withReadPadding(PaddingReadBehaviour readPadding): Base64Variant"
+            },
+            {
+                "start_line": 234,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private Base64Variant(Base64Variant base, PaddingReadBehaviour paddingReadBehaviour) {\n        this(base, base._name, base._writePadding, base._paddingChar, paddingReadBehaviour, base._maxLineLength);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "Base64Variant",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    }
+                ],
+                "similarity": 0.13073055578658047,
+                "end_line": 236,
+                "signature": "com.fasterxml.jackson.core.Base64Variant(Base64Variant base, PaddingReadBehaviour paddingReadBehaviour)"
+            },
+            {
+                "start_line": 882,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public String missingPaddingMessage() { // !!! TODO: why is this 'public'?\n        return String.format(\"Unexpected end of base64-encoded String: base64 variant '%s' expects padding (one or more '%c' characters) at the end. This Base64Variant might have been incorrectly configured\",\n                getName(), getPaddingChar());\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "missingPaddingMessage",
+                "documentation": "/**\n     * Helper method that will construct a message to use in exceptions for cases where input ends\n     * prematurely in place where padding would be expected.\n     *\n     * @return Exception message for indicating \"missing padding\" case\n     *\n     * @since 2.10\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "missingPaddingMessage"
+                    }
+                ],
+                "similarity": 0.12739979626040385,
+                "end_line": 885,
+                "signature": "com.fasterxml.jackson.core.Base64Variant.missingPaddingMessage(): String"
+            },
+            {
+                "start_line": 243,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Base64Variant withPaddingAllowed() {\n        return withReadPadding(PaddingReadBehaviour.PADDING_ALLOWED);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "withPaddingAllowed",
+                "documentation": "/**\n     * @return Base64Variant which does not require padding on read\n     *\n     * @since 2.12\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "withPaddingAllowed"
+                    }
+                ],
+                "similarity": 0.12706135115276032,
+                "end_line": 245,
+                "signature": "com.fasterxml.jackson.core.Base64Variant.withPaddingAllowed(): Base64Variant"
+            },
+            {
+                "start_line": 251,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Base64Variant withPaddingRequired() {\n        return withReadPadding(PaddingReadBehaviour.PADDING_REQUIRED);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "withPaddingRequired",
+                "documentation": "/**\n     * @return Base64Variant which requires padding on read\n     * @since 2.12\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "withPaddingRequired"
+                    }
+                ],
+                "similarity": 0.12657719708109125,
+                "end_line": 253,
+                "signature": "com.fasterxml.jackson.core.Base64Variant.withPaddingRequired(): Base64Variant"
+            },
+            {
+                "start_line": 259,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Base64Variant withPaddingForbidden() {\n        return withReadPadding(PaddingReadBehaviour.PADDING_FORBIDDEN);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "withPaddingForbidden",
+                "documentation": "/**\n     * @return Base64Variant which does not accept padding on read\n     * @since 2.12\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "withPaddingForbidden"
+                    }
+                ],
+                "similarity": 0.12535069213366296,
+                "end_line": 261,
+                "signature": "com.fasterxml.jackson.core.Base64Variant.withPaddingForbidden(): Base64Variant"
+            },
+            {
+                "start_line": 869,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected String unexpectedPaddingMessage() {\n        return String.format(\"Unexpected end of base64-encoded String: base64 variant '%s' expects no padding at the end while decoding. This Base64Variant might have been incorrectly configured\",\n                getName());\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "unexpectedPaddingMessage",
+                "documentation": "/**\n     * Helper method that will construct a message to use in exceptions for cases where input ends\n     * prematurely in place where padding is not expected.\n     *\n     * @return Exception message for indicating \"unexpected padding\" case\n     *\n     * @since 2.12\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "unexpectedPaddingMessage"
+                    }
+                ],
+                "similarity": 0.12498103762102712,
+                "end_line": 872,
+                "signature": "com.fasterxml.jackson.core.Base64Variant.unexpectedPaddingMessage(): String"
+            },
+            {
+                "start_line": 283,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Base64Variant withWritePadding(boolean writePadding) {\n        return (writePadding == _writePadding) ? this\n                : new Base64Variant(this, _name, writePadding, _paddingChar, _maxLineLength);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "withWritePadding",
+                "documentation": "/**\n     * @param writePadding Determines if padding is output on write or not\n     *\n     * @return Base64Variant which writes padding or not depending on writePadding\n     *\n     * @since 2.12\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "withWritePadding"
+                    }
+                ],
+                "similarity": 0.1232986580207494,
+                "end_line": 286,
+                "signature": "com.fasterxml.jackson.core.Base64Variant.withWritePadding(boolean writePadding): Base64Variant"
+            },
+            {
+                "start_line": 801,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public boolean equals(Object o) {\n        // identity comparison should be fine\n        // 26-Oct-2020, tatu: ... not any more with 2.12\n        if (o == this) return true;\n        if (o == null || o.getClass() != getClass()) return false;\n\n        Base64Variant other = (Base64Variant) o;\n        return (other._paddingChar == _paddingChar)\n                && (other._maxLineLength == _maxLineLength)\n                && (other._writePadding == _writePadding)\n                && (other._paddingReadBehaviour == _paddingReadBehaviour)\n                && (_name.equals(other._name))\n                ;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "equals",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "equals"
+                    }
+                ],
+                "similarity": 0.12021476323644846,
+                "end_line": 814,
+                "signature": "com.fasterxml.jackson.core.Base64Variant.equals(Object o): boolean"
+            },
+            {
+                "start_line": 147,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Base64Variant(String name, String base64Alphabet, boolean writePadding, char paddingChar, int maxLineLength)",
+                "distance": 1.0,
+                "title": null,
+                "name": "Base64Variant",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    }
+                ],
+                "similarity": 0.11781935879169966,
+                "end_line": 147,
+                "signature": "com.fasterxml.jackson.core.Base64Variant(String name, String base64Alphabet, boolean writePadding, char paddingChar, int maxLineLength)"
+            },
+            {
+                "start_line": 331,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public boolean requiresPaddingOnRead() {\n        return _paddingReadBehaviour == PaddingReadBehaviour.PADDING_REQUIRED;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "requiresPaddingOnRead",
+                "documentation": "/**\n     * @return {@code True} if this variant requires padding on content decoded; {@code false} if not.\n     *\n     * @since 2.12\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "requiresPaddingOnRead"
+                    }
+                ],
+                "similarity": 0.1126172215651342,
+                "end_line": 333,
+                "signature": "com.fasterxml.jackson.core.Base64Variant.requiresPaddingOnRead(): boolean"
+            },
+            {
+                "start_line": 340,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public boolean acceptsPaddingOnRead() {\n        return _paddingReadBehaviour != PaddingReadBehaviour.PADDING_FORBIDDEN;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "acceptsPaddingOnRead",
+                "documentation": "/**\n     * @return {@code True} if this variant accepts padding on content decoded; {@code false} if not.\n     *\n     * @since 2.12\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "acceptsPaddingOnRead"
+                    }
+                ],
+                "similarity": 0.1102005250775096,
+                "end_line": 342,
+                "signature": "com.fasterxml.jackson.core.Base64Variant.acceptsPaddingOnRead(): boolean"
+            },
+            {
+                "start_line": 353,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public PaddingReadBehaviour paddingReadBehaviour() { return _paddingReadBehaviour; }",
+                "distance": 1.25,
+                "title": null,
+                "name": "paddingReadBehaviour",
+                "documentation": "/**\n     * @return Indicator on how this Base64 encoding will handle possible padding\n     *   in content when reading.\n     *\n     * @since 2.12\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "paddingReadBehaviour"
+                    }
+                ],
+                "similarity": 0.10996735191382999,
+                "end_line": 353,
+                "signature": "com.fasterxml.jackson.core.Base64Variant.paddingReadBehaviour(): PaddingReadBehaviour"
+            },
+            {
+                "start_line": 324,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public boolean usesPadding() { return _writePadding; }",
+                "distance": 1.25,
+                "title": null,
+                "name": "usesPadding",
+                "documentation": "/**\n     * @return True if this Base64 encoding will <b>write</b> padding on output\n     *   (note: before Jackson 2.12 also dictated whether padding was accepted on read)\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "usesPadding"
+                    }
+                ],
+                "similarity": 0.10849570600162829,
+                "end_line": 324,
+                "signature": "com.fasterxml.jackson.core.Base64Variant.usesPadding(): boolean"
+            },
+            {
+                "start_line": 857,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void _reportBase64UnexpectedPadding() throws IllegalArgumentException {\n        throw new IllegalArgumentException(unexpectedPaddingMessage());\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_reportBase64UnexpectedPadding",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_reportBase64UnexpectedPadding"
+                    }
+                ],
+                "similarity": 0.10724728546260437,
+                "end_line": 859,
+                "signature": "com.fasterxml.jackson.core.Base64Variant._reportBase64UnexpectedPadding(): void"
+            },
+            {
+                "start_line": 2747,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private final void _matchFalse() throws IOException {\n        int ptr = _inputPtr;\n        if ((ptr + 4) < _inputEnd) {\n            final char[] b = _inputBuffer;\n            if (b[ptr] == 'a' && b[++ptr] == 'l' && b[++ptr] == 's' && b[++ptr] == 'e') {\n                char c = b[++ptr];\n                if (c < '0' || c == ']' || c == '}') { // expected/allowed chars\n                    _inputPtr = ptr;\n                    return;\n                }\n            }\n        }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_matchFalse",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_matchFalse"
+                    }
+                ],
+                "similarity": 0.1065971355205716,
+                "end_line": 2758,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._matchFalse(): void"
+            },
+            {
+                "start_line": 2763,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private final void _matchNull() throws IOException {\n        int ptr = _inputPtr;\n        if ((ptr + 3) < _inputEnd) {\n            final char[] b = _inputBuffer;\n            if (b[ptr] == 'u' && b[++ptr] == 'l' && b[++ptr] == 'l') {\n                char c = b[++ptr];\n                if (c < '0' || c == ']' || c == '}') { // expected/allowed chars\n                    _inputPtr = ptr;\n                    return;\n                }\n            }\n        }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_matchNull",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_matchNull"
+                    }
+                ],
+                "similarity": 0.10496838363534196,
+                "end_line": 2774,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._matchNull(): void"
+            },
+            {
+                "start_line": 2731,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private final void _matchTrue() throws IOException {\n        int ptr = _inputPtr;\n        if ((ptr + 3) < _inputEnd) {\n            final char[] b = _inputBuffer;\n            if (b[ptr] == 'r' && b[++ptr] == 'u' && b[++ptr] == 'e') {\n                char c = b[++ptr];\n                if (c < '0' || c == ']' || c == '}') { // expected/allowed chars\n                    _inputPtr = ptr;\n                    return;\n                }\n            }\n        }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_matchTrue",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_matchTrue"
+                    }
+                ],
+                "similarity": 0.10154038060731202,
+                "end_line": 2742,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._matchTrue(): void"
+            },
+            {
+                "start_line": 2847,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected byte[] _decodeBase64(Base64Variant b64variant) throws IOException",
+                "distance": 1.25,
+                "title": null,
+                "name": "_decodeBase64",
+                "documentation": "/**\n     * Efficient handling for incremental parsing of base64-encoded\n     * textual content.\n     *\n     * @param b64variant Type of base64 encoding expected in context\n     *\n     * @return Fully decoded value of base64 content\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems (invalid content)\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_decodeBase64"
+                    }
+                ],
+                "similarity": 0.09785523401677594,
+                "end_line": 2847,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._decodeBase64(Base64Variant b64variant): byte[]"
+            },
+            {
+                "start_line": 225,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void _closeInput() throws IOException {\n        /* 25-Nov-2008, tatus: As per [JACKSON-16] we are not to call close()\n         *   on the underlying Reader, unless we \"own\" it, or auto-closing\n         *   feature is enabled.\n         *   One downside is that when using our optimized\n         *   Reader (granted, we only do that for UTF-32...) this\n         *   means that buffer recycling won't work correctly.\n         */\n        if (_reader != null) {\n            if (_ioContext.isResourceManaged() || isEnabled(Feature.AUTO_CLOSE_SOURCE)) {\n                _reader.close();\n            }\n            _reader = null;\n        }\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_closeInput",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_closeInput"
+                    }
+                ],
+                "similarity": 0.09541719073980587,
+                "end_line": 239,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._closeInput(): void"
+            },
+            {
+                "start_line": 853,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void _reportBase64EOF() throws IllegalArgumentException {\n        throw new IllegalArgumentException(missingPaddingMessage());\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_reportBase64EOF",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_reportBase64EOF"
+                    }
+                ],
+                "similarity": 0.09479273206456285,
+                "end_line": 855,
+                "signature": "com.fasterxml.jackson.core.Base64Variant._reportBase64EOF(): void"
+            },
+            {
+                "start_line": 536,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected int _readBinary(Base64Variant b64variant, OutputStream out, byte[] buffer) throws IOException",
+                "distance": 1.25,
+                "title": null,
+                "name": "_readBinary",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_readBinary"
+                    }
+                ],
+                "similarity": 0.0944057306702482,
+                "end_line": 536,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._readBinary(Base64Variant b64variant, OutputStream out, byte[] buffer): int"
+            },
+            {
+                "start_line": 2304,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected final void _skipCR() throws IOException {\n        if (_inputPtr < _inputEnd || _loadMore()) {\n            if (_inputBuffer[_inputPtr] == '\\n') {\n                ++_inputPtr;\n            }\n        }\n        ++_currInputRow;\n        _currInputRowStart = _inputPtr;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_skipCR",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_skipCR"
+                    }
+                ],
+                "similarity": 0.09393185671415552,
+                "end_line": 2312,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._skipCR(): void"
+            },
+            {
+                "start_line": 375,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public final String getValueAsString(String defValue) throws IOException {\n        if (_currToken == JsonToken.VALUE_STRING) {\n            if (_tokenIncomplete) {\n                _tokenIncomplete = false;\n                _finishString(); // only strings can be incomplete\n            }\n            return _textBuffer.contentsAsString();\n        }\n        if (_currToken == JsonToken.FIELD_NAME) {\n            return getCurrentName();\n        }\n        return super.getValueAsString(defValue);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "getValueAsString",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getValueAsString"
+                    }
+                ],
+                "similarity": 0.09206166073938532,
+                "end_line": 387,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser.getValueAsString(String defValue): String"
+            },
+            {
+                "start_line": 215,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected char getNextChar(String eofMsg, JsonToken forToken) throws IOException {\n        if (_inputPtr >= _inputEnd) {\n            if (!_loadMore()) {\n                _reportInvalidEOF(eofMsg, forToken);\n            }\n        }\n        return _inputBuffer[_inputPtr++];\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "getNextChar",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getNextChar"
+                    }
+                ],
+                "similarity": 0.08855198012283956,
+                "end_line": 222,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser.getNextChar(String eofMsg, JsonToken forToken): char"
+            },
+            {
+                "start_line": 519,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public int readBinaryValue(Base64Variant b64variant, OutputStream out) throws IOException",
+                "distance": 1.25,
+                "title": null,
+                "name": "readBinaryValue",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "readBinaryValue"
+                    }
+                ],
+                "similarity": 0.08754151867374012,
+                "end_line": 519,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser.readBinaryValue(Base64Variant b64variant, OutputStream out): int"
+            },
+            {
+                "start_line": 140,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ReaderBasedJsonParser(IOContext ctxt, int features, Reader r,",
+                "distance": 1.0,
+                "title": null,
+                "name": "ReaderBasedJsonParser",
+                "documentation": "/**\n     * Constructor called when caller wants to provide input buffer directly\n     * (or needs to, in case of bootstrapping having read some of contents)\n     * and it may or may not be recyclable use standard recycle context.\n     *\n     * @param ctxt I/O context to use\n     * @param features Standard stream read features enabled\n     * @param r Reader used for reading actual content, if any; {@code null} if none\n     * @param codec {@code ObjectCodec} to delegate object deserialization to\n     * @param st Name canonicalizer to use\n     * @param inputBuffer Input buffer to read initial content from (before Reader)\n     * @param start Pointer in {@code inputBuffer} that has the first content character to decode\n     * @param end Pointer past the last content character in {@code inputBuffer}\n     * @param bufferRecyclable Whether {@code inputBuffer} passed is managed by Jackson core\n     *    (and thereby needs recycling)\n     *\n     * @since 2.4\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    }
+                ],
+                "similarity": 0.08598451532288444,
+                "end_line": 140,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser(IOContext ctxt, int features, Reader r, ObjectCodec codec, CharsToNameCanonicalizer st, char[] inputBuffer, int start, int end, boolean bufferRecyclable)"
+            },
+            {
+                "start_line": 345,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public boolean usesPaddingChar(int ch) { return ch == (int) _paddingChar; }",
+                "distance": 1.25,
+                "title": null,
+                "name": "usesPaddingChar",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "usesPaddingChar"
+                    }
+                ],
+                "similarity": 0.08382681475231962,
+                "end_line": 345,
+                "signature": "com.fasterxml.jackson.core.Base64Variant.usesPaddingChar(int ch): boolean"
+            },
+            {
+                "start_line": 344,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public boolean usesPaddingChar(char c) { return c == _paddingChar; }",
+                "distance": 1.25,
+                "title": null,
+                "name": "usesPaddingChar",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "usesPaddingChar"
+                    }
+                ],
+                "similarity": 0.08085966445544843,
+                "end_line": 344,
+                "signature": "com.fasterxml.jackson.core.Base64Variant.usesPaddingChar(char c): boolean"
+            },
+            {
+                "start_line": 211,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Base64Variant(Base64Variant base,",
+                "distance": 1.25,
+                "title": null,
+                "name": "Base64Variant",
+                "documentation": "/**\n     * \"Copy constructor\" that can be used when the base alphabet is identical\n     * to one used by another variant, but other details (padding, maximum\n     * line length) differ\n     *\n     * @param base Variant to use for settings not specific by other parameters\n     * @param name Name of this variant\n     * @param writePadding Whether variant will use padding when encoding\n     * @param paddingChar Padding character used for encoding, excepted on reading, if any\n     * @param maxLineLength Maximum length (in characters) of lines to output before\n     *    using linefeed\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    }
+                ],
+                "similarity": 0.08081479326312403,
+                "end_line": 211,
+                "signature": "com.fasterxml.jackson.core.Base64Variant(Base64Variant base, String name, boolean writePadding, char paddingChar, int maxLineLength)"
+            },
+            {
+                "start_line": 356,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public byte getPaddingByte() { return (byte)_paddingChar; }",
+                "distance": 1.25,
+                "title": null,
+                "name": "getPaddingByte",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getPaddingByte"
+                    }
+                ],
+                "similarity": 0.08019929855194705,
+                "end_line": 356,
+                "signature": "com.fasterxml.jackson.core.Base64Variant.getPaddingByte(): byte"
+            },
+            {
+                "start_line": 1758,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonToken _handleInvalidNumberStart(int ch, final boolean negative, final boolean hasSign) throws IOException",
+                "distance": 1.25,
+                "title": null,
+                "name": "_handleInvalidNumberStart",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_handleInvalidNumberStart"
+                    }
+                ],
+                "similarity": 0.07827371265356799,
+                "end_line": 1758,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._handleInvalidNumberStart(int ch, boolean negative, boolean hasSign): JsonToken"
+            },
+            {
+                "start_line": 217,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private Base64Variant(Base64Variant base,",
+                "distance": 1.25,
+                "title": null,
+                "name": "Base64Variant",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    }
+                ],
+                "similarity": 0.07697872492077532,
+                "end_line": 217,
+                "signature": "com.fasterxml.jackson.core.Base64Variant(Base64Variant base, String name, boolean writePadding, char paddingChar, PaddingReadBehaviour paddingReadBehaviour, int maxLineLength)"
+            },
+            {
+                "start_line": 2821,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private final void _checkMatchEnd(String matchStr, int i, int c) throws IOException {\n        // but actually only alphanums are problematic\n        char ch = (char) c;\n        if (Character.isJavaIdentifierPart(ch)) {\n            _reportInvalidToken(matchStr.substring(0, i));\n        }\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_checkMatchEnd",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_checkMatchEnd"
+                    }
+                ],
+                "similarity": 0.076560420787069,
+                "end_line": 2827,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._checkMatchEnd(String matchStr, int i, int c): void"
+            },
+            {
+                "start_line": 1753,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonToken _handleInvalidNumberStart(int ch, boolean negative) throws IOException",
+                "distance": 1.25,
+                "title": null,
+                "name": "_handleInvalidNumberStart",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_handleInvalidNumberStart"
+                    }
+                ],
+                "similarity": 0.07644440414670181,
+                "end_line": 1753,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._handleInvalidNumberStart(int ch, boolean negative): JsonToken"
+            },
+            {
+                "start_line": 488,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public byte[] getBinaryValue(Base64Variant b64variant) throws IOException",
+                "distance": 1.25,
+                "title": null,
+                "name": "getBinaryValue",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getBinaryValue"
+                    }
+                ],
+                "similarity": 0.07585163246963539,
+                "end_line": 488,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser.getBinaryValue(Base64Variant b64variant): byte[]"
+            },
+            {
+                "start_line": 355,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public char getPaddingChar() { return _paddingChar; }",
+                "distance": 1.25,
+                "title": null,
+                "name": "getPaddingChar",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getPaddingChar"
+                    }
+                ],
+                "similarity": 0.0743466133334625,
+                "end_line": 355,
+                "signature": "com.fasterxml.jackson.core.Base64Variant.getPaddingChar(): char"
+            },
+            {
+                "start_line": 696,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void decode(String str, ByteArrayBuilder builder) throws IllegalArgumentException",
+                "distance": 1.25,
+                "title": null,
+                "name": "decode",
+                "documentation": "/**\n     * Convenience method for decoding contents of a Base64-encoded String,\n     * using this variant's settings\n     * and appending decoded binary data using provided {@link ByteArrayBuilder}.\n     *<p>\n     * NOTE: builder will NOT be reset before decoding (nor cleared afterwards);\n     * assumption is that caller will ensure it is given in proper state, and\n     * used as appropriate afterwards.\n     *\n     * @param str Input to decode\n     * @param builder Builder used for assembling decoded content\n     *\n     * @since 2.3\n     *\n     * @throws IllegalArgumentException if input is not valid base64 encoded data\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "decode"
+                    }
+                ],
+                "similarity": 0.0733221476819541,
+                "end_line": 696,
+                "signature": "com.fasterxml.jackson.core.Base64Variant.decode(String str, ByteArrayBuilder builder): void"
+            },
+            {
+                "start_line": 3047,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private void _closeScope(int i) throws JsonParseException {\n        if (i == INT_RBRACKET) {\n            _updateLocation();\n            if (!_parsingContext.inArray()) {\n                _reportMismatchedEndMarker(i, '}');\n            }\n            _parsingContext = _parsingContext.clearAndGetParent();\n            _currToken = JsonToken.END_ARRAY;\n        }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_closeScope",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_closeScope"
+                    }
+                ],
+                "similarity": 0.07313682574207137,
+                "end_line": 3055,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._closeScope(int i): void"
+            },
+            {
+                "start_line": 1157,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private final JsonToken _nextTokenNotInObject(int i) throws IOException",
+                "distance": 1.25,
+                "title": null,
+                "name": "_nextTokenNotInObject",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_nextTokenNotInObject"
+                    }
+                ],
+                "similarity": 0.0731187704890488,
+                "end_line": 1157,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._nextTokenNotInObject(int i): JsonToken"
+            },
+            {
+                "start_line": 2023,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonToken _handleOddValue(int i) throws IOException",
+                "distance": 1.25,
+                "title": null,
+                "name": "_handleOddValue",
+                "documentation": "/**\n     * Method for handling cases where first non-space character\n     * of an expected value token is not legal for standard JSON content.\n     *\n     * @param i First undecoded character of possible \"odd value\" to decode\n     *\n     * @return Type of value decoded, if allowed and successful\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems (invalid white space)\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_handleOddValue"
+                    }
+                ],
+                "similarity": 0.07246841650809878,
+                "end_line": 2023,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._handleOddValue(int i): JsonToken"
+            },
+            {
+                "start_line": 169,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ReaderBasedJsonParser(IOContext ctxt, int features, Reader r,",
+                "distance": 1.0,
+                "title": null,
+                "name": "ReaderBasedJsonParser",
+                "documentation": "/**\n     * Constructor called when input comes as a {@link java.io.Reader}, and buffer allocation\n     * can be done using default mechanism.\n     *\n     * @param ctxt I/O context to use\n     * @param features Standard stream read features enabled\n     * @param r Reader used for reading actual content, if any; {@code null} if none\n     * @param codec {@code ObjectCodec} to delegate object deserialization to\n     * @param st Name canonicalizer to use\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    }
+                ],
+                "similarity": 0.07164926176270746,
+                "end_line": 169,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser(IOContext ctxt, int features, Reader r, ObjectCodec codec, CharsToNameCanonicalizer st)"
+            },
+            {
+                "start_line": 198,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public int releaseBuffered(Writer w) throws IOException {\n        int count = _inputEnd - _inputPtr;\n        if (count < 1) { return 0; }\n        // let's just advance ptr to end\n        int origPtr = _inputPtr;\n        _inputPtr += count;\n        w.write(_inputBuffer, origPtr, count);\n        return count;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "releaseBuffered",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "releaseBuffered"
+                    }
+                ],
+                "similarity": 0.07093587161966998,
+                "end_line": 206,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser.releaseBuffered(Writer w): int"
+            },
+            {
+                "start_line": 1486,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void _handleBase64MissingPadding(Base64Variant b64variant) throws IOException",
+                "distance": 2.25,
+                "title": null,
+                "name": "_handleBase64MissingPadding",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_decodeBase64"
+                    },
+                    {
+                        "start_node": "_decodeBase64",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "_handleBase64MissingPadding"
+                    }
+                ],
+                "similarity": 0.07074765587444747,
+                "end_line": 1486,
+                "signature": "com.fasterxml.jackson.core.base.ParserBase._handleBase64MissingPadding(Base64Variant b64variant): void"
+            },
+            {
+                "start_line": 1329,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected final JsonToken _parseFloatThatStartsWithPeriod() throws IOException {\n        return _parseFloatThatStartsWithPeriod(false);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_parseFloatThatStartsWithPeriod",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_parseFloatThatStartsWithPeriod"
+                    }
+                ],
+                "similarity": 0.07051477911748706,
+                "end_line": 1331,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._parseFloatThatStartsWithPeriod(): JsonToken"
+            },
+            {
+                "start_line": 389,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected final String _getText2(JsonToken t) {\n        if (t == null) {\n            return null;\n        }\n        switch (t.id()) {\n        case ID_FIELD_NAME:\n            return _parsingContext.getCurrentName();\n\n        case ID_STRING:\n            // fall through\n        case ID_NUMBER_INT:\n        case ID_NUMBER_FLOAT:\n            return _textBuffer.contentsAsString();\n        default:\n            return t.asString();\n        }\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_getText2",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_getText2"
+                    }
+                ],
+                "similarity": 0.07011225328585317,
+                "end_line": 405,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._getText2(JsonToken t): String"
+            },
+            {
+                "start_line": 193,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Base64Variant(Base64Variant base,",
+                "distance": 1.25,
+                "title": null,
+                "name": "Base64Variant",
+                "documentation": "/**\n     * \"Copy constructor\" that can be used when the base alphabet is identical\n     * to one used by another variant except for the maximum line length\n     * (and obviously, name).\n     *\n     * @param base Variant to use for settings not specific by other parameters\n     * @param name Name of this variant\n     * @param maxLineLength Maximum length (in characters) of lines to output before\n     *    using linefeed\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    }
+                ],
+                "similarity": 0.07008183015432051,
+                "end_line": 193,
+                "signature": "com.fasterxml.jackson.core.Base64Variant(Base64Variant base, String name, int maxLineLength)"
+            },
+            {
+                "start_line": 2086,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonToken _handleApos() throws IOException",
+                "distance": 1.25,
+                "title": null,
+                "name": "_handleApos",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "ReaderBasedJsonParser"
+                    },
+                    {
+                        "start_node": "ReaderBasedJsonParser",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_handleApos"
+                    }
+                ],
+                "similarity": 0.06909571275332693,
+                "end_line": 2086,
+                "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._handleApos(): JsonToken"
+            },
+            {
+                "start_line": 673,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public byte[] decode(String input) throws IllegalArgumentException",
+                "distance": 1.25,
+                "title": null,
+                "name": "decode",
+                "documentation": "/**\n     * Convenience method for decoding contents of a Base64-encoded String,\n     * using this variant's settings.\n     *\n     * @param input Base64-encoded input String to decode\n     *\n     * @return Byte array of decoded contents\n     *\n     * @since 2.3\n     *\n     * @throws IllegalArgumentException if input is not valid base64 encoded data\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Base64Variant"
+                    },
+                    {
+                        "start_node": "Base64Variant",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "decode"
+                    }
+                ],
+                "similarity": 0.06890594486033398,
+                "end_line": 673,
+                "signature": "com.fasterxml.jackson.core.Base64Variant.decode(String input): byte[]"
+            }
+        ],
+        "classes": [],
+        "issues": [
+            {
+                "content": "Consider this code (2.14.1):\r\n```\r\nObjectMapper jsonMapper = new ObjectMapper()\r\n               .setBase64Variant(Base64Variants.MIME_NO_LINEFEEDS.withReadPadding(Base64Variant.PaddingReadBehaviour.PADDING_ALLOWED));\r\nfinal Output output = jsonMapper.readValue(\"\"\"\r\n                {\r\n                \"diff\": \"1sPEAASBOGM6XGFwYWNoZV9yb290X2Rldlx0bXBcX3N0YXBsZXJcNHEydHJhY3ZcYXZhc3RfZnJlZV9hbnRpdmlydXNfc2V0dXBfb25saW5lLmV4ZS8vYzpcYXBhY2hlX3Jvb3RfZGV2XHN0b3JhZ2VcY1w3XDFcYzcxZmViMTA2NDA5MTE4NzIwOGI4MGNkM2Q0NWE0YThcYXZhc3RfZnJlZV9hbnRpdmlydXNfc2V0dXBfb25saW5lLmV4ZS8FkK0pAKA2kLFgAJsXgyyBZfkKWXg6OZiYBgBYCQCASAAAgAMAAAC4AACABgEAgAoAAABYCACADgAAAJgIAIAQAAAA2AgAgBgAAAAYCWgAAIDJAAAAkHgJAwAqDwCoAAAAqBgDAIwOAAUAAQAAAPAAAIACAUABAIAEAQCABQEIAQAAOCcDAEAhADABAAB4SAMAKFgBAACgigMAqCUAAQAASLADAKgBAADwwAMAaAQAFQA\"\r\n                }\r\n                \"\"\".stripIndent(), Output.class);\r\nrecord Output(byte[] diff) {}\r\n```\r\n\r\nThe `diff` content is missing '=' padding character, but even the used Base64Variant  does not require for reading (as implemented https://github.com/FasterXML/jackson-core/pull/646), it  throws MissingPadding exception. \r\nThe problem is `ReaderBasedJsonParser` still uses old method `usesPadding()` and not the new one `requiresPaddingOnRead()` as implemented since 2.12. \r\n\r\n\r\n\n",
+                "distance": 0,
+                "title": "Optional padding Base64Variant still throws exception on missing padding character",
+                "name": "root",
+                "path": [],
+                "issue_id": "root",
+                "similarity": 2.0,
+                "type": "issue"
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "921",
+                "type": "issue",
+                "content": "\n\n\nComment by cowtowncoder:\nOk this looks nice and reasonable. But let me think about this for just a bit before merging. :)\r\n\r\nThank you again!\n\nComment by cowtowncoder:\nOh, one idea/suggestion: although `JsonFactory.Feature` is easier to add, making is `JsonReadFeature` would allow per-call changes (at least when used via `ObjectReader`).\r\nIn case someone wanted to change this more dynamically.\r\n\r\nI don't have strong opinion but this just occurred to me and thought I'd share.\r\n",
+                "source_code": null,
+                "distance": 0.25,
+                "title": "Add `JsonFactory.Feature.CHARSET_DETECTION` to disable charset detection (default to UTF-8)",
+                "name": "pr#921",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#921"
+                    }
+                ],
+                "similarity": 0.33459612484588147,
+                "end_line": null,
+                "signature": null
+            }
+        ]
+    },
+    "artifact_stats": {
+        "skipped_due_to_time": 4,
+        "valid_related_items": 5
+    }
+}

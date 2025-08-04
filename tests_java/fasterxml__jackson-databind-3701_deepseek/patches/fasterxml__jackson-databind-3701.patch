@@ -1,0 +1,29 @@
+Based on the issue, the bug is in `NodeCursor.java` where `ObjectCursor` casts the input `JsonNode` to `ObjectNode` unnecessarily, since `fields()` is already defined on `JsonNode` interface. This prevents custom `JsonNode` implementations from being used.
+
+Looking at the code snippets provided, we can see that `ArrayCursor` correctly uses `JsonNode#elements()` without casting, while `ObjectCursor` has the problematic cast. Here's the fix:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/node/NodeCursor.java
+- start_line : 195
+- end_line : 195
+<<<<<<< SEARCH
+        public ObjectCursor(JsonNode n, NodeCursor p)
+=======
+        public ObjectCursor(JsonNode n, NodeCursor p) {
+            super(JsonStreamContext.TYPE_OBJECT, p);
+            _contents = n.fields();
+        }
+>>>>>>> REPLACE
+```
+
+This change:
+1. Removes the implicit cast to `ObjectNode` that would have happened in the original code
+2. Follows the same pattern as `ArrayCursor` by directly calling the interface method (`fields()`)
+3. Maintains proper initialization of the cursor state by calling `super()` with the object type
+4. Stores the iterator from `fields()` in `_contents` for traversal
+
+The fix matches the behavior seen in `ArrayCursor` and allows any `JsonNode` implementation that properly implements `fields()` to be used, not just Jackson's built-in `ObjectNode`.
+
+Note: The original code snippet didn't show the full method implementation, so I've included the complete constructor implementation that would match the style seen in `ArrayCursor`. The key change is removing any casting and directly using `n.fields()`.
+
+This change aligns with the issue reporter's observation that `ArrayCursor` works fine without casting, and their use case of wanting to use custom `JsonNode` implementations like those adapting `javax.json.JsonObject`.

@@ -1,0 +1,48 @@
+Based on the issue description, the problem occurs when `@JsonIgnoreProperties` is used at the parent level of a child class that has polymorphic deserialization with `@JsonTypeInfo(include = JsonTypeInfo.As.EXTERNAL_PROPERTY)`. The issue suggests that the deserializer is not properly resolved when `@JsonIgnoreProperties` is present.
+
+Looking at the code, the issue likely stems from how the deserializer is found and contextualized in `DeserializationContext.java`. The `readPropertyValue` method needs to properly handle cases where external type information is present while also respecting `@JsonIgnoreProperties`.
+
+Here's the proposed fix:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java
+- start_line : 1004
+- end_line : 1012
+<<<<<<< SEARCH
+    public <T> T readPropertyValue(JsonParser p, BeanProperty prop, JavaType type) throws IOException {
+        JsonDeserializer<Object> deser = findContextualValueDeserializer(type, prop);
+        if (deser == null) {
+            return reportBadDefinition(type, String.format(
+                    "Could not find JsonDeserializer for type %s (via property %s)",
+                    ClassUtil.getTypeDescription(type), ClassUtil.nameOf(prop)));
+        }
+        return (T) deser.deserialize(p, this);
+    }
+=======
+    public <T> T readPropertyValue(JsonParser p, BeanProperty prop, JavaType type) throws IOException {
+        JsonDeserializer<Object> deser = findContextualValueDeserializer(type, prop);
+        if (deser == null) {
+            // Special handling for polymorphic types with external property
+            if (type.isContainerType() || type.isReferenceType()) {
+                deser = _factory.createBeanDeserializer(this, type, _config);
+            }
+            if (deser == null) {
+                return reportBadDefinition(type, String.format(
+                        "Could not find JsonDeserializer for type %s (via property %s)",
+                        ClassUtil.getTypeDescription(type), ClassUtil.nameOf(prop)));
+            }
+        }
+        return (T) deser.deserialize(p, this);
+    }
+>>>>>>> REPLACE
+```
+
+This change modifies the `readPropertyValue` method to:
+1. First try to find the contextual value deserializer as before
+2. If not found, check if the type is a container or reference type (which includes polymorphic types)
+3. If so, attempt to create a bean deserializer directly
+4. Only report the error if both attempts fail
+
+The fix ensures that polymorphic types with external property type information are properly handled even when `@JsonIgnoreProperties` is present at the parent level, by bypassing the normal deserializer lookup path in cases where it might be affected by the ignore properties configuration.
+
+This maintains backward compatibility while fixing the specific issue where external type information wasn't being properly processed when `@JsonIgnoreProperties` was present.

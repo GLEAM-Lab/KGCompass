@@ -1,0 +1,1525 @@
+{
+  "related_entities": {
+    "methods": [
+      {
+        "start_line": 2808,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * Configure using {@link MapperBuilder#configure(DatatypeFeature, boolean)} instead.</strong>\n     */\n    public ObjectMapper configure(DatatypeFeature f, boolean state) {\n        if (state) {\n            _deserializationConfig = _deserializationConfig.with(f);\n            _serializationConfig = _serializationConfig.with(f);\n        } else {\n            _deserializationConfig = _deserializationConfig.without(f);\n            _serializationConfig = _serializationConfig.without(f);\n        }",
+        "distance": 1.25,
+        "title": null,
+        "name": "configure",
+        "documentation": "/**\n     * Method for changing state of an on/off datatype-specific feature for\n     * this object mapper.\n     * <p>\n     * Note: Changing the configuration of this {@link ObjectMapper} instance after its first use (read &amp; write) is\n     * not safe and should not be attempted. Instead, use {@code with()} and {@code without()} methods of\n     * {@link ObjectReader}/{@link ObjectWriter} which fully support reconfiguration as new instances are constructed.\n     * <p>\n     * <strong>This method will be removed in Jackson 3.0 due to unsafe usage.\n     * Configure using {@link MapperBuilder#configure(DatatypeFeature, boolean)} instead.</strong>\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "configure"
+          }
+        ],
+        "similarity": 0.13590775111372133,
+        "end_line": 2817,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.configure(DatatypeFeature f, boolean state): ObjectMapper"
+      },
+      {
+        "start_line": 2569,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     */\n    @Deprecated\n    public ObjectMapper configure(MapperFeature f, boolean state) {\n        _serializationConfig = state ?\n                _serializationConfig.with(f) : _serializationConfig.without(f);\n        _deserializationConfig = state ?\n                _deserializationConfig.with(f) : _deserializationConfig.without(f);",
+        "distance": 1.25,
+        "title": null,
+        "name": "configure",
+        "documentation": "/**\n     * @deprecated Since 2.13 use {@code JsonMapper.builder().configure(...)}\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "configure"
+          }
+        ],
+        "similarity": 0.13470400509233887,
+        "end_line": 2575,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.configure(MapperFeature f, boolean state): ObjectMapper"
+      },
+      {
+        "start_line": 2591,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     */\n    @Deprecated\n    public ObjectMapper disable(MapperFeature... f) {\n        _deserializationConfig = _deserializationConfig.without(f);\n        _serializationConfig = _serializationConfig.without(f);",
+        "distance": 1.25,
+        "title": null,
+        "name": "disable",
+        "documentation": "/**\n     * @deprecated Since 2.13 use {@code JsonMapper.builder().disable(...)}\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          }
+        ],
+        "similarity": 0.12327492353135967,
+        "end_line": 2595,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.disable(MapperFeature f): ObjectMapper"
+      },
+      {
+        "start_line": 2581,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     */\n    @Deprecated\n    public ObjectMapper enable(MapperFeature... f) {\n        _deserializationConfig = _deserializationConfig.with(f);\n        _serializationConfig = _serializationConfig.with(f);",
+        "distance": 1.25,
+        "title": null,
+        "name": "enable",
+        "documentation": "/**\n     * @deprecated Since 2.13 use {@code JsonMapper.builder().enable(...)}\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enable"
+          }
+        ],
+        "similarity": 0.12097142871277329,
+        "end_line": 2585,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.enable(MapperFeature f): ObjectMapper"
+      },
+      {
+        "start_line": 2622,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * Configure using {@link MapperBuilder#configure(SerializationFeature, boolean)}.</strong>\n     */\n    public ObjectMapper configure(SerializationFeature f, boolean state) {\n        _serializationConfig = state ?\n                _serializationConfig.with(f) : _serializationConfig.without(f);",
+        "distance": 1.25,
+        "title": null,
+        "name": "configure",
+        "documentation": "/**\n     * Method for changing state of an on/off serialization feature for\n     * this object mapper.\n     * <p>\n     * Note: Changing the configuration of this {@link ObjectMapper} instance after its first use (read &amp; write) is\n     * not safe and should not be attempted. Instead, use {@code with()} and {@code without()} methods of\n     * {@link ObjectReader}/{@link ObjectWriter} which fully support reconfiguration as new instances are constructed.\n     * <p>\n     * <strong>This method will be removed in Jackson 3.0 due to unsafe usage.\n     * Configure using {@link MapperBuilder#configure(SerializationFeature, boolean)}.</strong>\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "configure"
+          }
+        ],
+        "similarity": 0.11581058503477513,
+        "end_line": 2626,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.configure(SerializationFeature f, boolean state): ObjectMapper"
+      },
+      {
+        "start_line": 1498,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectWriter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "        public Prefetch forRootType(ObjectWriter parent, JavaType newType) {\n            // First: if nominal type not defined not thing much to do\n            if (newType == null) {\n                if ((rootType == null) || (valueSerializer == null)) {\n                    return this;\n                }\n                return new Prefetch(null, null, null);\n            }\n\n            // Second: if no change, nothing to do either\n            if (newType.equals(rootType)) {\n                return this;\n            }\n\n            // But one more trick: `java.lang.Object` has no serialized, but may\n            // have `TypeSerializer` to use\n            if (newType.isJavaLangObject()) {\n                DefaultSerializerProvider prov = parent._serializerProvider();\n                TypeSerializer typeSer;\n\n                try {\n                    typeSer = prov.findTypeSerializer(newType);\n                } catch (JsonMappingException e) {\n                    // Unlike with value serializer pre-fetch, let's not allow exception\n                    // for TypeSerializer be swallowed\n                    throw new RuntimeJsonMappingException(e);\n                }\n                return new Prefetch(null, null, typeSer);\n            }\n\n            if (parent.isEnabled(SerializationFeature.EAGER_SERIALIZER_FETCH)) {\n                DefaultSerializerProvider prov = parent._serializerProvider();\n                // 17-Dec-2014, tatu: Need to be bit careful here; TypeSerializers are NOT cached,\n                //   so although it'd seem like a good idea to look for those first, and avoid\n                //   serializer for polymorphic types, it is actually more efficient to do the\n                //   reverse here.\n                try {\n                    JsonSerializer<Object> ser = prov.findTypedValueSerializer(newType, true, null);\n                    // Important: for polymorphic types, \"unwrap\"...\n                    if (ser instanceof TypeWrappedSerializer) {\n                        return new Prefetch(newType, null,\n                                ((TypeWrappedSerializer) ser).typeSerializer());\n                    }\n                    return new Prefetch(newType, ser, null);\n                } catch (DatabindException e) {\n                    // need to swallow?\n                    ;\n                }\n            }\n            return new Prefetch(newType, null, typeSerializer);\n        }",
+        "distance": 1.5,
+        "title": null,
+        "name": "forRootType",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "serialize"
+          },
+          {
+            "start_node": "serialize",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "Prefetch"
+          },
+          {
+            "start_node": "Prefetch",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "forRootType"
+          }
+        ],
+        "similarity": 0.11545363355108838,
+        "end_line": 1548,
+        "signature": "com.fasterxml.jackson.databind.ObjectWriter.Prefetch.forRootType(ObjectWriter parent, JavaType newType): Prefetch"
+      },
+      {
+        "start_line": 2719,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * Configure using {@link MapperBuilder#configure(DeserializationFeature, boolean)}.</strong>\n     */\n    public ObjectMapper configure(DeserializationFeature f, boolean state) {\n        _deserializationConfig = state ?\n                _deserializationConfig.with(f) : _deserializationConfig.without(f);",
+        "distance": 1.25,
+        "title": null,
+        "name": "configure",
+        "documentation": "/**\n     * Method for changing state of an on/off deserialization feature for\n     * this object mapper.\n     * <p>\n     * Note: Changing the configuration of this {@link ObjectMapper} instance after its first use (read &amp; write) is\n     * not safe and should not be attempted. Instead, use {@code with()} and {@code without()} methods of\n     * {@link ObjectReader}/{@link ObjectWriter} which fully support reconfiguration as new instances are constructed.\n     * <p>\n     * <strong>This method will be removed in Jackson 3.0 due to unsafe usage.\n     * Configure using {@link MapperBuilder#configure(DeserializationFeature, boolean)}.</strong>\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "configure"
+          }
+        ],
+        "similarity": 0.11371170640387329,
+        "end_line": 2723,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.configure(DeserializationFeature f, boolean state): ObjectMapper"
+      },
+      {
+        "start_line": 2958,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * @since 2.5\n     */\n    public ObjectMapper disable(JsonGenerator.Feature... features) {\n        for (JsonGenerator.Feature f : features) {\n            _jsonFactory.disable(f);\n        }",
+        "distance": 1.25,
+        "title": null,
+        "name": "disable",
+        "documentation": "/**\n     * Method for disabling specified {@link com.fasterxml.jackson.core.JsonGenerator.Feature}s\n     * for parser instances this object mapper creates.\n     *<p>\n     * Note that this is equivalent to directly calling same method on {@link #getFactory}.\n     *<p>\n     * WARNING: since this method directly modifies state of underlying {@link JsonFactory},\n     * it will change observed configuration by {@link ObjectWriter}s as well -- to avoid\n     * this, use {@link ObjectWriter#without(JsonGenerator.Feature)} instead.\n     * <p>\n     * <strong>This method will be removed in Jackson 3.0 due to unsafe usage.\n     * Configure using {@link MapperBuilder#disable(JsonGenerator.Feature...)} instead.</strong>\n     *\n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          }
+        ],
+        "similarity": 0.11142519053794803,
+        "end_line": 2963,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.disable(JsonGenerator features): ObjectMapper"
+      },
+      {
+        "start_line": 2318,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * @since 2.16\n     */\n    public ObjectMapper setCacheProvider(CacheProvider cacheProvider) {\n        _assertNotNull(\"cacheProvider\", cacheProvider);\n        _deserializationConfig = _deserializationConfig.with(cacheProvider);\n        _serializationConfig = _serializationConfig.with(cacheProvider);\n        _deserializationContext = _deserializationContext.withCaches(cacheProvider);\n        _serializerProvider = _serializerProvider.withCaches(cacheProvider);\n        _typeFactory = _typeFactory.withCache(cacheProvider.forTypeFactory());",
+        "distance": 1.25,
+        "title": null,
+        "name": "setCacheProvider",
+        "documentation": "/**\n     * Method for specifying {@link CacheProvider} instance, to provide Cache instances to be used in components downstream.\n     *\n     * @cacheProvider Cache provider for this mapper to use\n     *\n     * @throws IllegalArgumentException if given provider is null\n     *\n     * @since 2.16\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setCacheProvider"
+          }
+        ],
+        "similarity": 0.11087978209108602,
+        "end_line": 2326,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.setCacheProvider(CacheProvider cacheProvider): ObjectMapper"
+      },
+      {
+        "start_line": 1898,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * @since 2.9\n     */\n    public ObjectMapper setDefaultMergeable(Boolean b) {\n        _configOverrides.setDefaultMergeable(b);",
+        "distance": 1.25,
+        "title": null,
+        "name": "setDefaultMergeable",
+        "documentation": "/**\n     * Method for setting default Setter configuration, regarding things like\n     * merging, null-handling; used for properties for which there are\n     * no per-type or per-property overrides (via annotations or config overrides).\n     *\n     * @since 2.9\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setDefaultMergeable"
+          }
+        ],
+        "similarity": 0.10910322038515108,
+        "end_line": 1901,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.setDefaultMergeable(Boolean b): ObjectMapper"
+      },
+      {
+        "start_line": 2560,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * Method for checking whether given {@link MapperFeature} is enabled.\n     */\n    public boolean isEnabled(MapperFeature f) {\n        // ok to use either one, should be kept in sync",
+        "distance": 1.25,
+        "title": null,
+        "name": "isEnabled",
+        "documentation": "/**\n     * Method for checking whether given {@link MapperFeature} is enabled.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isEnabled"
+          }
+        ],
+        "similarity": 0.10834907847495971,
+        "end_line": 2563,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.isEnabled(MapperFeature f): boolean"
+      },
+      {
+        "start_line": 2936,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * @since 2.5\n     */\n    public ObjectMapper enable(JsonGenerator.Feature... features) {\n        for (JsonGenerator.Feature f : features) {\n            _jsonFactory.enable(f);\n        }",
+        "distance": 1.25,
+        "title": null,
+        "name": "enable",
+        "documentation": "/**\n     * Method for enabling specified {@link com.fasterxml.jackson.core.JsonGenerator.Feature}s\n     * for parser instances this object mapper creates.\n     *<p>\n     * Note that this is equivalent to directly calling same method on {@link #getFactory}.\n     *<p>\n     * WARNING: since this method directly modifies state of underlying {@link JsonFactory},\n     * it will change observed configuration by {@link ObjectWriter}s as well -- to avoid\n     * this, use {@link ObjectWriter#with(JsonGenerator.Feature)} instead.\n     * <p>\n     * <strong>This method will be removed in Jackson 3.0 due to unsafe usage.\n     * Configure using {@link MapperBuilder#enable(JsonGenerator.Feature...)} instead.</strong>\n     *\n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enable"
+          }
+        ],
+        "similarity": 0.10779523632271967,
+        "end_line": 2941,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.enable(JsonGenerator features): ObjectMapper"
+      },
+      {
+        "start_line": 270,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonSerializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Iterator<PropertyWriter> properties() {\n        return ClassUtil.emptyIterator();\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "properties",
+        "documentation": "/**\n     * Accessor for iterating over logical properties that the type\n     * handled by this serializer has, from serialization perspective.\n     * Actual type of properties, if any, will be\n     * {@link com.fasterxml.jackson.databind.ser.BeanPropertyWriter}.\n     * Of standard Jackson serializers, only {@link com.fasterxml.jackson.databind.ser.BeanSerializer}\n     * exposes properties.\n     *\n     * @since 2.6\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "properties"
+          }
+        ],
+        "similarity": 0.10767980608101316,
+        "end_line": 272,
+        "signature": "com.fasterxml.jackson.databind.JsonSerializer.properties(): Iterator"
+      },
+      {
+        "start_line": 2885,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * @since 2.5\n     */\n    public ObjectMapper disable(JsonParser.Feature... features) {\n        for (JsonParser.Feature f : features) {\n            _jsonFactory.disable(f);\n        }",
+        "distance": 1.25,
+        "title": null,
+        "name": "disable",
+        "documentation": "/**\n     * Method for disabling specified {@link com.fasterxml.jackson.core.JsonParser.Feature}s\n     * for parser instances this object mapper creates.\n     *<p>\n     * Note that this is equivalent to directly calling same method on {@link #getFactory}.\n     *<p>\n     * WARNING: since this method directly modifies state of underlying {@link JsonFactory},\n     * it will change observed configuration by {@link ObjectReader}s as well -- to avoid\n     * this, use {@link ObjectReader#without(JsonParser.Feature)} instead.\n     * <p>\n     * <strong>Also, this method will be removed in Jackson 3.0 due to unsafe usage and\n     * replaced by {@link MapperBuilder#disable(JsonParser.Feature...)}.</strong>\n     *\n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          }
+        ],
+        "similarity": 0.10741574274649561,
+        "end_line": 2890,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.disable(JsonParser features): ObjectMapper"
+      },
+      {
+        "start_line": 2672,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * Configure using {@link MapperBuilder#disable(SerializationFeature...)}.</strong>\n     */\n    public ObjectMapper disable(SerializationFeature f) {\n        _serializationConfig = _serializationConfig.without(f);",
+        "distance": 1.25,
+        "title": null,
+        "name": "disable",
+        "documentation": "/**\n     * Method for disabling specified {@link DeserializationConfig} features.\n     * Modifies and returns this instance; no new object is created.\n     * <p>\n     * Note: Changing the configuration of this {@link ObjectMapper} instance after its first use (read &amp; write) is\n     * not safe and should not be attempted. Instead, use {@code with()} and {@code without()} methods of\n     * {@link ObjectReader}/{@link ObjectWriter} which fully support reconfiguration as new instances are constructed.\n     * <p>\n     * <strong>This method will be removed in Jackson 3.0 due to unsafe usage.\n     * Configure using {@link MapperBuilder#disable(SerializationFeature...)}.</strong>\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          }
+        ],
+        "similarity": 0.10484021182396155,
+        "end_line": 2675,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.disable(SerializationFeature f): ObjectMapper"
+      },
+      {
+        "start_line": 2769,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * Configure using {@link MapperBuilder#disable(DeserializationFeature...)} instead.</strong>\n     */\n    public ObjectMapper disable(DeserializationFeature feature) {\n        _deserializationConfig = _deserializationConfig.without(feature);",
+        "distance": 1.25,
+        "title": null,
+        "name": "disable",
+        "documentation": "/**\n     * Method for disabling specified {@link DeserializationConfig} features.\n     * Modifies and returns this instance; no new object is created.\n     * <p>\n     * Note: Changing the configuration of this {@link ObjectMapper} instance after its first use (read &amp; write) is\n     * not safe and should not be attempted. Instead, use {@code with()} and {@code without()} methods of\n     * {@link ObjectReader}/{@link ObjectWriter} which fully support reconfiguration as new instances are constructed.\n     * <p>\n     * <strong>This method will be removed in Jackson 3.0 due to unsafe usage.\n     * Configure using {@link MapperBuilder#disable(DeserializationFeature...)} instead.</strong>\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          }
+        ],
+        "similarity": 0.10317719169447935,
+        "end_line": 2772,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.disable(DeserializationFeature feature): ObjectMapper"
+      },
+      {
+        "start_line": 2916,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * Configure using {@link MapperBuilder#configure(JsonGenerator.Feature, boolean)} instead.</strong>\n     */\n    public ObjectMapper configure(JsonGenerator.Feature f, boolean state) {\n        _jsonFactory.configure(f,  state);",
+        "distance": 1.25,
+        "title": null,
+        "name": "configure",
+        "documentation": "/**\n     * Method for changing state of an on/off {@link JsonGenerator} feature for\n     * generator instances this object mapper creates.\n     *<p>\n     * Note that this is equivalent to directly calling same method\n     * on {@link #getFactory}.\n     *<p>\n     * WARNING: since this method directly modifies state of underlying {@link JsonFactory},\n     * it will change observed configuration by {@link ObjectWriter}s as well -- to avoid\n     * this, use {@link ObjectWriter#with(JsonGenerator.Feature)} instead.\n     * <p>\n     * <strong>This method will be removed in Jackson 3.0 due to unsafe usage.\n     * Configure using {@link MapperBuilder#configure(JsonGenerator.Feature, boolean)} instead.</strong>\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "configure"
+          }
+        ],
+        "similarity": 0.10302483551431568,
+        "end_line": 2919,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.configure(JsonGenerator f, boolean state): ObjectMapper"
+      },
+      {
+        "start_line": 2127,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     */\n    @Deprecated\n    public ObjectMapper enableDefaultTypingAsProperty(DefaultTyping applicability, String propertyName) {",
+        "distance": 1.25,
+        "title": null,
+        "name": "enableDefaultTypingAsProperty",
+        "documentation": "/**\n     * @deprecated Since 2.10 use {@link #activateDefaultTypingAsProperty(PolymorphicTypeValidator,DefaultTyping,String)} instead\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enableDefaultTypingAsProperty"
+          }
+        ],
+        "similarity": 0.10292192903845261,
+        "end_line": 2129,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.enableDefaultTypingAsProperty(DefaultTyping applicability, String propertyName): ObjectMapper"
+      },
+      {
+        "start_line": 1757,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * @since 2.12\n     */\n    public ObjectMapper setAccessorNaming(AccessorNamingStrategy.Provider s) {\n        _serializationConfig = _serializationConfig.with(s);\n        _deserializationConfig = _deserializationConfig.with(s);",
+        "distance": 1.25,
+        "title": null,
+        "name": "setAccessorNaming",
+        "documentation": "/**\n     * Method for setting custom accessor naming strategy to use.\n     *\n     * @since 2.12\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setAccessorNaming"
+          }
+        ],
+        "similarity": 0.10264083784894577,
+        "end_line": 1761,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.setAccessorNaming(AccessorNamingStrategy s): ObjectMapper"
+      },
+      {
+        "start_line": 2863,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * @since 2.5\n     */\n    public ObjectMapper enable(JsonParser.Feature... features) {\n        for (JsonParser.Feature f : features) {\n            _jsonFactory.enable(f);\n        }",
+        "distance": 1.25,
+        "title": null,
+        "name": "enable",
+        "documentation": "/**\n     * Method for enabling specified {@link com.fasterxml.jackson.core.JsonParser.Feature}s\n     * for parser instances this object mapper creates.\n     *<p>\n     * Note that this is equivalent to directly calling same method on {@link #getFactory}.\n     *<p>\n     * WARNING: since this method directly modifies state of underlying {@link JsonFactory},\n     * it will change observed configuration by {@link ObjectReader}s as well -- to avoid\n     * this, use {@link ObjectReader#with(JsonParser.Feature)} instead.\n     * <p>\n     * <strong>Also, this method will be removed in Jackson 3.0 due to unsafe usage and\n     * replaced by {@link MapperBuilder#enable(JsonParser.Feature...)}.</strong>\n     *\n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enable"
+          }
+        ],
+        "similarity": 0.10234693171714239,
+        "end_line": 2868,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.enable(JsonParser features): ObjectMapper"
+      },
+      {
+        "start_line": 2639,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * Configure using {@link MapperBuilder#enable(SerializationFeature...)}.</strong>\n     */\n    public ObjectMapper enable(SerializationFeature f) {\n        _serializationConfig = _serializationConfig.with(f);",
+        "distance": 1.25,
+        "title": null,
+        "name": "enable",
+        "documentation": "/**\n     * Method for enabling specified {@link DeserializationConfig} feature.\n     * Modifies and returns this instance; no new object is created.\n     * <p>\n     * Note: Changing the configuration of this {@link ObjectMapper} instance after its first use (read &amp; write) is\n     * not safe and should not be attempted. Instead, use {@code with()} and {@code without()} methods of\n     * {@link ObjectReader}/{@link ObjectWriter} which fully support reconfiguration as new instances are constructed.\n     * <p>\n     * <strong>This method will be removed in Jackson 3.0 due to unsafe usage.\n     * Configure using {@link MapperBuilder#enable(SerializationFeature...)}.</strong>\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enable"
+          }
+        ],
+        "similarity": 0.10198352183544133,
+        "end_line": 2642,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.enable(SerializationFeature f): ObjectMapper"
+      },
+      {
+        "start_line": 2736,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * Configure using {@link MapperBuilder#enable(DeserializationFeature...)}.</strong>\n     */\n    public ObjectMapper enable(DeserializationFeature feature) {\n        _deserializationConfig = _deserializationConfig.with(feature);",
+        "distance": 1.25,
+        "title": null,
+        "name": "enable",
+        "documentation": "/**\n     * Method for enabling specified {@link DeserializationConfig} features.\n     * Modifies and returns this instance; no new object is created.\n     * <p>\n     * Note: Changing the configuration of this {@link ObjectMapper} instance after its first use (read &amp; write) is\n     * not safe and should not be attempted. Instead, use {@code with()} and {@code without()} methods of\n     * {@link ObjectReader}/{@link ObjectWriter} which fully support reconfiguration as new instances are constructed.\n     * <p>\n     * <strong>This method will be removed in Jackson 3.0 due to unsafe usage.\n     * Configure using {@link MapperBuilder#enable(DeserializationFeature...)}.</strong>\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enable"
+          }
+        ],
+        "similarity": 0.10189170358010607,
+        "end_line": 2739,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.enable(DeserializationFeature feature): ObjectMapper"
+      },
+      {
+        "start_line": 1672,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     *    of configuration calls",
+        "distance": 1.25,
+        "title": null,
+        "name": "setVisibility",
+        "documentation": "/**\n     * Convenience method that allows changing configuration for\n     * underlying {@link VisibilityChecker}s, to change details of what kinds of\n     * properties are auto-detected.\n     * Basically short cut for doing:\n     *<pre>\n     *  mapper.setVisibilityChecker(\n     *     mapper.getVisibilityChecker().withVisibility(forMethod, visibility)\n     *  );\n     *</pre>\n     * one common use case would be to do:\n     *<pre>\n     *  mapper.setVisibility(JsonMethod.FIELD, Visibility.ANY);\n     *</pre>\n     * which would make all member fields serializable without further annotations,\n     * instead of just public fields (default setting).\n     *\n     * @param forMethod Type of property descriptor affected (field, getter/isGetter,\n     *     setter, creator)\n     * @param visibility Minimum visibility to require for the property descriptors of type\n     *\n     * @return Modified mapper instance (that is, \"this\"), to allow chaining\n     *    of configuration calls\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setVisibility"
+          }
+        ],
+        "similarity": 0.10111419416885765,
+        "end_line": 1672,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.setVisibility(PropertyAccessor forMethod, JsonAutoDetect visibility): ObjectMapper"
+      },
+      {
+        "start_line": 1164,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    }\n\n    private static <T> ServiceLoader<T> secureGetServiceLoader(final Class<T> clazz, final ClassLoader classLoader) {\n        final SecurityManager sm = System.getSecurityManager();\n        if (sm == null) {\n            return (classLoader == null) ?\n                    ServiceLoader.load(clazz) : ServiceLoader.load(clazz, classLoader);\n        }\n        return AccessController.doPrivileged(new PrivilegedAction<ServiceLoader<T>>() {\n            @Override\n            public ServiceLoader<T> run() {\n                return (classLoader == null) ?\n                        ServiceLoader.load(clazz) : ServiceLoader.load(clazz, classLoader);\n            }",
+        "distance": 1.25,
+        "title": null,
+        "name": "secureGetServiceLoader",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "secureGetServiceLoader"
+          }
+        ],
+        "similarity": 0.10040377361286146,
+        "end_line": 1177,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.secureGetServiceLoader(Class clazz, ClassLoader classLoader): ServiceLoader"
+      },
+      {
+        "start_line": 1906,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * @since 2.10\n     */\n    public ObjectMapper setDefaultLeniency(Boolean b) {\n        _configOverrides.setDefaultLeniency(b);",
+        "distance": 1.25,
+        "title": null,
+        "name": "setDefaultLeniency",
+        "documentation": "/**\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setDefaultLeniency"
+          }
+        ],
+        "similarity": 0.09964043754878975,
+        "end_line": 1909,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.setDefaultLeniency(Boolean b): ObjectMapper"
+      },
+      {
+        "start_line": 1873,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * @since 2.9\n     */\n    public ObjectMapper setDefaultSetterInfo(JsonSetter.Value v) {\n        _configOverrides.setDefaultSetterInfo(v);",
+        "distance": 1.25,
+        "title": null,
+        "name": "setDefaultSetterInfo",
+        "documentation": "/**\n     * Method for setting default Setter configuration, regarding things like\n     * merging, null-handling; used for properties for which there are\n     * no per-type or per-property overrides (via annotations or config overrides).\n     *\n     * @since 2.9\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setDefaultSetterInfo"
+          }
+        ],
+        "similarity": 0.09841892018712645,
+        "end_line": 1876,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.setDefaultSetterInfo(JsonSetter v): ObjectMapper"
+      },
+      {
+        "start_line": 1707,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * @see com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair\n     */\n    public ObjectMapper setAnnotationIntrospector(AnnotationIntrospector ai) {\n        _serializationConfig = _serializationConfig.with(ai);\n        _deserializationConfig = _deserializationConfig.with(ai);",
+        "distance": 1.25,
+        "title": null,
+        "name": "setAnnotationIntrospector",
+        "documentation": "/**\n     * Method for setting {@link AnnotationIntrospector} used by this\n     * mapper instance for both serialization and deserialization.\n     * Note that doing this will replace the current introspector, which\n     * may lead to unavailability of core Jackson annotations.\n     * If you want to combine handling of multiple introspectors,\n     * have a look at {@link com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair}.\n     *\n     * @see com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setAnnotationIntrospector"
+          }
+        ],
+        "similarity": 0.09689741318965853,
+        "end_line": 1711,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.setAnnotationIntrospector(AnnotationIntrospector ai): ObjectMapper"
+      },
+      {
+        "start_line": 1477,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * for constructing (bean) serializers.\n     */\n    public ObjectMapper setSerializerFactory(SerializerFactory f) {\n        _serializerFactory = f;",
+        "distance": 1.25,
+        "title": null,
+        "name": "setSerializerFactory",
+        "documentation": "/**\n     * Method for setting specific {@link SerializerFactory} to use\n     * for constructing (bean) serializers.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setSerializerFactory"
+          }
+        ],
+        "similarity": 0.09650317038469536,
+        "end_line": 1480,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.setSerializerFactory(SerializerFactory f): ObjectMapper"
+      },
+      {
+        "start_line": 2898,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     */\n\n    public boolean isEnabled(JsonGenerator.Feature f) {",
+        "distance": 1.25,
+        "title": null,
+        "name": "isEnabled",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isEnabled"
+          }
+        ],
+        "similarity": 0.0963705207233916,
+        "end_line": 2900,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.isEnabled(JsonGenerator f): boolean"
+      },
+      {
+        "start_line": 1738,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * Method for setting custom property naming strategy to use.\n     */\n    public ObjectMapper setPropertyNamingStrategy(PropertyNamingStrategy s) {\n        _serializationConfig = _serializationConfig.with(s);\n        _deserializationConfig = _deserializationConfig.with(s);",
+        "distance": 1.25,
+        "title": null,
+        "name": "setPropertyNamingStrategy",
+        "documentation": "/**\n     * Method for setting custom property naming strategy to use.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setPropertyNamingStrategy"
+          }
+        ],
+        "similarity": 0.09587818020167982,
+        "end_line": 1742,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.setPropertyNamingStrategy(PropertyNamingStrategy s): ObjectMapper"
+      },
+      {
+        "start_line": 1886,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * @since 2.9\n     */\n    public ObjectMapper setDefaultVisibility(JsonAutoDetect.Value vis) {\n        _configOverrides.setDefaultVisibility(VisibilityChecker.Std.construct(vis));",
+        "distance": 1.25,
+        "title": null,
+        "name": "setDefaultVisibility",
+        "documentation": "/**\n     * Method for setting auto-detection visibility definition\n     * defaults, which are in effect unless overridden by\n     * annotations (like <code>JsonAutoDetect</code>) or per-type\n     * visibility overrides.\n     *\n     * @since 2.9\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setDefaultVisibility"
+          }
+        ],
+        "similarity": 0.09557847667307287,
+        "end_line": 1889,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.setDefaultVisibility(JsonAutoDetect vis): ObjectMapper"
+      },
+      {
+        "start_line": 2843,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * replaced by {@link MapperBuilder#configure(JsonParser.Feature, boolean)}.</strong>\n     */\n    public ObjectMapper configure(JsonParser.Feature f, boolean state) {\n        _jsonFactory.configure(f, state);",
+        "distance": 1.25,
+        "title": null,
+        "name": "configure",
+        "documentation": "/**\n     * Method for changing state of specified {@link com.fasterxml.jackson.core.JsonParser.Feature}s\n     * for parser instances this object mapper creates.\n     *<p>\n     * Note that this is equivalent to directly calling same method\n     * on {@link #getFactory}.\n     *<p>\n     * WARNING: since this method directly modifies state of underlying {@link JsonFactory},\n     * it will change observed configuration by {@link ObjectReader}s as well -- to avoid\n     * this, use {@link ObjectReader#with(JsonParser.Feature)} instead.\n     * <p>\n     * <strong>Also, this method will be removed in Jackson 3.0 due to unsafe usage and\n     * replaced by {@link MapperBuilder#configure(JsonParser.Feature, boolean)}.</strong>\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "configure"
+          }
+        ],
+        "similarity": 0.0951613177936728,
+        "end_line": 2846,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.configure(JsonParser f, boolean state): ObjectMapper"
+      },
+      {
+        "start_line": 2655,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * Configure using {@link MapperBuilder#isEnabled(SerializationFeature)}.</strong>",
+        "distance": 1.25,
+        "title": null,
+        "name": "enable",
+        "documentation": "/**\n     * Method for enabling specified {@link DeserializationConfig} features.\n     * Modifies and returns this instance; no new object is created.\n     * <p>\n     * Note: Changing the configuration of this {@link ObjectMapper} instance after its first use (read &amp; write) is\n     * not safe and should not be attempted. Instead, use {@code with()} and {@code without()} methods of\n     * {@link ObjectReader}/{@link ObjectWriter} which fully support reconfiguration as new instances are constructed.\n     * <p>\n     * <strong>This method will be removed in Jackson 3.0 due to unsafe usage.\n     * Configure using {@link MapperBuilder#isEnabled(SerializationFeature)}.</strong>\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enable"
+          }
+        ],
+        "similarity": 0.09361589049571072,
+        "end_line": 2655,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.enable(SerializationFeature first, SerializationFeature f): ObjectMapper"
+      },
+      {
+        "start_line": 2688,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * Configure using {@link MapperBuilder#disable(SerializationFeature...)}.</strong>",
+        "distance": 1.25,
+        "title": null,
+        "name": "disable",
+        "documentation": "/**\n     * Method for disabling specified {@link DeserializationConfig} features.\n     * Modifies and returns this instance; no new object is created.\n     * <p>\n     * Note: Changing the configuration of this {@link ObjectMapper} instance after its first use (read &amp; write) is\n     * not safe and should not be attempted. Instead, use {@code with()} and {@code without()} methods of\n     * {@link ObjectReader}/{@link ObjectWriter} which fully support reconfiguration as new instances are constructed.\n     * <p>\n     * <strong>This method will be removed in Jackson 3.0 due to unsafe usage.\n     * Configure using {@link MapperBuilder#disable(SerializationFeature...)}.</strong>\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          }
+        ],
+        "similarity": 0.09342832500311958,
+        "end_line": 2688,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.disable(SerializationFeature first, SerializationFeature f): ObjectMapper"
+      },
+      {
+        "start_line": 2087,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * @param typer Type information inclusion handler\n     */\n    public ObjectMapper setDefaultTyping(TypeResolverBuilder<?> typer) {\n        _deserializationConfig = _deserializationConfig.with(typer);\n        _serializationConfig = _serializationConfig.with(typer);",
+        "distance": 1.25,
+        "title": null,
+        "name": "setDefaultTyping",
+        "documentation": "/**\n     * Method for enabling automatic inclusion of type information (\"Default Typing\"),\n     * using specified handler object for determining which types this affects,\n     * as well as details of how information is embedded.\n     *<p>\n     * NOTE: use of Default Typing can be a potential security risk if incoming\n     * content comes from untrusted sources, so care should be taken to use\n     * a {@link TypeResolverBuilder} that can limit allowed classes to\n     * deserialize. Note in particular that\n     * {@link com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder}\n     * DOES NOT limit applicability but creates type (de)serializers for all\n     * types.\n     *\n     * @param typer Type information inclusion handler\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setDefaultTyping"
+          }
+        ],
+        "similarity": 0.0928530703810291,
+        "end_line": 2091,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.setDefaultTyping(TypeResolverBuilder typer): ObjectMapper"
+      },
+      {
+        "start_line": 2785,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * Configure using {@link MapperBuilder#disable(DeserializationFeature...)} instead.</strong>",
+        "distance": 1.25,
+        "title": null,
+        "name": "disable",
+        "documentation": "/**\n     * Method for disabling specified {@link DeserializationConfig} features.\n     * Modifies and returns this instance; no new object is created.\n     * <p>\n     * Note: Changing the configuration of this {@link ObjectMapper} instance after its first use (read &amp; write) is\n     * not safe and should not be attempted. Instead, use {@code with()} and {@code without()} methods of\n     * {@link ObjectReader}/{@link ObjectWriter} which fully support reconfiguration as new instances are constructed.\n     * <p>\n     * <strong>This method will be removed in Jackson 3.0 due to unsafe usage.\n     * Configure using {@link MapperBuilder#disable(DeserializationFeature...)} instead.</strong>\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          }
+        ],
+        "similarity": 0.09265152219188831,
+        "end_line": 2785,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.disable(DeserializationFeature first, DeserializationFeature f): ObjectMapper"
+      },
+      {
+        "start_line": 2103,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     */\n    @Deprecated\n    public ObjectMapper enableDefaultTyping() {",
+        "distance": 1.25,
+        "title": null,
+        "name": "enableDefaultTyping",
+        "documentation": "/**\n     * @deprecated Since 2.10 use {@link #activateDefaultTyping(PolymorphicTypeValidator)} instead\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enableDefaultTyping"
+          }
+        ],
+        "similarity": 0.09216059979900884,
+        "end_line": 2105,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.enableDefaultTyping(): ObjectMapper"
+      },
+      {
+        "start_line": 750,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * @since 2.1\n     */\n    public ObjectMapper copy() {\n        _checkInvalidCopy(ObjectMapper.class);",
+        "distance": 1.25,
+        "title": null,
+        "name": "copy",
+        "documentation": "/**\n     * Method for creating a new {@link ObjectMapper} instance that\n     * has same initial configuration as this instance. Note that this\n     * also requires making a copy of the underlying {@link JsonFactory}\n     * instance.\n     *<p>\n     * Method is typically\n     * used when multiple, differently configured mappers are needed.\n     * Although configuration is shared, cached serializers and deserializers\n     * are NOT shared, which means that the new instance may be re-configured\n     * before use; meaning that it behaves the same way as if an instance\n     * was constructed from scratch.\n     *\n     * @since 2.1\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "copy"
+          }
+        ],
+        "similarity": 0.09072264773873895,
+        "end_line": 753,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.copy(): ObjectMapper"
+      },
+      {
+        "start_line": 1773,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * @since 2.6\n     */\n    public ObjectMapper setDefaultPrettyPrinter(PrettyPrinter pp) {\n        _serializationConfig = _serializationConfig.withDefaultPrettyPrinter(pp);",
+        "distance": 1.25,
+        "title": null,
+        "name": "setDefaultPrettyPrinter",
+        "documentation": "/**\n     * Method for specifying {@link PrettyPrinter} to use when \"default pretty-printing\"\n     * is enabled (by enabling {@link SerializationFeature#INDENT_OUTPUT})\n     *\n     * @param pp Pretty printer to use by default.\n     *\n     * @return This mapper, useful for call-chaining\n     *\n     * @since 2.6\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setDefaultPrettyPrinter"
+          }
+        ],
+        "similarity": 0.09050839229135209,
+        "end_line": 1776,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.setDefaultPrettyPrinter(PrettyPrinter pp): ObjectMapper"
+      },
+      {
+        "start_line": 2752,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * Configure using {@link MapperBuilder#enable(DeserializationFeature...)}.</strong>",
+        "distance": 1.25,
+        "title": null,
+        "name": "enable",
+        "documentation": "/**\n     * Method for enabling specified {@link DeserializationConfig} features.\n     * Modifies and returns this instance; no new object is created.\n     * <p>\n     * Note: Changing the configuration of this {@link ObjectMapper} instance after its first use (read &amp; write) is\n     * not safe and should not be attempted. Instead, use {@code with()} and {@code without()} methods of\n     * {@link ObjectReader}/{@link ObjectWriter} which fully support reconfiguration as new instances are constructed.\n     * <p>\n     * <strong>This method will be removed in Jackson 3.0 due to unsafe usage.\n     * Configure using {@link MapperBuilder#enable(DeserializationFeature...)}.</strong>\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enable"
+          }
+        ],
+        "similarity": 0.09022295961576053,
+        "end_line": 2752,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.enable(DeserializationFeature first, DeserializationFeature f): ObjectMapper"
+      },
+      {
+        "start_line": 2825,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     */\n\n    public boolean isEnabled(JsonParser.Feature f) {",
+        "distance": 1.25,
+        "title": null,
+        "name": "isEnabled",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isEnabled"
+          }
+        ],
+        "similarity": 0.09014850572865357,
+        "end_line": 2827,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.isEnabled(JsonParser f): boolean"
+      },
+      {
+        "start_line": 2360,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * @since 2.4\n     */\n    public ObjectMapper setConfig(DeserializationConfig config) {\n        _assertNotNull(\"config\", config);\n        _deserializationConfig = config;",
+        "distance": 1.25,
+        "title": null,
+        "name": "setConfig",
+        "documentation": "/**\n     * Method that allows overriding of the underlying {@link DeserializationConfig}\n     * object.\n     * It is added as a fallback method that may be used if no other configuration\n     * modifier method works: it should not be used if there are alternatives,\n     * and its use is generally discouraged.\n     *<p>\n     * <b>NOTE</b>: only use this method if you know what you are doing -- it allows\n     * by-passing some of checks applied to other configuration methods.\n     * Also keep in mind that as with all configuration of {@link ObjectMapper},\n     * this is only thread-safe if done before calling any deserialization methods.\n     *\n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setConfig"
+          }
+        ],
+        "similarity": 0.08966214721274854,
+        "end_line": 2364,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.setConfig(DeserializationConfig config): ObjectMapper"
+      },
+      {
+        "start_line": 1848,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * @since 2.9 (basically rename of <code>setPropertyInclusion</code>)\n     */\n    public ObjectMapper setDefaultPropertyInclusion(JsonInclude.Value incl) {\n        _configOverrides.setDefaultInclusion(incl);",
+        "distance": 1.25,
+        "title": null,
+        "name": "setDefaultPropertyInclusion",
+        "documentation": "/**\n     * Method for setting default POJO property inclusion strategy for serialization,\n     * applied for all properties for which there are no per-type or per-property\n     * overrides (via annotations or config overrides).\n     *\n     * @since 2.9 (basically rename of <code>setPropertyInclusion</code>)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setDefaultPropertyInclusion"
+          }
+        ],
+        "similarity": 0.08961205831310942,
+        "end_line": 1851,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.setDefaultPropertyInclusion(JsonInclude incl): ObjectMapper"
+      },
+      {
+        "start_line": 2068,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * @since 2.10\n     */\n    public ObjectMapper deactivateDefaultTyping() {",
+        "distance": 1.25,
+        "title": null,
+        "name": "deactivateDefaultTyping",
+        "documentation": "/**\n     * Method for disabling automatic inclusion of type information; if so, only\n     * explicitly annotated types (ones with\n     * {@link com.fasterxml.jackson.annotation.JsonTypeInfo}) will have\n     * additional embedded type information.\n     *\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "deactivateDefaultTyping"
+          }
+        ],
+        "similarity": 0.08909684768416604,
+        "end_line": 2070,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.deactivateDefaultTyping(): ObjectMapper"
+      },
+      {
+        "start_line": 2135,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     */\n    @Deprecated\n    public ObjectMapper disableDefaultTyping() {",
+        "distance": 1.25,
+        "title": null,
+        "name": "disableDefaultTyping",
+        "documentation": "/**\n     * @deprecated Since 2.10 use {@link #deactivateDefaultTyping} instead\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disableDefaultTyping"
+          }
+        ],
+        "similarity": 0.08880023096019285,
+        "end_line": 2137,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.disableDefaultTyping(): ObjectMapper"
+      },
+      {
+        "start_line": 1498,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * caching of {@link JsonSerializer} instances.\n     */\n    public ObjectMapper setSerializerProvider(DefaultSerializerProvider p) {\n        _serializerProvider = p;",
+        "distance": 1.25,
+        "title": null,
+        "name": "setSerializerProvider",
+        "documentation": "/**\n     * Method for setting \"blueprint\" {@link SerializerProvider} instance\n     * to use as the base for actual provider instances to use for handling\n     * caching of {@link JsonSerializer} instances.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setSerializerProvider"
+          }
+        ],
+        "similarity": 0.08874413185376573,
+        "end_line": 1501,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.setSerializerProvider(DefaultSerializerProvider p): ObjectMapper"
+      },
+      {
+        "start_line": 4259,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     */\n    @Deprecated\n    public ObjectWriter writerWithType(TypeReference<?> rootType) {\n        return _newWriter(getSerializationConfig(),\n                // 15-Mar-2013, tatu: Important! Indicate that static typing is needed:\n                ((rootType == null) ? null : _typeFactory.constructType(rootType)),",
+        "distance": 1.25,
+        "title": null,
+        "name": "writerWithType",
+        "documentation": "/**\n     * @deprecated Since 2.5, use {@link #writerFor(TypeReference)} instead\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "writerWithType"
+          }
+        ],
+        "similarity": 0.0886238825209694,
+        "end_line": 4264,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.writerWithType(TypeReference rootType): ObjectWriter"
+      },
+      {
+        "start_line": 2341,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * instances from this mapper.\n     */\n    public ObjectMapper clearProblemHandlers() {\n        _deserializationConfig = _deserializationConfig.withNoProblemHandlers();",
+        "distance": 1.25,
+        "title": null,
+        "name": "clearProblemHandlers",
+        "documentation": "/**\n     * Method for removing all registered {@link DeserializationProblemHandler}s\n     * instances from this mapper.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "clearProblemHandlers"
+          }
+        ],
+        "similarity": 0.08839436246518714,
+        "end_line": 2344,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.clearProblemHandlers(): ObjectMapper"
+      },
+      {
+        "start_line": 1837,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     */\n    @Deprecated\n    public ObjectMapper setPropertyInclusion(JsonInclude.Value incl) {",
+        "distance": 1.25,
+        "title": null,
+        "name": "setPropertyInclusion",
+        "documentation": "/**\n     * @since 2.7\n     * @deprecated Since 2.9 use {@link #setDefaultPropertyInclusion}\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setPropertyInclusion"
+          }
+        ],
+        "similarity": 0.08802683182230636,
+        "end_line": 1839,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.setPropertyInclusion(JsonInclude incl): ObjectMapper"
+      },
+      {
+        "start_line": 2426,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "     * @since 2.4\n     */\n    public ObjectMapper setConfig(SerializationConfig config) {\n        _assertNotNull(\"config\", config);\n        _serializationConfig = config;",
+        "distance": 1.25,
+        "title": null,
+        "name": "setConfig",
+        "documentation": "/**\n     * Method that allows overriding of the underlying {@link SerializationConfig}\n     * object, which contains serialization-specific configuration settings.\n     * It is added as a fallback method that may be used if no other configuration\n     * modifier method works: it should not be used if there are alternatives,\n     * and its use is generally discouraged.\n     *<p>\n     * <b>NOTE</b>: only use this method if you know what you are doing -- it allows\n     * by-passing some of checks applied to other configuration methods.\n     * Also keep in mind that as with all configuration of {@link ObjectMapper},\n     * this is only thread-safe if done before calling any serialization methods.\n     *\n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setConfig"
+          }
+        ],
+        "similarity": 0.08798323738208633,
+        "end_line": 2430,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.setConfig(SerializationConfig config): ObjectMapper"
+      }
+    ],
+    "classes": [],
+    "issues": [
+      {
+        "content": "Hi, I've tried the code below to serialize properties that have both a getter and a setter. However the output is: `{\"readonly\":1,\"readwrite\":2}` while I expected it to be: `{\"readwrite\":2}`.\n\n``` java\npublic class Main {\n\n    public static class DataB {\n        private int readonly;\n        private int readwrite;\n\n        public DataB() {\n            readonly = 1;\n            readwrite = 2;\n        }\n\n        public int getReadwrite() {\n            return readwrite;\n        }\n        public void setReadwrite(int readwrite) {\n            this.readwrite = readwrite;\n        }\n        public int getReadonly() {\n            return readonly;\n        }\n    }\n\n    public static void main(String[] args) {\n        ObjectMapper mapper = new ObjectMapper(); \n        mapper.setVisibility(PropertyAccessor.ALL, Visibility.NONE);\n        mapper.setVisibility(PropertyAccessor.GETTER, Visibility.PUBLIC_ONLY);\n        mapper.setVisibility(PropertyAccessor.SETTER, Visibility.PUBLIC_ONLY);\n        mapper.enable(MapperFeature.REQUIRE_SETTERS_FOR_GETTERS);\n        DataB dataB = new DataB();\n        try {\n            String json = mapper.writeValueAsString(dataB);\n            System.out.println(json);\n        } catch (JsonProcessingException e) {\n            // TODO Auto-generated catch block\n            e.printStackTrace();\n        }\n    }\n\n}\n```\n\n",
+        "distance": 0,
+        "title": "`MapperFeature.REQUIRE_SETTERS_FOR_GETTERS` has no effect",
+        "name": "root",
+        "path": [],
+        "issue_id": "root",
+        "similarity": 2.0,
+        "type": "issue"
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "736",
+        "type": "issue",
+        "content": "Hi, I've tried the code below to serialize properties that have both a getter and a setter. However the output is: `{\"readonly\":1,\"readwrite\":2}` while I expected it to be: `{\"readwrite\":2}`.\n\n``` java\npublic class Main {\n\n    public static class DataB {\n        private int readonly;\n        private int readwrite;\n\n        public DataB() {\n            readonly = 1;\n            readwrite = 2;\n        }\n\n        public int getReadwrite() {\n            return readwrite;\n        }\n        public void setReadwrite(int readwrite) {\n            this.readwrite = readwrite;\n        }\n        public int getReadonly() {\n            return readonly;\n        }\n    }\n\n    public static void main(String[] args) {\n        ObjectMapper mapper = new ObjectMapper(); \n        mapper.setVisibility(PropertyAccessor.ALL, Visibility.NONE);\n        mapper.setVisibility(PropertyAccessor.GETTER, Visibility.PUBLIC_ONLY);\n        mapper.setVisibility(PropertyAccessor.SETTER, Visibility.PUBLIC_ONLY);\n        mapper.enable(MapperFeature.REQUIRE_SETTERS_FOR_GETTERS);\n        DataB dataB = new DataB();\n        try {\n            String json = mapper.writeValueAsString(dataB);\n            System.out.println(json);\n        } catch (JsonProcessingException e) {\n            // TODO Auto-generated catch block\n            e.printStackTrace();\n        }\n    }\n\n}\n```\n\n\n\nComment by cowtowncoder:\nInteresting. Sounds like a bug; I am guessing existence of the matching field might be mistaken as indication of a setter. Which version is this with?\n\n\nComment by migel:\n2.5.1\n\n\nComment by cowtowncoder:\nOk, I can reproduce this. And it does look like problem with a field.\n\nBut I'll have to handle this carefully: as per its Javadoc, `REQUIRE_SETTERS_FOR_GETTERS` does considers fields as well as getter methods (\"determines whether getters (getter methods) can be auto-detected if there is no matching mutator (setter, constructor parameter or field) or not\").\n\n\nComment by migel:\nThanks. If I understand correctly, in this case the matching mutator (`private int readonly`) is a field but it is marked private so it wasn't suppose to detect this mutator since auto detection it is limited to public setters. \n\n\nComment by cowtowncoder:\n@migel Yes, for getter action. But for \"setter\" action lower visibility is accepted. However, you have defined `NONE` as the baseline, so it should not be discovered even then.\r\n\r\nIf you want to try setting `PropertyAccessor.FIELD` directly to `Visibility.NONE`, although it should not make difference here.\r\n\r\nSo, yes, I think there is a problem here. I am just not fully sure how to tackle it.\r\n\r\nAs a work-around on short term you may want to use explicit `@JsonIgnore`, in case you were blocked.\r\n",
+        "source_code": null,
+        "distance": 0.5,
+        "title": "`MapperFeature.REQUIRE_SETTERS_FOR_GETTERS` has no effect",
+        "name": "issue#736",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#4257"
+          },
+          {
+            "start_node": "pr#4257",
+            "description": "referenced by issue",
+            "type": "RELATED",
+            "end_node": "issue#736"
+          }
+        ],
+        "similarity": 0.7291614326483702,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "4257",
+        "type": "issue",
+        "content": "fixes #736 from way back.\r\n\r\n## Notes\r\n\r\n- **PR is against 2.16 branch, in case we want to add to 2.16\n\n",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "Fix `REQUIRE_SETTERS_FOR_GETTERS` taking no effect",
+        "name": "pr#4257",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#4257"
+          }
+        ],
+        "similarity": 0.42743848267213214,
+        "end_line": null,
+        "signature": null
+      }
+    ]
+  },
+  "artifact_stats": {
+    "skipped_due_to_time": 5,
+    "valid_related_items": 22
+  }
+}

@@ -1,0 +1,28 @@
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java
+@@ -76,7 +76,24 @@
+      */
+ 
+     @Override
+-    public Object deserializeFromObject(JsonParser p, DeserializationContext ctxt) throws IOException
++    public Object deserializeFromObject(JsonParser p, DeserializationContext ctxt) throws IOException {
++        Object bean = super.deserializeFromObject(p, ctxt);
++        // For any properties, ensure the map is initialized
++        if (_anySetter != null && bean != null) {
++            try {
++                AnnotatedMember anySetterMember = _anySetter.getMember();
++                Object map = anySetterMember.getValue(bean);
++                if (map == null) {
++                    Field field = (Field) anySetterMember.getMember();
++                    field.set(bean, new HashMap<String, Object>());
++                }
++            } catch (Exception e) {
++                ctxt.reportBadDefinition(handledType(), 
++                    "Failed to initialize @JsonAnySetter map for "+handledType().getName());
++            }
++        }
++        return bean;
++    }
+     {
+         // 30-Sep-2010, tatu: Need to allow use of @JsonCreator, so:
+         if (_propertyBasedCreator != null) { // proper @JsonCreator

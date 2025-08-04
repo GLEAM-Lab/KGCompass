@@ -1,0 +1,49 @@
+Based on the issue, the bug occurs in `getSpringBootRepackageConfiguration()` when the spring-boot-maven-plugin configuration section is not provided. The NullPointerException happens because it tries to call `Optional.of()` with a null configuration value.
+
+The fix is to check if the configuration is null before wrapping it in an Optional. Here's the edit:
+
+```java
+### playground/googlecontainertools__jib/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java
+- start_line : 562
+- end_line : 576
+<<<<<<< SEARCH
+  Optional<Xpp3Dom> getSpringBootRepackageConfiguration() {
+    Plugin springBootPlugin =
+        project.getPlugin("org.springframework.boot:spring-boot-maven-plugin");
+    if (springBootPlugin != null) {
+      for (PluginExecution execution : springBootPlugin.getExecutions()) {
+        if (execution.getGoals().contains("repackage")) {
+          Xpp3Dom configuration = (Xpp3Dom) execution.getConfiguration();
+
+          boolean skip = Boolean.valueOf(getChildValue(configuration, "skip").orElse("false"));
+          return skip ? Optional.empty() : Optional.of(configuration);
+        }
+      }
+    }
+    return Optional.empty();
+  }
+=======
+  Optional<Xpp3Dom> getSpringBootRepackageConfiguration() {
+    Plugin springBootPlugin =
+        project.getPlugin("org.springframework.boot:spring-boot-maven-plugin");
+    if (springBootPlugin != null) {
+      for (PluginExecution execution : springBootPlugin.getExecutions()) {
+        if (execution.getGoals().contains("repackage")) {
+          Xpp3Dom configuration = (Xpp3Dom) execution.getConfiguration();
+          if (configuration == null) {
+            return Optional.empty();
+          }
+
+          boolean skip = Boolean.valueOf(getChildValue(configuration, "skip").orElse("false"));
+          return skip ? Optional.empty() : Optional.of(configuration);
+        }
+      }
+    }
+    return Optional.empty();
+  }
+>>>>>>> REPLACE
+```
+
+This change adds a null check for the configuration before attempting to wrap it in an Optional. If the configuration is null (which happens when the spring-boot-maven-plugin has no configuration section), it returns an empty Optional instead of trying to create an Optional with a null value.
+
+The fix matches the workaround mentioned in the issue where adding an empty configuration section works around the problem. This change makes the code handle the case where no configuration section is present.

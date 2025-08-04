@@ -1,0 +1,15 @@
+--- a/src/main/java/com/fasterxml/jackson/core/JsonPointer.java
++++ b/src/main/java/com/fasterxml/jackson/core/JsonPointer.java
+@@ -379,7 +379,11 @@
+             //removes final slash
+             currentJsonPointer = currentJsonPointer.substring(0, currentJsonPointer.length()-1);
+         }
+-        return compile(currentJsonPointer + tail._asString);
++        String tailStr = tail._asString;
++        if (tail._asStringOffset > 0) {
++            tailStr = tailStr.substring(tail._asStringOffset);
++        }
++        return compile(currentJsonPointer + tailStr);
+     }
+ 
+     /**

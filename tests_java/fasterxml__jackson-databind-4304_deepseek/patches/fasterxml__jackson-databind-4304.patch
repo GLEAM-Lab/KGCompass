@@ -1,0 +1,28 @@
+Based on the issue description, the problem occurs when trying to serialize an `ObjectReader` that's configured for polymorphism (using `@JsonTypeInfo`). The error shows that `TypeNameIdResolver` is not serializable, which is a component used for polymorphic type handling.
+
+Looking at the code, the issue stems from `TokenBuffer` not properly handling serialization of polymorphic type information. The `TokenBuffer` class needs to ensure that any type resolvers or related polymorphic configuration is properly serializable or excluded from serialization.
+
+Here's the proposed fix that makes `TokenBuffer` handle polymorphic type information more gracefully during serialization:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/util/TokenBuffer.java
+- start_line : 983
+- end_line : 983
+<<<<<<< SEARCH
+    public void writeObject(Object value) throws IOException
+=======
+    public void writeObject(Object value) throws IOException {
+        if (value instanceof com.fasterxml.jackson.databind.jsontype.TypeSerializer) {
+            // Skip serialization of TypeSerializer to avoid NotSerializableException
+            return;
+        }
+        super.writeObject(value);
+    }
+>>>>>>> REPLACE
+```
+
+This change prevents the serialization of `TypeSerializer` instances which contain non-serializable components like `TypeNameIdResolver`. When an `ObjectReader` with polymorphic configuration is serialized, any type-related serializers will be skipped rather than causing serialization to fail.
+
+The fix is minimal and targeted specifically at the serialization issue while maintaining all other functionality. It allows the `TokenBuffer` (and by extension `ObjectReader`) to be serialized even when configured for polymorphism.
+
+Note that this is a defensive approach - the proper fix would require making the type resolver classes serializable, but that would be a much larger change affecting multiple components. This solution provides a practical workaround for the immediate issue.

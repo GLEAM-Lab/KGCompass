@@ -1,0 +1,36 @@
+Based on the issue, the bug is in `TextBuffer.java` where `getTextBuffer()` returns inconsistent values (`null` vs empty array `[]`) for an empty string. According to the issue comment, returning an empty array is the expected behavior.
+
+The issue occurs because:
+1. After `resetWithEmpty()`, `getTextBuffer()` returns null since no buffer is allocated yet
+2. After `contentsAsString()`, an empty array is created and cached in `_resultArray`
+3. Subsequent `getTextBuffer()` calls return the cached empty array
+
+To fix this, we should modify `resetWithEmpty()` to initialize an empty array immediately, making behavior consistent from the start.
+
+Here's the edit:
+
+```java
+### playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java
+- start_line : 154
+- end_line : 154
+<<<<<<< SEARCH
+    public void resetWithEmpty()
+=======
+    public void resetWithEmpty() {
+        _inputStart = -1;
+        _currentSize = 0;
+        _inputLen = 0;
+        _inputBuffer = null;
+        _resultString = null;
+        _resultArray = new char[0]; // Initialize empty array
+        _currentSegment = null;
+    }
+>>>>>>> REPLACE
+```
+
+This change ensures that:
+1. `getTextBuffer()` will always return an empty array for an empty text buffer
+2. The behavior is consistent before and after `contentsAsString()`
+3. Matches the expected behavior mentioned in the issue comment
+
+The fix maintains all existing functionality while making the empty buffer case consistent. All other methods that interact with the buffer will continue to work as before, but now with a properly initialized empty array state.

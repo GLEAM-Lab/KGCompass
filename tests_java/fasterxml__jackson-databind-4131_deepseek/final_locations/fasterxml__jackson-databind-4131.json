@@ -1,0 +1,1533 @@
+{
+  "related_entities": {
+    "methods": [
+      {
+        "start_line": 1309,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T extends JsonNode> T withArray(String exprOrProperty) {\n        throw new UnsupportedOperationException(\"`JsonNode` not of type `ObjectNode` (but `\"\n                +getClass().getName()+\")`, cannot call `withArray()` on it\");\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "withArray",
+        "documentation": "/**\n     * Method that works in one of possible ways, depending on whether\n     * {@code exprOrProperty} is a valid {@link JsonPointer} expression or\n     * not (valid expression is either empty String {@code \"\"} or starts\n     * with leading slash {@code /} character).\n     * If it is, works as a short-cut to:\n     *<pre>\n     *  withObject(JsonPointer.compile(exprOrProperty));\n     *</pre>\n     * If it is NOT a valid {@link JsonPointer} expression, value is taken\n     * as a literal Object property name and traversed like a single-segment\n     * {@link JsonPointer}.\n     *<p>\n     * NOTE: before Jackson 2.14 behavior was always that of non-expression usage;\n     * that is, {@code exprOrProperty} was always considered as a simple property name.\n     *\n     * @param exprOrProperty Either {@link JsonPointer} expression for full access (if valid\n     *   pointer expression), or the name of property for the {@link ArrayNode}.\n     *\n     * @return {@link ArrayNode} found or created\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withArray"
+          }
+        ],
+        "similarity": 0.1822183988011714,
+        "end_line": 1312,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.withArray(String exprOrProperty): T"
+      },
+      {
+        "start_line": 724,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationConfig.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public DeserializationConfig with(JsonNodeFactory f) {\n        if (_nodeFactory == f) {\n            return this;\n        }\n        return new DeserializationConfig(this, f);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * Fluent factory method that will construct a new instance with\n     * specified {@link JsonNodeFactory}\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.18055715654524984,
+        "end_line": 729,
+        "signature": "com.fasterxml.jackson.databind.DeserializationConfig.with(JsonNodeFactory f): DeserializationConfig"
+      },
+      {
+        "start_line": 1283,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T extends JsonNode> T with(String exprOrProperty) {\n        throw new UnsupportedOperationException(\"`JsonNode` not of type `ObjectNode` (but \"\n                                +getClass().getName()+\"), cannot call `with(String)` on it\");\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * Method that works in one of possible ways, depending on whether\n     * {@code exprOrProperty} is a valid {@link JsonPointer} expression or\n     * not (valid expression is either empty String {@code \"\"} or starts\n     * with leading slash {@code /} character).\n     * If it is, works as a short-cut to:\n     *<pre>\n     *  withObject(JsonPointer.compile(exprOrProperty));\n     *</pre>\n     * If it is NOT a valid {@link JsonPointer} expression, value is taken\n     * as a literal Object property name and traversed like a single-segment\n     * {@link JsonPointer}.\n     *<p>\n     * NOTE: before Jackson 2.14 behavior was always that of non-expression usage;\n     * that is, {@code exprOrProperty} was always considered as a simple property name.\n     *\n     * @deprecated Since 2.14 use {@code withObject(String)} instead\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.1789821226868987,
+        "end_line": 1286,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.with(String exprOrProperty): T"
+      },
+      {
+        "start_line": 374,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectWriter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectWriter with(JsonGenerator.Feature feature)  {\n        return _new(this, _config.with(feature));\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.1663091715084756,
+        "end_line": 376,
+        "signature": "com.fasterxml.jackson.databind.ObjectWriter.with(JsonGenerator feature): ObjectWriter"
+      },
+      {
+        "start_line": 660,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectWriter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectWriter with(JsonFactory f) {\n        return (f == _generatorFactory) ? this : _new(this, f);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * @since 2.3\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.1571171929650457,
+        "end_line": 662,
+        "signature": "com.fasterxml.jackson.databind.ObjectWriter.with(JsonFactory f): ObjectWriter"
+      },
+      {
+        "start_line": 275,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectWriter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectWriter with(SerializationFeature feature)  {\n        return _new(this,  _config.with(feature));\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * Method for constructing a new instance that is configured\n     * with specified feature enabled.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.15154389648530772,
+        "end_line": 277,
+        "signature": "com.fasterxml.jackson.databind.ObjectWriter.with(SerializationFeature feature): ObjectWriter"
+      },
+      {
+        "start_line": 1185,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final ObjectNode withObject(JsonPointer ptr) {\n        return withObject(ptr, OverwriteMode.NULLS, true);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "withObject",
+        "documentation": "/**\n     * Same as {@link #withObject(JsonPointer, OverwriteMode, boolean)} but\n     * with defaults of {@code OvewriteMode#NULLS} (overwrite mode)\n     * and {@code true} for {@code preferIndex} (that is, will try to\n     * consider {@link JsonPointer} segments index if at all possible\n     * and only secondarily as property name\n     *\n     * @param ptr {@link JsonPointer} that indicates path to use for Object value to return\n     *   (potentially creating as necessary)\n     *\n     * @return {@link ObjectNode} found or created\n     *\n     * @since 2.14\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withObject"
+          }
+        ],
+        "similarity": 0.15093780538679152,
+        "end_line": 1187,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.withObject(JsonPointer ptr): ObjectNode"
+      },
+      {
+        "start_line": 283,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectWriter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectWriter with(SerializationFeature first, SerializationFeature... other) {\n        return _new(this, _config.with(first, other));\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * Method for constructing a new instance that is configured\n     * with specified features enabled.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.14918626921803735,
+        "end_line": 285,
+        "signature": "com.fasterxml.jackson.databind.ObjectWriter.with(SerializationFeature first, SerializationFeature other): ObjectWriter"
+      },
+      {
+        "start_line": 1154,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final ObjectNode withObject(String expr) {\n        return withObject(JsonPointer.compile(expr));\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "withObject",
+        "documentation": "/**\n     * Short-cut equivalent to:\n     *<pre>\n     *   withObject(JsonPointer.compile(expr);\n     *</pre>\n     * see {@link #withObject(JsonPointer)} for full explanation.\n     *\n     * @param expr {@link JsonPointer} expression to use\n     *\n     * @return {@link ObjectNode} found or created\n     *\n     * @since 2.14\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withObject"
+          }
+        ],
+        "similarity": 0.1448975423477831,
+        "end_line": 1156,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.withObject(String expr): ObjectNode"
+      },
+      {
+        "start_line": 331,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectWriter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectWriter with(DatatypeFeature feature)  {\n        return _new(this,  _config.with(feature));\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * Method for constructing a new instance that is configured\n     * with specified feature enabled.\n     *\n     * @since 2.14\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.142896393036207,
+        "end_line": 333,
+        "signature": "com.fasterxml.jackson.databind.ObjectWriter.with(DatatypeFeature feature): ObjectWriter"
+      },
+      {
+        "start_line": 1257,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectNode withObject(JsonPointer ptr,",
+        "distance": 1.25,
+        "title": null,
+        "name": "withObject",
+        "documentation": "/**\n     * Method that can be called on Object or Array nodes, to access a Object-valued\n     * node pointed to by given {@link JsonPointer}, if such a node exists:\n     * or if not, an attempt is made to create one and return it.\n     * For example, on document\n     *<pre>\n     *  { \"a\" : {\n     *       \"b\" : {\n     *          \"c\" : 13\n     *       }\n     *    }\n     *  }\n     *</pre>\n     * calling method with {@link JsonPointer} of {@code /a/b} would return\n     * {@link ObjectNode}\n     *<pre>\n     *  { \"c\" : 13 }\n     *</pre>\n     *<p>\n     * In cases where path leads to \"missing\" nodes, a path is created.\n     * So, for example, on above document, and\n     * {@link JsonPointer} of {@code /a/x} an empty {@link ObjectNode} would\n     * be returned and the document would look like:\n     *<pre>\n     *  { \"a\" : {\n     *       \"b\" : {\n     *          \"c\" : 13\n     *       },\n     *       \"x\" : { }\n     *    }\n     *  }\n     *</pre>\n     * Finally, if the path is incompatible with the document -- there is an existing\n     * {@code JsonNode} through which expression cannot go -- a replacement is\n     * attempted if (and only if) conversion is allowed as per {@code overwriteMode}\n     * passed in. For example, with above document and expression of {@code /a/b/c},\n     * conversion is allowed if passing {@code OverwriteMode.SCALARS} or\n     * {@code OvewriteMode.ALL}, and resulting document would look like:\n     *<pre>\n     *  { \"a\" : {\n     *       \"b\" : {\n     *          \"c\" : { }\n     *       },\n     *       \"x\" : { }\n     *    }\n     *  }\n     *</pre>\n     * but if different modes ({@code NONE} or {@code NULLS}) is passed, an exception\n     * is thrown instead.\n     *\n     * @param ptr Pointer that indicates path to use for {@link ObjectNode} value to return\n     *   (potentially creating one as necessary)\n     * @param overwriteMode Defines which node types may be converted in case of\n     *    incompatible {@code JsonPointer} expression: if conversion not allowed,\n     *    {@link UnsupportedOperationException} is thrown.\n     * @param preferIndex When creating a path (for empty or replacement), and path\n     *    contains segment that may be an array index (simple integer number like\n     *    {@code 3}), whether to construct an {@link ArrayNode} ({@code true}) or\n     *    {@link ObjectNode} ({@code false}). In latter case matching property with\n     *    quoted number (like {@code \"3\"}) is used within Object.\n     *\n     * @return {@link ObjectNode} found or created\n     *\n     * @throws UnsupportedOperationException if a conversion would be needed for given\n     *    {@code JsonPointer}, document, but was not allowed for the type encountered\n     *\n     * @since 2.14\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withObject"
+          }
+        ],
+        "similarity": 0.14194911722381304,
+        "end_line": 1257,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.withObject(JsonPointer ptr, OverwriteMode overwriteMode, boolean preferIndex): ObjectNode"
+      },
+      {
+        "start_line": 408,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectWriter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectWriter with(StreamWriteFeature feature)  {\n        return _new(this, _config.with(feature.mappedFeature()));\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * @since 2.11\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.13957139912934027,
+        "end_line": 410,
+        "signature": "com.fasterxml.jackson.databind.ObjectWriter.with(StreamWriteFeature feature): ObjectWriter"
+      },
+      {
+        "start_line": 480,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/SerializationConfig.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public SerializationConfig with(JsonGenerator.Feature feature)",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * Fluent factory method that will construct and return a new configuration\n     * object instance with specified feature enabled.\n     *\n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.13716800829887188,
+        "end_line": 480,
+        "signature": "com.fasterxml.jackson.databind.SerializationConfig.with(JsonGenerator feature): SerializationConfig"
+      },
+      {
+        "start_line": 549,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectWriter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectWriter with(FilterProvider filterProvider) {\n        if (filterProvider == _config.getFilterProvider()) {\n            return this;\n        }\n        return _new(this, _config.withFilters(filterProvider));\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * Method that will construct a new instance that uses specified\n     * provider for resolving filter instances by id.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.13626849703610383,
+        "end_line": 554,
+        "signature": "com.fasterxml.jackson.databind.ObjectWriter.with(FilterProvider filterProvider): ObjectWriter"
+      },
+      {
+        "start_line": 428,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectWriter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectWriter with(FormatFeature feature)  {\n        return _new(this, _config.with(feature));\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * @since 2.7\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.13409604839730002,
+        "end_line": 430,
+        "signature": "com.fasterxml.jackson.databind.ObjectWriter.with(FormatFeature feature): ObjectWriter"
+      },
+      {
+        "start_line": 734,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationConfig.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public DeserializationConfig with(ConstructorDetector ctorDetector) {\n        if (_ctorDetector == ctorDetector) {\n            return this;\n        }\n        return new DeserializationConfig(this, ctorDetector);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * @since 2.12\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.13315725244333435,
+        "end_line": 739,
+        "signature": "com.fasterxml.jackson.databind.DeserializationConfig.with(ConstructorDetector ctorDetector): DeserializationConfig"
+      },
+      {
+        "start_line": 1166,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final ObjectNode withObject(String expr,",
+        "distance": 1.25,
+        "title": null,
+        "name": "withObject",
+        "documentation": "/**\n     * Short-cut equivalent to:\n     *<pre>\n     *  withObject(JsonPointer.compile(expr), overwriteMode, preferIndex);\n     *</pre>\n     *\n     * @since 2.14\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withObject"
+          }
+        ],
+        "similarity": 0.13302284065554093,
+        "end_line": 1166,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.withObject(String expr, OverwriteMode overwriteMode, boolean preferIndex): ObjectNode"
+      },
+      {
+        "start_line": 1405,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ArrayNode withArray(JsonPointer ptr,",
+        "distance": 1.25,
+        "title": null,
+        "name": "withArray",
+        "documentation": "/**\n     * Method that can be called on Object or Array nodes, to access a Array-valued\n     * node pointed to by given {@link JsonPointer}, if such a node exists:\n     * or if not, an attempt is made to create one and return it.\n     * For example, on document\n     *<pre>\n     *  { \"a\" : {\n     *       \"b\" : [ 1, 2 ]\n     *    }\n     *  }\n     *</pre>\n     * calling method with {@link JsonPointer} of {@code /a/b} would return\n     * {@code Array}\n     *<pre>\n     *  [ 1, 2 ]\n     *</pre>\n     *<p>\n     * In cases where path leads to \"missing\" nodes, a path is created.\n     * So, for example, on above document, and\n     * {@link JsonPointer} of {@code /a/x} an empty {@code ArrayNode} would\n     * be returned and the document would look like:\n     *<pre>\n     *  { \"a\" : {\n     *       \"b\" : [ 1, 2 ],\n     *       \"x\" : [ ]\n     *    }\n     *  }\n     *</pre>\n     * Finally, if the path is incompatible with the document -- there is an existing\n     * {@code JsonNode} through which expression cannot go -- a replacement is\n     * attempted if (and only if) conversion is allowed as per {@code overwriteMode}\n     * passed in. For example, with above document and expression of {@code /a/b/0},\n     * conversion is allowed if passing {@code OverwriteMode.SCALARS} or\n     * {@code OvewriteMode.ALL}, and resulting document would look like:\n     *<pre>\n     *  { \"a\" : {\n     *       \"b\" : [ [ ], 2 ],\n     *       \"x\" : [ ]\n     *    }\n     *  }\n     *</pre>\n     * but if different modes ({@code NONE} or {@code NULLS}) is passed, an exception\n     * is thrown instead.\n     *\n     * @param ptr Pointer that indicates path to use for {@link ArrayNode} value to return\n     *   (potentially creating it as necessary)\n     * @param overwriteMode Defines which node types may be converted in case of\n     *    incompatible {@code JsonPointer} expression: if conversion not allowed,\n     *    an exception is thrown.\n     * @param preferIndex When creating a path (for empty or replacement), and path\n     *    contains segment that may be an array index (simple integer number like\n     *    {@code 3}), whether to construct an {@link ArrayNode} ({@code true}) or\n     *    {@link ObjectNode} ({@code false}). In latter case matching property with\n     *    quoted number (like {@code \"3\"}) is used within Object.\n     *\n     * @return {@link ArrayNode} found or created\n     *\n     * @throws UnsupportedOperationException if a conversion would be needed for given\n     *    {@code JsonPointer}, document, but was not allowed for the type encountered\n     *\n     * @since 2.14\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withArray"
+          }
+        ],
+        "similarity": 0.13301304648260262,
+        "end_line": 1405,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.withArray(JsonPointer ptr, OverwriteMode overwriteMode, boolean preferIndex): ArrayNode"
+      },
+      {
+        "start_line": 607,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectWriter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectWriter with(FormatSchema schema) {\n        _verifySchemaType(schema);\n        return _new(_generatorSettings.with(schema), _prefetch);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * Method that will construct a new instance that uses specific format schema\n     * for serialization.\n     *<p>\n     * Note that method does NOT change state of this reader, but\n     * rather construct and returns a newly configured instance.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.13197268999809642,
+        "end_line": 610,
+        "signature": "com.fasterxml.jackson.databind.ObjectWriter.with(FormatSchema schema): ObjectWriter"
+      },
+      {
+        "start_line": 646,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectWriter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectWriter with(Base64Variant b64variant) {\n        return _new(this, _config.with(b64variant));\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * Method that will construct a new instance that uses specified default\n     * {@link Base64Variant} for base64 encoding\n     *\n     * @since 2.1\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.13170704668467803,
+        "end_line": 648,
+        "signature": "com.fasterxml.jackson.databind.ObjectWriter.with(Base64Variant b64variant): ObjectWriter"
+      },
+      {
+        "start_line": 381,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectWriter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectWriter withFeatures(JsonGenerator.Feature... features) {\n        return _new(this, _config.withFeatures(features));\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "withFeatures",
+        "documentation": "/**\n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          },
+          {
+            "start_node": "with",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ObjectWriter"
+          },
+          {
+            "start_node": "ObjectWriter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withFeatures"
+          }
+        ],
+        "similarity": 0.13169123568845292,
+        "end_line": 383,
+        "signature": "com.fasterxml.jackson.databind.ObjectWriter.withFeatures(JsonGenerator features): ObjectWriter"
+      },
+      {
+        "start_line": 1339,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final ArrayNode withArray(JsonPointer ptr) {\n        return withArray(ptr, OverwriteMode.NULLS, true);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "withArray",
+        "documentation": "/**\n     * Same as {@link #withArray(JsonPointer, OverwriteMode, boolean)} but\n     * with defaults of {@code OvewriteMode#NULLS} (overwrite mode)\n     * and {@code true} for {@code preferIndex}.\n     *\n     * @param ptr Pointer that indicates path to use for {@link ArrayNode} to return\n     *   (potentially creating as necessary)\n     *\n     * @return {@link ArrayNode} found or created\n     *\n     * @since 2.14\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withArray"
+          }
+        ],
+        "similarity": 0.13127933120460167,
+        "end_line": 1341,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.withArray(JsonPointer ptr): ArrayNode"
+      },
+      {
+        "start_line": 496,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationConfig.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public DeserializationConfig with(JsonParser.Feature feature)",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * Fluent factory method that will construct and return a new configuration\n     * object instance with specified features enabled.\n     *\n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.13020023745400586,
+        "end_line": 496,
+        "signature": "com.fasterxml.jackson.databind.DeserializationConfig.with(JsonParser feature): DeserializationConfig"
+      },
+      {
+        "start_line": 667,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectWriter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectWriter with(ContextAttributes attrs) {\n        return _new(this, _config.with(attrs));\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * @since 2.3\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.12879189708970626,
+        "end_line": 669,
+        "signature": "com.fasterxml.jackson.databind.ObjectWriter.with(ContextAttributes attrs): ObjectWriter"
+      },
+      {
+        "start_line": 1494,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected <T extends JsonNode> T _this() {\n        return (T) this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "_this",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_this"
+          }
+        ],
+        "similarity": 0.12625884048288266,
+        "end_line": 1496,
+        "signature": "com.fasterxml.jackson.databind.JsonNode._this(): T"
+      },
+      {
+        "start_line": 323,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final boolean isPojo() {\n        return getNodeType() == JsonNodeType.POJO;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "isPojo",
+        "documentation": "/**\n     * Method that can be used to check if the node is a wrapper\n     * for a POJO (\"Plain Old Java Object\" aka \"bean\".\n     * Returns true only for\n     * instances of <code>POJONode</code>.\n     *\n     * @return True if this node wraps a POJO\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isPojo"
+          }
+        ],
+        "similarity": 0.12555480453895015,
+        "end_line": 325,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.isPojo(): boolean"
+      },
+      {
+        "start_line": 560,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectWriter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectWriter with(PrettyPrinter pp) {\n        return _new(_generatorSettings.with(pp), _prefetch);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * Method that will construct a new instance that will use specified pretty\n     * printer (or, if null, will not do any pretty-printing)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.12541184069576947,
+        "end_line": 562,
+        "signature": "com.fasterxml.jackson.databind.ObjectWriter.with(PrettyPrinter pp): ObjectWriter"
+      },
+      {
+        "start_line": 653,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectWriter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectWriter with(CharacterEscapes escapes) {\n        return _new(_generatorSettings.with(escapes), _prefetch);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * @since 2.3\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.12472634981328733,
+        "end_line": 655,
+        "signature": "com.fasterxml.jackson.databind.ObjectWriter.with(CharacterEscapes escapes): ObjectWriter"
+      },
+      {
+        "start_line": 1036,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Set<Map.Entry<String, JsonNode>> properties() {\n        return Collections.emptySet();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "properties",
+        "documentation": "/**\n     * Accessor that will return properties of {@code ObjectNode}\n     * similar to how {@link Map#entrySet()} works; \n     * for other node types will return empty {@link java.util.Set}.\n     *\n     * @return Set of properties, if this node is an {@code ObjectNode}\n     * ({@link JsonNode#isObject()} returns {@code true}); empty\n     * {@link java.util.Set} otherwise.\n     *\n     * @since 2.15\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "properties"
+          }
+        ],
+        "similarity": 0.12458706275950064,
+        "end_line": 1038,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.properties(): Set"
+      },
+      {
+        "start_line": 776,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T extends JsonNode> T require() throws IllegalArgumentException {\n        return _this();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "require",
+        "documentation": "/**\n     * Method that may be called to verify that {@code this} node is NOT so-called\n     * \"missing node\": that is, one for which {@link #isMissingNode()} returns {@code true}.\n     * If not missing node, {@code this} is returned to allow chaining; otherwise\n     * {@link IllegalArgumentException} is thrown.\n     *\n     * @return {@code this} node to allow chaining\n     *\n     * @throws IllegalArgumentException if this node is \"missing node\"\n     *\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "require"
+          }
+        ],
+        "similarity": 0.12457322206504522,
+        "end_line": 778,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.require(): T"
+      },
+      {
+        "start_line": 396,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/SerializationConfig.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public SerializationConfig with(SerializationFeature first, SerializationFeature... features)",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * Fluent factory method that will construct and return a new configuration\n     * object instance with specified features enabled.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.12450189252937378,
+        "end_line": 396,
+        "signature": "com.fasterxml.jackson.databind.SerializationConfig.with(SerializationFeature first, SerializationFeature features): SerializationConfig"
+      },
+      {
+        "start_line": 817,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonNode required(String propertyName) throws IllegalArgumentException {\n        return _reportRequiredViolation(\"Node of type `%s` has no fields\", getClass().getName());\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "required",
+        "documentation": "/**\n     * Method is functionally equivalent to\n     *{@code\n     *   path(fieldName).required()\n     *}\n     * and can be used to check that this node is an {@code ObjectNode} (that is, represents\n     * JSON Object value) and has value for specified property with key {@code fieldName}\n     * (but note that value may be explicit JSON null value).\n     * If this node is Object Node and has value for specified property, matching value\n     * is returned; otherwise {@link IllegalArgumentException} is thrown.\n     *\n     * @param propertyName Name of property to access\n     *\n     * @return Value of the specified property of this Object node\n     *\n     * @throws IllegalArgumentException if this node is not an Object node or if it does not\n     *   have value for specified property\n     *\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "required"
+          }
+        ],
+        "similarity": 0.12449484885983414,
+        "end_line": 819,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.required(String propertyName): JsonNode"
+      },
+      {
+        "start_line": 91,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonNode() { }",
+        "distance": 1.0,
+        "title": null,
+        "name": "JsonNode",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          }
+        ],
+        "similarity": 0.12338593852764534,
+        "end_line": 91,
+        "signature": "com.fasterxml.jackson.databind.JsonNode()"
+      },
+      {
+        "start_line": 395,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectWriter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectWriter withoutFeatures(JsonGenerator.Feature... features) {\n        return _new(this, _config.withoutFeatures(features));\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "withoutFeatures",
+        "documentation": "/**\n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          },
+          {
+            "start_node": "with",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ObjectWriter"
+          },
+          {
+            "start_node": "ObjectWriter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withoutFeatures"
+          }
+        ],
+        "similarity": 0.12300461966672128,
+        "end_line": 397,
+        "signature": "com.fasterxml.jackson.databind.ObjectWriter.withoutFeatures(JsonGenerator features): ObjectWriter"
+      },
+      {
+        "start_line": 149,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final boolean isContainerNode() {\n        final JsonNodeType type = getNodeType();\n        return type == JsonNodeType.OBJECT || type == JsonNodeType.ARRAY;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "isContainerNode",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isContainerNode"
+          }
+        ],
+        "similarity": 0.12282382272742569,
+        "end_line": 152,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.isContainerNode(): boolean"
+      },
+      {
+        "start_line": 338,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/SerializationConfig.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public SerializationConfig with(SubtypeResolver str) {\n        return (str == _subtypeResolver)? this : new SerializationConfig(this, str);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.12231439193234714,
+        "end_line": 340,
+        "signature": "com.fasterxml.jackson.databind.SerializationConfig.with(SubtypeResolver str): SerializationConfig"
+      },
+      {
+        "start_line": 360,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationConfig.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public DeserializationConfig with(SubtypeResolver str) {\n        return (_subtypeResolver == str) ? this : new DeserializationConfig(this, str);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.12208571691825071,
+        "end_line": 362,
+        "signature": "com.fasterxml.jackson.databind.DeserializationConfig.with(SubtypeResolver str): DeserializationConfig"
+      },
+      {
+        "start_line": 382,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationConfig.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public DeserializationConfig with(ContextAttributes attrs) {\n        return (attrs == _attributes) ? this : new DeserializationConfig(this, attrs);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.12108974186065802,
+        "end_line": 384,
+        "signature": "com.fasterxml.jackson.databind.DeserializationConfig.with(ContextAttributes attrs): DeserializationConfig"
+      },
+      {
+        "start_line": 388,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectWriter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectWriter without(JsonGenerator.Feature feature) {\n        return _new(this, _config.without(feature));\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "without",
+        "documentation": "/**\n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          },
+          {
+            "start_node": "with",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ObjectWriter"
+          },
+          {
+            "start_node": "ObjectWriter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "without"
+          }
+        ],
+        "similarity": 0.12003451558965791,
+        "end_line": 390,
+        "signature": "com.fasterxml.jackson.databind.ObjectWriter.without(JsonGenerator feature): ObjectWriter"
+      },
+      {
+        "start_line": 931,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean has(String fieldName) {\n        return get(fieldName) != null;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "has",
+        "documentation": "/**\n     * Method that allows checking whether this node is JSON Object node\n     * and contains value for specified property. If this is the case\n     * (including properties with explicit null values), returns true;\n     * otherwise returns false.\n     *<p>\n     * This method is equivalent to:\n     *<pre>\n     *   node.get(fieldName) != null\n     *</pre>\n     * (since return value of get() is node, not value node contains)\n     *<p>\n     * NOTE: when explicit <code>null</code> values are added, this\n     * method will return <code>true</code> for such properties.\n     *\n     * @param fieldName Name of element to check\n     *\n     * @return True if this node is a JSON Object node, and has a property\n     *   entry with specified name (with any value, including null value)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "has"
+          }
+        ],
+        "similarity": 0.1199677288003078,
+        "end_line": 933,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.has(String fieldName): boolean"
+      },
+      {
+        "start_line": 291,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectWriter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectWriter withFeatures(SerializationFeature... features) {\n        return _new(this, _config.withFeatures(features));\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "withFeatures",
+        "documentation": "/**\n     * Method for constructing a new instance that is configured\n     * with specified features enabled.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          },
+          {
+            "start_node": "with",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ObjectWriter"
+          },
+          {
+            "start_node": "ObjectWriter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withFeatures"
+          }
+        ],
+        "similarity": 0.11994942712360222,
+        "end_line": 293,
+        "signature": "com.fasterxml.jackson.databind.ObjectWriter.withFeatures(SerializationFeature features): ObjectWriter"
+      },
+      {
+        "start_line": 404,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final boolean isBoolean() {\n        return getNodeType() == JsonNodeType.BOOLEAN;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "isBoolean",
+        "documentation": "/**\n     * Method that can be used to check if this node was created from\n     * JSON boolean value (literals \"true\" and \"false\").\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isBoolean"
+          }
+        ],
+        "similarity": 0.11851452046837212,
+        "end_line": 406,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.isBoolean(): boolean"
+      },
+      {
+        "start_line": 219,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectWriter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected ObjectWriter _new(ObjectWriter base, JsonFactory f) {\n        return new ObjectWriter(base, f);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_new",
+        "documentation": "/**\n     * Overridable factory method called by various \"withXxx()\" methods\n     *\n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          },
+          {
+            "start_node": "with",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ObjectWriter"
+          },
+          {
+            "start_node": "ObjectWriter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_new"
+          }
+        ],
+        "similarity": 0.1177383461123745,
+        "end_line": 221,
+        "signature": "com.fasterxml.jackson.databind.ObjectWriter._new(ObjectWriter base, JsonFactory f): ObjectWriter"
+      },
+      {
+        "start_line": 77,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/node/ArrayNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectNode with(String exprOrProperty) {\n        JsonPointer ptr = _jsonPointerIfValid(exprOrProperty);\n        if (ptr != null) {\n            return withObject(ptr);\n        }\n        return super.with(exprOrProperty); // to give failure\n    }",
+        "distance": 2.25,
+        "title": null,
+        "name": "with",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.11754170640831789,
+        "end_line": 83,
+        "signature": "com.fasterxml.jackson.databind.node.ArrayNode.with(String exprOrProperty): ObjectNode"
+      },
+      {
+        "start_line": 348,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/SerializationConfig.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public SerializationConfig with(ContextAttributes attrs) {\n        return (attrs == _attributes) ? this : new SerializationConfig(this, attrs);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.11744622758744833,
+        "end_line": 350,
+        "signature": "com.fasterxml.jackson.databind.SerializationConfig.with(ContextAttributes attrs): SerializationConfig"
+      },
+      {
+        "start_line": 282,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final JsonNode at(String jsonPtrExpr) {\n        return at(JsonPointer.compile(jsonPtrExpr));\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "at",
+        "documentation": "/**\n     * Convenience method that is functionally equivalent to:\n     *<pre>\n     *   return at(JsonPointer.valueOf(jsonPointerExpression));\n     *</pre>\n     *<p>\n     * Note that if the same expression is used often, it is preferable to construct\n     * {@link JsonPointer} instance once and reuse it: this method will not perform\n     * any caching of compiled expressions.\n     *\n     * @param jsonPtrExpr Expression to compile as a {@link JsonPointer}\n     *   instance\n     *\n     * @return Node that matches given JSON Pointer: if no match exists,\n     *   will return a node for which {@link TreeNode#isMissingNode()} returns true.\n     *\n     * @since 2.3\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "at"
+          }
+        ],
+        "similarity": 0.11731673854556926,
+        "end_line": 284,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.at(String jsonPtrExpr): JsonNode"
+      },
+      {
+        "start_line": 841,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonNode required(int index) throws IllegalArgumentException {\n        return _reportRequiredViolation(\"Node of type `%s` has no indexed values\", getClass().getName());\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "required",
+        "documentation": "/**\n     * Method is functionally equivalent to\n     *{@code\n     *   path(index).required()\n     *}\n     * and can be used to check that this node is an {@code ArrayNode} (that is, represents\n     * JSON Array value) and has value for specified {@code index}\n     * (but note that value may be explicit JSON null value).\n     * If this node is Array Node and has value for specified index, value at index\n     * is returned; otherwise {@link IllegalArgumentException} is thrown.\n     *\n     * @param index Index of the value of this Array node to access\n     *\n     * @return Value at specified index of this Array node\n     *\n     * @throws IllegalArgumentException if this node is not an Array node or if it does not\n     *   have value for specified index\n     *\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonNode"
+          },
+          {
+            "start_node": "JsonNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "required"
+          }
+        ],
+        "similarity": 0.11731234898209819,
+        "end_line": 843,
+        "signature": "com.fasterxml.jackson.databind.JsonNode.required(int index): JsonNode"
+      },
+      {
+        "start_line": 715,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/SerializationConfig.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public SerializationConfig withPropertyInclusion(JsonInclude.Value incl) {\n        _configOverrides.setDefaultInclusion(incl);\n        return this;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "withPropertyInclusion",
+        "documentation": "/**\n     * Mutant factory method for constructing a new instance with different\n     * default inclusion criteria configuration.\n     *\n     * @since 2.7\n     *\n     * @deprecated Since 2.9; not needed any more\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          },
+          {
+            "start_node": "with",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "SerializationConfig"
+          },
+          {
+            "start_node": "SerializationConfig",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withPropertyInclusion"
+          }
+        ],
+        "similarity": 0.11703727571666579,
+        "end_line": 718,
+        "signature": "com.fasterxml.jackson.databind.SerializationConfig.withPropertyInclusion(JsonInclude incl): SerializationConfig"
+      },
+      {
+        "start_line": 396,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationConfig.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public DeserializationConfig with(DeserializationFeature feature)",
+        "distance": 1.0,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * Fluent factory method that will construct and return a new configuration\n     * object instance with specified features enabled.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.11628528870419619,
+        "end_line": 396,
+        "signature": "com.fasterxml.jackson.databind.DeserializationConfig.with(DeserializationFeature feature): DeserializationConfig"
+      },
+      {
+        "start_line": 684,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectWriter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectWriter withAttribute(Object key, Object value) {\n        return _new(this, _config.withAttribute(key, value));\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "withAttribute",
+        "documentation": "/**\n     * @since 2.3\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "with"
+          },
+          {
+            "start_node": "with",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ObjectWriter"
+          },
+          {
+            "start_node": "ObjectWriter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withAttribute"
+          }
+        ],
+        "similarity": 0.11569152988733457,
+        "end_line": 686,
+        "signature": "com.fasterxml.jackson.databind.ObjectWriter.withAttribute(Object key, Object value): ObjectWriter"
+      }
+    ],
+    "classes": [],
+    "issues": [
+      {
+        "content": "### Describe your Issue\n\n(note: offshoot of #3780, see that for context)\r\n\r\nI propose adding 2 new methods that only allow property would make sense:\r\n\r\n    withObjectProperty(String)\r\n    withArrayProperty(String)\r\n\r\nto help cover existing usage of `JsonNode.with(String)`.\r\n\n",
+        "distance": 0,
+        "title": "Add `withObjectProperty(String)`, `withArrayProperty(String)` in `JsonNode`",
+        "name": "root",
+        "path": [],
+        "issue_id": "root",
+        "similarity": 2.0,
+        "type": "issue"
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "3780",
+        "type": "issue",
+        "content": "**Is your feature request related to a problem? Please describe.**\r\nVersion `2.14` deprecated `JsonNode.with(String)` and suggests replacing it with `JsonNode.withObject(String)`. However, this causes problems because `JsonNode.withObject(String)` accepts only expressions, whereas the former method accepts a property. Moreover, `JsonNode.withArray(String)` accepts both property names and expressions, making it quite asymmetric.\r\n\r\n**Describe the solution you'd like**\r\nMigrating the method would imply in many cases extra work and prepending the \"/\" before every property name in existing calls.\r\nFrom the deprecation message of `JsonNode.with(String)` I would change `myObj.with(myProp)` to `myObj.withObject(myProp)` but that throws an exception, so I have to do `myObj.withObject(\"/\" + myProp)`, which I find unpleasant. Again, `myObj.withArray(myProp)` works just fine without need of change.\r\n\r\n**Usage example**\r\nThe change from `myObj.with(myProp)` to `myObj.withObject(myProp)` should work with property or expression.\r\n\n\n\nComment by tanis138:\nFaced the same issue. I think, adding \"/\" before every property is a bad idea. Because each withObject() call will cause JsonPointer.compile() on your property, which significantly decrease performance.\r\nIt would be great to add new method withProperty(String property) for creation properties.\r\n```\r\n    public ObjectNode withProperty(String property) {\r\n        JsonNode n = _children.get(property);\r\n        if (n != null) {\r\n            if (n instanceof ObjectNode) {\r\n                return (ObjectNode) n;\r\n            }\r\n            throw new UnsupportedOperationException(\"Property '\" + property\r\n                + \"' has value that is not of type `ObjectNode` (but `\" + n\r\n                .getClass().getName() + \"`)\");\r\n        }\r\n        ObjectNode result = objectNode();\r\n        _children.put(property, result);\r\n        return result;\r\n    }\r\n```\r\nOtherwise, migration to Jackson 3 will be very painful for many users like me, who often uses .with(\"property\") method.\n\nComment by cowtowncoder:\nOk, I do not think it is a good idea at all to overload \"property-or-expression\" because two sets are overlapping -- even if it is not common, one can definitely use empty String as property name, or something starting with slash.\r\n\r\nSituation with `withArray(String)` is a mess however, I admit. My apologies: it should be consistent -- and I need to see if it's just Javadoc being wrong.\r\n\r\nHaving said that, I am to addition of, say, 2 new methods that only allow property would make sense:\r\n\r\n* `withObjectProperty(String)`\r\n* `withArrayProperty(String)`\r\n\r\nand I'd be happy to help merge a PR, based on code sample @tanis138 shared for example.\r\n\n\nComment by bmatasar:\nBackwards compatibility is creating all this mess. For this purpose, \"property-or-expression\" fits best.\r\nHowever, I think overloading `withObject`/`withArray` with `String` for property name and `JsonPointer` for expression would be clearer and cleaner. This is what overloading is all about, in the end.\n\nComment by cowtowncoder:\nI will not be adding any new \"property-or-expression\" functionality, fwtw. I think that is a bad idea and I will try to eventually get rid of such logic; for now (2.x) functionality will be retained for backwards-compatibility.\r\nSo these methods will stay deprecated but won't be removed.\r\n\r\nI also dislike overloads for `withObject()` / `withArray()` because of ambiguity of `String` parameter: it could be either property name or un-compiled JsonPointer expression. Given that they are now implemented to support `JsonPointer` expression (whether compiled or as-String) that's how they shall remain.\r\nStrings are tricky for similar cases as input source: some APIs accept file paths as String (instead of or in addition to `java.io.File`), wherein others take in `String` as content (document to decode).\r\n\r\nThis is why the way forward to me is addition of 2 new methods. And due to need to produce array or object nodes, need 2 instead of generic `withProperty()`.\r\n\r\n\r\n\r\n\r\n\n\nComment by cowtowncoder:\nOn `JsonNode.withArray()`, it does indeed support \"property-or-expression\" -- I first looked at `ArrayNode` implementation where only expression works (because Arrays have no properties).\n\nComment by JuMp3:\nIf it helps, I solved it like this (withObject):\r\n\r\n`objNode.withObject(JsonPointer.compile(newPath))`\r\n\r\nwith this method of JsonNode.class (jackson-2.15.x)\r\n\r\npublic final ObjectNode withObject(JsonPointer ptr) {\r\n        return this.withObject(ptr, JsonNode.OverwriteMode.NULLS, true);\r\n}\n\nComment by filiphr:\nI'd like to chime in on this one as well. We were in the process of replacing `with` with `withObject` as it was written in the Javadoc, I missed the fact about the change that `withObject` is using now an expression.\r\n\r\nI 2.13 `with(String)` was only about property names, it didn't support using an expression. I don't know the reasoning for deprecating the `with` and for changing its behaviour to be `propertyOrExpression`. However, I do think that there should be something like you proposed @cowtowncoder in https://github.com/FasterXML/jackson-databind/issues/3780#issuecomment-1656555588.\r\n\r\nTo be honest, it makes it a bit cumbersome because `withArray` always supported property name and I guess that's why in 2.14 and 2.15 it supports property or expression. However, `withObject` is new from 2.14 and it doesn't support property names. In my opinion this type of API is a bit inconsistent. \r\n\r\ne.g.\r\n```java\r\ncustomer.withArray(\"addresses\");\r\n```\r\n\r\n```java\r\ncustomer.with(\"address\");\r\n```\r\n\r\nbut if I do \r\n\r\n```java\r\ncustomer.withObject(\"address\");\r\n```\r\n\r\nthen it doesn't work.\r\n\r\nIf 2 new methods are added then `withArray` is still going to support property I guess. This makes the API a bit inconsistent.\r\n\r\n@cowtowncoder is it an option to make `ObjectNode#withObject` consistent with `ObjectNode#withArray`? This way `withObjectProperty` and `withArrayProperty` won't be needed. Adding those 2 methods on the `JsonNode` will pollute the API a bit more. Otherwise, the deprecation on `JsonNode#with(String)` should be removed until there is an equivalent replacement method for it.\n\nComment by cowtowncoder:\nDeprecation was to address inconsistencies and my (seemingly mistaken) thinking that most access would be with multiple-level expressions, not \"simple\" property name. I also dislike heuristics of \"property-or-json-pointer-expr\".\r\nFinally, since there is strict need to specify whether Array or Object value is expected, plain `with()` seems problematic (in contrast to `withArray()`).\r\n\r\n\r\n\n\nComment by cowtowncoder:\nAfter reading this through again, I suspect that changing `withObject()` to work similar to `withArray()` may make sense after all: as much as I dislike \"expression-or-property-name\", I seem to be in minority.\r\nI filed a separate issue for this small change for 2.16 (#4096)\n\nComment by filiphr:\nThanks for taking our feedback into consideration @cowtowncoder ",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "Deprecated JsonNode.with(String) suggests using JsonNode.withObject(String) but it is not the same thing",
+        "name": "issue#3780",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#3780"
+          }
+        ],
+        "similarity": 0.6499897919781579,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "4095",
+        "type": "issue",
+        "content": "### Describe your Issue\n\n(note: offshoot of #3780, see that for context)\r\n\r\nI propose adding 2 new methods that only allow property would make sense:\r\n\r\n    withObjectProperty(String)\r\n    withArrayProperty(String)\r\n\r\nto help cover existing usage of `JsonNode.with(String)`.\r\n\n\n",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "Add `withObjectProperty(String)`, `withArrayProperty(String)` in `JsonNode`",
+        "name": "issue#4095",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#4131"
+          },
+          {
+            "start_node": "pr#4131",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#4095"
+          }
+        ],
+        "similarity": 0.5509293089924984,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "4131",
+        "type": "issue",
+        "content": "As per title: add 2 new methods for more convenient/efficient addition of Object/ArrayNodes as immediate properties.\r\n\n\n",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "Fix #4095: add `JsonNode.withObjectProperty()`/`.withArrayProperty()`",
+        "name": "pr#4131",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#4131"
+          }
+        ],
+        "similarity": 0.5337231703159303,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "4096",
+        "type": "issue",
+        "content": "### Describe your Issue\n\n(see #3780 for lengthy background discussion)\r\n\r\nNew `JsonNode.withObject(String)` method added in 2.14 only allows for using String that is valid `JsonPointer` expression. This is different from existing `withArray(String)` method. While I earlier felt that the new behavior is more sensible, avoiding confusion, it seems many users feel otherwise.\r\n\r\nAs a consequence I think behavior should be changed for 2.16 to allow for \"property-or-expression\" -- this should be safe (enough) change and along with #4095 solve the issue.\r\n\r\n\r\n\n\n",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "Change `JsonNode.withObject(String)` to work similar to `withArray()` wrt argument",
+        "name": "issue#4096",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#3780"
+          },
+          {
+            "start_node": "issue#3780",
+            "description": "referenced by issue",
+            "type": "RELATED",
+            "end_node": "issue#4096"
+          }
+        ],
+        "similarity": 0.45829733532538425,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "3568",
+        "type": "issue",
+        "content": "With #1980 there are new methods/overloads for `withArray()` and `with()`, which take `JsonPointer`.\r\nThe old methods that take `String` should be retrofitted in 2.x so that:\r\n\r\n1. If argument is valid `JsonPointer` (that is, starts with leading '/` or is empty String \"\"), it should be used as such\r\n2. Only if argument is not a valid `JsonPointer`, should it check existing `property`.\r\n\r\nFor Jackson 3.0 we can just drop the check and expect valid `JsonPointer` String representation.\r\n\r\nThe reason for change is to make expected main use case work, while retaining reasonable backwards-compatibility.\r\n\n\n\nComment by dan2097:\n> The reason for change is to make expected main use case work, while retaining reasonable backwards-compatibility.\r\n\r\nFor the corner case where a user is creating/fetching keys that start with a forward slash this change is unequivocally not backwards compatible. Given that `with` was deprecated as part of https://github.com/FasterXML/jackson-databind/issues/3535 did its behaviour really need to change...\r\n\r\n(I'm not personally effected by this change, was just wondering what the closest replacement for the deprecated `with()` method was as the Javadoc didn't provide a suggestion, and was surprised to see the JsonPointer parsing logic. As far as I can see there isn't an exact replacement if you want your input interpreted as a literal key. For my use case `putObject` was actually appropriate)",
+        "source_code": null,
+        "distance": 1.0,
+        "title": "Change `JsonNode.with(String)` and `withArray(String)` to consider argument as `JsonPointer` if valid expression",
+        "name": "issue#3568",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#4131"
+          },
+          {
+            "start_node": "pr#4131",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#4095"
+          },
+          {
+            "start_node": "issue#4095",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#3568"
+          }
+        ],
+        "similarity": 0.4346538209612212,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1115",
+        "type": "issue",
+        "content": "(note: continuation of #1079)\n\nLooks like earlier fix was incomplete, and there is one more edge case to handle: if passed-in context is `null`, attempt to resolve that will fail. This should not occur since previously passing of `null` would simply have used \"empty\" bindings. Code needs to take care to handle this as version 2.6 did.\n\n\n\nComment by todd-richmond:\nnever mind - swagger + jackson 2.7 issue goes deeper than this. I pulled the latest Jackson snapshot and it is still failing with Swagger 1.5.7. Turns out Swagger 1.5.7 is incompatible, but 1.5.6 seems to be ok with Jackson 2.7.1 so I'll file a bug on that side\n\n**\\* any ETA for 2.7.2? Looks like Swagger docs are still broken in 2.7.1 with a large # of values in swagger.json ending up null\n\n\nComment by cowtowncoder:\n@todd-richmond This is the only fix so far, so not imminent. Looks like nobody pretty much tried out any of Release Candidates, so I have not been aware of any significant breakages. Yet with 2.7.1 push, there's now a torrent of reports. Go figure.\n\nAt this point what would help a lot would be isolated test cases outlining specific issues: I should be able to resolve the issues. But I do not yet have good reproductions of what is failing. It could even be there would be a single issue that explains multiple reports.\n\n\nComment by todd-richmond:\nthx - it turns out that Swagger rewrote their JSON handling in 1.5.7 and so I was fighting conflicting bugs. The Jackson fix in 2.7.1 is good enough for Swagger 1.5.6 so I'm now working the other side to determine a workaround or fix for those changes\n\n\nComment by cowtowncoder:\n@todd-richmond Ok good. 2.7.1 fixes were definitely needed, over 2.7.0. That makes sense.\n\nBut I am definitely interested in possible/likely follow-up issues; DropWizard devs indicate they have some open problems. But of course it would be nice nice if those were less prevalent than ones fixed in 2.7.1.\n",
+        "source_code": null,
+        "distance": 1.0,
+        "title": "Problems with deprecated `TypeFactory.constructType(type, ctxt)` methods if `ctxt` is `null`",
+        "name": "issue#1115",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#4131"
+          },
+          {
+            "start_node": "pr#4131",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#4095"
+          },
+          {
+            "start_node": "issue#4095",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1115"
+          }
+        ],
+        "similarity": 0.20736740106417462,
+        "end_line": null,
+        "signature": null
+      }
+    ]
+  },
+  "artifact_stats": {
+    "skipped_due_to_time": 9,
+    "valid_related_items": 26
+  }
+}

@@ -1,0 +1,124 @@
+--- a/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java
++++ b/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java
+@@ -157,7 +157,120 @@
+         this(new XmlFactory(), module);
+     }
+ 
+-    public XmlMapper(XmlFactory xmlFactory, JacksonXmlModule module)
++    public XmlMapper(XmlFactory xmlFactory, JacksonXmlModule module) {
++        super(xmlFactory);
++        _xmlModule = module;
++        if (module != null) {
++            module.setupModule(new Module.SetupContext() {
++                @Override
++                public void addBeanSerializerModifier(BeanSerializerModifier modifier) {
++                    _serializerFactory = _serializerFactory.withSerializerModifier(modifier);
++                }
++
++                @Override
++                public void addDeserializationModifiers(BeanDeserializerModifier modifier) {
++                    _deserializationContext = _deserializationContext.withDeserializerModifiers(modifier);
++                }
++
++                @Override
++                public void addAbstractTypeResolver(AbstractTypeResolver resolver) {
++                    _deserializationContext = _deserializationContext.withAbstractTypeResolver(resolver);
++                }
++
++                @Override
++                public void addTypeModifier(TypeModifier modifier) {
++                    _typeFactory = _typeFactory.withModifier(modifier);
++                }
++
++                @Override
++                public void addValueInstantiators(ValueInstantiators instantiators) {
++                    _deserializationContext = _deserializationContext.withValueInstantiators(instantiators);
++                }
++
++                @Override
++                public void setClassIntrospector(ClassIntrospector ci) {
++                    _deserializationConfig = _deserializationConfig.with(ci);
++                    _serializationConfig = _serializationConfig.with(ci);
++                }
++
++                @Override
++                public void insertAnnotationIntrospector(AnnotationIntrospector ai) {
++                    _deserializationConfig = _deserializationConfig.withInsertedAnnotationIntrospector(ai);
++                    _serializationConfig = _serializationConfig.withInsertedAnnotationIntrospector(ai);
++                }
++
++                @Override
++                public void appendAnnotationIntrospector(AnnotationIntrospector ai) {
++                    _deserializationConfig = _deserializationConfig.withAppendedAnnotationIntrospector(ai);
++                    _serializationConfig = _serializationConfig.withAppendedAnnotationIntrospector(ai);
++                }
++
++                @Override
++                public void registerSubtypes(Class<?>... subtypes) {
++                    _subtypeResolver.registerSubtypes(subtypes);
++                }
++
++                @Override
++                public void registerSubtypes(NamedType... subtypes) {
++                    _subtypeResolver.registerSubtypes(subtypes);
++                }
++
++                @Override
++                public void setMixInAnnotations(Class<?> target, Class<?> mixinSource) {
++                    _mixIns.add(target, mixinSource);
++                }
++
++                @Override
++                public void addDeserializers(Deserializers d) {
++                    _deserializationContext = _deserializationContext.withAdditionalDeserializers(d);
++                }
++
++                @Override
++                public void addKeyDeserializers(KeyDeserializers d) {
++                    _deserializationContext = _deserializationContext.withAdditionalKeyDeserializers(d);
++                }
++
++                @Override
++                public void addSerializers(Serializers s) {
++                    _serializerFactory = _serializerFactory.withAdditionalSerializers(s);
++                }
++
++                @Override
++                public void addKeySerializers(Serializers s) {
++                    _serializerFactory = _serializerFactory.withAdditionalKeySerializers(s);
++                }
++
++                @Override
++                public void addBeanDeserializerModifier(BeanDeserializerModifier modifier) {
++                    _deserializationContext = _deserializationContext.withDeserializerModifiers(modifier);
++                }
++
++                @Override
++                public void addSerializerModifier(BeanSerializerModifier modifier) {
++                    _serializerFactory = _serializerFactory.withSerializerModifier(modifier);
++                }
++
++                @Override
++                public void addValueSerializers(Serializers s) {
++                    _serializerFactory = _serializerFactory.withAdditionalSerializers(s);
++                }
++
++                @Override
++                public void addKeySerializers(KeySerializers s) {
++                    _serializerFactory = _serializerFactory.withAdditionalKeySerializers(s);
++                }
++
++                @Override
++                public void setNamingStrategy(PropertyNamingStrategy naming) {
++                    _serializationConfig = _serializationConfig.with(naming);
++                    _deserializationConfig = _deserializationConfig.with(naming);
++                }
++            });
++        }
++        // Replace default introspector with XML one to avoid duplicate processing
++        _deserializationConfig = _deserializationConfig.with(new JacksonXmlAnnotationIntrospector());
++        _serializationConfig = _serializationConfig.with(new JacksonXmlAnnotationIntrospector());
++    }
+     {
+         // Need to override serializer provider (due to root name handling);
+         // deserializer provider fine as is
