@@ -80,7 +80,7 @@ If you use **KGCompass** in your research, please cite the following paper:
 ```bibtex
 @article{yang2025enhancing,
   title={Enhancing Repository-Level Software Repair via Repository-Aware Knowledge Graphs},
-  author={Yang, Boyang and Tian, Haoye and Ren, Jiadong and Jin, Shunfu and Liu, Yang and Liu, Feng and Le, Bach},
+  author={Yang, Boyang and Ren, Jiadong and Jin, Shunfu and Liu, Yang and Liu, Feng and Le, Bach and Tian, Haoye},
   journal={arXiv preprint arXiv:2503.21710},
   year={2025}
 }
