@@ -1042,22 +1042,22 @@ class CodeAnalyzer:
                 # Convert timestamp to ISO 8601 format date string
                 start_date = datetime.fromtimestamp(start_time).strftime('%Y-%m-%d')
                 end_date = datetime.fromtimestamp(end_time).strftime('%Y-%m-%d')
-                search_query = f'repo:{repo_name} created:{start_date}..{end_date} sort:created-desc'
+                search_query = f'repo:{repo_name} is:issue created:{start_date}..{end_date} sort:created-desc'
                 matching_issues = self.github.search_issues(search_query)
                 return matching_issues
         if issue_id is not None:
             issue = self._get_issue_from_id(repo_name, issue_id)
             return issue
         elif title is not None:
-            search_query = f'repo:{repo_name} {title} in:title sort:created-desc'
+            search_query = f'repo:{repo_name} is:issue {title} in:title sort:created-desc'
         elif time_range is not None:
             start_time, end_time = time_range
             # Convert timestamp to ISO 8601 format date string
             start_date = datetime.fromtimestamp(start_time).strftime('%Y-%m-%d')
             end_date = datetime.fromtimestamp(end_time).strftime('%Y-%m-%d')
-            search_query = f'repo:{repo_name} created:{start_date}..{end_date} sort:created-desc'
+            search_query = f'repo:{repo_name} is:issue created:{start_date}..{end_date} sort:created-desc'
         else:
-            search_query = f'repo:{repo_name} sort:created-desc'
+            search_query = f'repo:{repo_name} is:issue sort:created-desc'
         matching_issues = self.github.search_issues(search_query)
         return matching_issues
 
