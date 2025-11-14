@@ -48,10 +48,16 @@ class Embedding:
 
     def _cos_similarity(self, vec1, vec2):
         """计算两个向量的余弦相似度"""
-        return np.dot(vec1, vec2) / (np.linalg.norm(vec1) * np.linalg.norm(vec2))
+        norm1 = np.linalg.norm(vec1)
+        norm2 = np.linalg.norm(vec2)
+        if norm1 == 0 or norm2 == 0:
+            return 0.0
+        return np.dot(vec1, vec2) / (norm1 * norm2)
 
     def text_similarity(self, text1, text2):
         """计算两个文本的相似度"""
         vec1 = self.get_embedding(text1)
         vec2 = self.get_embedding(text2)
+        if vec1 is None or vec2 is None:
+            return 0.0
         return self._cos_similarity(vec1, vec2)

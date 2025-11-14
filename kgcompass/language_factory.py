@@ -219,8 +219,8 @@ class JavaLanguageConfig(LanguageConfig):
         return {
             'class': rf'class\s+{escaped_name}\s*{{',
             'interface': rf'interface\s+{escaped_name}\s*{{',
-            'method': rf'(?:public|protected|private|static|final|synchronized|abstract|default|\s)*\s*[\w.<>,\\[\\]?]+\s+{escaped_name}\s*\([^)]*\)\s*(?:{{|throws|;)',
-            'variable_declaration': rf'(?:private|public|protected|static|final)?\s*[\w.<>,\\[\\]]+\s+{escaped_name}\s*(?:=|;)',
+            'method': rf'(?:public|protected|private|static|final|synchronized|abstract|default|\s)*\s*[\w.<>,\[\]?]+\s+{escaped_name}\s*\([^)]*\)\s*(?:{{|throws|;)',
+            'variable_declaration': rf'(?:private|public|protected|static|final)?\s*[\w.<>,\[\]]+\s+{escaped_name}\s*(?:=|;)',
             'import': rf'import\s+(?:static\s+)?(?:[\w.]+\.)?{escaped_name}(?:\.\*)?;',
             'string': rf'"[^"]*{escaped_name}[^"]*"',
             'comment': rf'(?://.*{escaped_name}|/\*.*?{escaped_name}.*?\*/)',
@@ -249,7 +249,7 @@ class CppLanguageConfig(LanguageConfig):
         return {
             'class_struct_union': rf'(?:class|struct|union)\s+{escaped_name}\s*{{',
             'function_method': rf'[\w:]+\s+{escaped_name}\s*\([^)]*\)\s*{{', # Very basic
-            'variable_declaration': rf'[\w:]+\s+{escaped_name}\s*(?:=|;|\\[|\()', # Very basic
+            'variable_declaration': rf'[\w:]+\s+{escaped_name}\s*(?:=|;|\[|\()', # Very basic
             'namespace': rf'namespace\s+{escaped_name}\s*{{',
             'include': rf'#include\s*(?:<[^>]*{escaped_name}[^>]*>|"[^"]*{escaped_name}[^"]*")',
             'define': rf'#define\s+{escaped_name}',
@@ -489,11 +489,28 @@ class PythonParser(BaseParser):
                     if isinstance(target, ast.Name):
                         try:
                             value = ast.literal_eval(node.value)
+                            # Get short representation of value for signature
+                            value_type = type(value).__name__
+                            if isinstance(value, (dict, list, set, tuple)):
+                                value_repr = f"{value_type} with {len(value)} items"
+                            elif isinstance(value, str) and len(value) > 50:
+                                value_repr = f"str: {repr(value[:47])}..."
+                            else:
+                                value_repr = repr(value) if len(repr(value)) <= 100 else f"{value_type}"
                         except (ValueError, SyntaxError):
-                            value = ast.get_source_segment(content, node.value)
+                            # Cannot evaluate, get source segment but limit length
+                            source_segment = ast.get_source_segment(content, node.value)
+                            if source_segment and len(source_segment) > 100:
+                                value_repr = f"{source_segment[:97]}..."
+                            else:
+                                value_repr = source_segment or "complex expression"
+                        
+                        # Signature should be short and meaningful
+                        signature = f"{module_path}.{target.id}: {value_repr}"
+                        
                         variables.append({
                             "name": f"{module_path}.{target.id}",
-                            "signature": f"{module_path}.{target.id} = {value}",
+                            "signature": signature,
                             "file_path": clean_file_path,
                             "start_line": node.lineno,
                             "end_line": node.end_lineno if hasattr(node, 'end_lineno') else None,
@@ -602,8 +619,8 @@ class CppParser(BaseParser):
                 # Attempt to find libclang.so or libclang.dylib
                 # Common paths, adjust if necessary for your system
                 libclang_paths = [
-                    '/usr/lib/llvm-14/lib/libclang-14.so.1', # Example for specific LLVM version
-                    '/usr/lib/x86_64-linux-gnu/libclang-14.so.1',
+                    '/usr/lib/llvm-20/lib/libclang-20.so.1', # Example for specific LLVM version
+                    '/usr/lib/x86_64-linux-gnu/libclang-20.so.1',
                     '/usr/lib/libclang.so',
                     '/usr/local/lib/libclang.so',
                     '/Library/Developer/CommandLineTools/usr/lib/libclang.dylib', # macOS

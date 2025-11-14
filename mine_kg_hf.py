@@ -15,6 +15,8 @@ REPO_URL_MAP = {
     "scikit-learn__scikit-learn": "https://github.com/scikit-learn/scikit-learn.git",
     "sphinx-doc__sphinx": "https://github.com/sphinx-doc/sphinx.git",
     "sympy__sympy": "https://github.com/sympy/sympy.git",
+    'pydata__xarray': 'https://github.com/pydata/xarray.git',
+    'pallets__flask': 'https://github.com/pallets/flask.git',
 }
 
 

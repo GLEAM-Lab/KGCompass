@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import time
 from pathlib import Path
 from bs4 import BeautifulSoup
 import requests
@@ -42,6 +43,7 @@ from config import (
 )
 from language_factory import LanguageConfigFactory, ParserFactory, language_by_extension, EXT_LANG_MAP
 from functools import lru_cache
+from github_middleware import GitHubAPIMiddleware
 
 class CodeAnalyzer:
     def __init__(self, config):
@@ -52,6 +54,7 @@ class CodeAnalyzer:
         self.repo = git.Repo(self.repo_path)
         self.github_token = GITHUB_TOKEN
         self.github = Github(self.github_token)
+        self.github_api = GitHubAPIMiddleware(self.github_token)
         self.max_search_depth = MAX_SEARCH_DEPTH
         self.kg = KnowledgeGraph(
             NEO4J_URI,
@@ -459,7 +462,19 @@ class CodeAnalyzer:
         if not any(file_path.endswith(ext) for ext in self.language_config.config['file_extensions']):
             return
             
-        if 'test' in file_path and not file_path.endswith(self.language_config.config['test_file_pattern']):
+        # 检查是否为测试文件（更精确的判断）
+        # 1. 检查路径中是否包含 test/tests 目录
+        # 2. 检查文件名是否以测试模式开头
+        import os
+        path_parts = os.path.normpath(file_path).split(os.sep)
+        filename = os.path.basename(file_path)
+        test_file_pattern = self.language_config.config.get('test_file_pattern', '')
+        
+        # 判断是否为测试目录或测试文件
+        is_test_dir = any(part in ['test', 'tests', '__tests__', 'test_suite'] for part in path_parts)
+        is_test_file = test_file_pattern and filename.startswith(test_file_pattern)
+        
+        if (is_test_dir or is_test_file):
             print(f"Skip processing test file: {file_path}")
             return
             
@@ -955,11 +970,34 @@ class CodeAnalyzer:
                         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
                     }
                     print('Issue id is', issue_id)
-                    headers = {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-                    }
                     url = f"https://code.djangoproject.com/ticket/{issue_id}"
-                    response = requests.get(url, headers=headers)
+                    
+                    # 添加重试逻辑处理网络错误
+                    max_retries = 3
+                    response = None
+                    for attempt in range(max_retries):
+                        try:
+                            response = requests.get(url, headers=headers, timeout=15)
+                            break  # 成功则退出循环
+                        except (requests.exceptions.SSLError, 
+                                requests.exceptions.ConnectionError,
+                                requests.exceptions.Timeout) as e:
+                            if attempt < max_retries - 1:
+                                wait_time = 2 ** attempt  # 指数退避: 1s, 2s, 4s
+                                print(f"⚠️  Attempt {attempt + 1}/{max_retries} failed for Django ticket #{issue_id}: {type(e).__name__}")
+                                print(f"   Retrying in {wait_time} seconds...")
+                                time.sleep(wait_time)
+                            else:
+                                print(f"❌ All {max_retries} attempts failed for Django ticket #{issue_id}: {e}")
+                                print(f"   Continuing without this ticket information...")
+                                return None
+                        except requests.exceptions.RequestException as e:
+                            print(f"❌ Unexpected request error for Django ticket #{issue_id}: {e}")
+                            return None
+                    
+                    if response is None:
+                        print(f"❌ Failed to fetch Django ticket #{issue_id} after {max_retries} attempts")
+                        return None
                     print('response of django ticket', url, response.status_code)
                     if response.status_code == 200:
                         soup = BeautifulSoup(response.text, 'html.parser')
@@ -1081,23 +1119,27 @@ class CodeAnalyzer:
                 # Convert timestamp to ISO 8601 format date string
                 start_date = datetime.fromtimestamp(start_time).strftime('%Y-%m-%d')
                 end_date = datetime.fromtimestamp(end_time).strftime('%Y-%m-%d')
-                search_query = f'repo:{repo_name} created:{start_date}..{end_date} sort:created-desc'
+                search_query = f'repo:{repo_name} is:issue created:{start_date}..{end_date} sort:created-desc'
                 matching_issues = self.github.search_issues(search_query)
                 return matching_issues
         if issue_id is not None:
             issue = self._get_issue_from_id(repo_name, issue_id)
             return issue
         elif title is not None:
-            search_query = f'repo:{repo_name} {title} in:title sort:created-desc'
+            search_query = f'repo:{repo_name} is:issue {title} in:title sort:created-desc'
         elif time_range is not None:
             start_time, end_time = time_range
             # Convert timestamp to ISO 8601 format date string
             start_date = datetime.fromtimestamp(start_time).strftime('%Y-%m-%d')
             end_date = datetime.fromtimestamp(end_time).strftime('%Y-%m-%d')
-            search_query = f'repo:{repo_name} created:{start_date}..{end_date} sort:created-desc'
+            search_query = f'repo:{repo_name} is:issue created:{start_date}..{end_date} sort:created-desc'
         else:
-            search_query = f'repo:{repo_name} sort:created-desc'
-        matching_issues = self.github.search_issues(search_query)
+            search_query = f'repo:{repo_name} is:issue sort:created-desc'
+        matching_issues = self.github_api.search_issues(
+            search_query,
+            max_results=None,  # 不限制结果数，或设置具体数字如 5000
+            use_cache=True     # 启用缓存
+        )
         return matching_issues
 
     def _search_method_by_name(self, repo_root, method_name):
@@ -1219,7 +1261,7 @@ class CodeAnalyzer:
              self.artifact_stats["valid_related_items"] += 1
              self.counted_valid_artifact_ids.add("root_task") # Special ID for the root task itself
         
-        # Extract file references and methods from root node content
+        # # Extract file references and methods from root node content
         if root_content:
             # Extract reference information
             self._link_source_files_to_issue(root_id, root_content)
@@ -1235,9 +1277,8 @@ class CodeAnalyzer:
         max_similarity = 0
         best_match_issue = None
         end_time = self.created_at + 8 * 60 * 60
-        start_time = end_time - (7 * 24 * 60 * 60)  # Number of seconds in 7 days
+        start_time = end_time - (60 * 24 * 60 * 60)  # Number of seconds in 60 days
         time_range = (start_time, end_time)
-        
         if self.config['repo_name'] == 'django/django':
             import pandas as pd
             df = pd.read_csv('django-tickets.csv')
