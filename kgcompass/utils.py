@@ -1078,11 +1078,43 @@ def txt_file_contains_string(path_to_txt, expected_output, other_patterns=[]):
     return False
 
 def get_commit_method_by_signature(repo, commit, file_path, method_signature):
+    """
+    尝试从指定 commit 的文件中获取方法信息。
+    
+    策略：
+    1. 优先返回精确匹配的方法
+    2. 如果找不到，尝试返回同一个类的所有方法（类级定位）
+    3. 最后返回 None
+    """
     file_content = get_commit_file(repo, commit, file_path)
-    _, methods = get_class_and_method_from_content(file_content, file_path, repo.name)
+    if not file_content:
+        return None
+        
+    classes, methods = get_class_and_method_from_content(file_content, file_path, repo.name)
+    
+    # 策略 1: 精确匹配方法签名
     for method in methods:
         if method_signature in method['signature']:
             return method
+    
+    # 策略 2: 如果是类方法格式（包含.），尝试返回该类的所有方法作为候选
+    if '.' in method_signature:
+        # 提取类名部分 (例如: "pip._internal.cli.parser.ConfigOptionParser.parse_args" -> "ConfigOptionParser")
+        parts = method_signature.split('.')
+        suggested_class_name = parts[-2] if len(parts) >= 2 else None
+        
+        if suggested_class_name:
+            # 查找该类的所有方法
+            class_methods = [m for m in methods if suggested_class_name in m['name']]
+            
+            if class_methods:
+                # 返回该类的第一个方法，但添加标记说明这是类级别的匹配
+                first_method = class_methods[0].copy()
+                first_method['note'] = f'Class-level match: LLM suggested {method_signature}, but exact method not found. Returning class context.'
+                first_method['suggested_method'] = method_signature
+                first_method['class_name'] = suggested_class_name
+                return first_method
+    
     return None
 
 def extract_json_code(code):

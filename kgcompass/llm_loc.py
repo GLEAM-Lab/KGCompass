@@ -1,7 +1,6 @@
 import json
 import os
 import argparse
-from pathlib import Path
 from datasets import load_dataset
 import openai
 from utils import get_commit_method_by_signature, extract_json_code
@@ -18,78 +17,77 @@ from config import (
 )
 from utils import format_entity_content
 from github import Github
-from benchmark import create_benchmark_manager
 
 class PreFaultLocalization:
-    def __init__(self, instance_id: str, benchmark_type: str = "swe-bench"):
+    def __init__(self, instance_id: str):
         self.instance_id = instance_id
-        self.benchmark_type = benchmark_type
-        self.benchmark_manager = create_benchmark_manager(benchmark_type)
         self.dataset_name = DATASET_NAME
         self.target_sample = self._load_target_sample()
-        
-        # 使用 benchmark 管理器获取语言配置
-        language_config = self.benchmark_manager.get_language_config()
         if self.target_sample:
-            self.language = self.target_sample.get('language', language_config.get('language', 'python')).lower()
-        else:
-            self.language = language_config.get('language', 'python').lower()
+            self.language = self.target_sample.get('language', 'python').lower()
         
         self.model_name = MODEL_NAME
         # Create a client instance pointing to the OpenAI-compatible endpoint
         self.client = openai.OpenAI(api_key=BAILIAN_API_KEY, base_url=DEEPSEEK_BASE_URL)
 
     def _load_target_sample(self):
-        # 使用 benchmark 管理器加载数据集实例
-        try:
-            instances = self.benchmark_manager.load_dataset_instances()
-            for instance in instances:
-                if instance.get('instance_id') == self.instance_id:
-                    print(f"Found instance {self.instance_id} using benchmark manager")
-                    return instance
-            
-            print(f"Instance {self.instance_id} not found in benchmark dataset")
-            return None
-            
-        except Exception as e:
-            print(f"Error loading dataset using benchmark manager: {e}")
-            
-            # 回退到原有逻辑
-            # 首先尝试从本地 swe-bench_java 目录加载（针对 Java 实例）
-            local_data_dir = Path("swe-bench_java")
-            
-            if local_data_dir.exists() and self.instance_id:
-                # 提取仓库名称
-                repo_name = self.instance_id.rsplit('-', 1)[0]
-                
-                # 查找对应的 JSONL 文件
-                for jsonl_file in local_data_dir.glob("*.jsonl"):
-                    if repo_name in jsonl_file.name:
-                        print(f"Loading from local JSONL file: {jsonl_file}")
-                        try:
-                            with open(jsonl_file, 'r') as f:
-                                for line in f:
-                                    item = json.loads(line.strip())
-                                    if item.get('instance_id') == self.instance_id:
-                                        print(f"Found instance {self.instance_id} in local file")
-                                        return item
-                        except Exception as e:
-                            print(f"Error reading local file {jsonl_file}: {e}")
-                            continue
-            
-            # 如果本地没找到，尝试从 Hugging Face 加载
+        # 首先尝试从 KG location 文件加载（自定义仓库模式）
+        import glob
+        
+        # 查找 KG location 文件
+        kg_location_files = glob.glob(f"tests/{self.instance_id}_*/kg_locations/{self.instance_id}.json")
+        
+        if kg_location_files:
+            # 从 KG location 文件中提取样本信息
+            print(f"Loading target sample from KG location file: {kg_location_files[0]}")
             try:
-                split_name = 'test'
-                if 'multi-swe-bench' in self.dataset_name.lower():
-                    split_name = 'java_verified'
-
-                ds = load_dataset(self.dataset_name, split=split_name)
-                self.dataset = {item['instance_id']: item for item in ds}
-                return self.dataset.get(self.instance_id)
+                with open(kg_location_files[0], 'r') as f:
+                    kg_data = json.load(f)
+                
+                # 尝试从多个可能的位置获取数据
+                # 1. 直接查看 KG 文件中是否有 target_sample 信息
+                if 'target_sample' in kg_data:
+                    return kg_data['target_sample']
+                
+                # 2. 从 web_outputs 查找实例文件
+                instance_files = glob.glob(f"web_outputs/*/{self.instance_id}_instance.json")
+                if instance_files:
+                    print(f"Loading target sample from instance file: {instance_files[0]}")
+                    with open(instance_files[0], 'r') as f:
+                        instance_data = json.load(f)
+                    return instance_data
+                
+                # 3. 从 KG location 文件路径构造基本信息
+                # 提取仓库信息
+                parts = self.instance_id.rsplit('-', 1)
+                if len(parts) == 2:
+                    repo_identifier = parts[0]
+                    issue_number = parts[1]
+                    repo_name = repo_identifier.replace('__', '/', 1)
+                    
+                    print(f"Constructing minimal target sample for {repo_name} issue #{issue_number}")
+                    return {
+                        'instance_id': self.instance_id,
+                        'repo': repo_name,
+                        'base_commit': 'HEAD',
+                        'problem_statement': f'Issue #{issue_number}',
+                        'language': 'python'  # 默认，可以根据需要调整
+                    }
             except Exception as e:
-                print(f"Error loading from Hugging Face: {e}")
-                print(f"Could not find instance {self.instance_id} in local files or online dataset")
-                return None
+                print(f"Error loading from KG location file: {e}")
+        
+        # 回退到原有的数据集加载方式
+        split_name = 'test'
+        if 'multi-swe-bench' in self.dataset_name.lower():
+            split_name = 'java_verified'
+
+        try:
+            ds = load_dataset(self.dataset_name, split=split_name)
+            self.dataset = {item['instance_id']: item for item in ds}
+            return self.dataset.get(self.instance_id)
+        except Exception as e:
+            print(f"Error loading from dataset: {e}")
+            return None
 
     def generate(self, prompt, stream=False):
         """Unified interface for generating responses via OpenAI-compatible endpoint"""
@@ -154,12 +152,12 @@ Note:
         return self.generate(prompt, stream=stream)
 
 
-def process_instance(directory, instance_id, benchmark_type="swe-bench"):
+def process_instance(directory, instance_id):
     """
     Reads a KG location file, uses it to prompt an LLM for more specific locations,
     and enriches the original KG file with the LLM's findings.
     """
-    pre_fl = PreFaultLocalization(instance_id, benchmark_type)
+    pre_fl = PreFaultLocalization(instance_id)
     if pre_fl.target_sample is None:
         return f"Error: Could not find instance {instance_id} in dataset"
 
@@ -262,12 +260,21 @@ def process_instance(directory, instance_id, benchmark_type="swe-bench"):
             qualified_name_from_llm = item['method']
             file_path = item['file_path']
             
+            print(f"🔍 验证 LLM 建议的位置: {file_path} -> {qualified_name_from_llm}")
+            
             method_details = None
             if pre_fl.language == 'python' and github_repo and commit:
                 try:
                     method_details = get_commit_method_by_signature(github_repo, commit, file_path, qualified_name_from_llm)
+                    if method_details:
+                        if 'note' in method_details and 'Class-level match' in method_details['note']:
+                            print(f"  ⚠️  方法未精确匹配，使用类级别匹配")
+                            print(f"     建议的方法: {qualified_name_from_llm}")
+                            print(f"     返回的方法: {method_details['name']}")
+                        else:
+                            print(f"  ✅ 成功验证并获取方法详情")
                 except Exception as e:
-                    print(f"Warning: get_commit_method_by_signature failed for {qualified_name_from_llm} in {file_path}: {e}")
+                    print(f"  ❌ 验证失败: {e}")
             
             if method_details is not None:
                 cnt += 1
@@ -278,6 +285,8 @@ def process_instance(directory, instance_id, benchmark_type="swe-bench"):
                 method_details['type'] = 'method'
                 method_details['similarity'] = 1.0
                 locate_result.setdefault('related_entities', {}).setdefault('methods', []).append(method_details)
+            else:
+                print(f"  ⏭️  跳过此位置（无法验证）")
     
     # Save the augmented locate_result object, overwriting the file in the llm_locations dir
     output_path = os.path.join(directory, f"{instance_id}.json")
@@ -291,8 +300,6 @@ def main():
     parser = argparse.ArgumentParser(description="LLM-based Fault Localization using KG context.")
     parser.add_argument("directory", type=str, help="Directory to save the results")
     parser.add_argument("--instance_id", type=str, help="The instance_id to process.", required=True)
-    parser.add_argument("--benchmark", type=str, default="swe-bench", 
-                        help="Benchmark type (swe-bench or multi-swe-bench)")
     args = parser.parse_args()
 
     # Create the directory if it doesn't exist
@@ -300,8 +307,7 @@ def main():
         os.makedirs(args.directory)
 
     print(f"Processing a single specified instance: {args.instance_id}")
-    print(f"Using benchmark: {args.benchmark}")
-    result = process_instance(args.directory, args.instance_id, args.benchmark)
+    result = process_instance(args.directory, args.instance_id)
     print(result)
 
 

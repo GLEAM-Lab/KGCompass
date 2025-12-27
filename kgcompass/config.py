@@ -38,7 +38,7 @@ MODEL_NAME = "deepseek-v3"
 
 # LLM Request Configuration
 MAX_TOKENS = 4096
-TEMPERATURE = 0.3
+TEMPERATURE = 0.8
 TOP_P = 0.95
 
 MAX_INPUT_LENGTH = 65536 / 3

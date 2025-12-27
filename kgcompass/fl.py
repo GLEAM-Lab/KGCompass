@@ -223,6 +223,130 @@ class CodeAnalyzer:
         final_target_sample = None    # Processed item in consistent format
 
         print(f"Attempting to load dataset for benchmark: {benchmark_name}")
+        
+        # 自定义仓库模式：从本地文件或直接从 GitHub 获取
+        if benchmark_name == 'custom':
+            try:
+                print("Custom repository mode: Fetching issue information from GitHub...")
+                
+                # 从 instance_id 中提取信息 (格式: owner__repo-issue_number)
+                parts = self.config['instance_id'].rsplit('-', 1)
+                if len(parts) != 2:
+                    print(f"Error: Invalid custom instance_id format: {self.config['instance_id']}")
+                    return None
+                
+                repo_identifier = parts[0]  # e.g., "SWE-bench__SWE-bench"
+                issue_number = parts[1]      # e.g., "449"
+                
+                # 从 web_outputs 查找实例文件（如果存在）
+                import glob
+                instance_files = glob.glob(f"web_outputs/*/{self.config['instance_id']}_instance.json")
+                
+                if instance_files:
+                    # 从本地文件加载
+                    print(f"Loading instance data from local file: {instance_files[0]}")
+                    with open(instance_files[0], 'r', encoding='utf-8') as f:
+                        instance_data = json.load(f)
+                    
+                    final_target_sample = {
+                        'repo': instance_data.get('repo'),
+                        'instance_id': instance_data.get('instance_id'),
+                        'base_commit': instance_data.get('base_commit', 'HEAD'),
+                        'problem_statement': instance_data.get('problem_statement', ''),
+                        'created_at': instance_data.get('created_at', datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")),
+                        'test_patch': '',
+                        'patch': '',
+                        'pull_number': None,
+                        'title': instance_data.get('problem_statement', '').split('\n')[0] if instance_data.get('problem_statement') else f"Issue #{issue_number}",
+                    }
+                    print(f"Successfully loaded custom instance from file")
+                else:
+                    # 直接从 GitHub 获取
+                    print(f"Fetching issue #{issue_number} from GitHub for {self.config['repo_name']}...")
+                    
+                    try:
+                        repo = self.github.get_repo(self.config['repo_name'])
+                        issue = repo.get_issue(int(issue_number))
+                        
+                        if not issue:
+                            print(f"Error: Issue #{issue_number} not found in {self.config['repo_name']}")
+                            return None
+                        
+                        # 获取 Issue 创建时间
+                        issue_created_at = issue.created_at
+                        issue_created_timestamp = issue_created_at.timestamp()
+                        
+                        print(f"Issue #{issue_number} created at: {issue_created_at}")
+                        
+                        # 关键：找到 Issue 创建时刻的最新 commit
+                        # 这样可以防止使用 Issue 创建之后的代码改动
+                        print(f"Finding commit at Issue creation time...")
+                        default_branch = repo.default_branch
+                        
+                        # 获取默认分支在 Issue 创建时刻之前的最新 commit
+                        commits = repo.get_commits(sha=default_branch, until=issue_created_at)
+                        base_commit = None
+                        
+                        try:
+                            # 获取第一个 commit（最新的）
+                            base_commit = commits[0].sha
+                            print(f"Found base_commit at Issue creation time: {base_commit}")
+                            print(f"  Commit date: {commits[0].commit.author.date}")
+                            print(f"  Commit message: {commits[0].commit.message.split(chr(10))[0][:80]}...")
+                        except (IndexError, StopIteration):
+                            print(f"Warning: Could not find commit before Issue creation time, using default branch HEAD")
+                            base_commit = repo.get_branch(default_branch).commit.sha
+                        
+                        # 设置临时的 created_at 用于后续评论过滤
+                        self.created_at = issue_created_timestamp
+                        
+                        # 获取 issue 内容和评论（只包括 Issue 创建时间之前或同时的评论）
+                        body = issue.body or ""
+                        comments = []
+                        
+                        print(f"Filtering comments before {issue_created_at}...")
+                        for comment in issue.get_comments():
+                            # 只包括 Issue 创建之后的评论（实际修复过程中可能有用）
+                            # 但不包括 Issue 创建很久之后的评论（可能包含解决方案）
+                            if comment.created_at.timestamp() <= issue_created_timestamp + (7 * 24 * 3600):  # Issue 创建后 7 天内的评论
+                                comments.append(f"\nComment by {comment.user.login} at {comment.created_at}:\n{comment.body}")
+                                print(f"  Including comment from {comment.user.login} at {comment.created_at}")
+                        
+                        full_body = body + "\n\n" + "\n".join(comments)
+                        
+                        # 构造 final_target_sample
+                        problem_statement = f"# {issue.title}\n\n{full_body}"
+                        
+                        final_target_sample = {
+                            'repo': self.config['repo_name'],
+                            'instance_id': self.config['instance_id'],
+                            'base_commit': base_commit,  # 使用 Issue 创建时刻的 commit
+                            'problem_statement': problem_statement,
+                            'created_at': issue.created_at.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                            'test_patch': '',
+                            'patch': '',
+                            'pull_number': None,
+                            'title': issue.title,
+                        }
+                        
+                        print(f"Successfully fetched issue #{issue_number} from GitHub")
+                        print(f"  Title: {issue.title}")
+                        print(f"  Created: {issue.created_at}")
+                        print(f"  Base commit: {base_commit}")
+                        print(f"  Comments included: {len(comments)}")
+                        
+                    except Exception as e:
+                        print(f"Error fetching issue from GitHub: {e}")
+                        print(traceback.format_exc())
+                        return None
+                
+                # 返回构造好的样本
+                return final_target_sample
+                
+            except Exception as e:
+                print(f"Error in custom repository mode: {e}")
+                print(traceback.format_exc())
+                return None
 
         if benchmark_name == 'multi-swe-bench':
             try:
@@ -1584,7 +1708,29 @@ if __name__ == "__main__":
         benchmark_name_arg = sys.argv[4]
 
     repo_name = None
-    if benchmark_name_arg == 'multi-swe-bench':
+    if benchmark_name_arg == 'custom':
+        # Custom repository format: OWNER__REPO-ISSUENUMBER (e.g., SWE-bench__SWE-bench-449)
+        # Repo name format: OWNER/REPO (e.g., SWE-bench/SWE-bench)
+        parts = instance_id_arg.rsplit('-', 1)  # Split from right to handle repo names with hyphens
+        if len(parts) == 2:
+            owner_repo_part = parts[0]  # e.g., "SWE-bench__SWE-bench"
+            if '__' in owner_repo_part:
+                repo_name = owner_repo_part.replace('__', '/', 1)  # "SWE-bench/SWE-bench"
+            else:
+                # Fallback if no double underscore
+                repo_name = owner_repo_part.replace('_', '/', 1)
+                print(f"Warning: Instance_id '{instance_id_arg}' for custom repo did not contain '__'. Used single '_' replacement: '{repo_name}'")
+        else:
+            print(f"Error: Could not parse custom instance_id '{instance_id_arg}' to extract owner/repo part.")
+            sys.exit(1)
+        
+        if not repo_name or '/' not in repo_name:
+            print(f"Error: Failed to derive a valid 'owner/repo' format from instance_id '{instance_id_arg}' for custom repo. Result: '{repo_name}'")
+            sys.exit(1)
+            
+        print(f"Custom repository mode: repo_name='{repo_name}'")
+        
+    elif benchmark_name_arg == 'multi-swe-bench':
         # Instance ID format: OWNER__REPO-ISSUENUMBER (e.g., apache__dubbo-10638)
         # Dataset 'repo' field format: OWNER/REPO (e.g., apache/dubbo)
         parts = instance_id_arg.split('-')
@@ -1609,13 +1755,22 @@ if __name__ == "__main__":
         repo_part = '-'.join(instance_parts[:-1])
         repo_name = repo_part.replace('__', '/')
 
+    # 确定语言
+    if benchmark_name_arg == 'multi-swe-bench':
+        language = 'java'
+    elif benchmark_name_arg == 'custom':
+        # 对于自定义仓库，默认使用 Python，后续可以根据仓库实际情况自动检测
+        language = 'python'
+    else:  # swe-bench
+        language = 'python'
+    
     config = {
         'repo_path': f'playground/{repo_path_arg}/',
         'repo_name': repo_name, 
         'repo_root': repo_name.split('/')[-1],
         'instance_id': instance_id_arg,
         'benchmark_name': benchmark_name_arg,
-        'language': 'java' if benchmark_name_arg == 'multi-swe-bench' else 'python'
+        'language': language
     }
 
     print(f"Configuration: {config}")

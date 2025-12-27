@@ -1,0 +1,13 @@
+--- a/src/pip/_internal/req/req_install.py
++++ b/src/pip/_internal/req/req_install.py
+@@ -151,7 +151,9 @@
+         # Supplied options
+         self.global_options = global_options if global_options else []
+         self.hash_options = hash_options if hash_options else {}
+-        self.config_settings = config_settings
++        # Ensure config_settings values are strings, not lists
++        self.config_settings = {k: v[0] if isinstance(v, list) else v 
++                              for k, v in (config_settings or {}).items()}
+         # Set to True after successful preparation of this requirement
+         self.prepared = False
+         # User supplied requirement are explicitly requested for installation
