@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
-"""Export an issue-anchored code-graph localization baseline.
+"""Export the no-history issue-anchored code-graph localization baseline.
 
 This baseline is KG-free and LLM-free. It uses only the original issue text
 and the base-commit repository snapshot. The baseline first extracts explicit
 anchors from the issue, maps them to seed files and symbols, then follows
 base-code containment/import/reference evidence before ranking AST-level
 methods with the same JSON schema as the KGCompass localization evaluators.
+It intentionally disables all historical issue/PR artifacts, comments, hints,
+and target patch content.
+
+The constants below are fixed priority scales for this defensive control.
+They were not tuned on SWE-bench Verified; the ordering encodes a conservative
+preference for explicit issue anchors, then base-code definition/reference
+evidence, then broad lexical file evidence.
 """
 
 from __future__ import annotations
@@ -43,6 +50,15 @@ from export_regex_fileexpand_baseline import (
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT_DIR = REPO_ROOT / "runs/codegraph_anchor/tse_timesafe_main_20260531_v1"
+EXPLICIT_PATH_FILE_SCORE = 1000
+DOTTED_MODULE_FILE_SCORE = 800
+DEFINITION_FILE_SCORE = 120
+GIT_GREP_FILE_SCORE = 15
+PATH_TOKEN_FILE_SCORE = 4
+IMPORT_NEIGHBOR_DECAY = 0.55
+DISTANCE_SCORE = 1_000_000.0
+FILE_SCORE_SCALE = 100.0
+SYMBOL_SCORE = 1000.0
 
 
 def module_name_for_path(path: str) -> str:
@@ -157,30 +173,30 @@ def compute_seed_file_scores(item: dict, repo: Path, repo_files: set[str], ancho
 
     for path in anchors["file_paths"]:
         for hit in [f for f in repo_files if f == path or f.endswith("/" + path)]:
-            file_scores[hit] += 1000
+            file_scores[hit] += EXPLICIT_PATH_FILE_SCORE
             reasons[hit].append(f"explicit_path:{path}")
 
     for path in dotted_to_candidate_files(anchors["dotted"]):
         if path in repo_files:
-            file_scores[path] += 800
+            file_scores[path] += DOTTED_MODULE_FILE_SCORE
             reasons[path].append("dotted_module")
 
     grep_counts = git_grep_files(repo, commit, anchors["dotted"] + anchors["identifiers"], max_grep_anchors)
     for path, count in grep_counts.items():
         if path in repo_files:
-            file_scores[path] += min(count, 20) * 15
+            file_scores[path] += min(count, 20) * GIT_GREP_FILE_SCORE
             reasons[path].append(f"git_grep:{min(count, 20)}")
 
     definition_counts = definition_anchor_files(repo, commit, anchors, repo_files)
     for path, count in definition_counts.items():
-        file_scores[path] += min(count, 10) * 120
+        file_scores[path] += min(count, 10) * DEFINITION_FILE_SCORE
         reasons[path].append(f"code_definition:{min(count, 10)}")
 
     issue_terms = set(anchors["lexical"]) | set(anchors["code_tokens"])
     for path in repo_files:
         overlap = file_token_score(path, issue_terms)
         if overlap:
-            file_scores[path] += overlap * 4
+            file_scores[path] += overlap * PATH_TOKEN_FILE_SCORE
             reasons[path].append(f"path_tokens:{overlap}")
     return file_scores, reasons
 
@@ -212,7 +228,7 @@ def rank_instance(item: dict, repo: Path, args: argparse.Namespace) -> tuple[lis
             if neighbor not in repo_files:
                 continue
             meta = graph_files.get(neighbor)
-            neighbor_score = max(1, int(seed_meta["score"] * 0.55))
+            neighbor_score = max(1, int(seed_meta["score"] * IMPORT_NEIGHBOR_DECAY))
             if meta is None or (meta["distance"], -meta["score"]) > (1, -neighbor_score):
                 graph_files[neighbor] = {
                     "distance": 1,
@@ -231,13 +247,13 @@ def rank_instance(item: dict, repo: Path, args: argparse.Namespace) -> tuple[lis
         for cand in extract_candidates_from_source(source, path):
             sym_score, matches = candidate_symbol_score(cand, anchors)
             score = (
-                (1_000_000.0 / (distance + 1))
-                + file_score * 100.0
-                + sym_score * 1000.0
+                (DISTANCE_SCORE / (distance + 1))
+                + file_score * FILE_SCORE_SCALE
+                + sym_score * SYMBOL_SCORE
                 - float(cand.start_line or 0) / 100_000.0
             )
             evidence = {
-                "baseline": "codegraph_anchor",
+                "baseline": "no_history_codegraph",
                 "distance": distance,
                 "file_score": int(file_score),
                 "file_rank": int(meta["rank"]),
@@ -298,12 +314,13 @@ def export_one(item: dict, args: argparse.Namespace) -> tuple[str, str, int, int
         "related_entities": {"methods": methods, "classes": [], "issues": []},
         "artifact_stats": stats,
         "kg_params": {
-            "baseline": "codegraph_anchor",
+            "baseline": "no_history_codegraph",
             "uses_kg": False,
             "uses_llm": False,
             "uses_hints": False,
             "uses_comments": False,
-            "candidate_source": "base_commit_issue_anchored_code_graph",
+            "uses_historical_artifacts": False,
+            "candidate_source": "target_issue_and_base_commit_code_graph",
         },
         "run_meta": {
             "instance_id": iid,
