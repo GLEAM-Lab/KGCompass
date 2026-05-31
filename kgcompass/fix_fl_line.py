@@ -3,14 +3,14 @@ import os
 from github import Github
 import sys
 import argparse
-from utils import get_commit_file, get_class_and_method_from_content
+from utils import get_commit_file, get_class_and_method_from_content, create_github_client, _get_file_content_by_commit
 from datasets import load_dataset
 from pathlib import Path
 import traceback
 from config import GITHUB_TOKEN, DATASET_NAME
 import glob
 
-g = Github(GITHUB_TOKEN)
+g = create_github_client(GITHUB_TOKEN)
 
 # 延迟加载数据集，避免自定义仓库时不必要的加载
 ds = None
@@ -24,12 +24,34 @@ def _load_dataset_if_needed():
             ds = {}
     return ds
 
+
+def _load_instance_from_local_file(instance_id):
+    local_file = os.getenv("SWE_BENCH_LOCAL_FILE")
+    if not local_file or not os.path.exists(local_file):
+        return None
+    try:
+        with open(local_file, "r", encoding="utf-8") as f:
+            for line in f:
+                item = json.loads(line.strip())
+                if item.get("instance_id") == instance_id:
+                    return item
+    except Exception as e:
+        print(f"Warning: Could not load local instance file {local_file}: {e}")
+    return None
+
 def find_entity_in_content(entity_type, entity, content, repo_name):
     found = False
     start_line = end_line = None
     source_code = None
     
     classes, methods = get_class_and_method_from_content(content, entity['file_path'], repo_name.split('/')[-1])
+    return find_entity_in_parsed(entity_type, entity, content, classes, methods)
+
+
+def find_entity_in_parsed(entity_type, entity, content, classes, methods):
+    found = False
+    start_line = end_line = None
+    source_code = None
     
     # 提取实体名称的各种可能形式
     entity_name = entity['name']
@@ -81,8 +103,10 @@ def fix_line_numbers(result_file, output_dir, instance_id):
 
     # instance_id is now passed as an argument
     instance_parts = instance_id.rsplit('-', 1)  # 从右边分割，处理仓库名中的连字符
+    repo_identifier = instance_parts[0]
     repo_name = instance_parts[0].replace('__', '/')
-    repo = g.get_repo(repo_name)
+    local_repo_root = Path("playground") / repo_identifier
+    repo = None
     
     # 尝试多种方式获取 base_commit
     base_commit = None
@@ -100,6 +124,12 @@ def fix_line_numbers(result_file, output_dir, instance_id):
     
     # 方法 2: 从数据集加载（如果是 SWE-bench 实例）
     if not base_commit or base_commit == 'HEAD':
+        local_instance = _load_instance_from_local_file(instance_id)
+        if local_instance:
+            base_commit = local_instance.get('base_commit')
+            print(f"Loaded base_commit from local instance file: {base_commit}")
+
+    if not base_commit or base_commit == 'HEAD':
         ds = _load_dataset_if_needed()
         if ds and 'test' in ds:
             for item in ds['test']:
@@ -112,15 +142,27 @@ def fix_line_numbers(result_file, output_dir, instance_id):
     if not base_commit or base_commit == 'HEAD':
         print(f"Using default branch HEAD as base_commit for custom repository")
         try:
-            # 获取仓库的默认分支的最新 commit
-            default_branch = repo.default_branch
-            base_commit = repo.get_branch(default_branch).commit.sha
-            print(f"Resolved HEAD to: {base_commit}")
+            if local_repo_root.exists():
+                import subprocess
+                git_result = subprocess.run(
+                    ["git", "-C", str(local_repo_root), "rev-parse", "HEAD"],
+                    capture_output=True,
+                    text=True,
+                    check=True,
+                )
+                base_commit = git_result.stdout.strip()
+                print(f"Resolved local HEAD to: {base_commit}")
+            else:
+                repo = g.get_repo(repo_name)
+                default_branch = repo.default_branch
+                base_commit = repo.get_branch(default_branch).commit.sha
+                print(f"Resolved remote HEAD to: {base_commit}")
         except Exception as e:
             print(f"Error getting default branch commit: {e}")
             return
     
     print(f"Using base_commit: {base_commit}")
+    parsed_cache = {}
 
     for entity_type in ['methods']:
         if entity_type not in result['related_entities']:
@@ -133,9 +175,14 @@ def fix_line_numbers(result_file, output_dir, instance_id):
         entity_path = {}
         appear = {}
         for entity in entities:
+            path = entity.get('path') or entity.get('path_details') or []
+            if not isinstance(path, list):
+                path = []
             if entity['similarity'] > 0.99:
-                entity['path'][0]['type'] = 'INFERENCE'
-            entity_path[entity['name']] = entity['path']
+                if path:
+                    path[0]['type'] = 'INFERENCE'
+            entity['path'] = path
+            entity_path[entity['name']] = path
         for entity in entities:
             try:
                 # 检查 KG 分析时的 commit 和当前 base_commit 是否一致
@@ -146,8 +193,15 @@ def fix_line_numbers(result_file, output_dir, instance_id):
                 if file_path.startswith('playground/'):
                     file_path = '/'.join(file_path.split('/')[2:])
                 
-                # 尝试从 GitHub API 获取指定 commit 的文件内容
-                file_content = get_commit_file(repo, repo.get_commit(base_commit), file_path)
+                # 优先从本地 git 读取；若本地仓库存在，则不再回退到 GitHub，
+                # 以确保版本完全受本地 commit 控制并避免网络波动。
+                file_content = None
+                if local_repo_root.exists():
+                    file_content = _get_file_content_by_commit(str(local_repo_root), base_commit, file_path)
+                if (file_content is None or file_content == "") and not local_repo_root.exists() and repo is None:
+                    repo = g.get_repo(repo_name)
+                if (file_content is None or file_content == "") and not local_repo_root.exists() and repo is not None:
+                    file_content = get_commit_file(repo, repo.get_commit(base_commit), file_path)
                 if not file_content:
                     print(f"Not found file {file_path} in commit {base_commit}")
                     # 如果文件不存在于该 commit，可能是：
@@ -158,16 +212,16 @@ def fix_line_numbers(result_file, output_dir, instance_id):
                     
                 print(f'Found file {file_path} in commit {base_commit}')
 
-                # 保存文件内容到本地以供后续处理
-                directory = os.path.dirname(entity['file_path'])
-                if directory:
-                    os.makedirs(directory, exist_ok=True)
-                with open(entity['file_path'], 'w', encoding='utf-8') as f:
-                    f.write(file_content)
-
                 # 在该 commit 的文件内容中查找实体
-                found, start_line, end_line, source_code = find_entity_in_content(
-                    entity_type, entity, file_content, repo_name
+                cache_key = (file_path, hash(file_content))
+                if cache_key not in parsed_cache:
+                    classes, methods = get_class_and_method_from_content(
+                        file_content, entity['file_path'], repo_name.split('/')[-1]
+                    )
+                    parsed_cache[cache_key] = (classes, methods)
+                classes, methods = parsed_cache[cache_key]
+                found, start_line, end_line, source_code = find_entity_in_parsed(
+                    entity_type, entity, file_content, classes, methods
                 )
                 
                 if not found:
@@ -180,8 +234,8 @@ def fix_line_numbers(result_file, output_dir, instance_id):
                         entity['name'] = new_name
                         print(f"Try using modified name: {new_name}")
                         
-                        found, start_line, end_line, source_code = find_entity_in_content(
-                            entity_type, entity, file_content, repo_name
+                        found, start_line, end_line, source_code = find_entity_in_parsed(
+                            entity_type, entity, file_content, classes, methods
                         )
                 
                 if found and entity['signature'] not in appear:

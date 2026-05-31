@@ -1,11 +1,15 @@
-from dotenv import load_dotenv
 import os
+
+from dotenv import load_dotenv
 from github import Github
 
-load_dotenv()
+if os.getenv("KGCOMPASS_LOAD_DOTENV", "1") != "0":
+    load_dotenv()
 
 # GitHub Configuration
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+GITHUB_TOKEN = None if os.getenv("KGCOMPASS_DISABLE_GITHUB_TOKEN") == "1" else (
+    os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
+)
 
 # Bailian
 BAILIAN_API_KEY = os.getenv("BAILIAN_API_KEY")

@@ -3,7 +3,7 @@ import os
 import argparse
 from datasets import load_dataset
 import openai
-from utils import get_commit_method_by_signature, extract_json_code
+from utils import get_commit_method_by_signature, extract_json_code, create_github_client
 from config import (
     DATASET_NAME,
     DEEPSEEK_BASE_URL,
@@ -16,7 +16,6 @@ from config import (
     CANDIDATE_LOCATIONS_MAX,
 )
 from utils import format_entity_content
-from github import Github
 
 class PreFaultLocalization:
     def __init__(self, instance_id: str):
@@ -244,7 +243,7 @@ def process_instance(directory, instance_id):
     commit = None
     if repo_name and commit_id and GITHUB_TOKEN:
         try:
-            g = Github(GITHUB_TOKEN)
+            g = create_github_client(GITHUB_TOKEN)
             github_repo = g.get_repo(repo_name)
             commit = github_repo.get_commit(commit_id)
         except Exception as e:

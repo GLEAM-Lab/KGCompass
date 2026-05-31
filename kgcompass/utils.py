@@ -6,6 +6,7 @@ import chardet
 import re
 from collections import defaultdict, OrderedDict
 from github import Github
+from github.GithubRetry import GithubRetry
 import tokenize
 from io import BytesIO
 import tempfile
@@ -20,6 +21,18 @@ import tokenize
 from config import SEARCH_SPACE
 
 repo_locks = defaultdict(threading.Lock)
+_LOCAL_REPO_CANDIDATE_CACHE = {}
+
+
+def create_github_client(github_token, timeout=60, total_retries=5):
+    retry = GithubRetry(
+        total=total_retries,
+        backoff_factor=1.5,
+        status_forcelist=[500, 502, 503, 504],
+    )
+    if github_token:
+        return Github(login_or_token=github_token, timeout=timeout, retry=retry)
+    return Github(timeout=timeout, retry=retry)
 
 def _clean_path(file_path: str) -> str:
     """Removes 'playground/' prefix and the project directory from a path."""
@@ -32,11 +45,19 @@ def _clean_path(file_path: str) -> str:
             return os.sep.join(parts[1:])
         else:
             return path_after_playground
+    temp_prefix = f"kgcompass_playground{os.sep}"
+    if temp_prefix in rel_path:
+        idx = rel_path.index(temp_prefix) + len(temp_prefix)
+        path_after_temp = rel_path[idx:]
+        parts = path_after_temp.split(os.sep)
+        if len(parts) > 1:
+            return os.sep.join(parts[1:])
+        return path_after_temp
     return rel_path
 
 class TextAnalyzer:
     def __init__(self, github_token):
-        self.g = Github(github_token)
+        self.g = create_github_client(github_token)
         self.cache = defaultdict(dict)
         self.patterns = {
             'issue_numbers': r'#(\d+)',
@@ -89,7 +110,9 @@ def get_pr_file_line_belongs(pull_request, repo_root, file_path, start_line, end
         commit = pull_request.head.sha
         repo = pull_request.base.repo
         relative_path = os.path.relpath(file_path, repo_root)
-        file_content = repo.get_contents(relative_path, ref=commit).decoded_content.decode('utf-8')
+        file_content = _get_file_content_by_commit(repo_root, commit, relative_path)
+        if file_content is None:
+            file_content = repo.get_contents(relative_path, ref=commit).decoded_content.decode('utf-8')
         temp_dir = tempfile.mkdtemp()
         temp_file = os.path.join(temp_dir, os.path.basename(file_path))
         try:
@@ -213,10 +236,61 @@ def get_commit_file(repo, commit, file_path):
     cache_key = f"{commit.sha}:{file_path}"
     if cache_key in _commit_file_cache:
         return _commit_file_cache[cache_key]    
-    file_content = repo.get_contents(file_path, ref=commit.sha)
-    content = file_content.decoded_content.decode('utf-8')
-    _commit_file_cache[cache_key] = content
-    return content
+    local_content = _get_local_commit_file_content(repo, commit.sha, file_path)
+    if local_content is not None:
+        _commit_file_cache[cache_key] = local_content
+        return local_content
+    try:
+        file_content = repo.get_contents(file_path, ref=commit.sha)
+        content = file_content.decoded_content.decode('utf-8', errors='ignore')
+        _commit_file_cache[cache_key] = content
+        return content
+    except Exception as e:
+        print(f"Warning: failed to fetch {file_path} at {commit.sha}: {e}")
+        _commit_file_cache[cache_key] = ""
+        return ""
+
+
+def _get_file_content_by_commit(repo_root, commit_sha, relative_path):
+    try:
+        rel = relative_path.replace("\\", "/")
+        result = subprocess.run(
+            ["git", "-C", repo_root, "show", f"{commit_sha}:{rel}"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode == 0:
+            return result.stdout
+    except Exception:
+        pass
+    return None
+
+
+def _get_local_commit_file_content(repo, commit_sha, file_path):
+    repo_full_name = getattr(repo, "full_name", "")
+    if not repo_full_name:
+        return None
+    repo_id = repo_full_name.replace("/", "__")
+    repo_name = repo_full_name.split("/")[-1]
+
+    if repo_id in _LOCAL_REPO_CANDIDATE_CACHE:
+        candidate_roots = _LOCAL_REPO_CANDIDATE_CACHE[repo_id]
+    else:
+        cwd = os.getcwd()
+        candidate_roots = [
+            os.path.join(cwd, "playground", repo_id),
+            os.path.join(cwd, "playground", repo_name),
+        ]
+        _LOCAL_REPO_CANDIDATE_CACHE[repo_id] = candidate_roots
+
+    for repo_root in candidate_roots:
+        if not os.path.isdir(repo_root):
+            continue
+        content = _get_file_content_by_commit(repo_root, commit_sha, file_path)
+        if content is not None:
+            return content
+    return None
 
 def get_encoding(file):
     with open(file, 'rb') as f:
@@ -361,9 +435,12 @@ def get_global_variables_from_file(file_path, repo_name):
 
 def get_class_and_method_from_content(content, file_path, repo_name):
     repo_name = repo_name.split('/')[-1]
-    temp_file = f'playground/{repo_name}/{file_path}'
-    if not os.path.exists(temp_file):
-        os.makedirs(os.path.dirname(temp_file), exist_ok=True)
+    if not file_path.endswith('.py'):
+        return [[], []]
+    # 使用系统临时目录避免权限问题
+    temp_dir = tempfile.gettempdir()
+    temp_file = os.path.join(temp_dir, 'kgcompass_playground', repo_name, file_path)
+    os.makedirs(os.path.dirname(temp_file), exist_ok=True)
     with open(temp_file, 'w') as f:
         f.write(content)
     
@@ -372,16 +449,20 @@ def get_class_and_method_from_content(content, file_path, repo_name):
         print(f"⚠️ Skipping AST parsing for Java file: {file_path}")
         return [[], []]  # Return empty classes and methods for Java files
     
-    classes = get_classes_from_file(temp_file, repo_name)
-    methods = []
-    for class_info in classes:
-        for method in class_info['methods']:
-            methods.append(method)
-        class_info['methods'] = []
+    try:
+        classes = get_classes_from_file(temp_file, repo_name)
+        methods = []
+        for class_info in classes:
+            for method in class_info['methods']:
+                methods.append(method)
+            class_info['methods'] = []
 
-    methods.extend(get_global_methods_from_file(temp_file, repo_name))
-    methods.extend(get_global_variables_from_file(temp_file, repo_name))
-    return [classes, methods]
+        methods.extend(get_global_methods_from_file(temp_file, repo_name))
+        methods.extend(get_global_variables_from_file(temp_file, repo_name))
+        return [classes, methods]
+    except SyntaxError as e:
+        print(f"Error while parsing file {temp_file}: {e}")
+        return [[], []]
 
 def get_classes_from_file(file_path, repo_name):
     try:
@@ -761,11 +842,11 @@ def legal_patch(patch_content):
     except:
         return False
 
-def applable_patch(patch_content, repo_name, commit_id):
+def applable_patch(patch_content, repo_name, commit_id, repo_path=None):
     try:
-        # 将 repo_name 从 "apache/dubbo" 转换为 "apache__dubbo"
-        repo_dir_name = repo_name.replace('/', '__') if repo_name else ''
-        repo_path = f"playground/{repo_dir_name}"
+        if repo_path is None:
+            repo_dir_name = repo_name.replace('/', '__') if repo_name else ''
+            repo_path = f"playground/{repo_dir_name}"
         with repo_locks[repo_path]:
             current_ref = os.popen(f'git -C "{repo_path}" rev-parse HEAD').read().strip()
             checkout_cmd = f'git -C "{repo_path}" checkout -f {commit_id} -q'
@@ -1006,12 +1087,16 @@ def parse_diff_edit_commands_strict(commands, content, only_one_replace=False):
         replace = search_replace_parts[1].split('>>>>>>> REPLACE')[0].strip()
 
         original, replace = parse_for_threedots(original, replace, content)
+        if original == replace:
+            print("Skipping no-op command")
+            continue
         
         if original in content:
-            if only_one_replace:
-                content = content.replace(original, replace, 1)
-            else:
-                content = content.replace(original, replace)
+            new_content = content.replace(original, replace, 1) if only_one_replace else content.replace(original, replace)
+            if new_content == content:
+                print("Skipping no-op command after replacement")
+                continue
+            content = new_content
             replaced = True
             print("Successfully applied changes")
         else:

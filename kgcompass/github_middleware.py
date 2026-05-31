@@ -7,6 +7,7 @@ import time
 from datetime import datetime, timedelta
 from github import Github
 from typing import List, Optional, Tuple
+from utils import create_github_client
 
 
 class GitHubAPIMiddleware:
@@ -27,7 +28,7 @@ class GitHubAPIMiddleware:
             rate_limit_padding: 速率限制保护余量（保留几次请求不用）
             max_retries: 最大重试次数
         """
-        self.github = Github(github_token)
+        self.github = create_github_client(github_token)
         self.rate_limit_padding = rate_limit_padding
         self.max_retries = max_retries
         self.cache = {}
@@ -414,4 +415,3 @@ class GitHubAPIMiddleware:
         """清除缓存"""
         self.cache.clear()
         print("✅ 缓存已清除")
-

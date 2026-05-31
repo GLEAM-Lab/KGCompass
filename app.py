@@ -607,33 +607,31 @@ class RepairTaskManager:
                 self._log_message(task_id, f"✅ 补丁文件已存在: {host_patch_path}")
                 patch_file_path = str(host_patch_path)
             else:
-                # 在容器中查找补丁文件（查找 tests 目录下的，更快）
-                self._log_message(task_id, "🔍 在容器中查找补丁文件...")
-                find_cmd = [
-                    "docker-compose", "exec", "-T", "app",
-                    "find", f"/opt/KGCompass/tests/{instance_id}_deepseek/patches", "-name", "*.diff", "-type", "f", "-print", "-quit"
-                ]
+                # 直接在本地 tests 目录查找补丁文件
+                self._log_message(task_id, "🔍 在本地查找补丁文件...")
+                local_patch_dir = Path.cwd() / f"tests/{instance_id}_deepseek/patches"
                 
-                find_result = subprocess.run(find_cmd, capture_output=True, text=True, cwd=str(Path.cwd()), timeout=10)
-                
-                if find_result.returncode == 0 and find_result.stdout.strip():
-                    # 如果找到多个文件，选择第一个
-                    patch_files = find_result.stdout.strip().split('\n')
-                    container_patch_path = patch_files[0]
-                    self._log_message(task_id, f"✅ 在容器中找到补丁文件: {container_patch_path}")
-                    if len(patch_files) > 1:
-                        self._log_message(task_id, f"📋 找到 {len(patch_files)} 个补丁文件，使用第一个")
+                if local_patch_dir.exists():
+                    # 优先查找 diff_patches/ 中的 git diff 格式文件
+                    diff_patches_dir = local_patch_dir / "diff_patches"
+                    patch_files = []
                     
-                    # 从容器复制补丁文件到主机
-                    copy_cmd = [
-                        "docker", "cp", 
-                        f"kgcompass-app:{container_patch_path}",
-                        str(host_patch_path)
-                    ]
+                    if diff_patches_dir.exists():
+                        patch_files = list(diff_patches_dir.glob("*.diff"))
                     
-                    copy_result = subprocess.run(copy_cmd, capture_output=True, text=True, timeout=10)
+                    # 如果没有 git diff 文件，fallback 到顶层 .diff 文件
+                    if not patch_files:
+                        patch_files = list(local_patch_dir.glob("*.diff"))
                     
-                    if copy_result.returncode == 0:
+                    if patch_files:
+                        local_patch_path = patch_files[0]
+                        self._log_message(task_id, f"✅ 找到补丁文件: {local_patch_path}")
+                        if len(patch_files) > 1:
+                            self._log_message(task_id, f"📋 找到 {len(patch_files)} 个补丁文件，使用第一个")
+                        
+                        # 复制到 web_outputs
+                        import shutil
+                        shutil.copy(local_patch_path, host_patch_path)
                         self._log_message(task_id, f"📄 补丁已复制到: {host_patch_path}")
                         patch_file_path = str(host_patch_path)
                     else:
@@ -729,11 +727,10 @@ class RepairTaskManager:
             self._create_custom_instance_file(task_id, instance_id, custom_repo_info, output_dir)
             
             # 构建 docker-compose exec 命令，使用自定义修复脚本
-            self._update_task_status(task_id, 'docker_repair', 15, "🚀 在容器中执行修复...")
-            self._log_message(task_id, f"🐳 在 Docker 容器中执行自定义修复: {instance_id}")
+            self._update_task_status(task_id, 'local_repair', 15, "🚀 在本地执行修复...")
+            self._log_message(task_id, f"🖥️  在本地执行自定义修复: {instance_id}")
             
-            docker_cmd = [
-                "docker-compose", "exec", "-T", "app",
+            repair_cmd = [
                 "bash", "run_repair_custom.sh", 
                 instance_id,
                 clone_url,
@@ -747,7 +744,7 @@ class RepairTaskManager:
             self._log_message(task_id, "🔄 开始执行修复流程...")
             
             process = subprocess.Popen(
-                docker_cmd,
+                repair_cmd,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,
@@ -806,35 +803,34 @@ class RepairTaskManager:
                 self._log_message(task_id, f"✅ 补丁文件已存在: {host_patch_path}")
                 patch_file_path = str(host_patch_path)
             else:
-                # 在容器中查找补丁文件
-                self._log_message(task_id, "🔍 在容器中查找补丁文件...")
-                find_cmd = [
-                    "docker-compose", "exec", "-T", "app",
-                    "find", f"/opt/KGCompass/tests/{instance_id}_deepseek/patches", 
-                    "-name", "*.diff", "-type", "f", "-print", "-quit"
-                ]
+                # 直接在本地 tests 目录查找补丁文件
+                self._log_message(task_id, "🔍 在本地查找补丁文件...")
+                local_patch_dir = Path.cwd() / f"tests/{instance_id}_deepseek/patches"
                 
-                find_result = subprocess.run(find_cmd, capture_output=True, text=True, 
-                                            cwd=str(Path.cwd()), timeout=10)
-                
-                if find_result.returncode == 0 and find_result.stdout.strip():
-                    container_patch_path = find_result.stdout.strip().split('\n')[0]
-                    self._log_message(task_id, f"✅ 在容器中找到补丁文件: {container_patch_path}")
+                if local_patch_dir.exists():
+                    # 优先查找 diff_patches/ 中的 git diff 格式文件
+                    diff_patches_dir = local_patch_dir / "diff_patches"
+                    patch_files = []
                     
-                    # 从容器复制补丁文件到主机
-                    copy_cmd = [
-                        "docker", "cp",
-                        f"kgcompass-app:{container_patch_path}",
-                        str(host_patch_path)
-                    ]
+                    if diff_patches_dir.exists():
+                        patch_files = list(diff_patches_dir.glob("*.diff"))
                     
-                    copy_result = subprocess.run(copy_cmd, capture_output=True, text=True, timeout=10)
+                    # 如果没有 git diff 文件，fallback 到顶层 .diff 文件
+                    if not patch_files:
+                        patch_files = list(local_patch_dir.glob("*.diff"))
                     
-                    if copy_result.returncode == 0:
-                        self._log_message(task_id, f"📄 补丁已复制到: {host_patch_path}")
-                        patch_file_path = str(host_patch_path)
-                    else:
-                        self._log_message(task_id, f"⚠️ 复制补丁文件失败: {copy_result.stderr}")
+                    if patch_files:
+                        local_patch_path = patch_files[0]
+                        self._log_message(task_id, f"✅ 找到补丁文件: {local_patch_path}")
+                        
+                        # 复制到 web_outputs
+                        import shutil
+                        try:
+                            shutil.copy(local_patch_path, host_patch_path)
+                            self._log_message(task_id, f"📄 补丁已复制到: {host_patch_path}")
+                            patch_file_path = str(host_patch_path)
+                        except Exception as e:
+                            self._log_message(task_id, f"⚠️ 复制补丁文件失败: {e}")
                 else:
                     self._log_message(task_id, "⚠️ 未找到补丁文件")
             
@@ -1214,77 +1210,93 @@ def download_patch(task_id: str):
 @app.route('/patch_view/<task_id>')
 def view_patch(task_id: str):
     """查看补丁内容"""
-    if task_id not in active_tasks:
-        return "任务不存在", 404
-    
-    task = active_tasks[task_id]
-    if 'patch_file' not in task or not task['patch_file']:
-        return "补丁文件不存在", 404
-    
-    patch_file = Path(task['patch_file'])
-    if not patch_file.exists():
-        return "补丁文件未找到", 404
-    
-    # 读取补丁内容
     try:
+        if task_id not in active_tasks:
+            print(f"❌ Task not found: {task_id}")
+            return "任务不存在", 404
+        
+        task = active_tasks[task_id]
+        print(f"📋 Task data: {task.keys()}")
+        
+        if 'patch_file' not in task or not task['patch_file']:
+            print(f"❌ No patch_file in task: {task.get('patch_file')}")
+            return "补丁文件不存在", 404
+        
+        patch_file = Path(task['patch_file'])
+        print(f"📁 Patch file path: {patch_file}")
+        
+        if not patch_file.exists():
+            print(f"❌ Patch file not found: {patch_file}")
+            return f"补丁文件未找到: {patch_file}", 404
+        
+        # 读取补丁内容
         with open(patch_file, 'r', encoding='utf-8') as f:
             patch_content = f.read()
-    except Exception as e:
-        return f"无法读取补丁文件: {e}", 500
-    
-    # 解析补丁内容
-    patch_lines = []
-    stats = {'additions': 0, 'deletions': 0, 'files': 0}
-    file_changes = []
-    current_file = None
-    
-    for line in patch_content.split('\n'):
-        line_type = 'patch-line-context'
         
-        if line.startswith('---') or line.startswith('+++'):
-            line_type = 'patch-line-hunk'
-            if line.startswith('---'):
-                # 新文件开始
+        # 解析补丁内容
+        patch_lines = []
+        stats = {'additions': 0, 'deletions': 0, 'files': 0}
+        file_changes = []
+        current_file = None
+        
+        for line in patch_content.split('\n'):
+            line_type = 'patch-line-context'
+            
+            if line.startswith('---') or line.startswith('+++'):
+                line_type = 'patch-line-hunk'
+                if line.startswith('---'):
+                    # 新文件开始
+                    if current_file:
+                        file_changes.append(current_file)
+                    current_file = {
+                        'filename': line[4:].strip(),
+                        'additions': 0,
+                        'deletions': 0,
+                        'changes': 0
+                    }
+                    stats['files'] += 1
+            elif line.startswith('@@'):
+                line_type = 'patch-line-hunk'
+            elif line.startswith('+') and not line.startswith('+++'):
+                line_type = 'patch-line-added'
+                stats['additions'] += 1
                 if current_file:
-                    file_changes.append(current_file)
-                current_file = {
-                    'filename': line[4:].strip(),
-                    'additions': 0,
-                    'deletions': 0,
-                    'changes': 0
-                }
-                stats['files'] += 1
-        elif line.startswith('@@'):
-            line_type = 'patch-line-hunk'
-        elif line.startswith('+') and not line.startswith('+++'):
-            line_type = 'patch-line-added'
-            stats['additions'] += 1
-            if current_file:
-                current_file['additions'] += 1
-                current_file['changes'] += 1
-        elif line.startswith('-') and not line.startswith('---'):
-            line_type = 'patch-line-removed'
-            stats['deletions'] += 1
-            if current_file:
-                current_file['deletions'] += 1
-                current_file['changes'] += 1
+                    current_file['additions'] += 1
+                    current_file['changes'] += 1
+            elif line.startswith('-') and not line.startswith('---'):
+                line_type = 'patch-line-removed'
+                stats['deletions'] += 1
+                if current_file:
+                    current_file['deletions'] += 1
+                    current_file['changes'] += 1
+            
+            patch_lines.append({
+                'content': line,
+                'type': line_type
+            })
         
-        patch_lines.append({
-            'content': line,
-            'type': line_type
-        })
-    
-    if current_file:
-        file_changes.append(current_file)
-    
-    return render_template('patch_view.html',
-                         instance_id=task['instance_id'],
-                         repo_name=task['repo_name'],
-                         patch_content=patch_content,
-                         patch_lines=patch_lines,
-                         stats=stats,
-                         file_changes=file_changes,
-                         download_url=f'/api/download_patch/{task_id}')
+        if current_file:
+            file_changes.append(current_file)
+        
+        # 获取任务信息，提供默认值
+        instance_id = task.get('instance_id', 'unknown')
+        repo_name = task.get('repo_name', task.get('repo_identifier', 'unknown'))
+        
+        print(f"📊 Rendering patch view: instance_id={instance_id}, repo_name={repo_name}")
+        
+        return render_template('patch_view.html',
+                             instance_id=instance_id,
+                             repo_name=repo_name,
+                             patch_content=patch_content,
+                             patch_lines=patch_lines,
+                             stats=stats,
+                             file_changes=file_changes,
+                             download_url=f'/api/download_patch/{task_id}')
+    except Exception as e:
+        print(f"❌ Error in view_patch: {e}")
+        import traceback
+        traceback.print_exc()
+        return f"内部错误: {str(e)}", 500
 
 @socketio.on('connect')
 def handle_connect():
@@ -1319,4 +1331,4 @@ if __name__ == '__main__':
     else:
         print("📊 生产模式运行（无文件监控）")
     
-    socketio.run(app, host='0.0.0.0', port=5000, debug=debug_mode) 
+    socketio.run(app, host='0.0.0.0', port=5000, debug=debug_mode, allow_unsafe_werkzeug=True) 

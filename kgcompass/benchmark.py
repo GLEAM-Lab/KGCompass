@@ -8,6 +8,12 @@ from enum import Enum
 from typing import Dict, Any, Optional
 from datasets import load_dataset
 
+UNAVAILABLE_BENCHMARK_FIELDS = {"hint_text", "hints_text"}
+
+
+def strip_unavailable_benchmark_fields(item: Dict[str, Any]) -> Dict[str, Any]:
+    return {k: v for k, v in dict(item).items() if k not in UNAVAILABLE_BENCHMARK_FIELDS}
+
 
 class BenchmarkType(Enum):
     """支持的 Benchmark 类型"""
@@ -134,13 +140,13 @@ class BenchmarkManager:
         """加载 SWE-bench 实例"""
         instances = []
         
-        # 优先使用本地文件
-        local_file = config.get("local_file")
+        # 优先使用显式指定的本地文件，便于在 Verified / Lite 之间切换
+        local_file = os.getenv("SWE_BENCH_LOCAL_FILE") or config.get("local_file")
         if local_file and os.path.exists(local_file):
             import json
             with open(local_file, 'r') as f:
                 for line in f:
-                    data = json.loads(line.strip())
+                    data = strip_unavailable_benchmark_fields(json.loads(line.strip()))
                     instances.append(data)
         else:
             # 从 HuggingFace 加载
@@ -148,7 +154,7 @@ class BenchmarkManager:
             split = config.get("split", "test")
             if dataset_name:
                 dataset = load_dataset(dataset_name, split=split)
-                instances = list(dataset)
+                instances = [strip_unavailable_benchmark_fields(item) for item in dataset]
         
         return instances
     
@@ -165,7 +171,7 @@ class BenchmarkManager:
             for jsonl_file in glob.glob(os.path.join(local_dir, "*.jsonl")):
                 with open(jsonl_file, 'r') as f:
                     for line in f:
-                        data = json.loads(line.strip())
+                        data = strip_unavailable_benchmark_fields(json.loads(line.strip()))
                         instances.append(data)
         
         return instances
@@ -207,4 +213,4 @@ def create_benchmark_manager(benchmark_type: str) -> BenchmarkManager:
 
 def get_supported_benchmarks() -> list:
     """获取支持的 benchmark 类型列表"""
-    return [bt.value for bt in BenchmarkType] 
+    return [bt.value for bt in BenchmarkType]

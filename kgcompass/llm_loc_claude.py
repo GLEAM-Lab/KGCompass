@@ -29,7 +29,7 @@ from datasets import load_dataset
 import openai
 import anthropic
 import tiktoken
-from utils import get_commit_method_by_signature, extract_json_code
+from utils import get_commit_method_by_signature, extract_json_code, create_github_client
 from config import (
     DATASET_NAME,
     DEEPSEEK_BASE_URL,
@@ -42,7 +42,6 @@ from config import (
     CANDIDATE_LOCATIONS_MAX,
 )
 from utils import format_entity_content
-from github import Github
 from benchmark import create_benchmark_manager
 
 # API Configuration
@@ -70,7 +69,17 @@ MAX_INPUT_LENGTH_CONFIG = {
 MAX_TOKENS = 8192
 
 class PreFaultLocalization:
-    def __init__(self, instance_id: str, benchmark_type: str = "swe-bench", api_type: str = "deepseek", temperature: float = 0.3):
+    def __init__(
+        self,
+        instance_id: str,
+        benchmark_type: str = "swe-bench",
+        api_type: str = "deepseek",
+        temperature: float = 0.3,
+        model_name_override: str = None,
+        base_url_override: str = None,
+        api_key_env: str = None,
+        extra_body_json: str = None,
+    ):
         self.instance_id = instance_id
         self.benchmark_type = benchmark_type
         self.benchmark_manager = create_benchmark_manager(benchmark_type)
@@ -88,24 +97,43 @@ class PreFaultLocalization:
         self.api_type = api_type
         self.temperature = temperature
         self.MAX_INPUT_LENGTH = MAX_INPUT_LENGTH_CONFIG.get(api_type, 60000)
+        self.extra_body = {}
+        if extra_body_json:
+            try:
+                self.extra_body = json.loads(extra_body_json)
+            except json.JSONDecodeError as e:
+                raise ValueError(f"Invalid JSON for --extra-body-json: {e}") from e
         
         # Initialize API client based on type
         if api_type == "openai":
             self.client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-            self.model_name = LLM_MODELS['openai']
+            self.model_name = model_name_override or LLM_MODELS['openai']
         elif api_type == "anthropic":
             self.client = anthropic.Anthropic(api_key=CLAUDE_API_KEY)
-            self.model_name = LLM_MODELS['anthropic']
+            self.model_name = model_name_override or LLM_MODELS['anthropic']
         elif api_type == "deepseek":
-            self.client = openai.OpenAI(api_key=DEEPSEEK_API_KEY, base_url=DEEPSEEK_BASE_URL)
-            self.model_name = LLM_MODELS['deepseek']
+            self.client = openai.OpenAI(
+                api_key=os.getenv(api_key_env or "DEEPSEEK_API_KEY") or DEEPSEEK_API_KEY,
+                base_url=base_url_override or DEEPSEEK_BASE_URL,
+            )
+            self.model_name = model_name_override or LLM_MODELS['deepseek']
         elif api_type == "qwen":
-            self.client = openai.OpenAI(api_key=QWEN_API_KEY, base_url=QWEN_BASE_URL)
-            self.model_name = LLM_MODELS['qwen']
+            self.client = openai.OpenAI(
+                api_key=os.getenv(api_key_env or "QWEN_API_KEY") or QWEN_API_KEY,
+                base_url=base_url_override or QWEN_BASE_URL,
+            )
+            self.model_name = model_name_override or LLM_MODELS['qwen']
+        elif api_type == "openai_compat":
+            resolved_key_env = api_key_env or "OPENAI_API_KEY"
+            self.client = openai.OpenAI(
+                api_key=os.getenv(resolved_key_env),
+                base_url=base_url_override,
+            )
+            self.model_name = model_name_override or MODEL_NAME
         else:
             # Default to deepseek
             self.client = openai.OpenAI(api_key=DEEPSEEK_API_KEY, base_url=DEEPSEEK_BASE_URL)
-            self.model_name = LLM_MODELS['deepseek']
+            self.model_name = model_name_override or LLM_MODELS['deepseek']
 
     def _load_target_sample(self):
         # 使用 benchmark 管理器加载数据集实例
@@ -162,9 +190,9 @@ class PreFaultLocalization:
     def count_tokens(self, text):
         """计算不同 API 的 token 数量"""
         result = 0
-        if self.api_type == "openai":
+        if self.api_type in ["openai", "openai_compat"]:
             # Use tiktoken to calculate token count for GPT models
-            encoding = tiktoken.encoding_for_model(LLM_MODELS[self.api_type])
+            encoding = tiktoken.encoding_for_model(LLM_MODELS['openai'])
             result = len(encoding.encode(text))
         
         elif self.api_type == "anthropic":
@@ -180,7 +208,7 @@ class PreFaultLocalization:
                 encoding = tiktoken.encoding_for_model(LLM_MODELS['openai'])
                 result = len(encoding.encode(text))
         
-        elif self.api_type in ['qwen', 'deepseek']:
+        elif self.api_type in ['qwen', 'deepseek', 'openai_compat']:
             # Deepseek and Qwen use GPT-like tokenizer with adjustment
             encoding = tiktoken.encoding_for_model(LLM_MODELS['openai'])
             result = int(len(encoding.encode(text)) * 1.3)
@@ -191,14 +219,17 @@ class PreFaultLocalization:
         """Unified interface for generating responses via different APIs"""
         messages = [{'role': 'user', 'content': prompt}]
         try:
-            if self.api_type in ['openai', 'deepseek', 'qwen']:
-                response = self.client.chat.completions.create(
+            if self.api_type in ['openai', 'deepseek', 'qwen', 'openai_compat']:
+                request_kwargs = dict(
                     model=self.model_name,
                     messages=messages,
                     temperature=self.temperature,
                     top_p=TOP_P,
-                    stream=stream
+                    stream=stream,
                 )
+                if self.extra_body:
+                    request_kwargs["extra_body"] = self.extra_body
+                response = self.client.chat.completions.create(**request_kwargs)
 
                 if stream:
                     collected_content = ""
@@ -280,12 +311,31 @@ Note:
         return self.generate(prompt, stream=stream)
 
 
-def process_instance(directory, instance_id, benchmark_type="swe-bench", api_type="deepseek", temperature=0.3):
+def process_instance(
+    directory,
+    instance_id,
+    benchmark_type="swe-bench",
+    api_type="deepseek",
+    temperature=0.3,
+    model_name_override=None,
+    base_url_override=None,
+    api_key_env=None,
+    extra_body_json=None,
+):
     """
     Reads a KG location file, uses it to prompt an LLM for more specific locations,
     and enriches the original KG file with the LLM's findings.
     """
-    pre_fl = PreFaultLocalization(instance_id, benchmark_type, api_type, temperature)
+    pre_fl = PreFaultLocalization(
+        instance_id,
+        benchmark_type,
+        api_type,
+        temperature,
+        model_name_override=model_name_override,
+        base_url_override=base_url_override,
+        api_key_env=api_key_env,
+        extra_body_json=extra_body_json,
+    )
     if pre_fl.target_sample is None:
         return f"Error: Could not find instance {instance_id} in dataset"
 
@@ -372,7 +422,7 @@ def process_instance(directory, instance_id, benchmark_type="swe-bench", api_typ
     commit = None
     if repo_name and commit_id and GITHUB_TOKEN:
         try:
-            g = Github(GITHUB_TOKEN)
+            g = create_github_client(GITHUB_TOKEN)
             github_repo = g.get_repo(repo_name)
             commit = github_repo.get_commit(commit_id)
         except Exception as e:
@@ -420,10 +470,14 @@ def main():
     parser.add_argument("--benchmark", type=str, default="swe-bench", 
                         help="Benchmark type (swe-bench or multi-swe-bench)")
     parser.add_argument("--api_type", type=str, default="deepseek", 
-                        choices=["openai", "anthropic", "deepseek", "qwen"],
+                        choices=["openai", "anthropic", "deepseek", "qwen", "openai_compat"],
                         help="API type to use (default: deepseek)")
     parser.add_argument("--temperature", type=float, default=0.3,
                         help="Temperature for LLM generation (default: 0.3)")
+    parser.add_argument("--model", type=str, default=None, help="Override model name for the selected API")
+    parser.add_argument("--base-url", type=str, default=None, help="Override base URL for OpenAI-compatible APIs")
+    parser.add_argument("--api-key-env", type=str, default=None, help="Environment variable name that stores the API key")
+    parser.add_argument("--extra-body-json", type=str, default=None, help="Extra JSON body for OpenAI-compatible APIs")
     args = parser.parse_args()
 
     # Create the directory if it doesn't exist
@@ -435,7 +489,17 @@ def main():
     print(f"Using API: {args.api_type}")
     print(f"Temperature: {args.temperature}")
     
-    result = process_instance(args.directory, args.instance_id, args.benchmark, args.api_type, args.temperature)
+    result = process_instance(
+        args.directory,
+        args.instance_id,
+        args.benchmark,
+        args.api_type,
+        args.temperature,
+        model_name_override=args.model,
+        base_url_override=args.base_url,
+        api_key_env=args.api_key_env,
+        extra_body_json=args.extra_body_json,
+    )
     print(result)
 
 

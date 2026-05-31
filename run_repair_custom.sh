@@ -7,6 +7,12 @@ if [[ "$DEBUG" == "1" ]]; then
 fi
 
 # --- Environment and Proxy Setup ---
+# Load environment variables from .env file
+if [ -f .env ]; then
+    export $(cat .env | grep -v '^#' | xargs)
+    echo "✅ Loaded environment variables from .env"
+fi
+
 # Add the project root to PYTHONPATH to solve module import issues without using -m.
 export PYTHONPATH=$(pwd)
 
@@ -48,9 +54,24 @@ if [ ! -d "$REPO_PATH" ]; then
   echo "✅ Repository cloned to $REPO_PATH"
 else
   echo "✅ Repository '$REPO_IDENTIFIER' already exists at $REPO_PATH."
-  # 可选：拉取最新更改
-  # cd "$REPO_PATH" && git pull && cd -
 fi
+
+# 修复仓库权限问题（如果是 root 所有）
+REPO_OWNER=$(stat -c '%U' "$REPO_PATH" 2>/dev/null || echo "$USER")
+if [ "$REPO_OWNER" = "root" ] && [ "$USER" != "root" ]; then
+  echo "🔧 仓库属于 root，尝试修复权限..."
+  if command -v sudo &> /dev/null; then
+    sudo chown -R $USER:$USER "$REPO_PATH" 2>/dev/null && echo "✅ 权限已修复" || echo "⚠️ 无法修复权限，可能需要手动运行: sudo chown -R $USER:$USER $REPO_PATH"
+  else
+    echo "⚠️ 需要 root 权限修复。请手动运行: sudo chown -R $USER:$USER $REPO_PATH"
+  fi
+fi
+
+# 确保用户至少有写权限
+chmod -R u+w "$REPO_PATH" 2>/dev/null || true
+
+# 配置 Git safe.directory
+git config --global --add safe.directory "$REPO_PATH" 2>/dev/null || true
 
 # --- Derived variables ---
 RUN_DIR="tests/${INSTANCE_ID}_${MODEL_NAME}"
@@ -69,7 +90,9 @@ mkdir -p "$KG_LOCATIONS_DIR" "$LLM_LOCATIONS_DIR" "$FINAL_LOCATIONS_DIR" "$PATCH
 echo "Run directory: $RUN_DIR"
 
 # --- Prerequisites check ---
-echo "✅ Assuming Neo4j connection is available via Docker Compose network."
+# 确保 Neo4j 连接到本地端口而不是 Docker 网络
+export NEO4J_URI=${NEO4J_URI:-bolt://localhost:7687}
+echo "✅ Using Neo4j at: $NEO4J_URI"
 
 # --- Create instance data file for custom repository ---
 echo "--- Creating instance data file for custom repository ---"

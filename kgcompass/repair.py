@@ -87,14 +87,14 @@ We are currently solving the following issue within our repository. Here is the 
 {problem_statement}
 --- END ISSUE ---
 
-Below are some code segments, each from a relevant file. One or more of these files may contain bugs.
+Below are code segments from several relevant files. The bug and the fix may span multiple files, so treat them as a joint repair context.
 --- BEGIN FILE ---
 ```
 {content}
 ```
 --- END FILE ---
 
-Please first localize the bug based on the issue statement, and then generate *SEARCH/REPLACE* edits to fix the issue.
+Please directly generate the complete *SEARCH/REPLACE* edits needed to fix the issue. The fix may require changes in one file or multiple files.
 
 Every *SEARCH/REPLACE* edit must use this format:
 1. The file path (e.g., {file_path_example})
@@ -117,9 +117,54 @@ IMPORTANT NOTES:
 5. If modifying a method or function, include its entire definition in both SEARCH and REPLACE blocks if it helps clarity, or at least enough context.
 6. Only generate edits when actual changes are needed.
 7. Verify that the replacement code is actually different from the original.
+8. If the fix spans multiple files, output edits for every required file.
+9. Output only the final *SEARCH/REPLACE* edits. Do not include analysis, discussion, bullet points, or prose before or after the code blocks.
+10. Start directly with the first ```{code_block_lang}``` block and end immediately after the last edit block.
+11. Do not provide multiple alternative fixes; provide exactly one final patch set.
+12. If the fix spans multiple files, you may emit multiple code blocks or one combined code block, but include every required file edit exactly once.
+13. Prefer shorter exact SEARCH blocks copied verbatim from the provided context instead of broad rewrites that may not match the file exactly.
 
 Please note that the *SEARCH/REPLACE* edit REQUIRES PROPER INDENTATION. If you would like to add a line like '        print(x)' ({language_name}), you must fully write that out, with all those spaces before the code!
 Wrap the *SEARCH/REPLACE* edit in blocks ```{code_block_lang}...```.
+"""
+
+OPEN_MODEL_SYSTEM_PROMPT = (
+    "You are a repository repair agent for SWE-bench-style tasks. "
+    "Return only the final SEARCH/REPLACE edit blocks inside fenced code blocks. "
+    "Do not output analysis, plans, bullet points, or natural-language explanations."
+)
+
+OPEN_MODEL_PROMPT_TEMPLATE = """
+Issue:
+{problem_statement}
+
+Relevant files and candidate code regions:
+```text
+{content}
+```
+
+Generate exactly one final patch set using SEARCH/REPLACE edits.
+
+Rules:
+- The fix may span multiple functions and multiple files.
+- Use only file paths that appear in the provided context.
+- SEARCH blocks must match the existing code exactly, including indentation.
+- SEARCH blocks should usually be the smallest exact contiguous snippet that can be safely replaced, ideally about 3-15 lines.
+- Do not rewrite an entire function or method unless the whole function is clearly required and copied exactly from the provided context.
+- Prefer small exact SEARCH blocks copied verbatim from the context.
+- Every REPLACE block must differ from its SEARCH block in at least one actual code token or character.
+- Output only fenced ```{code_block_lang}``` blocks containing the final edits.
+- Do not include any prose before, between, or after the code blocks.
+
+Format example:
+```{code_block_lang}
+### {file_path_example}
+<<<<<<< SEARCH
+old code
+=======
+new code
+>>>>>>> REPLACE
+```
 """
 
 
@@ -129,6 +174,7 @@ class CodeRepair:
         self.top_p = TOP_P
         self.model = MODEL_NAME # From config
         self.MAX_INPUT_LENGTH = MAX_INPUT_LENGTH
+        self.last_completion_error = None
         # Create a client instance pointing to the OpenAI-compatible endpoint
         self.client = openai.OpenAI(api_key=BAILIAN_API_KEY, base_url=DEEPSEEK_BASE_URL)
         
@@ -226,6 +272,39 @@ int Calculator::add(int a, int b) {
             print(f"💾 结果已保存到: {jsonl_file} (包含{applied_count}个成功应用的patch)")
         else:
             print(f"💾 结果已保存到: {jsonl_file} (无成功应用的patch)")
+
+    def _build_error_summary(self, result):
+        messages = []
+        if result.get("error_summary"):
+            messages.append(result["error_summary"])
+        for item in result.get("failed_files", []):
+            err = (item or {}).get("error")
+            file_path = (item or {}).get("file")
+            if err and file_path:
+                messages.append(f"{file_path}: {err}")
+            elif err:
+                messages.append(err)
+        deduped = []
+        seen = set()
+        for msg in messages:
+            if msg not in seen:
+                deduped.append(msg)
+                seen.add(msg)
+        return " | ".join(deduped[:8])
+
+    def _write_diagnostic_file(self, path, content):
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(content)
+
+    def _persist_failure_artifacts(self, result, output_file):
+        if os.path.exists(output_file):
+            return
+        summary = self._build_error_summary(result) or "No raw output captured."
+        diagnostic_text = result.get("raw_patch_content", "") or f"[ERROR]\n{summary}\n"
+        self._write_diagnostic_file(output_file, diagnostic_text)
+        result["raw_output_file"] = output_file
+        result["error_summary"] = summary
     
     def _parse_instance_id(self, instance_id):
         """从instance_id解析org、repo、number"""
@@ -290,14 +369,302 @@ int Calculator::add(int a, int b) {
             return [text]
         return matches
 
+    def _method_identity(self, item):
+        return (
+            item.get("file_path", ""),
+            item.get("signature", ""),
+            item.get("start_line"),
+            item.get("end_line"),
+        )
+
+    def _diverse_method_order(self, methods):
+        sorted_methods = [
+            item
+            for _, item in sorted(
+                enumerate(methods),
+                key=lambda x: (-x[1].get("similarity", 0), x[0]),
+            )
+        ]
+        file_order = []
+        file_first = {}
+        for item in sorted_methods:
+            file_path = item.get("file_path", "")
+            if file_path not in file_first:
+                file_order.append(file_path)
+                file_first[file_path] = item
+
+        if len(sorted_methods) >= 20:
+            diversity_target = 6
+        elif len(sorted_methods) >= 10:
+            diversity_target = 3
+        else:
+            diversity_target = 1
+        diversity_target = min(diversity_target, len(file_order))
+
+        ordered = []
+        seen = set()
+        selected_files = file_order[:diversity_target]
+        buckets = {fp: [] for fp in selected_files}
+        fallback = []
+        for item in sorted_methods:
+            file_path = item.get("file_path", "")
+            if file_path in buckets:
+                buckets[file_path].append(item)
+            else:
+                fallback.append(item)
+
+        for file_path in selected_files:
+            item = file_first[file_path]
+            ident = self._method_identity(item)
+            if ident in seen:
+                continue
+            seen.add(ident)
+            ordered.append(item)
+
+        round_robin_pending = True
+        while round_robin_pending:
+            round_robin_pending = False
+            for file_path in selected_files:
+                while buckets[file_path]:
+                    item = buckets[file_path].pop(0)
+                    ident = self._method_identity(item)
+                    if ident in seen:
+                        continue
+                    seen.add(ident)
+                    ordered.append(item)
+                    round_robin_pending = True
+                    break
+
+        for item in fallback:
+            ident = self._method_identity(item)
+            if ident in seen:
+                continue
+            seen.add(ident)
+            ordered.append(item)
+        return ordered
+
+    def _render_method_context(self, methods):
+        if not methods:
+            return ""
+        grouped = {}
+        for item in methods:
+            grouped.setdefault(item.get("file_path", ""), []).append(item)
+
+        file_order = []
+        seen_files = set()
+        for item in methods:
+            file_path = item.get("file_path", "")
+            if file_path not in seen_files:
+                seen_files.add(file_path)
+                file_order.append(file_path)
+
+        sections = ["## Candidate Files", *[f"- {fp}" for fp in file_order], "", "## Relevant Methods By File"]
+        for file_path in file_order:
+            sections.append(f"\n### FILE: {file_path}")
+            for idx, item in enumerate(grouped[file_path]):
+                sections.append(self._render_single_method_context(item, is_primary=(idx < 2)))
+        return "\n".join(sections).strip() + "\n"
+
+    def _get_prompt_token_limit(self):
+        base_limit = int(self.MAX_INPUT_LENGTH * 0.9)
+        model_name = (self.model or "").lower()
+        if "qwen3-coder-480b-a35b-instruct" in model_name:
+            return min(base_limit, 3200)
+        if "glm-5" in model_name:
+            return min(base_limit, 4200)
+        if "kimi" in model_name:
+            return min(base_limit, 3200)
+        if self.api_type == "openai_compat":
+            return min(base_limit, 5000)
+        return min(base_limit, 8000)
+
+    def _get_completion_max_tokens(self):
+        model_name = (self.model or "").lower()
+        if "qwen3-coder-480b-a35b-instruct" in model_name:
+            return 3072
+        if "glm-5" in model_name:
+            return 4096
+        if "kimi" in model_name:
+            return 3072
+        return 4096
+
+    def _get_request_timeout(self):
+        model_name = (self.model or "").lower()
+        if "glm-5" in model_name:
+            return 480
+        if "qwen3-coder-480b-a35b-instruct" in model_name:
+            return 300
+        if "kimi" in model_name:
+            return 300
+        return 240
+
+    def _get_prompt_template(self):
+        if self.api_type in ["openai_compat", "qwen", "deepseek", "openai"]:
+            return OPEN_MODEL_PROMPT_TEMPLATE
+        return BASE_PROMPT_TEMPLATE
+
+    def _truncate_source_preserve_ends(self, text, token_limit):
+        text = (text or "").rstrip()
+        if not text:
+            return ""
+        if self.count_tokens(text) <= token_limit:
+            return text
+
+        lines = text.splitlines()
+        if len(lines) <= 12:
+            return self._truncate_text_to_token_limit(text, token_limit)
+
+        marker = "\n...\n# [middle truncated]\n...\n"
+        head_count = max(4, len(lines) // 4)
+        tail_count = max(4, len(lines) // 4)
+        best = self._truncate_text_to_token_limit(text, token_limit)
+
+        while head_count + tail_count < len(lines):
+            candidate = "\n".join(lines[:head_count]) + marker + "\n".join(lines[-tail_count:])
+            if self.count_tokens(candidate) <= token_limit:
+                best = candidate
+                break
+            if head_count > tail_count:
+                head_count = max(4, head_count - 2)
+            else:
+                tail_count = max(4, tail_count - 2)
+            if head_count == 4 and tail_count == 4:
+                break
+        return best
+
+    def _get_method_source_token_limit(self, is_primary):
+        model_name = (self.model or "").lower()
+        if "qwen3-coder-480b-a35b-instruct" in model_name:
+            return 700 if is_primary else 280
+        if "glm-5" in model_name:
+            return 900 if is_primary else 360
+        if "kimi" in model_name:
+            return 700 if is_primary else 280
+        return 1000 if is_primary else 400
+
+    def _render_single_method_context(self, item, is_primary=True):
+        source = (item.get("source_code") or "").rstrip()
+        source_limit = self._get_method_source_token_limit(is_primary)
+        rendered_source = self._truncate_source_preserve_ends(source, source_limit)
+        similarity = item.get("similarity")
+        parts = [
+            f"- signature : {item.get('signature', '')}",
+            f"- start_line : {item.get('start_line')}",
+            f"- end_line : {item.get('end_line')}",
+        ]
+        if similarity is not None:
+            parts.append(f"- similarity : {similarity:.4f}")
+        parts.append(f"- source_mode : {'full-or-primary' if is_primary else 'compressed-secondary'}")
+        parts.append(f"```{self.code_block_lang}")
+        parts.append(rendered_source)
+        parts.append("```")
+        return "\n".join(parts)
+
+    def _load_original_file_content(self, repo_path: str, edited_file: str, commit_id):
+        rel_path = edited_file.replace(os.sep, "/")
+        if commit_id:
+            result = subprocess.run(
+                ["git", "-C", repo_path, "show", f"{commit_id}:{rel_path}"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            if result.returncode == 0:
+                return result.stdout, None
+
+        full_file_path = os.path.join(repo_path, edited_file)
+        if os.path.exists(full_file_path):
+            with open(full_file_path, 'r', encoding='utf-8') as f:
+                return f.read(), None
+        return None, full_file_path
+
+    def _truncate_text_to_token_limit(self, text, token_limit):
+        text = (text or "").strip()
+        if not text:
+            return ""
+        if self.count_tokens(text) <= token_limit:
+            return text
+        lo, hi = 0, len(text)
+        best = text[: max(1, min(len(text), 2000))]
+        while lo <= hi:
+            mid = (lo + hi) // 2
+            candidate = text[:mid].rstrip()
+            if self.count_tokens(candidate) <= token_limit:
+                best = candidate
+                lo = mid + 1
+            else:
+                hi = mid - 1
+        if len(best) < len(text):
+            best = best.rstrip() + "\n\n[truncated for brevity]"
+        return best
+
+    def _select_problem_statement(self, locate_result, dataset_info=None):
+        dataset_problem = ""
+        if dataset_info and isinstance(dataset_info.get("data"), dict):
+            dataset_problem = (dataset_info["data"].get("problem_statement") or "").strip()
+
+        locate_issue = (locate_result.get("issue") or "").strip() if locate_result else ""
+        if locate_issue:
+            return self._truncate_text_to_token_limit(locate_issue, 1200)
+        if dataset_problem:
+            return self._truncate_text_to_token_limit(dataset_problem, 1200)
+
+        related_issues = []
+        if locate_result and locate_result.get("related_entities"):
+            related_issues = locate_result["related_entities"].get("issues") or []
+        if related_issues:
+            sorted_issues = sorted(related_issues, key=lambda x: x.get("similarity", 0), reverse=True)
+            issue = sorted_issues[0]
+            text = f"### {issue.get('title', '').strip()}\n{(issue.get('content') or '').strip()}".strip()
+            return self._truncate_text_to_token_limit(text, 1200)
+
+        return "No issue description provided."
+
+    def _build_repair_context(self, problem_statement, methods):
+        if not methods:
+            return ""
+
+        methods = [m for m in methods if (m.get("source_code") or "").strip()]
+        if not methods:
+            return ""
+
+        ordered_methods = self._diverse_method_order(methods)
+        prompt_limit = self._get_prompt_token_limit()
+        selected = []
+
+        for item in ordered_methods:
+            candidate = selected + [item]
+            candidate_content = self._render_method_context(candidate)
+            candidate_prompt = self._get_prompt_template().format(
+                problem_statement=problem_statement,
+                content=candidate_content,
+                file_path_example=self.file_path_example,
+                language_name=self.language_name,
+                code_example=self.code_example,
+                code_block_lang=self.code_block_lang,
+            )
+            if self.count_tokens(candidate_prompt) <= prompt_limit or not selected:
+                selected = candidate
+
+        return self._render_method_context(selected)
+
     def get_completion(self, prompt, stream=False):
         messages = [{'role': 'user', 'content': prompt}]
+        if self.api_type in ["openai_compat", "qwen", "deepseek", "openai"]:
+            messages = [
+                {'role': 'system', 'content': OPEN_MODEL_SYSTEM_PROMPT},
+                {'role': 'user', 'content': prompt},
+            ]
+        self.last_completion_error = None
         try:
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=messages,
                 temperature=self.temperature,
                 top_p=self.top_p,
+                max_tokens=self._get_completion_max_tokens(),
+                timeout=self._get_request_timeout(),
                 stream=stream,
             )
             if stream:
@@ -305,6 +672,7 @@ int Calculator::add(int a, int b) {
             else:
                 return response.choices[0].message.content
         except Exception as e:
+            self.last_completion_error = str(e)
             print(f"An error occurred while calling the LLM API: {e}")
             return None
 
@@ -402,15 +770,12 @@ int Calculator::add(int a, int b) {
             if edited_file.startswith('playground'):
                 edited_file = '/'.join(edited_file.split('/')[2:])
             
-            full_file_path = os.path.join(repo_path, edited_file)
+            original_content, missing_path = self._load_original_file_content(repo_path, edited_file, commit_id)
 
-            if not os.path.exists(full_file_path):
-                print(f"File to be edited not found, skipping: {full_file_path}")
+            if original_content is None:
+                print(f"File to be edited not found, skipping: {missing_path or edited_file}")
                 failed_files.append({"file": edited_file, "error": "File not found"})
                 continue
-
-            with open(full_file_path, 'r', encoding='utf-8') as f:
-                original_content = f.read()
             
             new_content = parse_diff_edit_commands_strict(edit_commands, original_content)
             
@@ -473,7 +838,7 @@ int Calculator::add(int a, int b) {
                 processed_patches.append(patch_info)
 
                 # 使用 applable_patch 函数验证patch是否能应用
-                is_applable = applable_patch(patch_content, repo_name, commit_id)
+                is_applable = applable_patch(patch_content, repo_name, commit_id, repo_path=repo_path)
                 if is_applable:
                     print(f"✅ Patch for {edited_file} is applable")
                     applied_files.append(edited_file)
@@ -537,41 +902,17 @@ int Calculator::add(int a, int b) {
                 repo_name = repo_name or ''
                 commit_id = commit_id or ''
 
-        # Build a more detailed problem statement from related issues
-        problem_statement = ""
-        if locate_result and 'related_entities' in locate_result and locate_result['related_entities'].get('issues'):
-            sorted_issues = sorted(locate_result['related_entities']['issues'],
-                                   key=lambda x: x.get('similarity', 0), reverse=True)
-            if sorted_issues:
-                problem_statement += f"### {sorted_issues[0]['title']}\n{sorted_issues[0]['content']}"
-                if len(sorted_issues) > 1 and sorted_issues[1].get('similarity', 0) > 0.1:
-                    problem_statement += f"\n\n### {sorted_issues[1]['title']}\n{sorted_issues[1]['content']}"
-
-        if not problem_statement:
-            problem_statement = locate_result.get('issue', 'No issue description provided.')
-        
+        problem_statement = self._select_problem_statement(locate_result, dataset_info)
         problem_statement = problem_statement.replace('\r', '')
 
-        # Format related code entities, ensuring only code-related types are included
-        content_all = ""
+        # Format related code entities, with file diversity and token-budgeted prompt assembly.
+        methods = []
         if locate_result and 'related_entities' in locate_result:
-            # Explicitly define code entity types to include, as issues are
-            # already part of the problem_statement.
-            code_entity_types = ['methods']
-            for entity_type in code_entity_types:
-                entities = locate_result['related_entities'].get(entity_type)
-                if not entities:
-                    continue
-                
-                # Sort entities by similarity score if available
-                sorted_entities = sorted(entities, key=lambda x: x.get('similarity', 0), reverse=True)
-                
-                content_all += f"## Relevant {entity_type.capitalize()}\n"
-                for item in sorted_entities:
-                    content_all += format_entity_content(item)
+            methods = locate_result['related_entities'].get('methods') or []
+        content_all = self._build_repair_context(problem_statement, methods)
 
         # Build the final prompt
-        current_prompt = BASE_PROMPT_TEMPLATE.format(
+        current_prompt = self._get_prompt_template().format(
             problem_statement=problem_statement,
             content=content_all if content_all else "No related code snippets found.",
             file_path_example=self.file_path_example,
@@ -583,51 +924,84 @@ int Calculator::add(int a, int b) {
         print("Prompt constructed. Calling LLM to generate patch...")
         
         # Get completion from LLM
+        try:
+            os.makedirs(output_dir, mode=0o755, exist_ok=True)
+        except PermissionError as e:
+            print(f"❌ 无法创建输出目录 {output_dir}: {e}")
+            print(f"   请检查目录权限或使用 sudo 运行")
+            raise
+        output_file = os.path.join(output_dir, f"{instance_id}.diff")
+        result["raw_output_file"] = output_file
+        if not os.path.exists(output_file):
+            with open(output_file, "w", encoding="utf-8") as f:
+                f.write("")
         stream = self.get_completion(current_prompt, stream=True)
 
         if stream:
-            os.makedirs(output_dir, exist_ok=True)
-            output_file = os.path.join(output_dir, f"{instance_id}.patch")
-            
             print(f"--- LLM raw output ---")
             raw_content = ""
-            with open(output_file, 'w', encoding='utf-8') as f:
-                for chunk in stream:
-                    content = chunk.choices[0].delta.content or ""
-                    f.write(content)
-                    raw_content += content
-                    print(content, end='', flush=True)
+            stream_error = None
+            try:
+                with open(output_file, 'w', encoding='utf-8') as f:
+                    for chunk in stream:
+                        content = chunk.choices[0].delta.content or ""
+                        f.write(content)
+                        raw_content += content
+                        print(content, end='', flush=True)
+            except PermissionError as e:
+                print(f"\n❌ 无法写入补丁文件 {output_file}: {e}")
+                print(f"   请检查文件权限或目录权限")
+                print(f"   尝试运行: chmod -R 755 {os.path.dirname(output_file)}")
+                raise
+            except Exception as e:
+                stream_error = str(e)
+                print(f"\nStreaming interrupted: {e}")
             
             print(f"\n--- End of LLM raw output ---")
             print(f"Successfully generated raw patch and saved to {output_file}")
             
             # 保存原始patch内容
             result["raw_patch_content"] = raw_content
+            if stream_error:
+                result["failed_files"].append({"error": f"LLM stream error: {stream_error}"})
+                result["error_summary"] = f"LLM stream error: {stream_error}"
             
-            print("\n--- Post-processing and applying patch ---")
-            patch_result = self.post_process_and_apply_patch(
-                instance_id, output_file, locations_dir, playground_dir, repo_identifier, 
-                repo_name, commit_id
-            )
-            
-            if patch_result:
-                result["processed_patches"] = patch_result["processed_patches"]
-                result["applied_files"] = patch_result["applied_files"]
-                result["failed_files"] = patch_result["failed_files"]
+            if raw_content.strip():
+                print("\n--- Post-processing and applying patch ---")
+                try:
+                    patch_result = self.post_process_and_apply_patch(
+                        instance_id, output_file, locations_dir, playground_dir, repo_identifier, 
+                        repo_name, commit_id
+                    )
+                except Exception as e:
+                    patch_result = None
+                    result["failed_files"].append({"error": f"Post-processing failed: {e}"})
                 
-                # 确定处理状态
-                if result["applied_files"]:
-                    if result["failed_files"]:
-                        result["status"] = "partial"
+                if patch_result:
+                    result["processed_patches"] = patch_result["processed_patches"]
+                    result["applied_files"] = patch_result["applied_files"]
+                    result["failed_files"].extend(patch_result["failed_files"])
+                    
+                    # 确定处理状态
+                    if result["applied_files"]:
+                        if result["failed_files"]:
+                            result["status"] = "partial"
+                        else:
+                            result["status"] = "success"
                     else:
-                        result["status"] = "success"
+                        result["status"] = "failed"
                 else:
                     result["status"] = "failed"
             else:
                 result["status"] = "failed"
-                result["failed_files"].append({"error": "Post-processing failed"})
+                result["failed_files"].append({"error": "Empty LLM output"})
+                result["error_summary"] = "Empty LLM output"
             
-            print("--- Finished post-processing ---")
+            if raw_content.strip():
+                print("--- Finished post-processing ---")
+
+            if result["status"] != "success":
+                self._persist_failure_artifacts(result, output_file)
             
             # 保存结果到JSONL
             if save_to_jsonl:
@@ -636,7 +1010,11 @@ int Calculator::add(int a, int b) {
         else:
             print("Failed to get a valid response from the model.")
             result["status"] = "failed"
-            result["failed_files"].append({"error": "Failed to get LLM response"})
+            api_error = self.last_completion_error or "Failed to get LLM response"
+            result["failed_files"].append({"error": api_error})
+            result["error_summary"] = api_error
+            result["raw_patch_content"] = ""
+            self._persist_failure_artifacts(result, output_file)
             if save_to_jsonl:
                 self._save_result_to_jsonl(result, output_dir)
 
@@ -673,4 +1051,3 @@ if __name__ == "__main__":
         commit_id=None,  # 将从数据集加载
         save_to_jsonl=save_to_jsonl
     )
-
