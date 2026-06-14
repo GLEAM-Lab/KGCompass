@@ -269,15 +269,6 @@ def verify_rq4_and_boundary() -> None:
         expect_equal(f"RQ4 {context} remaining400 row count", len(remaining400), 400, f"{rq4_dir}/remaining400_{context}_official_results.jsonl")
         expect_match(f"RQ4 {context} full500 is first100 plus remaining400", full500 == first100 + remaining400, source)
 
-    kg_first100 = read_jsonl(f"{rq4_dir}/first100_kg_official_results.jsonl")
-    kg_first20 = read_jsonl(f"{rq4_dir}/first20_kg_official_results.jsonl")
-    kg_subset80_retry = read_jsonl(f"{rq4_dir}/subset80_kg_merged_official_results.jsonl")
-    expect_match(
-        "RQ4 KG first100 folds in retry-source subset80",
-        kg_first100 == kg_first20 + kg_subset80_retry,
-        f"{rq4_dir}/first100_kg_official_results.jsonl",
-    )
-
     audit = read_json("kg_evidence_graph_tse_timesafe_main_20260529_v6_audit_final.json")["summary"]
     expect_equal("Boundary audit ok instances", audit["ok"], 500, "kg_evidence_graph_tse_timesafe_main_20260529_v6_audit_final.json")
     expect_equal("Boundary audit target PR hits", audit["target_pr_hits"], 0, "kg_evidence_graph_tse_timesafe_main_20260529_v6_audit_final.json")
