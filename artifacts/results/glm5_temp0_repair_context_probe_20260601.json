@@ -1,0 +1,50 @@
+{
+  "description": "Full-500 deterministic GLM-5 patch-generation probe comparing issue-only localization context with the fixed 10+10 KGCompass context interface.",
+  "benchmark": "SWE-bench Verified",
+  "instances": 500,
+  "model": "GLM-5",
+  "generation_temperature": 0,
+  "round": "r1_c20_t0",
+  "repair_harness": "KGCompass open repair prompt pipeline",
+  "official_evaluator": "SWE-bench harness official evaluation via temp_run/eval_official_predictions_jsonl.py",
+  "workspace_sources": {
+    "noKG_summary": "/home/barty/GLEAM-Lab/KGCompass/official_glm5_verified_temp0_pair/noKG_top20/r1_c20_t0/summary.json",
+    "kg_summary": "/home/barty/GLEAM-Lab/KGCompass/official_glm5_verified_temp0_pair/KG_10p10_top20/r1_c20_t0/summary.json",
+    "noKG_predictions": "/home/barty/GLEAM-Lab/KGCompass/predictions_glm5_verified_temp0_pair/noKG_top20/r1_c20_t0/predictions.jsonl",
+    "kg_predictions": "/home/barty/GLEAM-Lab/KGCompass/predictions_glm5_verified_temp0_pair/KG_10p10_top20/r1_c20_t0/predictions.jsonl",
+    "driver_log": "/home/barty/GLEAM-Lab/KGCompass/logs/glm5_verified_temp0_pair/driver_full_workers8_20260601_132356.log"
+  },
+  "rows": [
+    {
+      "context": "Issue-only Top-20",
+      "predictions": 500,
+      "patch_nonempty": 443,
+      "patch_successfully_applied": 437,
+      "resolved": 117,
+      "resolved_pct": 23.4,
+      "missing_report": 63,
+      "summary_copy": "artifacts/results/glm5_temp0_repair_context_probe_20260601/nokg_top20_summary.json"
+    },
+    {
+      "context": "Top-10 + KGCompass Top-10",
+      "predictions": 500,
+      "patch_nonempty": 485,
+      "patch_successfully_applied": 481,
+      "resolved": 120,
+      "resolved_pct": 24.0,
+      "missing_report": 19,
+      "summary_copy": "artifacts/results/glm5_temp0_repair_context_probe_20260601/kg_10p10_top20_summary.json"
+    }
+  ],
+  "deltas": {
+    "nonempty_patches": 42,
+    "patch_successfully_applied": 44,
+    "resolved": 3,
+    "resolved_pct_points": 0.6,
+    "missing_report": -44
+  },
+  "notes": [
+    "This probe is auxiliary; the manuscript's primary claims are localization and context-mechanism results.",
+    "The missing_report field follows the official evaluator summary and includes empty patches plus predictions that did not produce a successfully testable report/result under the evaluator."
+  ]
+}
