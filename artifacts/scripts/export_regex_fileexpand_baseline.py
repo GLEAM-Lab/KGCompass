@@ -27,7 +27,7 @@ from typing import Iterable
 import pyarrow.ipc as pa_ipc
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_IDS_FILE = REPO_ROOT / "SWE-bench_Verified_ids.jsonl"
 DEFAULT_REPOS_DIR = REPO_ROOT / "playground_text_baselines"
 DEFAULT_OUTPUT_DIR = REPO_ROOT / "runs/regex_fileexpand_strict/tse_timesafe_main_20260531_v1"

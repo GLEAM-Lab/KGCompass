@@ -48,7 +48,7 @@ from export_regex_fileexpand_baseline import (
 )
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT_DIR = REPO_ROOT / "runs/codegraph_anchor/tse_timesafe_main_20260531_v1"
 EXPLICIT_PATH_FILE_SCORE = 1000
 DOTTED_MODULE_FILE_SCORE = 800

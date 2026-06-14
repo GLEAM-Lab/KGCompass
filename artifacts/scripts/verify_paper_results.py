@@ -9,6 +9,7 @@ experiment workspace or the large per-instance KG JSON directories.
 
 from __future__ import annotations
 
+import argparse
 import csv
 import json
 import math
@@ -291,12 +292,33 @@ def verify_rq4_and_boundary() -> None:
     expect_equal("External artifact sensitivity Hit@20 losses", int(full_row["hit_losses"]), 0, "time_boundary_external_artifact_sensitivity_20260531.tsv")
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Verify manuscript-facing KGCompass artifact values."
+    )
+    parser.add_argument(
+        "--rq",
+        choices=("all", "rq1", "rq2", "rq3", "rq4"),
+        default="all",
+        help="Restrict checks to one research question. Default: all.",
+    )
+    return parser.parse_args()
+
+
 def main() -> int:
+    args = parse_args()
+    selected_checks = {
+        "rq1": verify_rq1,
+        "rq2": verify_rq2,
+        "rq3": verify_rq3,
+        "rq4": verify_rq4_and_boundary,
+    }
     try:
-        verify_rq1()
-        verify_rq2()
-        verify_rq3()
-        verify_rq4_and_boundary()
+        if args.rq == "all":
+            for check in selected_checks.values():
+                check()
+        else:
+            selected_checks[args.rq]()
     except Exception as exc:  # noqa: BLE001 - reviewer-facing script should print context.
         print(json.dumps({"ok": False, "error": str(exc), "checks": checks}, indent=2), file=sys.stderr)
         return 1
@@ -304,6 +326,7 @@ def main() -> int:
     failed = [item for item in checks if not item["ok"]]
     report = {
         "ok": not failed,
+        "scope": args.rq,
         "checked_values": len(checks),
         "failed": failed,
         "checks": checks,

@@ -24,7 +24,7 @@ from typing import Dict, Iterable, List, Tuple
 from datasets import Dataset
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "kgcompass"))
 import utils  # type: ignore  # noqa: E402
 
