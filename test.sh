@@ -1,1 +1,0 @@
-docker run -it --rm -v "$(pwd):/opt/KGCompass" -w /opt/KGCompass ubuntu:22.04 /bin/bash

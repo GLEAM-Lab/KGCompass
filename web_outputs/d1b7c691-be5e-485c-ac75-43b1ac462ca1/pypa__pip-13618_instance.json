@@ -1,9 +1,0 @@
-{
-  "instance_id": "pypa__pip-13618",
-  "repo": "pypa/pip",
-  "problem_statement": "# extra incorrectly shown on installation error\n\n### Description\n\nWhen you install a requirement with an extra and are no distributions for that extra you get a slightly misleading message from the installation error.\n\n### Expected behavior\n\nRemove the extra from the requirement.\n\n### pip version\n\n25.2\n\n### Python version\n\n3.14\n\n### OS\n\nLinux\n\n### How to Reproduce\n\n `pip install --dry-run fsrs[optimizer]==6.2.0`\n\n### Output\n\n```\nCollecting fsrs==6.2.0 (from fsrs[optimizer]==6.2.0)\n  Using cached fsrs-6.2.0-py3-none-any.whl.metadata (13 kB)\nINFO: pip is looking at multiple versions of fsrs[optimizer] to determine which version is compatible with other requirements. This could take a while.\nERROR: Could not find a version that satisfies the requirement torch; extra == \"optimizer\" (from fsrs[optimizer]) (from versions: none)\nERROR: No matching distribution found for torch; extra == \"optimizer\"\n```\n\nThis line is confusing:\n\n> ERROR: No matching distribution found for torch; extra == \"optimizer\"\n\nIt comes directly from the distribution metadata and is used to refer to the fact that torch is an extra of fsrs, but taken out of that context it looks like pip is looking for torch with the extra optimizer. The message should read:\n\n> ERROR: No matching distribution found for torch\n\n### Code of Conduct\n\n- [x] I agree to follow the [PSF Code of Conduct](https://www.python.org/psf/conduct/).",
-  "issue_number": "13618",
-  "base_commit": "a119d57981901ea87204b0b48c0c72c4391c17d6",
-  "custom_repo": true,
-  "created_at": "2025-10-12T17:00:04Z"
-}
