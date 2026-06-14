@@ -16,6 +16,7 @@ This directory contains submission-side traceability artifacts for the final KGC
 - `results/codegraph_anchor_rq3_20260531.tsv`: No-history CodeGraph baseline evaluated under the same Top-20 localization metrics; it disables all historical issue/PR artifacts and uses only the target issue title/body plus base-commit source code.
 - `results/time_boundary_external_artifact_sensitivity_20260531.tsv` and `.json`: sensitivity analysis that removes non-root issue/PR evidence-path candidates from the Top-20 export.
 - `results/llm_pathmined_kg_ht10_20260531.tsv`: LLM-only and LLM+path-mined-KG localization ledger used in RQ-2.
+- `results/glm5_baseline_fusion_controls_top10_20260614.tsv`: GLM-5 Top-10+second-source Top-10 fusion controls for BM25, DPR, BLUiR, CodeGraph, Regex/FileExpand, LocalPathRank, and KGCompass, including paired Hit@20 wins/losses against GLM-5 issue-only.
 - `results/fusion_split_sensitivity_glm5_pathmined_20260601.tsv`: archived post-hoc diagnostic of GLM-5/KGCompass split sizes under the same Top-20 budget. Rows are named by the number of GLM-5 predictions initially retained before KGCompass fills and the evaluator applies dedup/backfill. This file audits robustness of the fixed 10+10 interface and is not used to select the paper protocol or to define the GLM-5 issue-only baseline.
 - `results/local_open_models_pathmined_top10_5p5_summary.tsv`: local open-source model Top-10 stress rows used in RQ-2, covering Qwen3-Coder-30B and DeepSeek-Coder-V2-Lite with and without the 5+5 KGCompass context.
 - `results/external_verified_loc_baselines_cosil_release_20260601.tsv` and `.json`: released SWE-bench Verified localization outputs from CoSIL, LocAgent, Agentless, and OrcaLoca, re-evaluated with the paper's file/method/entity target mapping for the unified RQ-2 strong-baseline table.
@@ -30,6 +31,7 @@ This directory contains submission-side traceability artifacts for the final KGC
 - `scripts/export_path_mined_filelocal.py` and `scripts/fuse_path_mined_with_kg.py`: source-inspection snapshots of the path-mining and rank-union exporters.
 - `scripts/export_kg_file_expansion_ablation.py` and `scripts/analyze_rq1_paired_stats.py`: source-inspection snapshots of the file-expansion control ablation and paired-statistics scripts.
 - `scripts/export_regex_fileexpand_baseline.py`: source-inspection snapshot of the strict Regex/FileExpand exporter.
+- `scripts/analyze_glm5_baseline_fusion_controls.py`: source-inspection snapshot of the GLM-5 Top-10+baseline fusion paired-accounting script.
 - `scripts/audit_time_boundary_exposure.py`: source-inspection snapshot of the hint/comment exposure audit.
 - `scripts/eval_external_qwen25_kg_fusion.py`: source-inspection snapshot of the released Qwen2.5-32B plus KGCompass fusion evaluator.
 - `scripts/verify_paper_results.py`: paper-side verifier that reads only committed files under `artifacts/results/` and checks the manuscript-facing table values and key RQ statements.
@@ -45,7 +47,7 @@ Leakage-sentinel audits can be reproduced from the main KGCompass workspace with
 
 Reviewers should start from the following files. The paths below are main KGCompass workspace paths; paper-side copies of the final ledgers are stored under `artifacts/results/` in this repository and are sufficient to verify the manuscript tables. The `temp_run/` prefix in some source columns is the workspace output root used by the evaluation scripts.
 
-The mirrored files under `artifacts/scripts/` are source-inspection snapshots, not standalone paper-repo entrypoints. Reproduction commands should be run from the main KGCompass repository, tested at commit `cdbf255` on branch `webapp`, where the SWE-bench Verified cache, local base-commit repositories, and full per-instance run directories are available.
+The mirrored files under `artifacts/scripts/` are source-inspection snapshots, not standalone paper-repo entrypoints. Reproduction commands should be run from the main KGCompass repository on `main`, where the SWE-bench Verified cache, local base-commit repositories, and full per-instance run directories are available.
 
 For a paper-side consistency check that does not require the main experiment workspace, run:
 
@@ -71,6 +73,7 @@ python3 artifacts/scripts/rebuild_rq3_path_rank_audit.py
    - `logs/comparison_current/time_boundary_external_artifact_sensitivity_20260531.tsv`
    - `logs/comparison_current/time_boundary_exposure_audit_20260601.tsv`
    - `logs/comparison_current/llm_pathmined_kg_ht10_20260531.tsv`
+   - `artifacts/results/glm5_baseline_fusion_controls_top10_20260614.tsv`
    - `logs/comparison_current/fusion_split_sensitivity_glm5_pathmined_20260601.tsv`
    - `logs/comparison_current/qwen25_32b_kgcompass_fusion_20260601.tsv`
    - `logs/comparison_current/kg_clean_tse_timesafe_main_20260529_v6_rq3.json`

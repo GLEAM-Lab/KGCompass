@@ -155,6 +155,30 @@ def verify_rq2() -> None:
     expect_equal("RQ2 GLM5/KG union ceiling", comp["kg_only_vs_glm_issue_only"]["union_hit_ceiling"], 376, "glm5_pathmined_kg_complementarity_20260531.json")
     expect_equal("RQ2 fixed 10+10 fusion hits", comp["top20_hit"]["llm_kg_hit"], 370, "glm5_pathmined_kg_complementarity_20260531.json")
 
+    controls = read_tsv("glm5_baseline_fusion_controls_top10_20260614.tsv")
+    fusion_expected = {
+        "GLM5_issue_only": (87.4, 53.0, 51.2, 62.4, 0, 0),
+        "GLM5_BM25_ht10": (95.2, 63.4, 53.6, 72.6, 51, 0),
+        "GLM5_DPR_ht10": (93.0, 66.9, 54.7, 76.2, 69, 0),
+        "GLM5_BLUiR_ht10": (92.8, 66.8, 54.4, 75.6, 66, 0),
+        "GLM5_CodeGraph_ht10": (93.6, 60.9, 53.0, 69.6, 36, 0),
+        "GLM5_RegexFileExpand_ht10": (92.0, 60.6, 53.2, 69.6, 36, 0),
+        "GLM5_LocalPathRank_ht10": (93.0, 66.5, 53.7, 74.4, 60, 0),
+        "GLM5_KGCompass_ht10": (93.4, 65.5, 53.7, 74.0, 58, 0),
+    }
+    for name, values in fusion_expected.items():
+        row = row_by(controls, "name", name)
+        observed = (
+            pct(row["file_rate"]),
+            pct(row["method_or_entity_rate"]),
+            pct(row["mrr"]),
+            pct(row["top20_hit_rate"]),
+        )
+        for metric, obs, exp in zip(("file", "method", "mrr", "hit"), observed, values[:4]):
+            expect_close(f"RQ2 baseline-fusion {name} {metric}", obs, exp, "glm5_baseline_fusion_controls_top10_20260614.tsv")
+        expect_equal(f"RQ2 baseline-fusion {name} hit wins", int(row["hit_wins_vs_issue"]), values[4], "glm5_baseline_fusion_controls_top10_20260614.tsv")
+        expect_equal(f"RQ2 baseline-fusion {name} hit losses", int(row["hit_losses_vs_issue"]), values[5], "glm5_baseline_fusion_controls_top10_20260614.tsv")
+
     qwen = read_tsv("qwen25_32b_kgcompass_fusion_20260601.tsv")
     cosil = row_by(qwen, "name", "CoSIL-Qwen2.5-32B")
     cosil_kg = row_by(qwen, "name", "CoSIL-Qwen2.5-32B+KGCompass")

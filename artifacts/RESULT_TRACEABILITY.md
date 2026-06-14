@@ -44,6 +44,7 @@ python3 artifacts/scripts/rebuild_rq3_path_rank_audit.py
 - RQ-3 rank-availability aggregate: `artifacts/results/rank_availability_audit_20260613.tsv`, rebuilt from `rq3_rank_audit_observations_20260614.tsv`, reports rank buckets and early-rank association tests for the exploratory audit.
 - Benchmark hint/comment exposure audit: `logs/comparison_current/time_boundary_exposure_audit_20260601.tsv`, `.json`, and `logs/comparison_current/time_boundary_exposure_examples_20260601.tsv`, copied under `artifacts/results/`. This audit quantifies how often the raw SWE-bench Verified `hints_text` field exposes comment-derived localization cues; it is a boundary-risk audit, not a claim that a particular compared baseline consumed hints.
 - RQ-2 LLM and LLM+path-mined-KG localization: `logs/comparison_current/llm_pathmined_kg_ht10_20260531.tsv`, copied to `artifacts/results/llm_pathmined_kg_ht10_20260531.tsv`.
+- RQ-2 GLM-5 Top-10+baseline fusion controls: `logs/comparison_current/glm5_baseline_fusion_controls_top10_20260614_paired.tsv`, copied to `artifacts/results/glm5_baseline_fusion_controls_top10_20260614.tsv`. This ledger preserves the GLM-5 issue-only Top-10 prefix and compares BM25, DPR, BLUiR, CodeGraph, Regex/FileExpand, LocalPathRank, and KGCompass as the second-source Top-10 tail, with paired Hit@20 wins/losses against GLM-5 issue-only.
 - RQ-2 GLM-5/KGCompass split-size diagnostic: `logs/comparison_current/fusion_split_sensitivity_glm5_pathmined_20260601.tsv`, copied to `artifacts/results/fusion_split_sensitivity_glm5_pathmined_20260601.tsv`. This is an archived post-hoc robustness audit of the fixed 10+10 fusion contract; it is not used to choose the paper protocol. The row name `GLM5_headH_KG_tail` records the number of GLM-5 candidates initially retained before KGCompass fills and the evaluator applies dedup/backfill. The `GLM5_head20_KG_tail` row is therefore not the GLM-5 issue-only baseline; the issue-only GLM-5 row is in `llm_pathmined_kg_ht10_20260531.tsv`.
 - RQ-2 local open-source Top-10 stress rows: `logs/comparison_current/local_open_models_pathmined_top10_5p5_summary.tsv`, copied to `artifacts/results/local_open_models_pathmined_top10_5p5_summary.tsv`.
 - RQ-2 released SWE-bench Verified strong baselines: `logs/comparison_current/external_verified_loc_baselines_cosil_release_20260601.tsv` and `.json`, copied to `artifacts/results/external_verified_loc_baselines_cosil_release_20260601.tsv` and `.json`. These rows re-evaluate released CoSIL, LocAgent, Agentless, and OrcaLoca function-localization outputs under the paper's file/method/entity target mapping.
@@ -103,6 +104,47 @@ python3 scripts/eval_controls_v3.py \
 ```
 
 The path-mining exporter reparses base-commit source inside KG-grounded files and does not invoke any LLM API or read network data. The LLM+KG ledgers in `llm_pathmined_kg_ht10_20260531.tsv` were produced by fusing existing issue-only LLM localization JSON files with the path-mined KGCompass artifact; the fusion step itself does not invoke any LLM API.
+
+GLM-5 Top-10+baseline fusion controls. These controls use the same GLM-5 issue-only prefix and replace only the second-source tail:
+
+```bash
+OUT_ROOT=temp_run/fusions_glm5_baseline_controls_20260614_head10
+PRIMARY=temp_run/eval_aliyun_glm5_issueonly
+
+while IFS="|" read -r name dir; do
+  python3 temp_run/export_two_way_fusion.py \
+    --primary-dir "$PRIMARY" \
+    --secondary-dir "$dir" \
+    --output-dir "$OUT_ROOT/$name" \
+    --mode intersection \
+    --strategy head_tail \
+    --top-k 50 \
+    --primary-head 10 \
+    --secondary-head 10 \
+    --force
+done <<'EOF'
+GLM5_BM25_ht10|runs/text_baselines_nohints/2000
+GLM5_DPR_ht10|runs/text_baselines_dense_filefirst/2203
+GLM5_BLUiR_ht10|runs/text_baselines_bluir/2300
+GLM5_CodeGraph_ht10|runs/codegraph_anchor/tse_timesafe_main_20260531_v2
+GLM5_RegexFileExpand_ht10|runs/regex_fileexpand_strict/tse_timesafe_main_20260531_v1
+GLM5_LocalPathRank_ht10|runs/kg_verified_evidence_graph/tse_timesafe_main_20260531_pathsource_v1
+GLM5_KGCompass_ht10|runs/kg_verified_evidence_graph/tse_timesafe_main_20260531_pathunion_v1
+EOF
+
+python3 artifacts/scripts/analyze_glm5_baseline_fusion_controls.py \
+  --ids-file temp_run/SWE-bench_Verified_ids.jsonl \
+  --issue-dir temp_run/eval_aliyun_glm5_issueonly \
+  --group GLM5_BM25_ht10=$OUT_ROOT/GLM5_BM25_ht10 \
+  --group GLM5_DPR_ht10=$OUT_ROOT/GLM5_DPR_ht10 \
+  --group GLM5_BLUiR_ht10=$OUT_ROOT/GLM5_BLUiR_ht10 \
+  --group GLM5_CodeGraph_ht10=$OUT_ROOT/GLM5_CodeGraph_ht10 \
+  --group GLM5_RegexFileExpand_ht10=$OUT_ROOT/GLM5_RegexFileExpand_ht10 \
+  --group GLM5_LocalPathRank_ht10=$OUT_ROOT/GLM5_LocalPathRank_ht10 \
+  --group GLM5_KGCompass_ht10=$OUT_ROOT/GLM5_KGCompass_ht10 \
+  --output-tsv logs/comparison_current/glm5_baseline_fusion_controls_top10_20260614_paired.tsv \
+  --top-k 20
+```
 
 GLM-5/KGCompass split-size diagnostic. This diagnostic preserves the paper's final Top-20 budget and varies only how many GLM-5 predictions are kept before KGCompass fills the remaining slots. It was run after the fixed 10+10 protocol was already in place, so it is treated as an audit rather than a protocol-selection step:
 

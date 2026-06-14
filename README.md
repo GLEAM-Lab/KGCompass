@@ -178,14 +178,14 @@ for spec in \
     --output-dir "temp_run/fusions_pathmined_kg/${tag}_pathunion_ht10" \
     --mode intersection \
     --strategy head_tail \
-    --top-k 20 \
+    --top-k 50 \
     --primary-head 10 \
-    --secondary-head 20 \
+    --secondary-head 10 \
     --force
 done
 
 python3 artifacts/scripts/eval_controls_v3.py \
-  --ids-file SWE-bench_Verified_ids.jsonl \
+  --ids-file temp_run/SWE-bench_Verified_ids.jsonl \
   --group GLM5_issue_only=temp_run/eval_aliyun_glm5_issueonly \
   --group GLM5_KG_pathmined_ht10=temp_run/fusions_pathmined_kg/GLM5_pathunion_ht10 \
   --group Qwen3CoderNext_issue_only=temp_run/eval_aliyun_qwen3coderplus_issueonly \
@@ -195,6 +195,43 @@ python3 artifacts/scripts/eval_controls_v3.py \
   --group Sonnet46_issue_only=temp_run/eval_zenmux_sonnet46_issueonly_full \
   --group Sonnet46_KG_pathmined_ht10=temp_run/fusions_pathmined_kg/Sonnet46_pathunion_ht10 \
   --output-tsv logs/comparison_current/llm_pathmined_kg_ht10_20260531.tsv \
+  --top-k 20
+
+OUT_ROOT=temp_run/fusions_glm5_baseline_controls_20260614_head10
+PRIMARY=temp_run/eval_aliyun_glm5_issueonly
+
+while IFS="|" read -r name dir; do
+  python3 temp_run/export_two_way_fusion.py \
+    --primary-dir "$PRIMARY" \
+    --secondary-dir "$dir" \
+    --output-dir "$OUT_ROOT/$name" \
+    --mode intersection \
+    --strategy head_tail \
+    --top-k 50 \
+    --primary-head 10 \
+    --secondary-head 10 \
+    --force
+done <<'EOF'
+GLM5_BM25_ht10|runs/text_baselines_nohints/2000
+GLM5_DPR_ht10|runs/text_baselines_dense_filefirst/2203
+GLM5_BLUiR_ht10|runs/text_baselines_bluir/2300
+GLM5_CodeGraph_ht10|runs/codegraph_anchor/tse_timesafe_main_20260531_v2
+GLM5_RegexFileExpand_ht10|runs/regex_fileexpand_strict/tse_timesafe_main_20260531_v1
+GLM5_LocalPathRank_ht10|runs/kg_verified_evidence_graph/tse_timesafe_main_20260531_pathsource_v1
+GLM5_KGCompass_ht10|runs/kg_verified_evidence_graph/tse_timesafe_main_20260531_pathunion_v1
+EOF
+
+python3 artifacts/scripts/analyze_glm5_baseline_fusion_controls.py \
+  --ids-file temp_run/SWE-bench_Verified_ids.jsonl \
+  --issue-dir temp_run/eval_aliyun_glm5_issueonly \
+  --group GLM5_BM25_ht10=$OUT_ROOT/GLM5_BM25_ht10 \
+  --group GLM5_DPR_ht10=$OUT_ROOT/GLM5_DPR_ht10 \
+  --group GLM5_BLUiR_ht10=$OUT_ROOT/GLM5_BLUiR_ht10 \
+  --group GLM5_CodeGraph_ht10=$OUT_ROOT/GLM5_CodeGraph_ht10 \
+  --group GLM5_RegexFileExpand_ht10=$OUT_ROOT/GLM5_RegexFileExpand_ht10 \
+  --group GLM5_LocalPathRank_ht10=$OUT_ROOT/GLM5_LocalPathRank_ht10 \
+  --group GLM5_KGCompass_ht10=$OUT_ROOT/GLM5_KGCompass_ht10 \
+  --output-tsv logs/comparison_current/glm5_baseline_fusion_controls_top10_20260614_paired.tsv \
   --top-k 20
 
 python3 artifacts/scripts/eval_external_qwen25_kg_fusion.py \
@@ -258,8 +295,7 @@ python3 artifacts/scripts/verify_paper_results.py --rq rq4
 
 The reported RQ4 ClaudeCode repair result is a committed full-500 ledger under
 `artifacts/results/claudecode_context_probe_glm5_20260531/`. The verifier checks
-that `full500` is exactly `first100 + remaining400`, that the KG first-100 shard
-folds in the documented same-configuration retry source, and that paired repair
+that `full500` is exactly `first100 + remaining400` and that paired repair
 statistics match the manuscript.
 
 Full workspace rerun for the GLM-5 temperature-0 repair context probe:
