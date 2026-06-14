@@ -1,0 +1,62 @@
+Based on the issue description, the bug is in `TypeAdapterRuntimeTypeWrapper.java` where it doesn't properly handle cyclic adapters (`FutureTypeAdapter`) when choosing between runtime type and declared type adapters. The issue occurs when both types only have reflective adapters - it should prefer the runtime type's reflective adapter but doesn't properly detect this when the adapter is wrapped in a `FutureTypeAdapter`.
+
+Here's the fix:
+
+```java
+### playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TypeAdapterRuntimeTypeWrapper.java
+- start_line : 46
+- end_line : 70
+<<<<<<< SEARCH
+    TypeAdapter<T> chosen = delegate;
+    Type runtimeType = getRuntimeTypeIfMoreSpecific(type, value);
+    if (runtimeType != type) {
+      @SuppressWarnings("unchecked")
+      TypeAdapter<T> runtimeTypeAdapter = (TypeAdapter<T>) context.getAdapter(TypeToken.get(runtimeType));
+      if (!(runtimeTypeAdapter instanceof ReflectiveTypeAdapterFactory.Adapter)) {
+        // The user registered a type adapter for the runtime type, so we will use that
+        chosen = runtimeTypeAdapter;
+      } else if (!(delegate instanceof ReflectiveTypeAdapterFactory.Adapter)) {
+        // The user registered a type adapter for Base class, so we prefer it over the
+        // reflective type adapter for the runtime type
+        chosen = delegate;
+      } else {
+        // Use the type adapter for runtime type
+        chosen = runtimeTypeAdapter;
+      }
+    }
+=======
+    TypeAdapter<T> chosen = delegate;
+    Type runtimeType = getRuntimeTypeIfMoreSpecific(type, value);
+    if (runtimeType != type) {
+      @SuppressWarnings("unchecked")
+      TypeAdapter<T> runtimeTypeAdapter = (TypeAdapter<T>) context.getAdapter(TypeToken.get(runtimeType));
+      TypeAdapter<?> runtimeDelegate = runtimeTypeAdapter instanceof Gson.FutureTypeAdapter 
+          ? ((Gson.FutureTypeAdapter<?>) runtimeTypeAdapter).getDelegate() 
+          : runtimeTypeAdapter;
+      TypeAdapter<?> declaredDelegate = delegate instanceof Gson.FutureTypeAdapter 
+          ? ((Gson.FutureTypeAdapter<?>) delegate).getDelegate() 
+          : delegate;
+      
+      if (!(runtimeDelegate instanceof ReflectiveTypeAdapterFactory.Adapter)) {
+        // The user registered a type adapter for the runtime type, so we will use that
+        chosen = runtimeTypeAdapter;
+      } else if (!(declaredDelegate instanceof ReflectiveTypeAdapterFactory.Adapter)) {
+        // The user registered a type adapter for Base class, so we prefer it over the
+        // reflective type adapter for the runtime type
+        chosen = delegate;
+      } else {
+        // Use the type adapter for runtime type
+        chosen = runtimeTypeAdapter;
+      }
+    }
+>>>>>>> REPLACE
+```
+
+The fix:
+1. Gets the underlying delegate adapter for both runtime and declared type adapters by unwrapping any `FutureTypeAdapter` wrappers
+2. Then checks the unwrapped adapters to see if they are reflective adapters
+3. Maintains the same preference logic but now works correctly when adapters are wrapped in `FutureTypeAdapter`
+
+This ensures that when both types only have reflective adapters (possibly wrapped in `FutureTypeAdapter`), the runtime type's adapter will be preferred as desired.
+
+The fix addresses the example case where a `Base` class contains a `Sub` class field - it will now properly serialize the `Sub` class fields instead of just creating an empty object.

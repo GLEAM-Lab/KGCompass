@@ -1,0 +1,32 @@
+Based on the issue, the problem is that `@JsonAnySetter` annotated Map fields need to be automatically instantiated when null, using standard Map implementations like HashMap or LinkedHashMap. The issue mentions `JDKValueInstantiators` as the class that handles this functionality.
+
+Looking at the provided code segments, we don't see the actual implementation that handles `@JsonAnySetter` processing. However, we can see the `JDKValueInstantiators` class is referenced, though its full implementation isn't shown.
+
+The fix would need to:
+1. Check if the field is a Map type and null
+2. Use `JDKValueInstantiators` to create an appropriate Map instance
+3. Throw an exception if no suitable Map implementation can be found
+
+Since we don't see the actual deserializer code that handles `@JsonAnySetter` in the provided segments, I can't provide the exact SEARCH/REPLACE edit. The fix would need to be implemented in the class that processes `@JsonAnySetter` annotations during deserialization, likely in `BeanDeserializer` or similar.
+
+The key parts would be:
+1. When processing an `@JsonAnySetter` field, check if it's null
+2. If it's a Map type, try to instantiate using `JDKValueInstantiators.findStdValueInstantiator()`
+3. If instantiation fails, throw a clear exception
+
+Would you be able to provide the code for the class that handles `@JsonAnySetter` processing? That would allow me to provide the exact edit needed. The fix would involve modifying that class to properly handle null Map fields by attempting instantiation before failing.
+
+The general approach would be something like:
+
+```java
+if (mapField == null) {
+    ValueInstantiator vi = JDKValueInstantiators.findStdValueInstantiator(config, mapField.getType());
+    if (vi != null) {
+        mapField = vi.createUsingDefault(ctxt);
+    } else {
+        throw new JsonMappingException("Cannot instantiate Map type for @JsonAnySetter: "+mapField.getType());
+    }
+}
+```
+
+But without seeing the actual deserializer code, I can't provide the exact file and line numbers to modify.

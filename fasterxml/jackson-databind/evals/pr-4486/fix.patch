@@ -1,0 +1,15 @@
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/EnumDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/EnumDeserializer.java
+@@ -486,8 +486,10 @@
+ 
+     // @since 2.15
+     protected boolean useNullForUnknownEnum(DeserializationContext ctxt) {
+-        return Boolean.TRUE.equals(_useNullForUnknownEnum)
+-          || ctxt.isEnabled(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL);
++        if (_useNullForUnknownEnum != null) {
++            return Boolean.TRUE.equals(_useNullForUnknownEnum);
++        }
++        return ctxt.isEnabled(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL);
+     }
+ 
+     // @since 2.15

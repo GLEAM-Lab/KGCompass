@@ -1,0 +1,18 @@
+--- a/src/main/java/com/fasterxml/jackson/databind/JsonNode.java
++++ b/src/main/java/com/fasterxml/jackson/databind/JsonNode.java
+@@ -1146,8 +1146,13 @@
+      *
+      * @since 2.14
+      */
+-    public final ObjectNode withObject(String expr) {
+-        return withObject(JsonPointer.compile(expr));
++    public final ObjectNode withObject(String exprOrProperty) {
++        JsonPointer ptr = _jsonPointerIfValid(exprOrProperty);
++        if (ptr != null) {
++            return withObject(ptr);
++        }
++        throw new UnsupportedOperationException("`JsonNode` not of type `ObjectNode` (but `"
++                +getClass().getName()+")`, cannot call `withObject()` on it");
+     }
+ 
+     /**

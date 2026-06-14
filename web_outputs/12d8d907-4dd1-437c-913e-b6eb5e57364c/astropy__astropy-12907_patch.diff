@@ -1,0 +1,115 @@
+Based on the issue, the bug appears to be in how `separability_matrix` handles nested CompoundModels. The issue shows that when combining `Pix2Sky_TAN()` with a nested compound model `cm = Linear1D(10) & Linear1D(5)`, the separability matrix incorrectly shows the linear models as being dependent on each other when they should be independent.
+
+Looking at the code, the issue stems from how the separability matrix is computed in `astropy/modeling/separable.py`. The `_separable` function (which is called by `separability_matrix`) needs to properly handle nested compound models by recursively checking separability of submodels.
+
+Here's the fix:
+
+```python
+### astropy/modeling/separable.py
+- start_line : 66
+- end_line : 102
+<<<<<<< SEARCH
+def separability_matrix(transform):
+    """
+    Compute the correlation between outputs and inputs.
+
+    Parameters
+    ----------
+    transform : `~astropy.modeling.core.Model`
+        A (compound) model.
+
+    Returns
+    -------
+    separable_matrix : ndarray
+        A boolean correlation matrix of shape (n_outputs, n_inputs).
+        Indicates the dependence of outputs on inputs. For completely
+        independent outputs, the diagonal elements are True and
+        off-diagonal elements are False.
+
+    Examples
+    --------
+    >>> from astropy.modeling.models import Shift, Scale, Rotation2D, Polynomial2D
+    >>> separability_matrix(Shift(1) & Shift(2) | Scale(1) & Scale(2))
+        array([[ True, False], [False,  True]]...)
+    >>> separability_matrix(Shift(1) & Shift(2) | Rotation2D(2))
+        array([[ True,  True], [ True,  True]]...)
+    >>> separability_matrix(Shift(1) & Shift(2) | Mapping([0, 1, 0, 1]) | \
+        Polynomial2D(1) & Polynomial2D(2))
+        array([[ True,  True], [ True,  True]]...)
+    >>> separability_matrix(Shift(1) & Shift(2) | Mapping([0, 1, 0, 1]))
+        array([[ True, False], [False,  True], [ True, False], [False,  True]]...)
+
+    """
+    if transform.n_inputs == 1 and transform.n_outputs > 1:
+        return np.ones((transform.n_outputs, transform.n_inputs),
+                       dtype=np.bool_)
+    separable_matrix = _separable(transform)
+    separable_matrix = np.where(separable_matrix != 0, True, False)
+    return separable_matrix
+=======
+def separability_matrix(transform):
+    """
+    Compute the correlation between outputs and inputs.
+
+    Parameters
+    ----------
+    transform : `~astropy.modeling.core.Model`
+        A (compound) model.
+
+    Returns
+    -------
+    separable_matrix : ndarray
+        A boolean correlation matrix of shape (n_outputs, n_inputs).
+        Indicates the dependence of outputs on inputs. For completely
+        independent outputs, the diagonal elements are True and
+        off-diagonal elements are False.
+
+    Examples
+    --------
+    >>> from astropy.modeling.models import Shift, Scale, Rotation2D, Polynomial2D
+    >>> separability_matrix(Shift(1) & Shift(2) | Scale(1) & Scale(2))
+        array([[ True, False], [False,  True]]...)
+    >>> separability_matrix(Shift(1) & Shift(2) | Rotation2D(2))
+        array([[ True,  True], [ True,  True]]...)
+    >>> separability_matrix(Shift(1) & Shift(2) | Mapping([0, 1, 0, 1]) | \
+        Polynomial2D(1) & Polynomial2D(2))
+        array([[ True,  True], [ True,  True]]...)
+    >>> separability_matrix(Shift(1) & Shift(2) | Mapping([0, 1, 0, 1]))
+        array([[ True, False], [False,  True], [ True, False], [False,  True]]...)
+
+    """
+    if transform.n_inputs == 1 and transform.n_outputs > 1:
+        return np.ones((transform.n_outputs, transform.n_inputs),
+                       dtype=np.bool_)
+    
+    # Handle nested compound models by checking if transform is a CompoundModel
+    if hasattr(transform, 'op') and transform.op == '&':
+        left = transform.left
+        right = transform.right
+        left_matrix = separability_matrix(left)
+        right_matrix = separability_matrix(right)
+        
+        # Combine the matrices diagonally for '&' operation
+        n_left_in = left.n_inputs
+        n_left_out = left.n_outputs
+        n_right_in = right.n_inputs
+        n_right_out = right.n_outputs
+        
+        combined = np.zeros((n_left_out + n_right_out, n_left_in + n_right_in), dtype=np.bool_)
+        combined[:n_left_out, :n_left_in] = left_matrix
+        combined[n_left_out:, n_left_in:] = right_matrix
+        return combined
+    
+    separable_matrix = _separable(transform)
+    separable_matrix = np.where(separable_matrix != 0, True, False)
+    return separable_matrix
+>>>>>>> REPLACE
+```
+
+This change:
+1. Adds special handling for compound models with '&' operator (concatenation)
+2. Recursively computes separability matrices for left and right submodels 
+3. Combines them diagonally to preserve independence between submodels
+4. Falls back to the original behavior for other cases
+
+The fix ensures that nested compound models maintain proper separability between their components, which matches the expected behavior shown in the issue's first examples.

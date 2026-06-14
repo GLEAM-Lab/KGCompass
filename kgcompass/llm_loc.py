@@ -3,7 +3,7 @@ import os
 import argparse
 from datasets import load_dataset
 import openai
-from utils import get_commit_method_by_signature, extract_json_code
+from utils import get_commit_method_by_signature, extract_json_code, create_github_client
 from config import (
     DATASET_NAME,
     DEEPSEEK_BASE_URL,
@@ -16,7 +16,6 @@ from config import (
     CANDIDATE_LOCATIONS_MAX,
 )
 from utils import format_entity_content
-from github import Github
 
 class PreFaultLocalization:
     def __init__(self, instance_id: str):
@@ -31,13 +30,63 @@ class PreFaultLocalization:
         self.client = openai.OpenAI(api_key=BAILIAN_API_KEY, base_url=DEEPSEEK_BASE_URL)
 
     def _load_target_sample(self):
+        # 首先尝试从 KG location 文件加载（自定义仓库模式）
+        import glob
+        
+        # 查找 KG location 文件
+        kg_location_files = glob.glob(f"tests/{self.instance_id}_*/kg_locations/{self.instance_id}.json")
+        
+        if kg_location_files:
+            # 从 KG location 文件中提取样本信息
+            print(f"Loading target sample from KG location file: {kg_location_files[0]}")
+            try:
+                with open(kg_location_files[0], 'r') as f:
+                    kg_data = json.load(f)
+                
+                # 尝试从多个可能的位置获取数据
+                # 1. 直接查看 KG 文件中是否有 target_sample 信息
+                if 'target_sample' in kg_data:
+                    return kg_data['target_sample']
+                
+                # 2. 从 web_outputs 查找实例文件
+                instance_files = glob.glob(f"web_outputs/*/{self.instance_id}_instance.json")
+                if instance_files:
+                    print(f"Loading target sample from instance file: {instance_files[0]}")
+                    with open(instance_files[0], 'r') as f:
+                        instance_data = json.load(f)
+                    return instance_data
+                
+                # 3. 从 KG location 文件路径构造基本信息
+                # 提取仓库信息
+                parts = self.instance_id.rsplit('-', 1)
+                if len(parts) == 2:
+                    repo_identifier = parts[0]
+                    issue_number = parts[1]
+                    repo_name = repo_identifier.replace('__', '/', 1)
+                    
+                    print(f"Constructing minimal target sample for {repo_name} issue #{issue_number}")
+                    return {
+                        'instance_id': self.instance_id,
+                        'repo': repo_name,
+                        'base_commit': 'HEAD',
+                        'problem_statement': f'Issue #{issue_number}',
+                        'language': 'python'  # 默认，可以根据需要调整
+                    }
+            except Exception as e:
+                print(f"Error loading from KG location file: {e}")
+        
+        # 回退到原有的数据集加载方式
         split_name = 'test'
         if 'multi-swe-bench' in self.dataset_name.lower():
             split_name = 'java_verified'
 
-        ds = load_dataset(self.dataset_name, split=split_name)
-        self.dataset = {item['instance_id']: item for item in ds}
-        return self.dataset.get(self.instance_id)
+        try:
+            ds = load_dataset(self.dataset_name, split=split_name)
+            self.dataset = {item['instance_id']: item for item in ds}
+            return self.dataset.get(self.instance_id)
+        except Exception as e:
+            print(f"Error loading from dataset: {e}")
+            return None
 
     def generate(self, prompt, stream=False):
         """Unified interface for generating responses via OpenAI-compatible endpoint"""
@@ -194,7 +243,7 @@ def process_instance(directory, instance_id):
     commit = None
     if repo_name and commit_id and GITHUB_TOKEN:
         try:
-            g = Github(GITHUB_TOKEN)
+            g = create_github_client(GITHUB_TOKEN)
             github_repo = g.get_repo(repo_name)
             commit = github_repo.get_commit(commit_id)
         except Exception as e:
@@ -210,12 +259,21 @@ def process_instance(directory, instance_id):
             qualified_name_from_llm = item['method']
             file_path = item['file_path']
             
+            print(f"🔍 验证 LLM 建议的位置: {file_path} -> {qualified_name_from_llm}")
+            
             method_details = None
             if pre_fl.language == 'python' and github_repo and commit:
                 try:
                     method_details = get_commit_method_by_signature(github_repo, commit, file_path, qualified_name_from_llm)
+                    if method_details:
+                        if 'note' in method_details and 'Class-level match' in method_details['note']:
+                            print(f"  ⚠️  方法未精确匹配，使用类级别匹配")
+                            print(f"     建议的方法: {qualified_name_from_llm}")
+                            print(f"     返回的方法: {method_details['name']}")
+                        else:
+                            print(f"  ✅ 成功验证并获取方法详情")
                 except Exception as e:
-                    print(f"Warning: get_commit_method_by_signature failed for {qualified_name_from_llm} in {file_path}: {e}")
+                    print(f"  ❌ 验证失败: {e}")
             
             if method_details is not None:
                 cnt += 1
@@ -226,6 +284,8 @@ def process_instance(directory, instance_id):
                 method_details['type'] = 'method'
                 method_details['similarity'] = 1.0
                 locate_result.setdefault('related_entities', {}).setdefault('methods', []).append(method_details)
+            else:
+                print(f"  ⏭️  跳过此位置（无法验证）")
     
     # Save the augmented locate_result object, overwriting the file in the llm_locations dir
     output_path = os.path.join(directory, f"{instance_id}.json")

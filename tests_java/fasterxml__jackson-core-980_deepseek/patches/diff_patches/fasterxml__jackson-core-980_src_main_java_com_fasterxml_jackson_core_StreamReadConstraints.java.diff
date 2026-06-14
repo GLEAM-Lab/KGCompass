@@ -1,0 +1,21 @@
+--- a/src/main/java/com/fasterxml/jackson/core/StreamReadConstraints.java
++++ b/src/main/java/com/fasterxml/jackson/core/StreamReadConstraints.java
+@@ -257,7 +257,17 @@
+      *
+      * @throws StreamConstraintsException If length exceeds maximum
+      */
+-    public void validateIntegerLength(int length) throws StreamConstraintsException
++    public void validateIntegerLength(int length) throws StreamConstraintsException {
++        if (length > _maxNumLen) {
++            throw new StreamConstraintsException("Number length (" + length + ") exceeds the maximum allowed (" + _maxNumLen + ")");
++        }
++    }
++
++    public void validateBigIntegerScale(int scale) throws StreamConstraintsException {
++        if (scale > _maxNumLen * 10) {
++            throw new StreamConstraintsException("BigDecimal scale (" + scale + ") exceeds the maximum allowed (" + (_maxNumLen * 10) + ") for BigInteger conversion");
++        }
++    }
+     {
+         if (length > _maxNumLen) {
+             throw new StreamConstraintsException(String.format("Number length (%d) exceeds the maximum length (%d)",

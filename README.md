@@ -73,6 +73,62 @@ docker-compose exec app bash run_repair.sh astropy__astropy-12907
 docker-compose down -v
 ```
 
+## Bulk KG Mining for SWE-bench_Verified
+
+This repository provides `mine_kg_bulk.sh` to automatically iterate over every instance in the **SWE-bench_Verified** dataset and generate only the knowledge-graph (KG) bug-location predictions (pipeline *step 1*).
+
+### Prerequisites
+1.  Install `jq` for parsing JSON lines (e.g., `sudo apt-get install -y jq`).
+2.  Download **SWE-bench_Verified** (JSONL) to your local machine.
+
+### Usage
+
+#### Run inside Docker Compose
+
+First build and start all services (Neo4j and app container):
+
+```bash
+docker-compose up -d --build
+```
+
+Then execute the bulk KG mining script *inside* the running app container:
+
+```bash
+docker-compose exec app bash mine_kg_bulk.sh SWE-bench_Verified.jsonl
+# 或者指定输出目录
+# docker-compose exec app bash mine_kg_bulk.sh SWE-bench_Verified.jsonl /tmp/kg_verified
+```
+
+The `SWE-bench_Verified.jsonl` file should reside in the project root so that it is
+visible inside the container at `/opt/KGCompass/` (the repository is mounted
+as a volume).
+
+Feel free to tweak proxy settings inside the script if you are behind a firewall.
+
+#### Use HuggingFace API (no local JSONL needed)
+
+```bash
+# 在容器内直接运行：
+docker-compose exec app python mine_kg_hf.py
+
+# 指定数据集名称、split 或处理条数（调试用）
+# docker-compose exec app python mine_kg_hf.py --dataset princeton-nlp/SWE-bench_Verified --split test --limit 10
+```
+
+脚本会通过 `datasets` 库加载 HuggingFace 上的 **SWE-bench_Verified**，无需下载 jsonl。同时也避免对 `jq` 的依赖。
+
+#### Offline workflow using local JSONL
+
+1. 在宿主机生成仅含 `instance_id` 的 JSONL（一次即可）：
+   ```bash
+   python prepare_verified_jsonl.py   # 生成 SWE-bench_Verified_ids.jsonl
+   ```
+2. 把生成的文件放到项目根目录（已被挂载到容器 `/opt/KGCompass/`）。
+3. 在容器内使用纯 Python 脚本执行批量 KG 挖掘（无 `jq` 依赖）：
+   ```bash
+   docker-compose exec app python mine_kg_bulk.py SWE-bench_Verified_ids.jsonl
+   ```
+
 ## Citation
 
 If you use **KGCompass** in your research, please cite the following paper:
@@ -85,3 +141,20 @@ If you use **KGCompass** in your research, please cite the following paper:
   year={2025}
 }
 ```
+
+> **Permission Denied when writing KG JSON**
+> 
+> 如果容器内写文件时报 `PermissionError: ... runs/kg_verified/... .json`，多半是因为容器用户 ID 与宿主机文件属主不匹配。
+> 
+> 解决：在 `docker-compose.yml` 的 `app` 服务下加入
+> ```yaml
+> user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+> ```
+> 然后在宿主机执行：
+> ```bash
+> export HOST_UID=$(id -u)
+> export HOST_GID=$(id -g)
+> docker-compose down
+> docker-compose up -d --build
+> ```
+> 这样容器进程将以与你相同的 UID/GID 运行，确保对挂载卷拥有读写权限。

@@ -1,0 +1,32 @@
+Based on the issue description, there are two main problems:
+
+1. `@JsonIgnore` no longer works for transient backing fields in Jackson 2.15+ unless `PROPAGATE_TRANSIENT_MARKER` is explicitly enabled
+2. Mix-ins do not work for `Enum`s due to NPE issues
+
+Looking at the issue details, the first problem appears to be related to a change in default behavior where `PROPAGATE_TRANSIENT_MARKER` needs to be enabled for `@JsonIgnore` to work properly with transient fields. The issue mentions that setting `mapper.configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true)` fixes it.
+
+Since this is a behavioral change that affects serialization security, we should modify the default configuration to enable `PROPAGATE_TRANSIENT_MARKER` by default in the `ObjectMapper` initialization.
+
+Here's the proposed fix:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java
+- start_line : 575
+- end_line : 577
+<<<<<<< SEARCH
+    public ObjectMapper() {
+        this(null, null, null);
+    }
+=======
+    public ObjectMapper() {
+        this(null, null, null);
+        enable(MapperFeature.PROPAGATE_TRANSIENT_MARKER);
+    }
+>>>>>>> REPLACE
+```
+
+This change will ensure that `PROPAGATE_TRANSIENT_MARKER` is enabled by default for all new `ObjectMapper` instances, maintaining backward compatibility with the behavior in Jackson 2.14 and earlier where `@JsonIgnore` worked properly with transient fields.
+
+For the second issue regarding Enum mix-ins, this appears to be a more complex architectural issue that requires changes to how annotations are processed for Enum values. The discussion indicates this would require interface changes and would need to be addressed in a future major version (2.12+). Since we don't have access to the relevant annotation processing code in the provided files, we cannot provide a fix for that part of the issue.
+
+The change above focuses on the immediate security concern where sensitive data marked with `@JsonIgnore` and `transient` could be exposed unintentionally in Jackson 2.15+.

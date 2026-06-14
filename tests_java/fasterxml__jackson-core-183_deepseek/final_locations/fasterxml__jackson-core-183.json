@@ -1,0 +1,1591 @@
+{
+  "related_entities": {
+    "methods": [
+      {
+        "start_line": 127,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/JsonParserDelegate.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    @Override public char[] getTextCharacters() throws IOException, JsonParseException { return delegate.getTextCharacters(); }",
+        "distance": 1.0,
+        "title": null,
+        "name": "getTextCharacters",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          }
+        ],
+        "similarity": 0.15135762329441388,
+        "end_line": 127,
+        "signature": "com.fasterxml.jackson.core.util.JsonParserDelegate.getTextCharacters(): char[]"
+      },
+      {
+        "start_line": 277,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public int getTextOffset() {\n        /* Only shared input buffer can have non-zero offset; buffer\n         * segments start at 0, and if we have to create a combo buffer,\n         * that too will start from beginning of the buffer\n         */\n        return (_inputStart >= 0) ? _inputStart : 0;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getTextOffset",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonParserDelegate"
+          },
+          {
+            "start_node": "JsonParserDelegate",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getTextOffset"
+          }
+        ],
+        "similarity": 0.15060902964359357,
+        "end_line": 283,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.getTextOffset(): int"
+      },
+      {
+        "start_line": 121,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public TextBuffer(BufferRecycler allocator) {\n        _allocator = allocator;\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "TextBuffer",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          }
+        ],
+        "similarity": 0.14935481690491312,
+        "end_line": 123,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer(BufferRecycler allocator)"
+      },
+      {
+        "start_line": 298,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public char[] getTextBuffer()",
+        "distance": 1.0,
+        "title": null,
+        "name": "getTextBuffer",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextBuffer"
+          }
+        ],
+        "similarity": 0.14380676000970646,
+        "end_line": 298,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.getTextBuffer(): char[]"
+      },
+      {
+        "start_line": 117,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public char[] allocCharBuffer(int ix, int minSize) {\n        final int DEF_SIZE = charBufferLength(ix);\n        if (minSize < DEF_SIZE) {\n            minSize = DEF_SIZE;\n        }\n        char[] buffer = _charBuffers[ix];\n        if (buffer == null || buffer.length < minSize) {\n            buffer = calloc(minSize);\n        } else {\n            _charBuffers[ix] = null;\n        }\n        return buffer;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "allocCharBuffer",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "BufferRecycler"
+          },
+          {
+            "start_node": "BufferRecycler",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "allocCharBuffer"
+          }
+        ],
+        "similarity": 0.1430024799963502,
+        "end_line": 129,
+        "signature": "com.fasterxml.jackson.core.util.BufferRecycler.allocCharBuffer(int ix, int minSize): char[]"
+      },
+      {
+        "start_line": 357,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public char[] contentsAsArray() {\n        char[] result = _resultArray;\n        if (result == null) {\n            _resultArray = result = resultArray();\n        }\n        return result;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "contentsAsArray",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          },
+          {
+            "start_node": "TextBuffer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "contentsAsArray"
+          }
+        ],
+        "similarity": 0.13944493607945457,
+        "end_line": 363,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.contentsAsArray(): char[]"
+      },
+      {
+        "start_line": 269,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected final String _getText2(JsonToken t) {\n        if (t == null) {\n            return null;\n        }\n        switch (t.id()) {\n        case ID_FIELD_NAME:\n            return _parsingContext.getCurrentName();\n\n        case ID_STRING:\n            // fall through\n        case ID_NUMBER_INT:\n        case ID_NUMBER_FLOAT:\n            return _textBuffer.contentsAsString();\n        default:\n            return t.asString();\n        }\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_getText2",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_getText2"
+          }
+        ],
+        "similarity": 0.13700555906067802,
+        "end_line": 285,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._getText2(JsonToken t): String"
+      },
+      {
+        "start_line": 71,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected BufferRecycler(int bbCount, int cbCount) {\n        _byteBuffers = new byte[bbCount][];\n        _charBuffers = new char[cbCount][];\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "BufferRecycler",
+        "documentation": "/**\n     * Alternate constructor to be used by sub-classes, to allow customization\n     * of number of low-level buffers in use.\n     * \n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "BufferRecycler"
+          }
+        ],
+        "similarity": 0.13529049871626195,
+        "end_line": 74,
+        "signature": "com.fasterxml.jackson.core.util.BufferRecycler(int bbCount, int cbCount)"
+      },
+      {
+        "start_line": 263,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public int size() {\n        if (_inputStart >= 0) { // shared copy from input buf\n            return _inputLen;\n        }\n        if (_resultArray != null) {\n            return _resultArray.length;\n        }\n        if (_resultString != null) {\n            return _resultString.length();\n        }\n        // local segmented buffers\n        return _segmentSize + _currentSize;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "size",
+        "documentation": "/**\n     * @return Number of characters currently stored by this collector\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          },
+          {
+            "start_node": "TextBuffer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "size"
+          }
+        ],
+        "similarity": 0.13470935312520588,
+        "end_line": 275,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.size(): int"
+      },
+      {
+        "start_line": 2099,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private final void _matchNull() throws IOException {\n        int ptr = _inputPtr;\n        if ((ptr + 3) < _inputEnd) {\n            final char[] b = _inputBuffer;\n            if (b[ptr] == 'u' && b[++ptr] == 'l' && b[++ptr] == 'l') {\n                char c = b[++ptr];\n                if (c < '0' || c == ']' || c == '}') { // expected/allowed chars\n                    _inputPtr = ptr;\n                    return;\n                }\n            }\n        }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_matchNull",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_matchNull"
+          }
+        ],
+        "similarity": 0.128300358914856,
+        "end_line": 2110,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._matchNull(): void"
+      },
+      {
+        "start_line": 258,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final String getValueAsString(String defValue) throws IOException {\n        if (_currToken == JsonToken.VALUE_STRING) {\n            if (_tokenIncomplete) {\n                _tokenIncomplete = false;\n                _finishString(); // only strings can be incomplete\n            }\n            return _textBuffer.contentsAsString();\n        }\n        return super.getValueAsString(defValue);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getValueAsString",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getValueAsString"
+          }
+        ],
+        "similarity": 0.12693407439966614,
+        "end_line": 267,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser.getValueAsString(String defValue): String"
+      },
+      {
+        "start_line": 208,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    @Override public abstract char[] getTextCharacters() throws IOException;",
+        "distance": 1.0,
+        "title": null,
+        "name": "getTextCharacters",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          }
+        ],
+        "similarity": 0.12684218573907488,
+        "end_line": 208,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase.getTextCharacters(): char[]"
+      },
+      {
+        "start_line": 89,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public byte[] allocByteBuffer(int ix, int minSize) {\n        final int DEF_SIZE = byteBufferLength(ix);\n        if (minSize < DEF_SIZE) {\n            minSize = DEF_SIZE;\n        }\n        byte[] buffer = _byteBuffers[ix];\n        if (buffer == null || buffer.length < minSize) {\n            buffer = balloc(minSize);\n        } else {\n            _byteBuffers[ix] = null;\n        }\n        return buffer;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "allocByteBuffer",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "BufferRecycler"
+          },
+          {
+            "start_node": "BufferRecycler",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "allocByteBuffer"
+          }
+        ],
+        "similarity": 0.1265699774912846,
+        "end_line": 101,
+        "signature": "com.fasterxml.jackson.core.util.BufferRecycler.allocByteBuffer(int ix, int minSize): byte[]"
+      },
+      {
+        "start_line": 200,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _releaseBuffers() throws IOException {\n        super._releaseBuffers();\n        // merge new symbols, if any\n        _symbols.release();\n        // and release buffers, if they are recyclable ones\n        if (_bufferRecyclable) {\n            char[] buf = _inputBuffer;\n            if (buf != null) {\n                _inputBuffer = null;\n                _ioContext.releaseTokenBuffer(buf);\n            }\n        }\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_releaseBuffers",
+        "documentation": "/**\n     * Method called to release internal buffers owned by the base\n     * reader. This may be called along with {@link #_closeInput} (for\n     * example, when explicitly closing this reader instance), or\n     * separately (if need be).\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_releaseBuffers"
+          }
+        ],
+        "similarity": 0.12532984191629784,
+        "end_line": 212,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._releaseBuffers(): void"
+      },
+      {
+        "start_line": 911,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public abstract char[] getTextCharacters() throws IOException;",
+        "distance": 1.0,
+        "title": null,
+        "name": "getTextCharacters",
+        "documentation": "/**\n     * Method similar to {@link #getText}, but that will return\n     * underlying (unmodifiable) character array that contains\n     * textual value, instead of constructing a String object\n     * to contain this information.\n     * Note, however, that:\n     *<ul>\n     * <li>Textual contents are not guaranteed to start at\n     *   index 0 (rather, call {@link #getTextOffset}) to\n     *   know the actual offset\n     *  </li>\n     * <li>Length of textual contents may be less than the\n     *  length of returned buffer: call {@link #getTextLength}\n     *  for actual length of returned content.\n     *  </li>\n     * </ul>\n     *<p>\n     * Note that caller <b>MUST NOT</b> modify the returned\n     * character array in any way -- doing so may corrupt\n     * current parser state and render parser instance useless.\n     *<p>\n     * The only reason to call this method (over {@link #getText})\n     * is to avoid construction of a String object (which\n     * will make a copy of contents).\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          }
+        ],
+        "similarity": 0.12047782192607147,
+        "end_line": 911,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getTextCharacters(): char[]"
+      },
+      {
+        "start_line": 288,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final char[] getTextCharacters() throws IOException",
+        "distance": 1.0,
+        "title": null,
+        "name": "getTextCharacters",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          }
+        ],
+        "similarity": 0.11880062993974147,
+        "end_line": 288,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser.getTextCharacters(): char[]"
+      },
+      {
+        "start_line": 342,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public char[] getTextCharacters() throws IOException",
+        "distance": 1.0,
+        "title": null,
+        "name": "getTextCharacters",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          }
+        ],
+        "similarity": 0.118523008183076,
+        "end_line": 342,
+        "signature": "com.fasterxml.jackson.core.json.UTF8StreamJsonParser.getTextCharacters(): char[]"
+      },
+      {
+        "start_line": 556,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public String setCurrentAndReturn(int len) {\n        _currentSize = len;\n        // We can simplify handling here compared to full `contentsAsString()`:\n        if (_segmentSize > 0) { // longer text; call main method\n            return contentsAsString();\n        }\n        // more common case: single segment\n        int currLen = _currentSize;\n        String str = (currLen == 0) ? \"\" : new String(_currentSegment, 0, currLen);\n        _resultString = str;\n        return str;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "setCurrentAndReturn",
+        "documentation": "/**\n     * @since 2.6\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          },
+          {
+            "start_node": "TextBuffer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setCurrentAndReturn"
+          }
+        ],
+        "similarity": 0.1162323573138577,
+        "end_line": 567,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.setCurrentAndReturn(int len): String"
+      },
+      {
+        "start_line": 411,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void append(char c) {\n        // Using shared buffer so far?\n        if (_inputStart >= 0) {\n            unshare(16);\n        }\n        _resultString = null;\n        _resultArray = null;\n        // Room in current segment?\n        char[] curr = _currentSegment;\n        if (_currentSize >= curr.length) {\n            expand(1);\n            curr = _currentSegment;\n        }\n        curr[_currentSize++] = c;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "append",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          },
+          {
+            "start_node": "TextBuffer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "append"
+          }
+        ],
+        "similarity": 0.11105215334923864,
+        "end_line": 425,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.append(char c): void"
+      },
+      {
+        "start_line": 154,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void resetWithEmpty()",
+        "distance": 1.0,
+        "title": null,
+        "name": "resetWithEmpty",
+        "documentation": "/**\n     * Method called to clear out any content text buffer may have, and\n     * initializes buffer to use non-shared data.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "resetWithEmpty"
+          }
+        ],
+        "similarity": 0.11084659849861159,
+        "end_line": 154,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.resetWithEmpty(): void"
+      },
+      {
+        "start_line": 2083,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private final void _matchFalse() throws IOException {\n        int ptr = _inputPtr;\n        if ((ptr + 4) < _inputEnd) {\n            final char[] b = _inputBuffer;\n            if (b[ptr] == 'a' && b[++ptr] == 'l' && b[++ptr] == 's' && b[++ptr] == 'e') {\n                char c = b[++ptr];\n                if (c < '0' || c == ']' || c == '}') { // expected/allowed chars\n                    _inputPtr = ptr;\n                    return;\n                }\n            }\n        }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_matchFalse",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_matchFalse"
+          }
+        ],
+        "similarity": 0.10882932775711049,
+        "end_line": 2094,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._matchFalse(): void"
+      },
+      {
+        "start_line": 61,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public BufferRecycler() {\n        this(4, 4);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "BufferRecycler",
+        "documentation": "/**\n     * Default constructor used for creating instances of this default\n     * implementation.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "BufferRecycler"
+          }
+        ],
+        "similarity": 0.10782783519515511,
+        "end_line": 63,
+        "signature": "com.fasterxml.jackson.core.util.BufferRecycler()"
+      },
+      {
+        "start_line": 2067,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private final void _matchTrue() throws IOException {\n        int ptr = _inputPtr;\n        if ((ptr + 3) < _inputEnd) {\n            final char[] b = _inputBuffer;\n            if (b[ptr] == 'r' && b[++ptr] == 'u' && b[++ptr] == 'e') {\n                char c = b[++ptr];\n                if (c < '0' || c == ']' || c == '}') { // expected/allowed chars\n                    _inputPtr = ptr;\n                    return;\n                }\n            }\n        }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_matchTrue",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_matchTrue"
+          }
+        ],
+        "similarity": 0.10634951659206004,
+        "end_line": 2078,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._matchTrue(): void"
+      },
+      {
+        "start_line": 136,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/IOContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public TextBuffer constructTextBuffer() {\n        return new TextBuffer(_bufferRecycler);\n    }",
+        "distance": 2.0,
+        "title": null,
+        "name": "constructTextBuffer",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          },
+          {
+            "start_node": "TextBuffer",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "constructTextBuffer"
+          }
+        ],
+        "similarity": 0.10328713335999913,
+        "end_line": 138,
+        "signature": "com.fasterxml.jackson.core.io.IOContext.constructTextBuffer(): TextBuffer"
+      },
+      {
+        "start_line": 356,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public String getValueAsString(String defaultValue) throws IOException {\n        if (_currToken != JsonToken.VALUE_STRING) {\n            if (_currToken == null || _currToken == JsonToken.VALUE_NULL || !_currToken.isScalarValue()) {\n                return defaultValue;\n            }\n        }\n        return getText();\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getValueAsString",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getValueAsString"
+          }
+        ],
+        "similarity": 0.1029533591283257,
+        "end_line": 363,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase.getValueAsString(String defaultValue): String"
+      },
+      {
+        "start_line": 609,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public String nextTextValue() throws IOException, JsonParseException {\n        return (nextToken() == JsonToken.VALUE_STRING) ? getText() : null;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "nextTextValue",
+        "documentation": "/**\n     * Method that fetches next token (as if calling {@link #nextToken}) and\n     * if it is {@link JsonToken#VALUE_STRING} returns contained String value;\n     * otherwise returns null.\n     * It is functionally equivalent to:\n     *<pre>\n     *  return (nextToken() == JsonToken.VALUE_STRING) ? getText() : null;\n     *</pre>\n     * but may be faster for parser to process, and can therefore be used if caller\n     * expects to get a String value next from input.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextTextValue"
+          }
+        ],
+        "similarity": 0.10259633125494814,
+        "end_line": 611,
+        "signature": "com.fasterxml.jackson.core.JsonParser.nextTextValue(): String"
+      },
+      {
+        "start_line": 113,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final char[] allocCharBuffer(int ix) {\n        return allocCharBuffer(ix, 0);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "allocCharBuffer",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "BufferRecycler"
+          },
+          {
+            "start_node": "BufferRecycler",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "allocCharBuffer"
+          }
+        ],
+        "similarity": 0.10214610936389261,
+        "end_line": 115,
+        "signature": "com.fasterxml.jackson.core.util.BufferRecycler.allocCharBuffer(int ix): char[]"
+      },
+      {
+        "start_line": 1506,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected ObjectCodec _codec() {\n        ObjectCodec c = getCodec();\n        if (c == null) {\n            throw new IllegalStateException(\"No ObjectCodec defined for parser, needed for deserialization\");\n        }\n        return c;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_codec",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_codec"
+          }
+        ],
+        "similarity": 0.10054988819698063,
+        "end_line": 1512,
+        "signature": "com.fasterxml.jackson.core.JsonParser._codec(): ObjectCodec"
+      },
+      {
+        "start_line": 391,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public double contentsAsDouble() throws NumberFormatException {\n        return NumberInput.parseDouble(contentsAsString());\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "contentsAsDouble",
+        "documentation": "/**\n     * Convenience method for converting contents of the buffer\n     * into a Double value.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          },
+          {
+            "start_node": "TextBuffer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "contentsAsDouble"
+          }
+        ],
+        "similarity": 0.09965820153099113,
+        "end_line": 393,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.contentsAsDouble(): double"
+      },
+      {
+        "start_line": 405,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void ensureNotShared() {\n        if (_inputStart >= 0) {\n            unshare(16);\n        }\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "ensureNotShared",
+        "documentation": "/**\n     * Method called to make sure that buffer is not using shared input\n     * buffer; if it is, it will copy such contents to private buffer.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          },
+          {
+            "start_node": "TextBuffer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "ensureNotShared"
+          }
+        ],
+        "similarity": 0.09952283583730538,
+        "end_line": 409,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.ensureNotShared(): void"
+      },
+      {
+        "start_line": 135,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public int releaseBuffered(Writer w) throws IOException {\n        int count = _inputEnd - _inputPtr;\n        if (count < 1) { return 0; }\n        // let's just advance ptr to end\n        int origPtr = _inputPtr;\n        w.write(_inputBuffer, origPtr, count);\n        return count;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "releaseBuffered",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "releaseBuffered"
+          }
+        ],
+        "similarity": 0.09792491922972112,
+        "end_line": 142,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser.releaseBuffered(Writer w): int"
+      },
+      {
+        "start_line": 528,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public char[] emptyAndGetCurrentSegment()",
+        "distance": 1.25,
+        "title": null,
+        "name": "emptyAndGetCurrentSegment",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          },
+          {
+            "start_node": "TextBuffer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "emptyAndGetCurrentSegment"
+          }
+        ],
+        "similarity": 0.09676395656996346,
+        "end_line": 528,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.emptyAndGetCurrentSegment(): char[]"
+      },
+      {
+        "start_line": 987,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public byte getByteValue() throws IOException {\n        int value = getIntValue();\n        // So far so good: but does it fit?\n        // [JACKSON-804]: Let's actually allow range of [-128, 255], as those are uniquely mapped\n        //  (instead of just signed range of [-128, 127])\n        if (value < MIN_BYTE_I || value > MAX_BYTE_I) {\n            throw _constructError(\"Numeric value (\"+getText()+\") out of range of Java byte\");\n        }\n        return (byte) value;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getByteValue",
+        "documentation": "/**\n     * Numeric accessor that can be called when the current\n     * token is of type {@link JsonToken#VALUE_NUMBER_INT} and\n     * it can be expressed as a value of Java byte primitive type.\n     * It can also be called for {@link JsonToken#VALUE_NUMBER_FLOAT};\n     * if so, it is equivalent to calling {@link #getDoubleValue}\n     * and then casting; except for possible overflow/underflow\n     * exception.\n     *<p>\n     * Note: if the resulting integer value falls outside range of\n     * Java byte, a {@link JsonParseException}\n     * will be thrown to indicate numeric overflow/underflow.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getByteValue"
+          }
+        ],
+        "similarity": 0.09658331555561155,
+        "end_line": 996,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getByteValue(): byte"
+      },
+      {
+        "start_line": 125,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/JsonParserDelegate.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    @Override public String getText() throws IOException, JsonParseException { return delegate.getText();  }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getText",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonParserDelegate"
+          },
+          {
+            "start_node": "JsonParserDelegate",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getText"
+          }
+        ],
+        "similarity": 0.09535305808357547,
+        "end_line": 125,
+        "signature": "com.fasterxml.jackson.core.util.JsonParserDelegate.getText(): String"
+      },
+      {
+        "start_line": 537,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected static byte[] _asciiBytes(String str) {\n        byte[] b = new byte[str.length()];\n        for (int i = 0, len = str.length(); i < len; ++i) {\n            b[i] = (byte) str.charAt(i);\n        }\n        return b;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_asciiBytes",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_asciiBytes"
+          }
+        ],
+        "similarity": 0.09526799533333903,
+        "end_line": 543,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase._asciiBytes(String str): byte[]"
+      },
+      {
+        "start_line": 732,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private char[] carr(int len) { return new char[len]; }",
+        "distance": 1.25,
+        "title": null,
+        "name": "carr",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          },
+          {
+            "start_node": "TextBuffer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "carr"
+          }
+        ],
+        "similarity": 0.0952377004629544,
+        "end_line": 732,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.carr(int len): char[]"
+      },
+      {
+        "start_line": 129,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/JsonParserDelegate.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    @Override public int getTextOffset() throws IOException, JsonParseException { return delegate.getTextOffset(); }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getTextOffset",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonParserDelegate"
+          },
+          {
+            "start_node": "JsonParserDelegate",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getTextOffset"
+          }
+        ],
+        "similarity": 0.09491247771385738,
+        "end_line": 129,
+        "signature": "com.fasterxml.jackson.core.util.JsonParserDelegate.getTextOffset(): int"
+      },
+      {
+        "start_line": 131,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void releaseCharBuffer(int ix, char[] buffer) {\n        _charBuffers[ix] = buffer;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "releaseCharBuffer",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "BufferRecycler"
+          },
+          {
+            "start_node": "BufferRecycler",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "releaseCharBuffer"
+          }
+        ],
+        "similarity": 0.09446256521863351,
+        "end_line": 133,
+        "signature": "com.fasterxml.jackson.core.util.BufferRecycler.releaseCharBuffer(int ix, char[] buffer): void"
+      },
+      {
+        "start_line": 232,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private char[] buf(int needed)",
+        "distance": 1.25,
+        "title": null,
+        "name": "buf",
+        "documentation": "/**\n     * Helper method used to find a buffer to use, ideally one\n     * recycled earlier.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          },
+          {
+            "start_node": "TextBuffer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "buf"
+          }
+        ],
+        "similarity": 0.0943237370863171,
+        "end_line": 232,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.buf(int needed): char[]"
+      },
+      {
+        "start_line": 1685,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected final void _skipCR() throws IOException {\n        if (_inputPtr < _inputEnd || loadMore()) {\n            if (_inputBuffer[_inputPtr] == '\\n') {\n                ++_inputPtr;\n            }\n        }\n        ++_currInputRow;\n        _currInputRowStart = _inputPtr;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_skipCR",
+        "documentation": "/**\n     * We actually need to check the character value here\n     * (to see if we have \\n following \\r).\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_skipCR"
+          }
+        ],
+        "similarity": 0.09426990602044859,
+        "end_line": 1693,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._skipCR(): void"
+      },
+      {
+        "start_line": 169,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected char getNextChar(String eofMsg) throws IOException {\n        if (_inputPtr >= _inputEnd) {\n            if (!loadMore()) { _reportInvalidEOF(eofMsg); }\n        }\n        return _inputBuffer[_inputPtr++];\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getNextChar",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getNextChar"
+          }
+        ],
+        "similarity": 0.09375556684299861,
+        "end_line": 174,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser.getNextChar(String eofMsg): char"
+      },
+      {
+        "start_line": 134,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void releaseBuffers()",
+        "distance": 1.25,
+        "title": null,
+        "name": "releaseBuffers",
+        "documentation": "/**\n     * Method called to indicate that the underlying buffers should now\n     * be recycled if they haven't yet been recycled. Although caller\n     * can still use this text buffer, it is not advisable to call this\n     * method if that is likely, since next time a buffer is needed,\n     * buffers need to reallocated.\n     * Note: calling this method automatically also clears contents\n     * of the buffer.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          },
+          {
+            "start_node": "TextBuffer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "releaseBuffers"
+          }
+        ],
+        "similarity": 0.09368534126836861,
+        "end_line": 134,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.releaseBuffers(): void"
+      },
+      {
+        "start_line": 122,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonToken nextValue() throws IOException {\n        /* Implementation should be as trivial as follows; only\n         * needs to change if we are to skip other tokens (for\n         * example, if comments were exposed as tokens)\n         */\n        JsonToken t = nextToken();\n        if (t == JsonToken.FIELD_NAME) {\n            t = nextToken();\n        }\n        return t;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "nextValue",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextValue"
+          }
+        ],
+        "similarity": 0.09332499054141555,
+        "end_line": 132,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase.nextValue(): JsonToken"
+      },
+      {
+        "start_line": 545,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected static String _ascii(byte[] b) {\n        try {\n            return new String(b, \"US-ASCII\");\n        } catch (IOException e) { // never occurs\n            throw new RuntimeException(e);\n        }\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_ascii",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_ascii"
+          }
+        ],
+        "similarity": 0.09330532144619602,
+        "end_line": 551,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase._ascii(byte[] b): String"
+      },
+      {
+        "start_line": 190,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    @Override public void clearCurrentToken() {\n        if (_currToken != null) {\n            _lastClearedToken = _currToken;\n            _currToken = null;\n        }\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "clearCurrentToken",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "clearCurrentToken"
+          }
+        ],
+        "similarity": 0.09320590211138811,
+        "end_line": 195,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase.clearCurrentToken(): void"
+      },
+      {
+        "start_line": 618,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public char[] expandCurrentSegment(int minSize) {\n        char[] curr = _currentSegment;\n        if (curr.length >= minSize) return curr;\n        _currentSegment = curr = Arrays.copyOf(curr, minSize);\n        return curr;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "expandCurrentSegment",
+        "documentation": "/**\n     * Method called to expand size of the current segment, to\n     * accommodate for more contiguous content. Usually only\n     * used when parsing tokens like names if even then.\n     * \n     * @param minSize Required minimum strength of the current segment\n     *\n     * @since 2.4.0\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TextBuffer"
+          },
+          {
+            "start_node": "TextBuffer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "expandCurrentSegment"
+          }
+        ],
+        "similarity": 0.09314733791195925,
+        "end_line": 623,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.expandCurrentSegment(int minSize): char[]"
+      },
+      {
+        "start_line": 145,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected int charBufferLength(int ix) {\n        return CHAR_BUFFER_LENGTHS[ix];\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "charBufferLength",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "BufferRecycler"
+          },
+          {
+            "start_node": "BufferRecycler",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "charBufferLength"
+          }
+        ],
+        "similarity": 0.0925268572184565,
+        "end_line": 147,
+        "signature": "com.fasterxml.jackson.core.util.BufferRecycler.charBufferLength(int ix): int"
+      },
+      {
+        "start_line": 128,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/JsonParserDelegate.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    @Override public int getTextLength() throws IOException, JsonParseException { return delegate.getTextLength(); }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getTextLength",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonParserDelegate"
+          },
+          {
+            "start_node": "JsonParserDelegate",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getTextLength"
+          }
+        ],
+        "similarity": 0.09210853920019166,
+        "end_line": 128,
+        "signature": "com.fasterxml.jackson.core.util.JsonParserDelegate.getTextLength(): int"
+      },
+      {
+        "start_line": 312,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Object getCurrentValue() {\n        JsonStreamContext ctxt = getParsingContext();\n        return (ctxt == null) ? null : ctxt.getCurrentValue();\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getCurrentValue",
+        "documentation": "/**\n     * Helper method, usually equivalent to:\n     *<code>\n     *   getParsingContext().getCurrentValue();\n     *</code>\n     * \n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getTextCharacters"
+          },
+          {
+            "start_node": "getTextCharacters",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getCurrentValue"
+          }
+        ],
+        "similarity": 0.09166005426522024,
+        "end_line": 315,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getCurrentValue(): Object"
+      },
+      {
+        "start_line": 318,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public String contentsAsString()",
+        "distance": 1.0,
+        "title": null,
+        "name": "contentsAsString",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "contentsAsString"
+          }
+        ],
+        "similarity": 0.0911159230613414,
+        "end_line": 318,
+        "signature": "com.fasterxml.jackson.core.util.TextBuffer.contentsAsString(): String"
+      }
+    ],
+    "classes": [],
+    "issues": [
+      {
+        "content": "Hi, I'm using 2.4.2. While I'm working on CBORParser, I noticed that CBORParser#getTextCharacters() returns sometimes `null` sometimes `[]` (empty array) when it's parsing empty string `\"\"`.\n\nWhile debugging, I noticed that TextBuffer#getTextBuffer behaves inconsistently.\n\n```\nTextBuffer buffer = new TextBuffer(new BufferRecycler());\nbuffer.resetWithEmpty();\nbuffer.getTextBuffer(); // returns null\nbuffer.contentsAsString(); // returns empty string \"\"\nbuffer.getTextBuffer(); // returns empty array []\n```\n\nI think getTextBuffer should return the same value. Not sure which (`null` or `[]`) is expected though.\n\n",
+        "distance": 0,
+        "title": "Inconsistent TextBuffer#getTextBuffer behavior",
+        "name": "root",
+        "path": [],
+        "issue_id": "root",
+        "similarity": 2.0,
+        "type": "issue"
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "182",
+        "type": "issue",
+        "content": "Hi, I'm using 2.4.2. While I'm working on CBORParser, I noticed that CBORParser#getTextCharacters() returns sometimes `null` sometimes `[]` (empty array) when it's parsing empty string `\"\"`.\n\nWhile debugging, I noticed that TextBuffer#getTextBuffer behaves inconsistently.\n\n```\nTextBuffer buffer = new TextBuffer(new BufferRecycler());\nbuffer.resetWithEmpty();\nbuffer.getTextBuffer(); // returns null\nbuffer.contentsAsString(); // returns empty string \"\"\nbuffer.getTextBuffer(); // returns empty array []\n```\n\nI think getTextBuffer should return the same value. Not sure which (`null` or `[]`) is expected though.\n\n\n\nComment by cowtowncoder:\nInteresting. I would guess that returning an empty array is the proper behavior.\n",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "Inconsistent TextBuffer#getTextBuffer behavior",
+        "name": "issue#182",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#182"
+          }
+        ],
+        "similarity": 0.8730375091694549,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "183",
+        "type": "issue",
+        "content": "Fixes #182\n\n\n",
+        "source_code": null,
+        "distance": 0.5,
+        "title": "Always return empty array instead of null for empty buffer",
+        "name": "pr#183",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#182"
+          },
+          {
+            "start_node": "issue#182",
+            "description": "referenced by issue",
+            "type": "RELATED",
+            "end_node": "pr#183"
+          }
+        ],
+        "similarity": 0.4674553651393317,
+        "end_line": null,
+        "signature": null
+      }
+    ]
+  },
+  "artifact_stats": {
+    "skipped_due_to_time": 6,
+    "valid_related_items": 7
+  }
+}

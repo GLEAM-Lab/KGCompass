@@ -1,0 +1,14 @@
+Based on the issue, the bug is that `@JsonSetter(contentNulls = FAIL)` annotation is ignored when used with `@JsonCreator(mode = DELEGATING)`. This suggests the null handling configuration isn't being properly propagated for delegating creators.
+
+Looking at the code, this would likely need to be fixed in the deserialization handling for delegating creators. However, none of the relevant deserialization code is shown in the provided files. The issue would need to be fixed in the code that processes delegating creators and applies the null handling configuration.
+
+Since the relevant deserialization logic isn't visible in the provided files, I can't generate a specific SEARCH/REPLACE edit. The fix would need to be made in the code that handles delegating creator deserialization to properly respect the `contentNulls` setting from `@JsonSetter` annotations.
+
+The fix would likely involve:
+1. Modifying the delegating creator handling to check for `@JsonSetter` annotations on parameters
+2. Applying the null handling configuration from those annotations during deserialization
+3. Throwing `InvalidNullException` when null values are encountered if `contentNulls = FAIL` is specified
+
+Without seeing the actual deserialization code that handles delegating creators, I can't provide the exact edit needed. The maintainers would need to look at how delegating creators are processed and ensure the null handling configuration from `@JsonSetter` is properly applied.
+
+Would you be able to provide the relevant deserialization code that handles `@JsonCreator(mode = DELEGATING)` cases? That would allow me to suggest a more specific fix.

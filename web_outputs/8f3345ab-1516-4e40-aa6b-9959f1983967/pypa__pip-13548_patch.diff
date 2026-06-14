@@ -1,0 +1,21 @@
+--- a/src/pip/_internal/cli/parser.py
++++ b/src/pip/_internal/cli/parser.py
+@@ -189,6 +189,7 @@
+             name: [] for name in override_order
+         }
+ 
++        seen_keys = set()
+         for _, value in self.config.items():  # noqa: PERF102
+             for section_key, val in value.items():
+                 # ignore empty values
+@@ -200,8 +201,9 @@
+                     continue
+ 
+                 section, key = section_key.split(".", 1)
+-                if section in override_order:
++                if section in override_order and (section, key) not in seen_keys:
+                     section_items[section].append((key, val))
++                    seen_keys.add((section, key))
+ 
+             # Yield each group in their override order
+             for section in override_order:

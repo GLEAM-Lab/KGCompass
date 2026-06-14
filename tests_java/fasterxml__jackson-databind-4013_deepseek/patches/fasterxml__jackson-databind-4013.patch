@@ -1,0 +1,98 @@
+Based on the issue description, we need to add a guardrail setting to limit the depth of type parameter handling in `TypeParser` to prevent stack overflow exceptions (SOEs) from deeply nested type parameters. Since no code snippets were provided, I'll make an educated guess about where this change would need to be made.
+
+The fix would likely involve:
+1. Adding a configuration setting for max type parameter depth
+2. Modifying the TypeParser to track and enforce this depth limit
+
+Here are the proposed edits:
+
+```java
+### com/fasterxml/jackson/databind/type/TypeParser.java
+<<<<<<< SEARCH
+public final class TypeParser {
+    protected final TypeFactory _factory;
+
+    public TypeParser(TypeFactory f) {
+        _factory = f;
+    }
+=======
+public final class TypeParser {
+    protected final TypeFactory _factory;
+    protected final int _maxTypeParameterDepth;
+
+    public TypeParser(TypeFactory f) {
+        this(f, 100); // default max depth of 100
+    }
+
+    public TypeParser(TypeFactory f, int maxTypeParameterDepth) {
+        _factory = f;
+        _maxTypeParameterDepth = maxTypeParameterDepth;
+    }
+>>>>>>> REPLACE
+```
+
+```java
+### com/fasterxml/jackson/databind/type/TypeParser.java
+<<<<<<< SEARCH
+    protected JavaType parseType(MyTokenizer tokens) throws IllegalArgumentException
+    {
+        if (!tokens.hasMoreTokens()) {
+            throw _problem(tokens, "Unexpected end-of-string");
+        }
+        Class<?> base = findClass(tokens.nextToken(), tokens);
+=======
+    protected JavaType parseType(MyTokenizer tokens) throws IllegalArgumentException
+    {
+        return parseType(tokens, 0);
+    }
+
+    protected JavaType parseType(MyTokenizer tokens, int depth) throws IllegalArgumentException
+    {
+        if (depth > _maxTypeParameterDepth) {
+            throw _problem(tokens, "Type parameter nesting depth exceeds maximum allowed ("+_maxTypeParameterDepth+")");
+        }
+        if (!tokens.hasMoreTokens()) {
+            throw _problem(tokens, "Unexpected end-of-string");
+        }
+        Class<?> base = findClass(tokens.nextToken(), tokens);
+>>>>>>> REPLACE
+```
+
+```java
+### com/fasterxml/jackson/databind/type/TypeParser.java
+<<<<<<< SEARCH
+            JavaType[] parameterTypes = parseTypes(tokens);
+=======
+            JavaType[] parameterTypes = parseTypes(tokens, depth + 1);
+>>>>>>> REPLACE
+```
+
+```java
+### com/fasterxml/jackson/databind/type/TypeParser.java
+<<<<<<< SEARCH
+    protected List<JavaType> parseTypes(MyTokenizer tokens) throws IllegalArgumentException
+    {
+        List<JavaType> types = new ArrayList<JavaType>();
+=======
+    protected List<JavaType> parseTypes(MyTokenizer tokens, int depth) throws IllegalArgumentException
+    {
+        List<JavaType> types = new ArrayList<JavaType>();
+>>>>>>> REPLACE
+```
+
+```java
+### com/fasterxml/jackson/databind/type/TypeParser.java
+<<<<<<< SEARCH
+                types.add(parseType(tokens));
+=======
+                types.add(parseType(tokens, depth));
+>>>>>>> REPLACE
+```
+
+These changes:
+1. Add a configurable maximum depth parameter (defaulting to 100)
+2. Track the current depth during parsing
+3. Throw an exception if the depth exceeds the maximum
+4. Propagate the depth tracking through recursive calls
+
+The depth limit of 100 is chosen as a conservative default that should be more than enough for any legitimate use case while preventing malicious or corrupted input from causing stack overflows.

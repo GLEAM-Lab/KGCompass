@@ -1,0 +1,49 @@
+Based on the issue description, the bug is in `POJOPropertiesCollector.java` where delegating constructor parameters are incorrectly included as properties in the `BeanDescription`. The issue occurs when processing creator methods marked with `@JsonCreator(mode = JsonCreator.Mode.DELEGATING)`.
+
+The fix should modify the `_addCreatorParam` method to skip adding parameters for delegating creators. Here's the proposed edit:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
+- start_line : 735
+- end_line : 735
+<<<<<<< SEARCH
+    private void _addCreatorParam(Map<String, POJOPropertyBuilder> props,
+=======
+    protected void _addCreatorParam(Map<String, POJOPropertyBuilder> props,
+>>>>>>> REPLACE
+```
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
+- start_line : 729
+- end_line : 735
+<<<<<<< SEARCH
+    protected void _addCreatorParam(Map<String, POJOPropertyBuilder> props,
+            AnnotatedParameter param) {
+        _addCreatorParam(props, param, null);
+    }
+=======
+    protected void _addCreatorParam(Map<String, POJOPropertyBuilder> props,
+            AnnotatedParameter param) {
+        // Skip parameters for delegating creators as they shouldn't be exposed as properties
+        if (param.getOwner() instanceof AnnotatedWithParams) {
+            AnnotatedWithParams owner = (AnnotatedWithParams) param.getOwner();
+            JsonCreator.Mode mode = owner.getAnnotation(JsonCreator.class) != null ?
+                owner.getAnnotation(JsonCreator.class).mode() : null;
+            if (mode == JsonCreator.Mode.DELEGATING) {
+                return;
+            }
+        }
+        _addCreatorParam(props, param, null);
+    }
+>>>>>>> REPLACE
+```
+
+This change:
+1. Makes `_addCreatorParam` protected (was private) to maintain consistency with other similar methods
+2. Adds a check for delegating creator mode before adding the parameter as a property
+3. Only proceeds with adding the parameter if it's not from a delegating creator
+
+The fix ensures that parameters from delegating creators (like the `Builder` parameter in the example) won't be incorrectly included as properties in the `BeanDescription`.
+
+The change matches the issue reporter's suggestion to check for delegating creators, but implements it at the parameter addition level rather than earlier in the process, which is a more surgical fix that won't affect other creator handling logic.

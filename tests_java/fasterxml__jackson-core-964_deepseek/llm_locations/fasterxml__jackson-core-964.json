@@ -1,0 +1,1611 @@
+{
+    "related_entities": {
+        "methods": [
+            {
+                "start_line": 405,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonFactory(TSFBuilder<?,?> b, boolean bogus) {\n        _objectCodec = null;\n\n        _factoryFeatures = b._factoryFeatures;\n        _parserFeatures = b._streamReadFeatures;\n        _generatorFeatures = b._streamWriteFeatures;\n        _inputDecorator = b._inputDecorator;\n        _outputDecorator = b._outputDecorator;\n        _streamReadConstraints = b._streamReadConstraints == null ?\n                StreamReadConstraints.defaults() : b._streamReadConstraints;\n\n        // JSON-specific: need to assign even if not really used\n        _characterEscapes = null;\n        _rootValueSeparator = null;\n        _maximumNonEscapedChar = 0;\n        _quoteChar = DEFAULT_QUOTE_CHAR;\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "JsonFactory",
+                "documentation": "/**\n     * Constructor for subtypes; needed to work around the fact that before 3.0,\n     * this factory has cumbersome dual role as generic type as well as actual\n     * implementation for json.\n     *\n     * @param b Builder that contains settings to use\n     * @param bogus Argument only needed to separate constructor signature; ignored\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    }
+                ],
+                "similarity": 0.18600776137413877,
+                "end_line": 421,
+                "signature": "com.fasterxml.jackson.core.JsonFactory(TSFBuilder b, boolean bogus)"
+            },
+            {
+                "start_line": 378,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonFactory(JsonFactoryBuilder b) {\n        _objectCodec = null;\n\n        // General\n        _factoryFeatures = b._factoryFeatures;\n        _parserFeatures = b._streamReadFeatures;\n        _generatorFeatures = b._streamWriteFeatures;\n        _inputDecorator = b._inputDecorator;\n        _outputDecorator = b._outputDecorator;\n        _streamReadConstraints = b._streamReadConstraints == null ?\n                StreamReadConstraints.defaults() : b._streamReadConstraints;\n\n        // JSON-specific\n        _characterEscapes = b._characterEscapes;\n        _rootValueSeparator = b._rootValueSeparator;\n        _maximumNonEscapedChar = b._maximumNonEscapedChar;\n        _quoteChar = b._quoteChar;\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "JsonFactory",
+                "documentation": "/**\n     * Constructor used by {@link JsonFactoryBuilder} for instantiation.\n     *\n     * @param b Builder that contains settings to use\n     *\n     * @since 2.10\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    }
+                ],
+                "similarity": 0.1768073128736317,
+                "end_line": 395,
+                "signature": "com.fasterxml.jackson.core.JsonFactory(JsonFactoryBuilder b)"
+            },
+            {
+                "start_line": 130,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/StreamReadConstraints.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "        Builder(StreamReadConstraints src) {\n            maxNestingDepth = src._maxNestingDepth;\n            maxNumLen = src._maxNumLen;\n            maxStringLen = src._maxStringLen;\n        }",
+                "distance": 1.0,
+                "title": null,
+                "name": "Builder",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    }
+                ],
+                "similarity": 0.15656065069393707,
+                "end_line": 134,
+                "signature": "com.fasterxml.jackson.core.StreamReadConstraints.Builder(StreamReadConstraints src)"
+            },
+            {
+                "start_line": 1721,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonParser _createParser(InputStream in, IOContext ctxt) throws IOException {\n        try {\n            return new ByteSourceJsonBootstrapper(ctxt, in).constructParser(_parserFeatures,\n                    _objectCodec, _byteSymbolCanonicalizer, _rootCharSymbols, _factoryFeatures);\n        } catch (IOException | RuntimeException e) {\n            // 10-Jun-2022, tatu: For [core#763] may need to close InputStream here\n            if (ctxt.isResourceManaged()) {\n                try {\n                    in.close();\n                } catch (Exception e2) {\n                    e.addSuppressed(e2);\n                }\n            }\n            throw e;\n        }\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_createParser",
+                "documentation": "/**\n     * Overridable factory method that actually instantiates desired parser\n     * given {@link InputStream} and context object.\n     *<p>\n     * This method is specifically designed to remain\n     * compatible between minor versions so that sub-classes can count\n     * on it being called as expected. That is, it is part of official\n     * interface from sub-class perspective, although not a public\n     * method available to users of factory implementations.\n     *\n     * @param in InputStream to use for reading content to parse\n     * @param ctxt I/O context to use for parsing\n     *\n     * @throws IOException if parser initialization fails due to I/O (read) problem\n     *\n     * @return Parser constructed\n     *\n     * @since 2.1\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_createParser"
+                    }
+                ],
+                "similarity": 0.1474268171785092,
+                "end_line": 1736,
+                "signature": "com.fasterxml.jackson.core.JsonFactory._createParser(InputStream in, IOContext ctxt): JsonParser"
+            },
+            {
+                "start_line": 337,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonFactory(ObjectCodec oc) {\n        _objectCodec = oc;\n        _quoteChar = DEFAULT_QUOTE_CHAR;\n        _streamReadConstraints = StreamReadConstraints.defaults();\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "JsonFactory",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    }
+                ],
+                "similarity": 0.14613334857066002,
+                "end_line": 341,
+                "signature": "com.fasterxml.jackson.core.JsonFactory(ObjectCodec oc)"
+            },
+            {
+                "start_line": 431,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public TSFBuilder<?,?> rebuild() {\n        // 13-Jun-2018, tatu: Verify sub-classing to prevent strange bugs in format impls\n        _requireJSONFactory(\"Factory implementation for format (%s) MUST override `rebuild()` method\");\n        return new JsonFactoryBuilder(this);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "rebuild",
+                "documentation": "/**\n     * Method that allows construction of differently configured factory, starting\n     * with settings of this factory.\n     *\n     * @return Builder instance to use\n     *\n     * @since 2.10\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "rebuild"
+                    }
+                ],
+                "similarity": 0.14470704642117913,
+                "end_line": 435,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.rebuild(): TSFBuilder"
+            },
+            {
+                "start_line": 2122,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private final boolean _isJSONFactory() {\n        // NOTE: since we only really care about whether this is standard JSON-backed factory,\n        // or its sub-class / delegated to one, no need to check for equality, identity is enough\n        return getFormatName() == FORMAT_NAME_JSON;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_isJSONFactory",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_isJSONFactory"
+                    }
+                ],
+                "similarity": 0.1402563203000474,
+                "end_line": 2126,
+                "signature": "com.fasterxml.jackson.core.JsonFactory._isJSONFactory(): boolean"
+            },
+            {
+                "start_line": 1226,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonParser createParser(char[] content, int offset, int len) throws IOException {\n        _checkRangeBoundsForCharArray(content, offset, len);\n        if (_inputDecorator != null) { // easier to just wrap in a Reader than extend InputDecorator\n            return createParser(new CharArrayReader(content, offset, len));\n        }\n        return _createParser(content, offset, len,\n                _createContext(_createContentReference(content, offset, len), true),\n                // important: buffer is NOT recyclable, as it's from caller\n                false);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "createParser",
+                "documentation": "/**\n     * Method for constructing parser for parsing contents of given char array.\n     *\n     * @since 2.4\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "createParser"
+                    }
+                ],
+                "similarity": 0.13979138976293,
+                "end_line": 1235,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.createParser(char[] content, int offset, int len): JsonParser"
+            },
+            {
+                "start_line": 1175,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonParser createParser(byte[] data, int offset, int len) throws IOException, JsonParseException {\n        _checkRangeBoundsForByteArray(data, offset, len);\n        IOContext ctxt = _createContext(_createContentReference(data, offset, len), true);\n        // [JACKSON-512]: allow wrapping with InputDecorator\n        if (_inputDecorator != null) {\n            InputStream in = _inputDecorator.decorate(ctxt, data, offset, len);\n            if (in != null) {\n                return _createParser(in, ctxt);\n            }\n        }\n        return _createParser(data, offset, len, ctxt);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "createParser",
+                "documentation": "/**\n     * Method for constructing parser for parsing\n     * the contents of given byte array.\n     *\n     * @param data Buffer that contains data to parse\n     * @param offset Offset of the first data byte within buffer\n     * @param len Length of contents to parse within buffer\n     *\n     * @since 2.1\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "createParser"
+                    }
+                ],
+                "similarity": 0.13931968819601384,
+                "end_line": 1186,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.createParser(byte[] data, int offset, int len): JsonParser"
+            },
+            {
+                "start_line": 147,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/StreamReadConstraints.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    StreamReadConstraints(final int maxNestingDepth, final int maxNumLen, final int maxStringLen) {\n        _maxNestingDepth = maxNestingDepth;\n        _maxNumLen = maxNumLen;\n        _maxStringLen = maxStringLen;\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "StreamReadConstraints",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "StreamReadConstraints"
+                    }
+                ],
+                "similarity": 0.13900852822755114,
+                "end_line": 151,
+                "signature": "com.fasterxml.jackson.core.StreamReadConstraints(int maxNestingDepth, int maxNumLen, int maxStringLen)"
+            },
+            {
+                "start_line": 2046,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected IOContext _createNonBlockingContext(Object srcRef) {\n        // [jackson-core#479]: allow recycling for non-blocking parser again\n        // now that access is thread-safe\n        return new IOContext(_streamReadConstraints, _getBufferRecycler(),\n                _createContentReference(srcRef),\n                false);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_createNonBlockingContext",
+                "documentation": "/**\n     * Overridable factory method that actually instantiates desired\n     * context object for async (non-blocking) parsing\n     *\n     * @param srcRef Source reference to use for diagnostics, exception messages\n     *\n     * @return I/O context created\n     *\n     * @since 2.9.7\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_createNonBlockingContext"
+                    }
+                ],
+                "similarity": 0.1331638367063085,
+                "end_line": 2052,
+                "signature": "com.fasterxml.jackson.core.JsonFactory._createNonBlockingContext(Object srcRef): IOContext"
+            },
+            {
+                "start_line": 1195,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonParser createParser(String content) throws IOException, JsonParseException {\n        final int strLen = content.length();\n        // Actually, let's use this for medium-sized content, up to 64kB chunk (32kb char)\n        if ((_inputDecorator != null) || (strLen > 0x8000) || !canUseCharArrays()) {\n            // easier to just wrap in a Reader than extend InputDecorator; or, if content\n            // is too long for us to copy it over\n            return createParser(new StringReader(content));\n        }\n        IOContext ctxt = _createContext(_createContentReference(content), true);\n        char[] buf = ctxt.allocTokenBuffer(strLen);\n        content.getChars(0, strLen, buf, 0);\n        return _createParser(buf, 0, strLen, ctxt, true);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "createParser",
+                "documentation": "/**\n     * Method for constructing parser for parsing\n     * contents of given String.\n     *\n     * @since 2.1\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "createParser"
+                    }
+                ],
+                "similarity": 0.13210800885713184,
+                "end_line": 1207,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.createParser(String content): JsonParser"
+            },
+            {
+                "start_line": 2116,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private final void _requireJSONFactory(String msg) {\n        if (!_isJSONFactory()) {\n            throw new UnsupportedOperationException(String.format(msg, getFormatName()));\n        }\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_requireJSONFactory",
+                "documentation": "/**\n     * Helper method called to work around the problem of this class both defining\n     * general API for constructing parsers+generators AND implementing the API\n     * for JSON handling. Problem here is that when adding new functionality\n     * via factory methods, it is not possible to leave these methods abstract\n     * (because we are implementing them for JSON); but there is risk that\n     * sub-classes do not override them all (plus older version can not implement).\n     * So a work-around is to add a check to ensure that factory is still one\n     * used for JSON; and if not, make base implementation of a factory method fail.\n     *\n     * @param msg Message template to use for reporting problem (if necessary)\n     *\n     * @since 2.9\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_requireJSONFactory"
+                    }
+                ],
+                "similarity": 0.12969359695252747,
+                "end_line": 2120,
+                "signature": "com.fasterxml.jackson.core.JsonFactory._requireJSONFactory(String msg): void"
+            },
+            {
+                "start_line": 1153,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonParser createParser(byte[] data) throws IOException, JsonParseException {\n        IOContext ctxt = _createContext(_createContentReference(data), true);\n        if (_inputDecorator != null) {\n            InputStream in = _inputDecorator.decorate(ctxt, data, 0, data.length);\n            if (in != null) {\n                return _createParser(in, ctxt);\n            }\n        }\n        return _createParser(data, 0, data.length, ctxt);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "createParser",
+                "documentation": "/**\n     * Method for constructing parser for parsing\n     * the contents of given byte array.\n     *\n     * @since 2.1\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "createParser"
+                    }
+                ],
+                "similarity": 0.1284882395281076,
+                "end_line": 1162,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.createParser(byte[] data): JsonParser"
+            },
+            {
+                "start_line": 136,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/StreamReadConstraints.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "        public StreamReadConstraints build() {\n            return new StreamReadConstraints(maxNestingDepth, maxNumLen, maxStringLen);\n        }",
+                "distance": 1.25,
+                "title": null,
+                "name": "build",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    }
+                ],
+                "similarity": 0.12741202927034287,
+                "end_line": 138,
+                "signature": "com.fasterxml.jackson.core.StreamReadConstraints.Builder.build(): StreamReadConstraints"
+            },
+            {
+                "start_line": 2011,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected IOContext _createContext(ContentReference contentRef, boolean resourceManaged) {\n        // 21-Mar-2021, tatu: Bit of defensive coding for backwards compatibility\n        if (contentRef == null) {\n            contentRef = ContentReference.unknown();\n        }\n        return new IOContext(_streamReadConstraints, _getBufferRecycler(), contentRef, resourceManaged);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_createContext",
+                "documentation": "/**\n     * Overridable factory method that actually instantiates desired\n     * context object.\n     *\n     * @param contentRef Source/target reference to use for diagnostics, exception messages\n     * @param resourceManaged Whether input/output buffer is managed by this factory or not\n     *\n     * @return I/O context created\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_createContext"
+                    }
+                ],
+                "similarity": 0.12353104341998604,
+                "end_line": 2017,
+                "signature": "com.fasterxml.jackson.core.JsonFactory._createContext(ContentReference contentRef, boolean resourceManaged): IOContext"
+            },
+            {
+                "start_line": 1120,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonParser createParser(InputStream in) throws IOException, JsonParseException {\n        IOContext ctxt = _createContext(_createContentReference(in), false);\n        return _createParser(_decorate(in, ctxt), ctxt);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "createParser",
+                "documentation": "/**\n     * Method for constructing JSON parser instance to parse\n     * the contents accessed via specified input stream.\n     *<p>\n     * The input stream will <b>not be owned</b> by\n     * the parser, it will still be managed (i.e. closed if\n     * end-of-stream is reacher, or parser close method called)\n     * if (and only if) {@link com.fasterxml.jackson.core.StreamReadFeature#AUTO_CLOSE_SOURCE}\n     * is enabled.\n     *<p>\n     *\n     * Note: no encoding argument is taken since it can always be\n     * auto-detected as suggested by JSON RFC. Json specification\n     * supports only UTF-8, UTF-16 and UTF-32 as valid encodings,\n     * so auto-detection implemented only for this charsets.\n     * For other charsets use {@link #createParser(java.io.Reader)}.\n     *\n     * @param in InputStream to use for reading JSON content to parse\n     *\n     * @since 2.1\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "createParser"
+                    }
+                ],
+                "similarity": 0.12297832553792533,
+                "end_line": 1123,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.createParser(InputStream in): JsonParser"
+            },
+            {
+                "start_line": 1091,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonParser createParser(URL url) throws IOException, JsonParseException {\n        // true, since we create InputStream from URL\n        IOContext ctxt = _createContext(_createContentReference(url), true);\n        InputStream in = _optimizedStreamFromURL(url);\n        return _createParser(_decorate(in, ctxt), ctxt);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "createParser",
+                "documentation": "/**\n     * Method for constructing JSON parser instance to parse\n     * contents of resource reference by given URL.\n     *<p>\n     * Encoding is auto-detected from contents according to JSON\n     * specification recommended mechanism. Json specification\n     * supports only UTF-8, UTF-16 and UTF-32 as valid encodings,\n     * so auto-detection implemented only for this charsets.\n     * For other charsets use {@link #createParser(java.io.Reader)}.\n     *<p>\n     * Underlying input stream (needed for reading contents)\n     * will be <b>owned</b> (and managed, i.e. closed as need be) by\n     * the parser, since caller has no access to it.\n     *\n     * @param url URL pointing to resource that contains JSON content to parse\n     *\n     * @since 2.1\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "createParser"
+                    }
+                ],
+                "similarity": 0.1229104444306054,
+                "end_line": 1096,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.createParser(URL url): JsonParser"
+            },
+            {
+                "start_line": 1894,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonGenerator _createUTF8Generator(OutputStream out, IOContext ctxt) throws IOException {\n        UTF8JsonGenerator gen = new UTF8JsonGenerator(ctxt,\n                _generatorFeatures, _objectCodec, out, _quoteChar);\n        if (_maximumNonEscapedChar > 0) {\n            gen.setHighestNonEscapedChar(_maximumNonEscapedChar);\n        }\n        if (_characterEscapes != null) {\n            gen.setCharacterEscapes(_characterEscapes);\n        }\n        SerializableString rootSep = _rootValueSeparator;\n        if (rootSep != DEFAULT_ROOT_VALUE_SEPARATOR) {\n            gen.setRootValueSeparator(rootSep);\n        }\n        return gen;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_createUTF8Generator",
+                "documentation": "/**\n     * Overridable factory method that actually instantiates generator for\n     * given {@link OutputStream} and context object, using UTF-8 encoding.\n     *<p>\n     * This method is specifically designed to remain\n     * compatible between minor versions so that sub-classes can count\n     * on it being called as expected. That is, it is part of official\n     * interface from sub-class perspective, although not a public\n     * method available to users of factory implementations.\n     *\n     * @param out OutputStream underlying writer to write generated content to\n     * @param ctxt I/O context to use\n     *\n     * @return This factory instance (to allow call chaining)\n     *\n     * @throws IOException if parser initialization fails due to I/O (write) problem\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_createUTF8Generator"
+                    }
+                ],
+                "similarity": 0.12258623503674339,
+                "end_line": 1908,
+                "signature": "com.fasterxml.jackson.core.JsonFactory._createUTF8Generator(OutputStream out, IOContext ctxt): JsonGenerator"
+            },
+            {
+                "start_line": 1140,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonParser createParser(Reader r) throws IOException, JsonParseException {\n        // false -> we do NOT own Reader (did not create it)\n        IOContext ctxt = _createContext(_createContentReference(r), false);\n        return _createParser(_decorate(r, ctxt), ctxt);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "createParser",
+                "documentation": "/**\n     * Method for constructing parser for parsing\n     * the contents accessed via specified Reader.\n     <p>\n     * The read stream will <b>not be owned</b> by\n     * the parser, it will still be managed (i.e. closed if\n     * end-of-stream is reacher, or parser close method called)\n     * if (and only if) {@link com.fasterxml.jackson.core.StreamReadFeature#AUTO_CLOSE_SOURCE}\n     * is enabled.\n     *\n     * @param r Reader to use for reading JSON content to parse\n     *\n     * @since 2.1\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "createParser"
+                    }
+                ],
+                "similarity": 0.1223444529228111,
+                "end_line": 1144,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.createParser(Reader r): JsonParser"
+            },
+            {
+                "start_line": 351,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonFactory(JsonFactory src, ObjectCodec codec)",
+                "distance": 1.0,
+                "title": null,
+                "name": "JsonFactory",
+                "documentation": "/**\n     * Constructor used when copy()ing a factory instance.\n     *\n     * @param src Original factory to copy settings from\n     * @param codec Databinding-level codec to use, if any\n     *\n     * @since 2.2.1\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    }
+                ],
+                "similarity": 0.12115913155248548,
+                "end_line": 351,
+                "signature": "com.fasterxml.jackson.core.JsonFactory(JsonFactory src, ObjectCodec codec)"
+            },
+            {
+                "start_line": 576,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public boolean canParseAsync() {\n        // 31-May-2017, tatu: Jackson 2.9 does support async parsing for JSON,\n        //   but not all other formats, so need to do this:\n        return _isJSONFactory();\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "canParseAsync",
+                "documentation": "/**\n     * Introspection method that can be used to check whether this\n     * factory can create non-blocking parsers: parsers that do not\n     * use blocking I/O abstractions but instead use a\n     * {@link com.fasterxml.jackson.core.async.NonBlockingInputFeeder}.\n     *\n     * @return Whether this factory supports non-blocking (\"async\") parsing or\n     *    not (and consequently whether {@code createNonBlockingXxx()} method(s) work)\n     *\n     * @since 2.9\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "canParseAsync"
+                    }
+                ],
+                "similarity": 0.12022688091858093,
+                "end_line": 580,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.canParseAsync(): boolean"
+            },
+            {
+                "start_line": 1065,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonParser createParser(File f) throws IOException, JsonParseException {\n        // true, since we create InputStream from File\n        IOContext ctxt = _createContext(_createContentReference(f), true);\n        InputStream in = _fileInputStream(f);\n        return _createParser(_decorate(in, ctxt), ctxt);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "createParser",
+                "documentation": "/**\n     * Method for constructing JSON parser instance to parse\n     * contents of specified file.\n     *\n     *<p>\n     * Encoding is auto-detected from contents according to JSON\n     * specification recommended mechanism. Json specification\n     * supports only UTF-8, UTF-16 and UTF-32 as valid encodings,\n     * so auto-detection implemented only for this charsets.\n     * For other charsets use {@link #createParser(java.io.Reader)}.\n     *\n     *<p>\n     * Underlying input stream (needed for reading contents)\n     * will be <b>owned</b> (and managed, i.e. closed as need be) by\n     * the parser, since caller has no access to it.\n     *\n     * @param f File that contains JSON content to parse\n     *\n     * @since 2.1\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "createParser"
+                    }
+                ],
+                "similarity": 0.11988423700611171,
+                "end_line": 1070,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.createParser(File f): JsonParser"
+            },
+            {
+                "start_line": 796,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public final JsonFactory configure(JsonParser.Feature f, boolean state) {\n        return state ? enable(f) : disable(f);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "configure",
+                "documentation": "/**\n     * Method for enabling or disabling specified parser feature\n     * (check {@link JsonParser.Feature} for list of features)\n     *\n     * @param f Feature to enable/disable\n     * @param state Whether to enable or disable the feature\n     *\n     * @return This factory instance (to allow call chaining)\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "configure"
+                    }
+                ],
+                "similarity": 0.11948692837660425,
+                "end_line": 798,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.configure(JsonParser f, boolean state): JsonFactory"
+            },
+            {
+                "start_line": 891,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public final JsonFactory configure(JsonGenerator.Feature f, boolean state) {\n        return state ? enable(f) : disable(f);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "configure",
+                "documentation": "/**\n     * Method for enabling or disabling specified generator feature\n     * (check {@link JsonGenerator.Feature} for list of features)\n     *\n     * @param f Feature to enable/disable\n     * @param state Whether to enable or disable the feature\n     *\n     * @return This factory instance (to allow call chaining)\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "configure"
+                    }
+                ],
+                "similarity": 0.11934253863357454,
+                "end_line": 893,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.configure(JsonGenerator f, boolean state): JsonFactory"
+            },
+            {
+                "start_line": 701,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public final JsonFactory configure(JsonFactory.Feature f, boolean state) {\n        return state ? enable(f) : disable(f);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "configure",
+                "documentation": "/**\n     * Method for enabling or disabling specified parser feature\n     * (check {@link JsonParser.Feature} for list of features)\n     *\n     * @param f Feature to enable/disable\n     * @param state Whether to enable or disable the feature\n     *\n     * @return This factory instance (to allow call chaining)\n     *\n     * @deprecated since 2.10 use {@link JsonFactoryBuilder#configure(JsonFactory.Feature, boolean)} instead\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "configure"
+                    }
+                ],
+                "similarity": 0.1188528148477791,
+                "end_line": 703,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.configure(JsonFactory f, boolean state): JsonFactory"
+            },
+            {
+                "start_line": 498,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected Object readResolve() {\n        return new JsonFactory(this, _objectCodec);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "readResolve",
+                "documentation": "/**\n     * Method that we need to override to actually make restoration go\n     * through constructors etc: needed to allow JDK serializability of\n     * factory instances.\n     *<p>\n     * Note: must be overridden by sub-classes as well.\n     *\n     * @return Newly constructed instance\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "readResolve"
+                    }
+                ],
+                "similarity": 0.11868095060792239,
+                "end_line": 500,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.readResolve(): Object"
+            },
+            {
+                "start_line": 1757,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonParser _createParser(Reader r, IOContext ctxt) throws IOException {\n        return new ReaderBasedJsonParser(ctxt, _parserFeatures, r, _objectCodec,\n                _rootCharSymbols.makeChild(_factoryFeatures));\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_createParser",
+                "documentation": "/**\n     * Overridable factory method that actually instantiates parser\n     * using given {@link Reader} object for reading content.\n     *<p>\n     * This method is specifically designed to remain\n     * compatible between minor versions so that sub-classes can count\n     * on it being called as expected. That is, it is part of official\n     * interface from sub-class perspective, although not a public\n     * method available to users of factory implementations.\n     *\n     * @param r Reader to use for reading content to parse\n     * @param ctxt I/O context to use for parsing\n     *\n     * @return Actual parser to use\n     *\n     * @throws IOException if parser initialization fails due to I/O (read) problem\n     *\n     * @since 2.1\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_createParser"
+                    }
+                ],
+                "similarity": 0.11792503737304068,
+                "end_line": 1760,
+                "signature": "com.fasterxml.jackson.core.JsonFactory._createParser(Reader r, IOContext ctxt): JsonParser"
+            },
+            {
+                "start_line": 777,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public StreamReadConstraints streamReadConstraints() {\n        return _streamReadConstraints;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "streamReadConstraints",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "streamReadConstraints"
+                    }
+                ],
+                "similarity": 0.11533182925198181,
+                "end_line": 779,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.streamReadConstraints(): StreamReadConstraints"
+            },
+            {
+                "start_line": 1532,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonParser createJsonParser(InputStream in) throws IOException, JsonParseException {\n        return createParser(in);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "createJsonParser",
+                "documentation": "/**\n     * Method for constructing JSON parser instance to parse\n     * the contents accessed via specified input stream.\n     *<p>\n     * The input stream will <b>not be owned</b> by\n     * the parser, it will still be managed (i.e. closed if\n     * end-of-stream is reacher, or parser close method called)\n     * if (and only if) {@link com.fasterxml.jackson.core.JsonParser.Feature#AUTO_CLOSE_SOURCE}\n     * is enabled.\n     *<p>\n     *\n     * Note: no encoding argument is taken since it can always be\n     * auto-detected as suggested by JSON RFC. Json specification\n     * supports only UTF-8, UTF-16 and UTF-32 as valid encodings,\n     * so auto-detection implemented only for this charsets.\n     * For other charsets use {@link #createParser(java.io.Reader)}.\n     *\n     * @param in InputStream to use for reading JSON content to parse\n     *\n     * @return Parser constructed\n     *\n     * @throws IOException if parser initialization fails due to I/O (read) problem\n     * @throws JsonParseException if parser initialization fails due to content decoding problem\n     *\n     * @deprecated Since 2.2, use {@link #createParser(InputStream)} instead.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "createJsonParser"
+                    }
+                ],
+                "similarity": 0.11382622635082211,
+                "end_line": 1534,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.createJsonParser(InputStream in): JsonParser"
+            },
+            {
+                "start_line": 2030,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected IOContext _createContext(Object rawContentRef, boolean resourceManaged) {\n        return new IOContext(_streamReadConstraints, _getBufferRecycler(),\n                _createContentReference(rawContentRef),\n                resourceManaged);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_createContext",
+                "documentation": "/**\n     * Deprecated variant of {@link #_createContext(Object, boolean)}\n     *\n     * @param rawContentRef \"Raw\" source/target reference\n     * @param resourceManaged Whether input/output buffer is managed by this factory or not\n     *\n     * @return I/O context created\n     *\n     * @deprecated Since 2.13\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_createContext"
+                    }
+                ],
+                "similarity": 0.11204045936075917,
+                "end_line": 2034,
+                "signature": "com.fasterxml.jackson.core.JsonFactory._createContext(Object rawContentRef, boolean resourceManaged): IOContext"
+            },
+            {
+                "start_line": 1247,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonParser createParser(DataInput in) throws IOException {\n        IOContext ctxt = _createContext(_createContentReference(in), false);\n        return _createParser(_decorate(in, ctxt), ctxt);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "createParser",
+                "documentation": "/**\n     * Optional method for constructing parser for reading contents from specified {@link DataInput}\n     * instance.\n     *<p>\n     * If this factory does not support {@link DataInput} as source,\n     * will throw {@link UnsupportedOperationException}\n     *\n     * @since 2.8\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "createParser"
+                    }
+                ],
+                "similarity": 0.1119550806856636,
+                "end_line": 1250,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.createParser(DataInput in): JsonParser"
+            },
+            {
+                "start_line": 68,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/StreamReadConstraints.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "        public Builder maxNestingDepth(final int maxNestingDepth) {\n            if (maxNestingDepth < 0) {\n                throw new IllegalArgumentException(\"Cannot set maxNestingDepth to a negative value\");\n            }\n            this.maxNestingDepth = maxNestingDepth;\n            return this;\n        }",
+                "distance": 1.25,
+                "title": null,
+                "name": "maxNestingDepth",
+                "documentation": "/**\n         * Sets the maximum nesting depth. The depth is a count of objects and arrays that have not\n         * been closed, `{` and `[` respectively.\n         *\n         * @param maxNestingDepth the maximum depth\n         *\n         * @return this builder\n         * @throws IllegalArgumentException if the maxNestingDepth is set to a negative value\n         *\n         * @since 2.15\n         */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "maxNestingDepth"
+                    }
+                ],
+                "similarity": 0.11057795815051638,
+                "end_line": 74,
+                "signature": "com.fasterxml.jackson.core.StreamReadConstraints.Builder.maxNestingDepth(int maxNestingDepth): Builder"
+            },
+            {
+                "start_line": 1648,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonGenerator createJsonGenerator(OutputStream out, JsonEncoding enc) throws IOException {\n        return createGenerator(out, enc);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "createJsonGenerator",
+                "documentation": "/**\n     * Method for constructing JSON generator for writing JSON content\n     * using specified output stream.\n     * Encoding to use must be specified, and needs to be one of available\n     * types (as per JSON specification).\n     *<p>\n     * Underlying stream <b>is NOT owned</b> by the generator constructed,\n     * so that generator will NOT close the output stream when\n     * {@link JsonGenerator#close} is called (unless auto-closing\n     * feature,\n     * {@link com.fasterxml.jackson.core.JsonGenerator.Feature#AUTO_CLOSE_TARGET}\n     * is enabled).\n     * Using application needs to close it explicitly if this is the case.\n     *<p>\n     * Note: there are formats that use fixed encoding (like most binary data formats)\n     * and that ignore passed in encoding.\n     *\n     * @param out OutputStream to use for writing JSON content\n     * @param enc Character encoding to use\n     *\n     * @return Generator constructed\n     *\n     * @throws IOException if parser initialization fails due to I/O (write) problem\n     *\n     * @deprecated Since 2.2, use {@link #createGenerator(OutputStream, JsonEncoding)} instead.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "createJsonGenerator"
+                    }
+                ],
+                "similarity": 0.11010013089263092,
+                "end_line": 1650,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.createJsonGenerator(OutputStream out, JsonEncoding enc): JsonGenerator"
+            },
+            {
+                "start_line": 612,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public boolean canUseSchema(FormatSchema schema) {\n        if (schema == null){\n            return false;\n        }\n        String ourFormat = getFormatName();\n        return (ourFormat != null) && ourFormat.equals(schema.getSchemaType());\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "canUseSchema",
+                "documentation": "/**\n     * Method that can be used to quickly check whether given schema\n     * is something that parsers and/or generators constructed by this\n     * factory could use. Note that this means possible use, at the level\n     * of data format (i.e. schema is for same data format as parsers and\n     * generators this factory constructs); individual schema instances\n     * may have further usage restrictions.\n     *\n     * @param schema Schema instance to check\n     *\n     * @return Whether parsers and generators constructed by this factory\n     *   can use specified format schema instance\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "canUseSchema"
+                    }
+                ],
+                "similarity": 0.10816650932109327,
+                "end_line": 618,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.canUseSchema(FormatSchema schema): boolean"
+            },
+            {
+                "start_line": 1593,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonParser createJsonParser(byte[] data, int offset, int len) throws IOException, JsonParseException {\n        return createParser(data, offset, len);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "createJsonParser",
+                "documentation": "/**\n     * Method for constructing parser for parsing\n     * the contents of given byte array.\n     *\n     * @param data Buffer that contains data to parse\n     * @param offset Offset of the first data byte within buffer\n     * @param len Length of contents to parse within buffer\n     *\n     * @return Parser constructed\n     *\n     * @throws IOException if parser initialization fails due to I/O (read) problem\n     * @throws JsonParseException if parser initialization fails due to content decoding problem\n     *\n     * @deprecated Since 2.2, use {@link #createParser(byte[],int,int)} instead.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "createJsonParser"
+                    }
+                ],
+                "similarity": 0.10768043102733094,
+                "end_line": 1595,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.createJsonParser(byte[] data, int offset, int len): JsonParser"
+            },
+            {
+                "start_line": 2066,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected ContentReference _createContentReference(Object contentAccessor) {\n        // 21-Mar-2021, tatu: For now assume \"canHandleBinaryNatively()\" is reliable\n        //    indicator of textual vs binary format:\n        return ContentReference.construct(!canHandleBinaryNatively(), contentAccessor);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_createContentReference",
+                "documentation": "/**\n     * Overridable factory method for constructing {@link ContentReference}\n     * to pass to parser or generator being created; used in cases where no offset\n     * or length is applicable (either irrelevant, or full contents assumed).\n     *\n     * @param contentAccessor Access to underlying content; depends on source/target,\n     *    as well as content representation\n     *\n     * @return Reference instance to use\n     *\n     * @since 2.13\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_createContentReference"
+                    }
+                ],
+                "similarity": 0.10698844192527256,
+                "end_line": 2070,
+                "signature": "com.fasterxml.jackson.core.JsonFactory._createContentReference(Object contentAccessor): ContentReference"
+            },
+            {
+                "start_line": 335,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonFactory() { this((ObjectCodec) null); }",
+                "distance": 1.0,
+                "title": null,
+                "name": "JsonFactory",
+                "documentation": "/**\n     * Default constructor used to create factory instances.\n     * Creation of a factory instance is a light-weight operation,\n     * but it is still a good idea to reuse limited number of\n     * factory instances (and quite often just a single instance):\n     * factories are used as context for storing some reused\n     * processing objects (such as symbol tables parsers use)\n     * and this reuse only works within context of a single\n     * factory instance.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    }
+                ],
+                "similarity": 0.10590646307186802,
+                "end_line": 335,
+                "signature": "com.fasterxml.jackson.core.JsonFactory()"
+            },
+            {
+                "start_line": 448,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static TSFBuilder<?,?> builder() {\n        return new JsonFactoryBuilder();\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "builder",
+                "documentation": "/**\n     * Main factory method to use for constructing {@link JsonFactory} instances with\n     * different configuration: creates and returns a builder for collecting configuration\n     * settings; instance created by calling {@code build()} after all configuration\n     * set.\n     *<p>\n     * NOTE: signature unfortunately does not expose true implementation type; this\n     * will be fixed in 3.0.\n     *\n     * @return Builder instance to use\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "builder"
+                    }
+                ],
+                "similarity": 0.10524145728053276,
+                "end_line": 450,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.builder(): TSFBuilder"
+            },
+            {
+                "start_line": 716,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonFactory enable(JsonFactory.Feature f) {\n        _factoryFeatures |= f.getMask();\n        return this;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "enable",
+                "documentation": "/**\n     * Method for enabling specified parser feature\n     * (check {@link JsonFactory.Feature} for list of features)\n     *\n     * @param f Feature to enable\n     *\n     * @return This factory instance (to allow call chaining)\n     *\n     * @deprecated since 2.10 use {@link JsonFactoryBuilder#configure(JsonFactory.Feature, boolean)} instead\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "enable"
+                    }
+                ],
+                "similarity": 0.10444680907423609,
+                "end_line": 719,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.enable(JsonFactory f): JsonFactory"
+            },
+            {
+                "start_line": 1691,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonGenerator createJsonGenerator(OutputStream out) throws IOException {\n        return createGenerator(out, JsonEncoding.UTF8);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "createJsonGenerator",
+                "documentation": "/**\n     * Convenience method for constructing generator that uses default\n     * encoding of the format (UTF-8 for JSON and most other data formats).\n     *<p>\n     * Note: there are formats that use fixed encoding (like most binary data formats).\n     *\n     * @param out OutputStream to use for writing JSON content\n     *\n     * @return Generator constructed\n     *\n     * @throws IOException if parser initialization fails due to I/O (write) problem\n     *\n     * @deprecated Since 2.2, use {@link #createGenerator(OutputStream)} instead.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "createJsonGenerator"
+                    }
+                ],
+                "similarity": 0.10416456062094297,
+                "end_line": 1693,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.createJsonGenerator(OutputStream out): JsonGenerator"
+            },
+            {
+                "start_line": 1805,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonParser _createParser(byte[] data, int offset, int len, IOContext ctxt) throws IOException",
+                "distance": 1.25,
+                "title": null,
+                "name": "_createParser",
+                "documentation": "/**\n     * Overridable factory method that actually instantiates parser\n     * using given {@link Reader} object for reading content\n     * passed as raw byte array.\n     *<p>\n     * This method is specifically designed to remain\n     * compatible between minor versions so that sub-classes can count\n     * on it being called as expected. That is, it is part of official\n     * interface from sub-class perspective, although not a public\n     * method available to users of factory implementations.\n     *\n     * @param data Buffer that contains content to parse\n     * @param offset Offset to the first character of data to parse\n     * @param len Number of characters within buffer to parse\n     * @param ctxt I/O context to use for parsing\n     *\n     * @return Actual parser to use\n     *\n     * @throws IOException if parser initialization fails due to I/O (read) problem\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_createParser"
+                    }
+                ],
+                "similarity": 0.10316652188195802,
+                "end_line": 1805,
+                "signature": "com.fasterxml.jackson.core.JsonFactory._createParser(byte[] data, int offset, int len, IOContext ctxt): JsonParser"
+            },
+            {
+                "start_line": 87,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/StreamReadConstraints.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "        public Builder maxNumberLength(final int maxNumLen) {\n            if (maxNumLen < 0) {\n                throw new IllegalArgumentException(\"Cannot set maxNumberLength to a negative value\");\n            }\n            this.maxNumLen = maxNumLen;\n            return this;\n        }",
+                "distance": 1.25,
+                "title": null,
+                "name": "maxNumberLength",
+                "documentation": "/**\n         * Sets the maximum number length (in chars or bytes, depending on input context).\n         * The default is 1000.\n         *\n         * @param maxNumLen the maximum number length (in chars or bytes, depending on input context)\n         *\n         * @return this builder\n         * @throws IllegalArgumentException if the maxNumLen is set to a negative value\n         *\n         * @since 2.15\n         */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "maxNumberLength"
+                    }
+                ],
+                "similarity": 0.10295882646222655,
+                "end_line": 93,
+                "signature": "com.fasterxml.jackson.core.StreamReadConstraints.Builder.maxNumberLength(int maxNumLen): Builder"
+            },
+            {
+                "start_line": 903,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonFactory enable(JsonGenerator.Feature f) {\n        _generatorFeatures |= f.getMask();\n        return this;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "enable",
+                "documentation": "/**\n     * Method for enabling specified generator features\n     * (check {@link JsonGenerator.Feature} for list of features)\n     *\n     * @param f Feature to enable\n     *\n     * @return This factory instance (to allow call chaining)\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "enable"
+                    }
+                ],
+                "similarity": 0.10263191544593837,
+                "end_line": 906,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.enable(JsonGenerator f): JsonFactory"
+            },
+            {
+                "start_line": 1363,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonGenerator createGenerator(OutputStream out) throws IOException {\n        return createGenerator(out, JsonEncoding.UTF8);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "createGenerator",
+                "documentation": "/**\n     * Convenience method for constructing generator that uses default\n     * encoding of the format (UTF-8 for JSON and most other data formats).\n     *<p>\n     * Note: there are formats that use fixed encoding (like most binary data formats).\n     *\n     * @since 2.1\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "createGenerator"
+                    }
+                ],
+                "similarity": 0.10261296600757186,
+                "end_line": 1365,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.createGenerator(OutputStream out): JsonGenerator"
+            },
+            {
+                "start_line": 1556,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonParser createJsonParser(Reader r) throws IOException, JsonParseException {\n        return createParser(r);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "createJsonParser",
+                "documentation": "/**\n     * Method for constructing parser for parsing\n     * the contents accessed via specified Reader.\n     <p>\n     * The read stream will <b>not be owned</b> by\n     * the parser, it will still be managed (i.e. closed if\n     * end-of-stream is reacher, or parser close method called)\n     * if (and only if) {@link com.fasterxml.jackson.core.JsonParser.Feature#AUTO_CLOSE_SOURCE}\n     * is enabled.\n     *\n     * @param r Reader to use for reading JSON content to parse\n     *\n     * @return Parser constructed\n     *\n     * @throws IOException if parser initialization fails due to I/O (read) problem\n     * @throws JsonParseException if parser initialization fails due to content decoding problem\n     *\n     * @deprecated Since 2.2, use {@link #createParser(Reader)} instead.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "createJsonParser"
+                    }
+                ],
+                "similarity": 0.10181967694769413,
+                "end_line": 1558,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.createJsonParser(Reader r): JsonParser"
+            },
+            {
+                "start_line": 808,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonFactory enable(JsonParser.Feature f) {\n        _parserFeatures |= f.getMask();\n        return this;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "enable",
+                "documentation": "/**\n     * Method for enabling specified parser feature\n     * (check {@link JsonParser.Feature} for list of features)\n     *\n     * @param f Feature to enable\n     *\n     * @return This factory instance (to allow call chaining)\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "enable"
+                    }
+                ],
+                "similarity": 0.10105882644197436,
+                "end_line": 811,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.enable(JsonParser f): JsonFactory"
+            },
+            {
+                "start_line": 668,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected MatchStrength hasJSONFormat(InputAccessor acc) throws IOException {\n        return ByteSourceJsonBootstrapper.hasJSONFormat(acc);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "hasJSONFormat",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "hasJSONFormat"
+                    }
+                ],
+                "similarity": 0.10103341882119825,
+                "end_line": 670,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.hasJSONFormat(InputAccessor acc): MatchStrength"
+            },
+            {
+                "start_line": 124,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/StreamReadConstraints.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "        Builder(final int maxNestingDepth, final int maxNumLen, final int maxStringLen) {\n            this.maxNestingDepth = maxNestingDepth;\n            this.maxNumLen = maxNumLen;\n            this.maxStringLen = maxStringLen;\n        }",
+                "distance": 1.0,
+                "title": null,
+                "name": "Builder",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    }
+                ],
+                "similarity": 0.10073499311187249,
+                "end_line": 128,
+                "signature": "com.fasterxml.jackson.core.StreamReadConstraints.Builder(int maxNestingDepth, int maxNumLen, int maxStringLen)"
+            },
+            {
+                "start_line": 1383,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonGenerator createGenerator(Writer w) throws IOException {\n        IOContext ctxt = _createContext(_createContentReference(w), false);\n        return _createGenerator(_decorate(w, ctxt), ctxt);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "createGenerator",
+                "documentation": "/**\n     * Method for constructing JSON generator for writing JSON content\n     * using specified Writer.\n     *<p>\n     * Underlying stream <b>is NOT owned</b> by the generator constructed,\n     * so that generator will NOT close the Reader when\n     * {@link JsonGenerator#close} is called (unless auto-closing\n     * feature,\n     * {@link com.fasterxml.jackson.core.JsonGenerator.Feature#AUTO_CLOSE_TARGET} is enabled).\n     * Using application needs to close it explicitly.\n     *\n     * @since 2.1\n     *\n     * @param w Writer to use for writing JSON content\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonFactory"
+                    },
+                    {
+                        "start_node": "JsonFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "createGenerator"
+                    }
+                ],
+                "similarity": 0.10026046253097431,
+                "end_line": 1386,
+                "signature": "com.fasterxml.jackson.core.JsonFactory.createGenerator(Writer w): JsonGenerator"
+            }
+        ],
+        "classes": [],
+        "issues": [
+            {
+                "content": "Although Builder-style configuration is becoming preferred for Jackson in 2.x (and the only way in 3.0), there is need to support mutable configuration for some key configuration. While for any truly new, optional functionality Builder-style may be sufficient, processing limits change existing behavior so they must be available via \"legacy\" style configuration too. This is in particular important for frameworks that do not fully control configurability but expose it to their users; and expecting users to change interfaces/mechanisms for `ObjectMapper`/`JsonFactory` configuration is a big ask (not to mention compatibility nightmare).\r\n\r\nSo, before 2.15.0 final, let's ensure `StreamReadConstraints` can be set on `JsonFactory`: it can not (alas!) be immutable until 3.0.\r\n\n",
+                "distance": 0,
+                "title": "Offer a way to directly set `StreamReadConstraints` via `JsonFactory` (not just Builder)",
+                "name": "root",
+                "path": [],
+                "issue_id": "root",
+                "similarity": 2.0,
+                "type": "issue"
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "962",
+                "type": "issue",
+                "content": "Although Builder-style configuration is becoming preferred for Jackson in 2.x (and the only way in 3.0), there is need to support mutable configuration for some key configuration. While for any truly new, optional functionality Builder-style may be sufficient, processing limits change existing behavior so they must be available via \"legacy\" style configuration too. This is in particular important for frameworks that do not fully control configurability but expose it to their users; and expecting users to change interfaces/mechanisms for `ObjectMapper`/`JsonFactory` configuration is a big ask (not to mention compatibility nightmare).\r\n\r\nSo, before 2.15.0 final, let's ensure `StreamReadConstraints` can be set on `JsonFactory`: it can not (alas!) be immutable until 3.0.\r\n\n\n\nComment by cowtowncoder:\nSee https://github.com/spring-projects/spring-boot/issues/34709 for context.\n\nComment by pjfanning:\nSo if you have an ObjectMapper instance, you can call getFactory() to gets its JsonFactory (which might have been created by the ObjectMapper constructor - or may have been provided when building the ObjectMapper).\r\n\r\nThe new API will let you reset the StreamReadConstraints on the JsonFactory instance? This would seem like a reasonable solution.\n\nComment by cowtowncoder:\n@pjfanning Correct. Like the way most configuration worked before starting to add Builder-style.",
+                "source_code": null,
+                "distance": 0.25,
+                "title": "Offer a way to directly set `StreamReadConstraints` via `JsonFactory` (not just Builder)",
+                "name": "issue#962",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#962"
+                    }
+                ],
+                "similarity": 0.8425625088132248,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "960",
+                "type": "issue",
+                "content": "* relates to #958 \r\n* needs more javadoc\r\n* some more tests\r\n* POC for the concept that we can allow users control the default StreamReadConstraints through code - so that users who use libs and don't have direct access to control the setup of the ObjectMapper in that lib - they can set a default StreamReadConstraints before using the lib\n\n",
+                "source_code": null,
+                "distance": 0.75,
+                "title": "[DRAFT] add support for setting the global default for StreamReadConstraints",
+                "name": "pr#960",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#962"
+                    },
+                    {
+                        "start_node": "issue#962",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#958"
+                    },
+                    {
+                        "start_node": "issue#958",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#960"
+                    }
+                ],
+                "similarity": 0.5380902676603351,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "964",
+                "type": "issue",
+                "content": "Fix #962: add a direct set method for overriding `StreamReadConstraints`, in addition to preferred Builder method.\r\n\n\n",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "Add `JsonFactory.setStreamReadConstraints()`",
+                "name": "pr#964",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#962"
+                    },
+                    {
+                        "start_node": "issue#962",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "pr#964"
+                    }
+                ],
+                "similarity": 0.5029707571389769,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "958",
+                "type": "issue",
+                "content": "In testing 2.15.0-rc1 I've found that several tests with large inputs begin to fail unexpectedly due to [processing limits](https://github.com/FasterXML/jackson/wiki/Jackson-Release-2.15#processing-limits) introduced in #827.\r\n\r\nWhile I'm strongly in favor of granular control of limits, it's difficult to imagine a path through which I can safely adopt 2.15 without causing production failures. The initial rollout will be tremendously difficult to do effectively without a version range which provides the ability to set limits before defaults are enforced, otherwise anything that upgrades transitive jackson dependencies may produce runtime failures unexpectedly. This is compounded by ~1mb limits being large enough not to hinder most test inputs, but small enough to be common in certain production scenarios reliant on string values.\r\n\r\nI suspect there are more general constraints that I'm not aware of, and there may not be a particularly clean path forward that satisfies all constraints. It may be worthwhile to run through the thought experiment of releasing a 2.15.0 with processing limit configuration, and no default values, and a 2.16.0 in relatively short succession which enforces default limits, allowing libraries which rely on jackson to encode their expectations before defaults are enforced.\r\n\r\nIn summary, I'm excited to have finer grained control over deserialization inputs and cannot overstate my appreciation for your work to improve security posture, but I'd like to explore options to reduce the risk of unexpected runtime failures upon upgrade.\r\n\r\nThank you!\n\n\nComment by pjfanning:\nThe code allows you to change the limits. If you can't modify code to set limits that suit you, you can choose not to upgrade Jackson.\n\nComment by pjfanning:\nTo be clear, we have a large number of users pressing for a secure by default version of Jackson. If we don't make 2.15.0 that release, they will keep pressing until we do a 2.16.0 release.\r\n\r\nIf you use Jackson via a 3rd party lib, warn the lib maintainer that they should expose some way to configure the Jackson Mapper instances that they create on your behalf.\r\n\r\nAll the main build tools have mechanisms to allow you to stop libs dragging in versions of transitive dependencies that you don't like.\n\nComment by carterkozak:\n> The code allows you to change the limits.\r\n\r\nYes, I understand that, however the issue that I'm trying to describe is one of ordering: library upgrades cannot always be adopted in a single atomic action.\r\nIf I upgrade a my library to use 2.15 and set correct limits, when consumers of my library upgrade, regardless of their previous jackson dependency version, their build system will more than likely resolve requests for an older jackson version up to the 2.15.0 dependency from my library. They must also be aware of processing limits, and configure their limits at precisely that moment (which may be an automated PR from something like dependabot, or version resolution due to deeply nested transitive dependencies). If the consumer project upgrades first, and I create an objectmapper in my library, there's no way for my library to configure its limits in jsonfactory instances it creates without a great deal of reflection hackery, which I'd prefer to avoid.\r\n\r\nThe safe path forward involves making my library aware of processing limits, and ensuring all my consumers upgrade my library at precisely the same time that they upgrade to 2.15 and configure their limits properly. Given that many libraries depend on jackson, they must all be upgraded at precisely the same time otherwise they risk runtime failures. Such coordinates upgrades between dozens of libraries which may or may not release frequently are difficult for consumers, library maintainers, and ultimately users. Perhaps that risk is perceived as lower than failure to set the default, I certainly don't have as much context as you do on the values themselves, but I'm confident that they will break some of my users if I'm not able to ensure a carefully coordinated rollout.\n\nComment by carterkozak:\n> To be clear, we have a large number of users pressing for a secure by default version of Jackson. If we don't make 2.15.0 that release, they will keep pressing until we do a 2.16.0 release.\r\n\r\nI think we both want the same thing \u2764\ufe0f\r\nThe phrase \"perfect is the enemy of good\" comes to mind -- I understand that we want a perfect version as soon as possible, but it's not helpful if users cannot safely upgrade to it.\r\n\r\nIs there a world where 2.15.0 and 2.16.0 are released at the same time, where the only change introduced into 2.16.0 is strict default values for processing-limits? This would be sufficient for my case where I could adopt 2.15.0 everywhere, and set limits based on expected value sizes, and after a short incubation period, upgrade to 2.16.0 where limits are strictly enforced.\r\n\r\n> All the main build tools have mechanisms to allow you to stop libs dragging in versions of transitive dependencies that you don't like.\r\n\r\nThis works when the library remains abi-compatible with previous releases, but that's more complex to validate upon upgrades. We can rely on build-time linkage checkers and compare diffs across upgrades, but such tools aren't terribly common these days in the java ecosystem. Once a dependency begins to interact with the new limit apis, the transitive can no longer be held back.\r\n\r\n> If you use Jackson via a 3rd party lib, warn the lib maintainer that they should expose some way to configure the Jackson Mapper instances that they create on your behalf.\r\n\r\nThis is an assertion that jackson should never be an implementation detail of a library, but must be considered part of the library API surface. While I agree that it's helpful to expose in many types of applications (e.g. spring-boot) there's some value in protecting internal ser/de details in purpose-built libraries. Consider a library which acts as a client for a very specific service, using its own domain types and wire-format guarantees, it would be dangerous to allow users to mutate and break the wire format, and removes the possibility of changing the serialization provider (not that that's something I'm considering, but loose coupling is a tremendous feature).\n\nComment by pjfanning:\nLet's put it this way: you want an insecure version of Jackson. There is already 2.14.2 that fits your needs. Stick with it.\r\n\r\nAllow other users to upgrade \n\nComment by cowtowncoder:\n@pjfanning I actually agree with @carterkozak 's concerns here: the problem is NOT the direct dependencies by projects but transitive dependencies. It is often not possible to make coordinated upgrades in an easy manner; and we cannot solve all of these by \"just don't upgrade\". Conversely forced update by transitive dependencies can break downstream users, at least temporarily.\r\nAt the same time I agree with your point wrt us not being in position to wait until 2.16 & challenges with bootstrapping of changes.\r\n\r\nTo me, it seems like:\r\n\r\n1. We do want to start with limits, and not just offer configurability, BUT\r\n2. Start with very lenient limits to reduce likelihood of actual breakages (cannot eliminate, fundamentally, but avoid cases that SnakeYAML hit)\r\n\r\nBut as to specific references to 1 megabyte -- two quick notes:\r\n\r\n1. This is for maximum TOKEN (String) value, and NOT for maximum input document. We do not (yet at least) have default limits for the whole input (and if we had, it'd be way bigger value)\r\n3. We can definitely increase this default before 2.15.0 release; there was already some discussion on value to use. If 1M characters is too low (is it?), we could go to 2 or 5 or even 10; all of which are stricter than current \"only limited by heap size\"\r\n\r\nSame goes for other limits too.\r\n\n\nComment by pjfanning:\n* we have not had any complaints about jackson-dataformat-yaml and its low snakeyaml imposed limits - jackson-dataformat-yaml v2.14.0 has low processing limits but a mechanism to change the defaults\r\n* noone has supplied real world examples where the new jackson-databind limits cause trouble - the limits are generous - we can all theorise about edge cases but most users don't deliberately use messages that would come near the new Jackson limits\r\n* the 2.15 / 2.16 release idea may make the rollout slightly easier but in the end of the day, users who upgrade libs and go straight to production without proper testing will hit issues - there is little we can do to help them if they won't help themselves\r\n* I have in the past suggested making the defaults configurable via system properties or via config files (I really like https://github.com/lightbend/config) - I think this approach is better than having a 2.15 insecure but configurable and then a 2.16 secure release\r\n* we cannot claim to have fixed the sonatype issue that everyone claims about until we are secure by default - and a number of the OSS Fuzz scenarios that we fixed, will start failing again if we remove the limits\n\nComment by pjfanning:\nIf people can provide real world cases where the new defaults cause issues, we might be able to increase the defaults to suit those cases but not increase them to the extent that the limits become a low bar for malicious agents to jump straight over. A 10000 char number is much more dangerous than a 1000 char number. But we might be able to split the difference at something like 2000 chars.\n\nComment by carterkozak:\n> we have not had any complaints about jackson-dataformat-yaml and its low snakeyaml imposed limits - jackson-dataformat-yaml v2.14.0 has low processing limits but a mechanism to change the defaults\r\n\r\nThe snakeyaml upgrade caused several production failures across a handful products that I work on, however the products which were impacted are not open-source so I am unable to provide direct artifacts. At the point when that occurred, releases were already out, and work was in progress in jackson to expose configuration points. We had to do the best we could with the tools we had available, which weren't enough to completely prevent further failures (though we were able to reduce their rate of occurrence with reflection hackery in the meantime). In this case, I want to do anything and everything I can to get ahead of the problem while the release is in an RC state rather than help the teams I support remediate failures reactively.\r\n\r\nI think there are a few open questions that are currently very hard to answer:\r\n1. What is the correct limit to add to existing code such that denial of service attacks are prevented, but existing users are not?\r\n2. Once I know the correct limits, how do I configure those which are higher than the proposed defaults without breaking other components which share dependency constraints?\r\n\r\nI suspect I'll find there's not always a good answer to 1, and it will help me find code which buffers large strings on heap unnecessarily, leading to performance improvements when such code is migrated to a streaming API. I want to reiterate; this is a win, and in an entirely new project, it would be precisely what I want. However, when we're limiting the behavior of systems that have existed for longer, it's important to have observability into the impact of my limits before they cause failures. I'd love to register a component into my JsonFactory instance which reports the size of each string and numeric sequence, something that can tell me when I'm nearing the limit but prior to breaching it and failing, so that I have time to fully investigate the root cause when values grow over time. I can investigate what such an interface might look like tomorrow, ideally I can make something work with 2.14 as well and pull metrics from production systems.\n\nComment by cowtowncoder:\nMy understanding, too, is that SnakeYAML document limit definitely caused issues. Not so much for `jackson-dataformat-yaml`, but transitively.\r\n\r\nWhile I think that in principle getting actual information on upper limits would be the right thing to go, my past experience suggests there is huge latency in getting that information, and that it comes in form of bug reports.\r\n\r\nAs to actual limits, my view is that:\r\n\r\n1. Maximum number length limit (1024 digits) is probably fine\r\n2. Maximum nesting limit (1000) is likewise fine, and close enough to what we sort of need (for various deserializers maximum on default JDKs would be no more than 5x - 10x higher)\r\n3. String value is the only thing where I could see need for >1M characters for non-trivial number of cases.\r\n\r\nFurther, wrt (3), I think there's plenty of room to increase maximum -- this is not asymmmetric processing cases like, say, number length (1). Attacker must actually provide full String.\r\n\r\nGiven this, I am thinking that raising limit to 5M (taking 10 meg of memory for `char[]`) would be fine. Or if not 5, then 2 megs.\r\n\r\nI know this is just speculation, too, but to be honest I don't see attacks being much more likely with 10 than 1 meg limit -- anyone worried about too long Strings is likely wanting to scale back limit to 64k or 8k or whatever anyway.\r\nPut another way, 1M is already high enough that for many use cases there's need for tuning.\r\nBut even 5M is somewhat useful over no limits whatever.\r\n\r\n\n\nComment by cowtowncoder:\nFWTW, many other parsers do implement way stricter limits:\r\n\r\n* https://www.ibm.com/docs/en/datapower-gateway/2018.4?topic=20-json-parser-limits (8k strings)\r\n\r\nAnother thing, then, would be to try to solicit opinions. I have tried but I am not very effective with that (Twitter, mailing lists).\r\nMaybe others could get more information?\r\n\r\n\n\nComment by pjfanning:\n@cowtowncoder is there any way that you would consider having an API that let users inject a global StreamReadConstraints to override the default?\n\nComment by cowtowncoder:\n@pjfanning I don't think I would want to allow that, due to the way Jackson is commonly used as a transitive dependency by multiple other libraries. The whole concept of global overrides does not work well with this embedded usage in mind.\r\nThis is a pretty big philosophical obstacle and has come up a few times wrt various features (often security-related ones).\r\n\r\n**EDIT**: although, if they are true defaults and would NOT override whatever something else set... I am not sure.\r\nIt would then go to the question of actual use case. I can see defaulting for at least 2 things:\r\n\r\n1. Wanting to specify default baseline for anything that does not explicitly set defaults. I could see this use case as somewhat legit. Although then again, if multiple things (frameworks) want to change this we have a race condition (as in, which one's settings win)\r\n2. Wanting to forcible override constraints globally. This I find much less appealing.\r\n\n\nComment by pjfanning:\nUsers and lib maintainers would be strongly encouraged to not use the global override API. The API would be there just to allow users to set the defaults in the case where they are indirect users of Jackson. Imagine someone who uses Jersey for REST services. Imagine if Jersey does not expose a way to control the number size limit. Then the user of Jersey is unable to receive JSON with massive numbers and their use case might require it.\r\n\r\nThe API approach to setting the global defaults breaks down if lib maintainers start using that API. The values they set could affect other Jackson based code running in a user's JVM.\r\n\r\nWe could use System properties to achieve something similar but again lib maintainers could start using `System.setProperty` in a way that could affect other Jackson based code running in a user's JVM.\r\n\r\nIf we could add a dependency on https://github.com/lightbend/config - that lib has an elegant solution. Lib maintainers use a file called `reference.conf` to provide their config defaults and users can override them in their `application.conf`. The config lib will ignore `application.conf` files in libs. This approach does not fully solve the issue of lib maintainer setting jackson configs in their reference.conf but users can force everything in the JVM to use their preferred settings by explicitly setting them in their application.conf.\r\n\n\nComment by pjfanning:\n@carterkozak is there any chance you would consider bundling a shaded version of the jackson libs you need in your library? \r\n\r\nThat way your lib is unaffected by a user who uses your lib but also somehow also uses Jackson directly or via another lib and that ends up with your lib using a newer version of jackson that it is not ready to use yet.\r\n\r\nYou can upgrade your shaded version of jackson when you are happy that you are ready.\r\n\r\n\n\nComment by cowtowncoder:\nYeah I do not think I want to take Jackson into this direction @pjfanning at this point.\r\nI think configuration files are great for frameworks that are basically singletons (they control application etc) but do not fit well with more library-style packages like Jackson.\r\n\r\nI have nothing against extensions that would do this tho, if there were ways to offer that somehow. But at basic level I do not want to (have to) add reading of configuration files, figuring out precedenses, deal with inevitable conflicts that result. It is another level of complexity that comes with that territory.\r\n\r\nAnd in particular I would not consider adding Lightbend/config -- while it is very powerful thing, it's... like another magnitude of complexity on top of (or under maybe) Jackson. So that won't be something I'd use.\r\n\r\n\r\n\n\nComment by carterkozak:\n@pjfanning You're correct that shading could solve the transitive dependency problem from the perspective of a single fully encapsulated library, however my scenario is perhaps more complex than I let on; I maintain a core set of libraries that enable teams to quickly and easily build and deploy services (think spring-boot or dropwizard, with a strong bias toward our environments), as well as tooling to help teams build and maintain their own libraries. In many of these libraries, jackson is a fully encapsulated implementation detail, and in others, it's part of our API. Shading can be used for libraries where the shaded target is not used at all in the API, but presents new security problems. When a new RCE vulnerability is discovered, it would be that much harder to remediate all impacted services due to the additionally rebuilding each library which shades a copy of jackson (I recall some tricky instances involving aws-sdk jars).\r\n\r\nI have added some instrumentation to one of our more common ObjectMapper factories ([here](https://github.com/palantir/conjure-java-runtime/pull/2569) if you're interested), and data has begun to flow, but it may be a few hours before adoption is broad enough to make meaningful observations.\n\nComment by pjfanning:\n@carterkozak would https://github.com/FasterXML/jackson-core/issues/962 fix the problem for you? So far, it seems unlikely that there will be agreement to keep the limits unlimited in jackson 2.15 but the aim is to make it easier to set the limits.\n\nComment by cowtowncoder:\nAt this point it sounds like data collection can help determine if there are issues and we can proceed with that.\r\n\r\n@carterkozak Data on maximum field/property names would be very valuable as well: I think we should add limits for those in 2.16 (too late for 2.15). And for various reasons they should be significantly lower than limits for String values.\r\nAnd this makes it important to have some idea of what kinds of things are seen \"in the wild\".\r\n",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "2.15.0-rc1 and processing-limit default values",
+                "name": "issue#958",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#962"
+                    },
+                    {
+                        "start_node": "issue#962",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#958"
+                    }
+                ],
+                "similarity": 0.3984105910623133,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "963",
+                "type": "issue",
+                "content": "I wanted to flag a few broken links on the https://github.com/FasterXML/jackson/wiki/Jackson-Release-2.15 wiki page that I noticed while reading through the discussion in #958 .\r\n\r\n`https://github.com/FasterXML/jackson-core/isses/827` should actually link to `https://github.com/FasterXML/jackson-core/issues/827` (which actually redirects to `https://github.com/FasterXML/jackson-core/pull/827`) and same for `https://github.com/FasterXML/jackson-core/isses/863`\r\n\r\nA quick `%s/isses/issues/g` should fix these up. It doesn't look like GitHub supports PRs for wiki, so patch inline:\r\n\r\n```\r\ndiff --git a/Jackson-Release-2.15.md b/Jackson-Release-2.15.md\r\nindex 780cfe8..06ea965 100644\r\n--- a/Jackson-Release-2.15.md\r\n+++ b/Jackson-Release-2.15.md\r\n@@ -65,7 +65,7 @@ Default/baseline Guava dependency now `23.6.1-jre` (was `21.0` in 2.14), but mod\r\n \r\n #### Maximum number token lengths\r\n \r\n-Implementation of [jackson-core#827](../../jackson-core/isses/827) sets up upper limit on maximum length of numeric tokens read from input.\r\n+Implementation of [jackson-core#827](../../jackson-core/issues/827) sets up upper limit on maximum length of numeric tokens read from input.\r\n Default limit is:\r\n \r\n * Maximum 1000 for both integral and floating-point numbers.\r\n@@ -74,7 +74,7 @@ Note that dataformat modules need to add support for enforcing the limits so cov\r\n \r\n #### Maximum String value length\r\n \r\n-Implementation of [jackson-core#863](../../jackson-core/isses/863) sets up upper limit on maximum length of String values read from input. Default limit is:\r\n+Implementation of [jackson-core#863](../../jackson-core/issues/863) sets up upper limit on maximum length of String values read from input. Default limit is:\r\n \r\n * Maximum of 1_000_000 (1 million) input units (bytes/chars depending on input source)\r\n \r\n-- \r\n```\n\n\nComment by pjfanning:\nthanks @schlosna - I've updated 2 broken links could you check the page again?\n\nComment by schlosna:\nLooks good, closing this out, thanks!",
+                "source_code": null,
+                "distance": 0.75,
+                "title": "Jackson 2.15 Release wiki has broken links",
+                "name": "issue#963",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#962"
+                    },
+                    {
+                        "start_node": "issue#962",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#958"
+                    },
+                    {
+                        "start_node": "issue#958",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#963"
+                    }
+                ],
+                "similarity": 0.30211575790834916,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "827",
+                "type": "issue",
+                "content": "* Introduces a default max length for numbers of 1000 chars - this default can be overridden (eg set to a much higher limit)\r\n* we shouldn't allow super large numbers as a default (I can justify this in private exchanges but don't want to spell it out in a public forum)\r\n* checks the string/char[] length before parsing the text as a number\r\n* this is a bit late but better than not checking at all - because parsing numbers is expensive and slower than O(n)\r\n* the problem with doing an earlier check (while building the char[] is that is not always clear how the TextBuffer is going to be used. Is it being used to get text or is it being used to buffer up the chars needed to parse a number\r\n  * if someone can point out how we can know in advance if the TextBuffer is destined to used for number parsing, then the num size limit can be checked earlier \r\n\r\nTo create a JSONFactory that allows larger numbers, you can use this code\r\n```\r\n        JsonFactory f = JsonFactory.builder()\r\n                .streamReadConstraints(StreamReadConstraints.builder().withMaxNumberLength(10000).build())\r\n                .build();\r\n```\r\n\r\n**EDIT**: fixes [sonatype-2022-6438](https://ossindex.sonatype.org/vulnerability/sonatype-2022-6438)\r\n\r\n\n\n\nComment by pjfanning:\n@cowtowncoder would you be able to re-review this when you get a chance?\n\nComment by cowtowncoder:\nYes @pjfanning I will try to get back to this as soon as possible.\r\n\n\nComment by pjfanning:\n@cowtowncoder I think I've addressed most of your issues with some recent commits. I've updated the PR description with how the code is called. The class is now StreamReadConstraints and has a builder().\n\nComment by cowtowncoder:\nOk couple of follow-up question on limits:\r\n\r\n1. Is it reasonable to have same length limit for integral and floating-point numbers? Latter are (afaik) much more expensive to handle -- and former might have more legit use cases (for encryption keys, I think?). Or should those be split into 2 settings\r\n2. Is `1000` bit low as a limit? I don't know if there are use case past that, or perhaps limits other parsers use. I know it's to some degree arbitrary, but since we are adding a new constraint it'd be nice to reduce chance of breaking existing use cases\r\n\r\n\n\nComment by pjfanning:\n> Ok couple of follow-up question on limits:\r\n> \r\n> 1. Is it reasonable to have same length limit for integral and floating-point numbers? Latter are (afaik) much more expensive to handle -- and former might have more legit use cases (for encryption keys, I think?). Or should those be split into 2 settings\r\n> 2. Is `1000` bit low as a limit? I don't know if there are use case past that, or perhaps limits other parsers use. I know it's to some degree arbitrary, but since we are adding a new constraint it'd be nice to reduce chance of breaking existing use cases\r\n\r\n1. I think you'd want to want to have some very specialised requirement to want to set a different limit for integers and for BigDecimals. For normal users, it's simpler to have 1 setting. For edge case users, they would have to set the single limit to be the higher of the limits that they have in their heads.\r\n2. 1000 is a very long number under almost any user's definition. From my testing, parsing performance of both integers and BigDecimals tails off dramatically after about 1000 digits - exponential loss in performance. \n\nComment by cowtowncoder:\n> > Ok couple of follow-up question on limits:\r\n> > \r\n> > 1. Is it reasonable to have same length limit for integral and floating-point numbers? Latter are (afaik) much more expensive to handle -- and former might have more legit use cases (for encryption keys, I think?). Or should those be split into 2 settings\r\n> > 2. Is `1000` bit low as a limit? I don't know if there are use case past that, or perhaps limits other parsers use. I know it's to some degree arbitrary, but since we are adding a new constraint it'd be nice to reduce chance of breaking existing use cases\r\n> \r\n>     1. I think you'd want to want to have some very specialised requirement to want to set a different limit for integers and for BigDecimals. For normal users, it's simpler to have 1 setting. For edge case users, they would have to set the single limit to be the higher of the limits that they have in their heads.\r\n> \r\n>     2. 1000 is a very long number under almost any user's definition. From my testing, parsing performance of both integers and BigDecimals tails off dramatically after about 1000 digits - exponential loss in performance.\r\n\r\nOk. Besides, I hope we get some feedback during 2.15 RC phase (I'm incurable optimist).\r\nBut maybe I should do some googling to see how others set these limits.\r\n\n\nComment by cowtowncoder:\n@pjfanning Ok one more practical thing. Due to 2.x/3.0 differences, I think it'd be easier to try to merge this in pieces; first adding scaffolding for `StreamReadConstraints` (class itself, passing to `TokenStreamFactory`/`JsonFactory`); merge that 2.15 -> 3.0. And then go back add actual handling. Unfortunately this is kind of change where merging gets bit painful.\r\n\r\nI wonder what's the best way to do do that: should I copy parts from this PR and take a first crack; or would you like to do smaller PR based on this, and keep this as the second stage?\r\nI can try to do 2.x -> 3.0 merge for either case.\r\n\n\nComment by pjfanning:\nI created #845\n\nComment by cowtowncoder:\nI'll merge this: I have an idea of how to remove need to add parameter for constructing `TextBuffer`, instead taking it to calls to `contentsAsXxx()`\n\nComment by phatblat:\nWill this fix be backported to any minor versions before `2.15`?\n\nComment by cowtowncoder:\n> Will this fix be backported to any minor versions before `2.15`?\r\n\r\nNo, this cannot be backported in any earlier versions due to API changes and general complexity of changes.\r\n\n\nComment by kingsfleet:\n+1 for a backport, 2.15 is not until March\n\nComment by JoshDM:\n> +1 for a backport, 2.15 is not until March\r\n\r\n+1 for an early release of 2.15.\n\nComment by crahen:\nSurely there is a functional patch we can make to existing already released versions of Jackson to limit large numbers. Even if we connect whatever override for length to an environment variable or system property. You can't expect folks to rush out a major version upgrade to protect themselves, very risky.\r\n\r\nAre the maintainers doing this? When can we expect the patch?\n\nComment by pjfanning:\nYou're welcome to fork jackson and apply whatever fix you see fit.\n\nComment by cowtowncoder:\n@crahen No. Addition of new functionality needs to go in a new minor version. We will not be backporting the changes. So do not expect it at all.\r\n\r\n\n\nComment by sepatel:\n> You can't expect folks to rush out a major version upgrade to protect themselves, very risky.\r\n> \r\n> Are the maintainers doing this? When can we expect the patch?\r\n\r\nThey already answered that it cannot be backported. \r\n\r\n> > Will this fix be backported to any minor versions before `2.15`?\r\n> \r\n> No, this cannot be backported in any earlier versions due to API changes and general complexity of changes.\r\n\r\nSo yes businesses will have to weigh for themselves the risk of leaving the vulnerability in place or upgrading. Personally, we are going to be upgrading as soon as it is released and already prepping for it. Lot less risk of just upgrading to a new minor release instead.\r\n",
+                "source_code": null,
+                "distance": 1.0,
+                "title": "Add numeric value\tsize limits via\t`StreamReadConstraints` (fixes `sonatype-2022-6438`) -- default 1000 chars",
+                "name": "pr#827",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#962"
+                    },
+                    {
+                        "start_node": "issue#962",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#958"
+                    },
+                    {
+                        "start_node": "issue#958",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#827"
+                    }
+                ],
+                "similarity": 0.21998998759096805,
+                "end_line": null,
+                "signature": null
+            }
+        ]
+    },
+    "artifact_stats": {
+        "skipped_due_to_time": 13,
+        "valid_related_items": 55
+    }
+}

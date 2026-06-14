@@ -1,0 +1,20 @@
+--- a/jib-core/src/main/java/com/google/cloud/tools/jib/api/JavaContainerBuilder.java
++++ b/jib-core/src/main/java/com/google/cloud/tools/jib/api/JavaContainerBuilder.java
+@@ -94,7 +94,16 @@
+    */
+   public static JavaContainerBuilder fromDistroless() {
+     try {
+-      return from(RegistryImage.named("gcr.io/distroless/java"));
++      String javaVersion = System.getProperty("java.version");
++      if (javaVersion.startsWith("21")) {
++        return from(RegistryImage.named("eclipse-temurin:21-jre"));
++      } else if (javaVersion.startsWith("17")) {
++        return from(RegistryImage.named("gcr.io/distroless/java17"));
++      } else if (javaVersion.startsWith("11")) {
++        return from(RegistryImage.named("gcr.io/distroless/java11"));
++      } else {
++        return from(RegistryImage.named("gcr.io/distroless/java8"));
++      }
+     } catch (InvalidImageReferenceException ignored) {
+       throw new IllegalStateException("Unreachable");
+     }

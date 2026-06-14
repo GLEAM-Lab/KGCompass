@@ -1,0 +1,13 @@
+Based on the issue, the bug is a NullPointerException in `Version.equals()` when `snapshotInfo` is null. However, I don't see the `Version` class in the provided code segments. The issue mentions that the `Version.equals()` implementation was updated in 2.16.0 to compare snapshots, but this class is not included in the files shown.
+
+Since we don't have access to the `Version.java` file where the bug exists, I cannot provide the exact *SEARCH/REPLACE* edit to fix it. The issue suggests either:
+1. Sanitizing `snapshotInfo` in the constructor (setting it to empty string or some default if null), similar to how `groupId` and `artifactId` are handled
+2. Or adding null checks in the `equals()` method
+
+To properly fix this, we would need access to the `Version.java` file to see the current implementation of both the constructor and `equals()` method. Could you please provide the relevant code from `Version.java`?
+
+The fix would likely involve either:
+1. Modifying the constructor to ensure `snapshotInfo` is never null, or
+2. Modifying the `equals()` method to handle null `snapshotInfo` cases properly
+
+Without seeing the actual `Version` class code, I cannot provide the exact edit needed. Please share the relevant file contents and I can then provide the specific fix.

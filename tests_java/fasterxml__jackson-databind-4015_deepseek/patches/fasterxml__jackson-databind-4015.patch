@@ -1,0 +1,32 @@
+Based on the issue discussion, the bug occurs when deserializing an empty string to Locale with `ACCEPT_EMPTY_STRING_AS_NULL_OBJECT` enabled. The issue suggests that the coercion configuration should be modified to handle Locale specially, returning `CoercionAction.TryConvert` instead of `CoercionAction.AsNull` for empty strings.
+
+Looking at the code segments provided, we need to modify the coercion config handling in `ObjectMapper.java` to set the proper coercion action for Locale. The fix involves configuring the coercion settings for Locale to try conversion rather than treating empty string as null.
+
+Here's the edit:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java
+- start_line : 2661
+- end_line : 2665
+<<<<<<< SEARCH
+    public ObjectMapper configure(DeserializationFeature f, boolean state) {
+        _deserializationConfig = state ?
+                _deserializationConfig.with(f) : _deserializationConfig.without(f);
+        return this;
+    }
+=======
+    public ObjectMapper configure(DeserializationFeature f, boolean state) {
+        _deserializationConfig = state ?
+                _deserializationConfig.with(f) : _deserializationConfig.without(f);
+        if (f == DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT && state) {
+            coercionConfigFor(Locale.class)
+                .setCoercion(CoercionInputShape.EmptyString, CoercionAction.TryConvert);
+        }
+        return this;
+    }
+>>>>>>> REPLACE
+```
+
+This change ensures that when `ACCEPT_EMPTY_STRING_AS_NULL_OBJECT` is enabled, Locale specifically will still attempt to convert empty strings (to `Locale.ROOT`) rather than treating them as null. This matches the expected behavior described in the issue while maintaining backward compatibility for other types.
+
+The fix is similar to what @pkraeutli suggested in their workaround, but makes it automatic when configuring the feature rather than requiring manual configuration. This provides a more intuitive default behavior for Locale deserialization while still allowing the general `ACCEPT_EMPTY_STRING_AS_NULL_OBJECT` feature to work as expected for other types.

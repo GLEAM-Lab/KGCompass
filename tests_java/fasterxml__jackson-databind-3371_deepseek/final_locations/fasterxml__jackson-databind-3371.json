@@ -1,0 +1,1609 @@
+{
+  "related_entities": {
+    "methods": [
+      {
+        "start_line": 263,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected ObjectReader(ObjectReader base, TokenFilter filter) {\n        _config = base._config;\n        _context = base._context;\n        _rootDeserializers = base._rootDeserializers;\n        _parserFactory = base._parserFactory;\n        _valueType = base._valueType;\n        _rootDeserializer = base._rootDeserializer;\n        _valueToUpdate = base._valueToUpdate;\n        _schema = base._schema;\n        _injectableValues = base._injectableValues;\n        _unwrapRoot = base._unwrapRoot;\n        _dataFormatReaders = base._dataFormatReaders;\n        _filter = filter;\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "ObjectReader",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          }
+        ],
+        "similarity": 0.10064176079804682,
+        "end_line": 276,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader(ObjectReader base, TokenFilter filter)"
+      },
+      {
+        "start_line": 931,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected ObjectReader _with(DeserializationConfig newConfig) {\n        if (newConfig == _config) {\n            return this;\n        }\n        ObjectReader r = _new(this, newConfig);\n        if (_dataFormatReaders != null) {\n            r  = r.withFormatDetection(_dataFormatReaders.with(newConfig));\n        }\n        return r;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "_with",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_with"
+          }
+        ],
+        "similarity": 0.08058918250023785,
+        "end_line": 940,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader._with(DeserializationConfig newConfig): ObjectReader"
+      },
+      {
+        "start_line": 960,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> T readValue(JsonParser p, JavaType type) throws IOException {\n        JsonDeserializer<Object> deser = findRootValueDeserializer(type);\n        if (deser == null) {\n            return reportBadDefinition(type,\n                    \"Could not find JsonDeserializer for type \"+ClassUtil.getTypeDescription(type));\n        }\n        return (T) deser.deserialize(p, this);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "readValue",
+        "documentation": "/**\n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          }
+        ],
+        "similarity": 0.07905471365647068,
+        "end_line": 967,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext.readValue(JsonParser p, JavaType type): T"
+      },
+      {
+        "start_line": 2225,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected String _shapeForToken(JsonToken t) {\n        if (t != null) {\n            switch (t) {\n            // Likely Object values\n            case START_OBJECT:\n            case END_OBJECT:\n            case FIELD_NAME:\n                return \"Object value\";\n\n            // Likely Array values\n            case START_ARRAY:\n            case END_ARRAY:\n                return \"Array value\";\n\n            case VALUE_FALSE:\n            case VALUE_TRUE:\n                return \"Boolean value\";\n\n            case VALUE_EMBEDDED_OBJECT:\n                return \"Embedded Object\";\n\n            case VALUE_NUMBER_FLOAT:\n                return \"Floating-point value\";\n            case VALUE_NUMBER_INT:\n                return \"Integer value\";\n            case VALUE_STRING:\n                return \"String value\";\n\n            case VALUE_NULL:\n                return \"Null value\";\n\n            case NOT_AVAILABLE:\n            default:\n                return \"[Unavailable value]\";\n            }\n        }\n        return \"<end of input>\";\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_shapeForToken",
+        "documentation": "/**\n     * Helper method for constructing description like \"Object value\" given\n     * {@link JsonToken} encountered.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          },
+          {
+            "start_node": "DeserializationContext",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_shapeForToken"
+          }
+        ],
+        "similarity": 0.07592200127281429,
+        "end_line": 2262,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext._shapeForToken(JsonToken t): String"
+      },
+      {
+        "start_line": 1610,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void handleBadMerge(JsonDeserializer<?> deser) throws JsonMappingException",
+        "distance": 1.5,
+        "title": null,
+        "name": "handleBadMerge",
+        "documentation": "/**\n     * Method that deserializer may call if it is called to do an update (\"merge\")\n     * but deserializer operates on a non-mergeable type. Although this should\n     * usually be caught earlier, sometimes it may only be caught during operation\n     * and if so this is the method to call.\n     * Note that if {@link MapperFeature#IGNORE_MERGE_FOR_UNMERGEABLE} is enabled,\n     * this method will simply return null; otherwise {@link InvalidDefinitionException}\n     * will be thrown.\n     *\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          },
+          {
+            "start_node": "DeserializationContext",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "handleBadMerge"
+          }
+        ],
+        "similarity": 0.07591177690063845,
+        "end_line": 1610,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext.handleBadMerge(JsonDeserializer deser): void"
+      },
+      {
+        "start_line": 1911,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> T reportBadMerge(JsonDeserializer<?> deser) throws JsonMappingException {\n        handleBadMerge(deser);\n        return null;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "reportBadMerge",
+        "documentation": "/**\n     * @deprecated Since 2.10 use {@link #handleBadMerge} instead\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          },
+          {
+            "start_node": "DeserializationContext",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "reportBadMerge"
+          }
+        ],
+        "similarity": 0.06811790785246004,
+        "end_line": 1914,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext.reportBadMerge(JsonDeserializer deser): T"
+      },
+      {
+        "start_line": 646,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader with(JsonFactory f) {\n        if (f == _parserFactory) {\n            return this;\n        }\n        ObjectReader r = _new(this, f);\n        // Also, try re-linking, if possible...\n        if (f.getCodec() == null) {\n            f.setCodec(r);\n        }\n        return r;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * Method for constructing a new reader instance with configuration that uses\n     * passed {@link JsonFactory} for constructing underlying Readers.\n     *<p>\n     * NOTE: only factories that <b>DO NOT REQUIRE SPECIAL MAPPERS</b>\n     * (that is, ones that return <code>false</code> for\n     * {@link JsonFactory#requiresCustomCodec()}) can be used: trying\n     * to use one that requires custom codec will throw exception\n     * \n     * @since 2.1\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.06487128980395697,
+        "end_line": 656,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader.with(JsonFactory f): ObjectReader"
+      },
+      {
+        "start_line": 993,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> T readPropertyValue(JsonParser p, BeanProperty prop, JavaType type) throws IOException {\n        JsonDeserializer<Object> deser = findContextualValueDeserializer(type, prop);\n        if (deser == null) {\n            return reportBadDefinition(type, String.format(\n                    \"Could not find JsonDeserializer for type %s (via property %s)\",\n                    ClassUtil.getTypeDescription(type), ClassUtil.nameOf(prop)));\n        }\n        return (T) deser.deserialize(p, this);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "readPropertyValue",
+        "documentation": "/**\n     * Same as {@link #readPropertyValue(JsonParser, BeanProperty, Class)} but with\n     * fully resolved {@link JavaType} as target: needs to be used for generic types,\n     * for example.\n     *\n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          },
+          {
+            "start_node": "DeserializationContext",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readPropertyValue"
+          }
+        ],
+        "similarity": 0.06399486193254728,
+        "end_line": 1001,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext.readPropertyValue(JsonParser p, BeanProperty prop, JavaType type): T"
+      },
+      {
+        "start_line": 2067,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected final JsonNode _bindAsTree(JsonParser p) throws IOException",
+        "distance": 1.25,
+        "title": null,
+        "name": "_bindAsTree",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_bindAsTree"
+          }
+        ],
+        "similarity": 0.06248313626635604,
+        "end_line": 2067,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader._bindAsTree(JsonParser p): JsonNode"
+      },
+      {
+        "start_line": 2391,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected final JavaType _jsonNodeType() {\n        JavaType t = _jsonNodeType;\n        if (t == null) {\n            t = getTypeFactory().constructType(JsonNode.class);\n            _jsonNodeType = t;\n        }\n        return t;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "_jsonNodeType",
+        "documentation": "/**\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_jsonNodeType"
+          }
+        ],
+        "similarity": 0.062387018297121365,
+        "end_line": 2398,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader._jsonNodeType(): JavaType"
+      },
+      {
+        "start_line": 2061,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected final JsonNode _bindAndCloseAsTree(JsonParser p0) throws IOException {\n        try (JsonParser p = p0) {\n            return _bindAsTree(p);\n        }\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "_bindAndCloseAsTree",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_bindAndCloseAsTree"
+          }
+        ],
+        "similarity": 0.06058659243683765,
+        "end_line": 2065,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader._bindAndCloseAsTree(JsonParser p0): JsonNode"
+      },
+      {
+        "start_line": 152,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/node/ObjectNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectNode with(String propertyName) {\n        JsonNode n = _children.get(propertyName);\n        if (n != null) {\n            if (n instanceof ObjectNode) {\n                return (ObjectNode) n;\n            }\n            throw new UnsupportedOperationException(\"Property '\" + propertyName\n                + \"' has value that is not of type ObjectNode (but \" + n\n                .getClass().getName() + \")\");\n        }\n        ObjectNode result = objectNode();\n        _children.put(propertyName, result);\n        return result;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "with",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.05963740296799098,
+        "end_line": 165,
+        "signature": "com.fasterxml.jackson.databind.node.ObjectNode.with(String propertyName): ObjectNode"
+      },
+      {
+        "start_line": 800,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader withValueToUpdate(Object value)",
+        "distance": 1.25,
+        "title": null,
+        "name": "withValueToUpdate",
+        "documentation": "/**\n     * Method for constructing a new instance with configuration that\n     * updates passed Object (as root value), instead of constructing \n     * a new value.\n     *<p>\n     * Note that the method does NOT change state of this reader, but\n     * rather construct and returns a newly configured instance.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withValueToUpdate"
+          }
+        ],
+        "similarity": 0.05942155503380446,
+        "end_line": 800,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader.withValueToUpdate(Object value): ObjectReader"
+      },
+      {
+        "start_line": 2009,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected Object _bind(JsonParser p, Object valueToUpdate) throws IOException",
+        "distance": 1.25,
+        "title": null,
+        "name": "_bind",
+        "documentation": "/**\n     * Actual implementation of value reading+binding operation.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_bind"
+          }
+        ],
+        "similarity": 0.059109159729179475,
+        "end_line": 2009,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader._bind(JsonParser p, Object valueToUpdate): Object"
+      },
+      {
+        "start_line": 788,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader withType(TypeReference<?> valueTypeRef) {\n        return forType(_config.getTypeFactory().constructType(valueTypeRef.getType()));\n    }    ",
+        "distance": 1.25,
+        "title": null,
+        "name": "withType",
+        "documentation": "/**\n     * @deprecated since 2.5 Use {@link #forType(TypeReference)} instead\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withType"
+          }
+        ],
+        "similarity": 0.058594854172885714,
+        "end_line": 790,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader.withType(TypeReference valueTypeRef): ObjectReader"
+      },
+      {
+        "start_line": 821,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JavaType constructType(Type type, JavaType contextType) {\n        TypeBindings bindings;\n        if (contextType == null) {\n            bindings = EMPTY_BINDINGS;\n        } else {\n            bindings = contextType.getBindings();\n            // 16-Nov-2016, tatu: Unfortunately as per [databind#1456] this can't\n            //   be made to work for some cases used to work (even if accidentally);\n            //   however, we can try a simple heuristic to increase chances of\n            //   compatibility from 2.6 code\n            if (type.getClass() != Class.class) {\n                // Ok: so, ideally we would test super-interfaces if necessary;\n                // but let's assume most if not all cases are for classes.\n                while (bindings.isEmpty()) {\n                    contextType = contextType.getSuperClass();\n                    if (contextType == null) {\n                        break;\n                    }\n                    bindings = contextType.getBindings();\n                }\n            }\n        }\n        return _fromAny(null, type, bindings);\n    }",
+        "distance": 2.0,
+        "title": null,
+        "name": "constructType",
+        "documentation": "/**\n     * @deprecated Since 2.7 (accidentally removed in 2.7.0; added back in 2.7.1)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "constructType"
+          }
+        ],
+        "similarity": 0.05843413609539114,
+        "end_line": 844,
+        "signature": "com.fasterxml.jackson.databind.type.TypeFactory.constructType(Type type, JavaType contextType): JavaType"
+      },
+      {
+        "start_line": 873,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader withFormatDetection(ObjectReader... readers) {\n        return withFormatDetection(new DataFormatReaders(readers));\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "withFormatDetection",
+        "documentation": "/**\n     * Fluent factory method for constructing a reader that will try to\n     * auto-detect underlying data format, using specified list of\n     * {@link JsonFactory} instances, and default {@link DataFormatReaders} settings\n     * (for customized {@link DataFormatReaders}, you can construct instance yourself).\n     * to construct appropriate {@link JsonParser} for actual parsing.\n     *<p>\n     * Note: since format detection only works with byte sources, it is possible to\n     * get a failure from some 'readValue()' methods. Also, if input cannot be reliably\n     * (enough) detected as one of specified types, an exception will be thrown.\n     *<p>\n     * Note: not all {@link JsonFactory} types can be passed: specifically, ones that\n     * require \"custom codec\" (like XML factory) will not work. Instead, use\n     * method that takes {@link ObjectReader} instances instead of factories.\n     * \n     * @param readers Data formats accepted, in decreasing order of priority (that is,\n     *   matches checked in listed order, first match wins)\n     * \n     * @return Newly configured writer instance\n     * \n     * @since 2.1\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withFormatDetection"
+          }
+        ],
+        "similarity": 0.058000365837744414,
+        "end_line": 875,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader.withFormatDetection(ObjectReader readers): ObjectReader"
+      },
+      {
+        "start_line": 375,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _initForMultiRead(DeserializationContext ctxt, JsonParser p)",
+        "distance": 1.25,
+        "title": null,
+        "name": "_initForMultiRead",
+        "documentation": "/**\n     * Alternative to {@link #_initForReading} used in cases where reading\n     * of multiple values means that we may or may not want to advance the stream,\n     * but need to do other initialization.\n     *<p>\n     * Base implementation only sets configured {@link FormatSchema}, if any, on parser.\n     * \n     * @since 2.8\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_initForMultiRead"
+          }
+        ],
+        "similarity": 0.05773187479621068,
+        "end_line": 375,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader._initForMultiRead(DeserializationContext ctxt, JsonParser p): void"
+      },
+      {
+        "start_line": 243,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected ObjectReader(ObjectReader base, JsonFactory f)",
+        "distance": 1.0,
+        "title": null,
+        "name": "ObjectReader",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          }
+        ],
+        "similarity": 0.05771298027596839,
+        "end_line": 243,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader(ObjectReader base, JsonFactory f)"
+      },
+      {
+        "start_line": 345,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonToken _initForReading(DeserializationContext ctxt, JsonParser p)",
+        "distance": 1.25,
+        "title": null,
+        "name": "_initForReading",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_initForReading"
+          }
+        ],
+        "similarity": 0.0567178529164022,
+        "end_line": 345,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader._initForReading(DeserializationContext ctxt, JsonParser p): JsonToken"
+      },
+      {
+        "start_line": 465,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader withFeatures(JsonParser.Feature... features) {\n        return _with(_config.withFeatures(features));\n    }    ",
+        "distance": 1.25,
+        "title": null,
+        "name": "withFeatures",
+        "documentation": "/**\n     * Method for constructing a new reader instance that is configured\n     * with specified features enabled.\n     *\n     * @param features Features to enable\n     *\n     * @return Reader instance with specified features enabled\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withFeatures"
+          }
+        ],
+        "similarity": 0.05596690098736872,
+        "end_line": 467,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader.withFeatures(JsonParser features): ObjectReader"
+      },
+      {
+        "start_line": 433,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/node/ObjectNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T extends JsonNode> T setAll(ObjectNode other)",
+        "distance": 1.5,
+        "title": null,
+        "name": "setAll",
+        "documentation": "/**\n     * Method for adding all properties of the given Object, overriding\n     * any existing values for those properties.\n     *<p>\n     * NOTE: co-variant return type since 2.10\n     * \n     * @param other Object of which properties to add to this object\n     *\n     * @return This node after addition (to allow chaining)\n     *\n     * @since 2.1\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fieldNames"
+          },
+          {
+            "start_node": "fieldNames",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ObjectNode"
+          },
+          {
+            "start_node": "ObjectNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setAll"
+          }
+        ],
+        "similarity": 0.055141777974568894,
+        "end_line": 433,
+        "signature": "com.fasterxml.jackson.databind.node.ObjectNode.setAll(ObjectNode other): T"
+      },
+      {
+        "start_line": 952,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> T readValue(JsonParser p, Class<T> type) throws IOException {\n        return readValue(p, getTypeFactory().constructType(type));\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "readValue",
+        "documentation": "/**\n     * Convenience method that may be used by composite or container deserializers,\n     * for reading one-off values contained (for sequences, it is more efficient\n     * to actually fetch deserializer once for the whole collection).\n     *<p>\n     * NOTE: when deserializing values of properties contained in composite types,\n     * rather use {@link #readPropertyValue(JsonParser, BeanProperty, Class)};\n     * this method does not allow use of contextual annotations.\n     * \n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          }
+        ],
+        "similarity": 0.05499091111271897,
+        "end_line": 954,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext.readValue(JsonParser p, Class type): T"
+      },
+      {
+        "start_line": 618,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/node/ObjectNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonNode putAll(ObjectNode other) {\n        return setAll(other);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "putAll",
+        "documentation": "/**\n     * Method for adding all properties of the given Object, overriding\n     * any existing values for those properties.\n     * \n     * @param other Object of which properties to add to this object\n     * \n     * @return This node (to allow chaining)\n     * \n     * @deprecated Since 2.4 use {@link #setAll(ObjectNode)},\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fieldNames"
+          },
+          {
+            "start_node": "fieldNames",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ObjectNode"
+          },
+          {
+            "start_node": "ObjectNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "putAll"
+          }
+        ],
+        "similarity": 0.054955447715477126,
+        "end_line": 620,
+        "signature": "com.fasterxml.jackson.databind.node.ObjectNode.putAll(ObjectNode other): JsonNode"
+      },
+      {
+        "start_line": 309,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected ObjectReader _new(ObjectReader base, DeserializationConfig config) {\n        return new ObjectReader(base, config);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "_new",
+        "documentation": "/**\n     * Overridable factory method called by various \"withXxx()\" methods\n     * \n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_new"
+          }
+        ],
+        "similarity": 0.05472910728531836,
+        "end_line": 311,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader._new(ObjectReader base, DeserializationConfig config): ObjectReader"
+      },
+      {
+        "start_line": 2233,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonNode _detectBindAndCloseAsTree(InputStream in) throws IOException",
+        "distance": 1.25,
+        "title": null,
+        "name": "_detectBindAndCloseAsTree",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_detectBindAndCloseAsTree"
+          }
+        ],
+        "similarity": 0.05443330691373671,
+        "end_line": 2233,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader._detectBindAndCloseAsTree(InputStream in): JsonNode"
+      },
+      {
+        "start_line": 1013,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonNode readTree(JsonParser p) throws IOException {\n        JsonToken t = p.currentToken();\n        if (t == null) {\n            t = p.nextToken();\n            if (t == null) {\n                return getNodeFactory().missingNode();\n            }\n        }\n        if (t == JsonToken.VALUE_NULL) {\n            return getNodeFactory().nullNode();\n        }\n        return (JsonNode) findRootValueDeserializer(_config.constructType(JsonNode.class))\n                .deserialize(p, this);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "readTree",
+        "documentation": "/**\n     * Convenience method for reading the value that passed {@link JsonParser}\n     * points to as a {@link JsonNode}.\n     *\n     * @param p Parser that points to the first token of the value to read\n     *\n     * @return Value read as {@link JsonNode}\n     *\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          },
+          {
+            "start_node": "DeserializationContext",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readTree"
+          }
+        ],
+        "similarity": 0.05442432380538914,
+        "end_line": 1026,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext.readTree(JsonParser p): JsonNode"
+      },
+      {
+        "start_line": 2159,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonParser _considerFilter(final JsonParser p, boolean multiValue) {\n        // 26-Mar-2016, tatu: Need to allow multiple-matches at least if we have\n        //    have a multiple-value read (that is, \"readValues()\").\n        return ((_filter == null) || FilteringParserDelegate.class.isInstance(p))\n                ? p : new FilteringParserDelegate(p, _filter, Inclusion.ONLY_INCLUDE_ALL, multiValue);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "_considerFilter",
+        "documentation": "/**\n     * Consider filter when creating JsonParser.  \n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_considerFilter"
+          }
+        ],
+        "similarity": 0.05429712152647345,
+        "end_line": 2164,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader._considerFilter(JsonParser p, boolean multiValue): JsonParser"
+      },
+      {
+        "start_line": 585,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean hasValueDeserializerFor(JavaType type, AtomicReference<Throwable> cause) {\n        try {\n            return _cache.hasValueDeserializerFor(this, _factory, type);\n        } catch (DatabindException e) {\n            if (cause != null) {\n                cause.set(e);\n            }\n        } catch (RuntimeException e) {\n            if (cause == null) { // earlier behavior\n                throw e;\n            }\n            cause.set(e);\n        }\n        return false;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "hasValueDeserializerFor",
+        "documentation": "/**\n     * Method for checking whether we could find a deserializer\n     * for given type.\n     *\n     * @param type Type to check\n     * @param cause (optional) Reference set to root cause if no deserializer\n     *    could be found due to exception (to find the reason for failure)\n     *\n     * @since 2.3\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          },
+          {
+            "start_node": "DeserializationContext",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "hasValueDeserializerFor"
+          }
+        ],
+        "similarity": 0.05417331785731432,
+        "end_line": 599,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext.hasValueDeserializerFor(JavaType type, AtomicReference cause): boolean"
+      },
+      {
+        "start_line": 792,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public abstract JsonDeserializer<Object> deserializerInstance(Annotated annotated,",
+        "distance": 1.5,
+        "title": null,
+        "name": "deserializerInstance",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          },
+          {
+            "start_node": "DeserializationContext",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "deserializerInstance"
+          }
+        ],
+        "similarity": 0.053916049576752785,
+        "end_line": 792,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext.deserializerInstance(Annotated annotated, Object deserDef): JsonDeserializer"
+      },
+      {
+        "start_line": 409,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader withFeatures(DeserializationFeature... features) {\n        return _with(_config.withFeatures(features));\n    }    ",
+        "distance": 1.25,
+        "title": null,
+        "name": "withFeatures",
+        "documentation": "/**\n     * Method for constructing a new reader instance that is configured\n     * with specified features enabled.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withFeatures"
+          }
+        ],
+        "similarity": 0.05376599818242384,
+        "end_line": 411,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader.withFeatures(DeserializationFeature features): ObjectReader"
+      },
+      {
+        "start_line": 1539,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JavaType handleUnknownTypeId(JavaType baseType, String id,",
+        "distance": 1.5,
+        "title": null,
+        "name": "handleUnknownTypeId",
+        "documentation": "/**\n     * Method that deserializers should call if they encounter a type id\n     * (for polymorphic deserialization) that cannot be resolved to an\n     * actual type; usually since there is no mapping defined.\n     * Default implementation will try to call {@link DeserializationProblemHandler#handleUnknownTypeId}\n     * on configured handlers, if any, to allow for recovery; if recovery does not\n     * succeed, will throw exception constructed with {@link #invalidTypeIdException}.\n     *\n     * @param baseType Base type from which resolution starts\n     * @param id Type id that could not be converted\n     * @param extraDesc Additional problem description to add to default exception message,\n     *    if resolution fails.\n     *\n     * @return {@link JavaType} that id resolves to\n     *\n     * @throws IOException To indicate unrecoverable problem, if resolution cannot\n     *    be made to work\n     *\n     * @since 2.8\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          },
+          {
+            "start_node": "DeserializationContext",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "handleUnknownTypeId"
+          }
+        ],
+        "similarity": 0.05361739533716176,
+        "end_line": 1539,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext.handleUnknownTypeId(JavaType baseType, String id, TypeIdResolver idResolver, String extraDesc): JavaType"
+      },
+      {
+        "start_line": 892,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader withFormatDetection(DataFormatReaders readers) {\n        return _new(this, _config, _valueType, _rootDeserializer, _valueToUpdate,\n                _schema, _injectableValues, readers);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "withFormatDetection",
+        "documentation": "/**\n     * Fluent factory method for constructing a reader that will try to\n     * auto-detect underlying data format, using specified\n     * {@link DataFormatReaders}.\n     *<p>\n     * NOTE: since format detection only works with byte sources, it is possible to\n     * get a failure from some 'readValue()' methods. Also, if input cannot be reliably\n     * (enough) detected as one of specified types, an exception will be thrown.\n     * \n     * @param readers DataFormatReaders to use for detecting underlying format.\n     * \n     * @return Newly configured writer instance\n     * \n     * @since 2.1\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withFormatDetection"
+          }
+        ],
+        "similarity": 0.05309611700943908,
+        "end_line": 895,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader.withFormatDetection(DataFormatReaders readers): ObjectReader"
+      },
+      {
+        "start_line": 2069,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonMappingException invalidTypeIdException(JavaType baseType, String typeId,",
+        "distance": 1.5,
+        "title": null,
+        "name": "invalidTypeIdException",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          },
+          {
+            "start_node": "DeserializationContext",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "invalidTypeIdException"
+          }
+        ],
+        "similarity": 0.05308274403455936,
+        "end_line": 2069,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext.invalidTypeIdException(JavaType baseType, String typeId, String extraDesc): JsonMappingException"
+      },
+      {
+        "start_line": 2365,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonDeserializer<Object> _prefetchRootDeserializer(JavaType valueType)",
+        "distance": 1.25,
+        "title": null,
+        "name": "_prefetchRootDeserializer",
+        "documentation": "/**\n     * Method called to locate deserializer ahead of time, if permitted\n     * by configuration. Method also is NOT to throw an exception if\n     * access fails.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_prefetchRootDeserializer"
+          }
+        ],
+        "similarity": 0.05283122161288166,
+        "end_line": 2365,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader._prefetchRootDeserializer(JavaType valueType): JsonDeserializer"
+      },
+      {
+        "start_line": 97,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/AsDeductionTypeDeserializer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Object deserializeTypedFromObject(JsonParser p, DeserializationContext ctxt) throws IOException {\n\n        JsonToken t = p.currentToken();\n        if (t == JsonToken.START_OBJECT) {\n            t = p.nextToken();\n        } else if (/*t == JsonToken.START_ARRAY ||*/ t != JsonToken.FIELD_NAME) {\n            /* This is most likely due to the fact that not all Java types are\n             * serialized as JSON Objects; so if \"as-property\" inclusion is requested,\n             * serialization of things like Lists must be instead handled as if\n             * \"as-wrapper-array\" was requested.\n             * But this can also be due to some custom handling: so, if \"defaultImpl\"\n             * is defined, it will be asked to handle this case.\n             */\n            return _deserializeTypedUsingDefaultImpl(p, ctxt, null, \"Unexpected input\");\n        }\n\n        // 03-May-2021, tatu: [databind#3139] Special case, \"empty\" Object\n        if (t == JsonToken.END_OBJECT) {\n            String emptySubtype = subtypeFingerprints.get(EMPTY_CLASS_FINGERPRINT);\n            if (emptySubtype != null) { // ... and an \"empty\" subtype registered\n                return _deserializeTypedForId(p, ctxt, null, emptySubtype);\n            }\n        }\n\n        List<BitSet> candidates = new LinkedList<>(subtypeFingerprints.keySet());\n\n        // Keep track of processed tokens as we must rewind once after deducing\n        // the deserializer to use\n        @SuppressWarnings(\"resource\")\n        final TokenBuffer tb = ctxt.bufferForInputBuffering(p);\n        boolean ignoreCase = ctxt.isEnabled(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES);\n\n        for (; t == JsonToken.FIELD_NAME; t = p.nextToken()) {\n            String name = p.currentName();\n            if (ignoreCase) name = name.toLowerCase();\n\n            tb.copyCurrentStructure(p);\n\n            Integer bit = fieldBitIndex.get(name);\n            if (bit != null) {\n                // field is known by at least one subtype\n                prune(candidates, bit);\n                if (candidates.size() == 1) {\n                    return _deserializeTypedForId(p, ctxt, tb, subtypeFingerprints.get(candidates.get(0)));\n                }\n            }\n        }\n\n        // We have zero or multiple candidates, deduction has failed\n        String msgToReportIfDefaultImplFailsToo = String.format(\"Cannot deduce unique subtype of %s (%d candidates match)\", ClassUtil.getTypeDescription(_baseType), candidates.size());\n        return _deserializeTypedUsingDefaultImpl(p, ctxt, tb, msgToReportIfDefaultImplFailsToo);\n    }",
+        "distance": 3.5,
+        "title": null,
+        "name": "deserializeTypedFromObject",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "constructType"
+          },
+          {
+            "start_node": "constructType",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "buildFingerprints"
+          },
+          {
+            "start_node": "buildFingerprints",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "AsDeductionTypeDeserializer"
+          },
+          {
+            "start_node": "AsDeductionTypeDeserializer",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "deserializeTypedFromObject"
+          }
+        ],
+        "similarity": 0.05273222450172659,
+        "end_line": 148,
+        "signature": "com.fasterxml.jackson.databind.jsontype.impl.AsDeductionTypeDeserializer.deserializeTypedFromObject(JsonParser p, DeserializationContext ctxt): Object"
+      },
+      {
+        "start_line": 1226,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> T readValue(JsonParser p, ResolvedType valueType) throws IOException {\n        _assertNotNull(\"p\", p);\n        return (T) forType((JavaType)valueType).readValue(p);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "readValue",
+        "documentation": "/**\n     * Convenience method that binds content read using given parser, using\n     * configuration of this reader, except that expected value type\n     * is specified with the call (instead of currently configured root type).\n     * Value return is either newly constructed, or root value that\n     * was specified with {@link #withValueToUpdate(Object)}.\n     *<p>\n     * NOTE: this method never tries to auto-detect format, since actual\n     * (data-format specific) parser is given.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          }
+        ],
+        "similarity": 0.052629530619223125,
+        "end_line": 1229,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader.readValue(JsonParser p, ResolvedType valueType): T"
+      },
+      {
+        "start_line": 179,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected ObjectReader(ObjectMapper mapper, DeserializationConfig config,",
+        "distance": 1.0,
+        "title": null,
+        "name": "ObjectReader",
+        "documentation": "/**\n     * Constructor called when a root deserializer should be fetched based\n     * on other configuration.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          }
+        ],
+        "similarity": 0.05250259809257722,
+        "end_line": 179,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader(ObjectMapper mapper, DeserializationConfig config, JavaType valueType, Object valueToUpdate, FormatSchema schema, InjectableValues injectableValues)"
+      },
+      {
+        "start_line": 246,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected DeserializationContext(DeserializationContext src) {\n        _cache = new DeserializerCache();\n        _factory = src._factory;\n\n        _config = src._config;\n        _featureFlags = src._featureFlags;\n        _readCapabilities = src._readCapabilities;\n        _view = src._view;\n        _injectableValues = null;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "DeserializationContext",
+        "documentation": "/**\n     * Copy-constructor for use with <code>copy()</code> by {@link ObjectMapper#copy()}\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          },
+          {
+            "start_node": "DeserializationContext",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          }
+        ],
+        "similarity": 0.0524026992465359,
+        "end_line": 255,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext(DeserializationContext src)"
+      },
+      {
+        "start_line": 843,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader withHandler(DeserializationProblemHandler h) {\n        return _with(_config.withHandler(h));\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "withHandler",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withHandler"
+          }
+        ],
+        "similarity": 0.05237357147699162,
+        "end_line": 845,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader.withHandler(DeserializationProblemHandler h): ObjectReader"
+      },
+      {
+        "start_line": 945,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/node/ObjectNode.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected ObjectNode _put(String fieldName, JsonNode value)",
+        "distance": 1.5,
+        "title": null,
+        "name": "_put",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fieldNames"
+          },
+          {
+            "start_node": "fieldNames",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ObjectNode"
+          },
+          {
+            "start_node": "ObjectNode",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_put"
+          }
+        ],
+        "similarity": 0.052267822693285663,
+        "end_line": 945,
+        "signature": "com.fasterxml.jackson.databind.node.ObjectNode._put(String fieldName, JsonNode value): ObjectNode"
+      },
+      {
+        "start_line": 602,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader with(DeserializationConfig config) {\n        return _with(config);\n    }    ",
+        "distance": 1.25,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * Mutant factory method that will construct a new instance that has\n     * specified underlying {@link DeserializationConfig}.\n     *<p>\n     * NOTE: use of this method is not recommended, as there are many other\n     * re-configuration methods available.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.05219568127923487,
+        "end_line": 604,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader.with(DeserializationConfig config): ObjectReader"
+      },
+      {
+        "start_line": 300,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected ObjectReader _new(ObjectReader base, JsonFactory f) {\n        return new ObjectReader(base, f);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "_new",
+        "documentation": "/**\n     * Overridable factory method called by various \"withXxx()\" methods\n     * \n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_new"
+          }
+        ],
+        "similarity": 0.051461781798414666,
+        "end_line": 302,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader._new(ObjectReader base, JsonFactory f): ObjectReader"
+      },
+      {
+        "start_line": 453,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader with(JsonParser.Feature feature) {\n        return _with(_config.with(feature));\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * Method for constructing a new reader instance that is configured\n     * with specified feature enabled.\n     *\n     * @param feature Feature to enable\n     *\n     * @return Reader instance with specified feature enabled\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.05144182007021553,
+        "end_line": 455,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader.with(JsonParser feature): ObjectReader"
+      },
+      {
+        "start_line": 847,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader with(Base64Variant defaultBase64) {\n        return _with(_config.with(defaultBase64));\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "with",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.0511524198229094,
+        "end_line": 849,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader.with(Base64Variant defaultBase64): ObjectReader"
+      },
+      {
+        "start_line": 631,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader with(JsonNodeFactory f) {\n        return _with(_config.with(f));\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * Method for constructing a new reader instance with configuration that uses\n     * passed {@link JsonNodeFactory} for constructing {@link JsonNode}\n     * instances.\n     *<p>\n     * Note that the method does NOT change state of this reader, but\n     * rather construct and returns a newly configured instance.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.051014827694450274,
+        "end_line": 633,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader.with(JsonNodeFactory f): ObjectReader"
+      },
+      {
+        "start_line": 654,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationConfig.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private DeserializationConfig _withJsonReadFeatures(FormatFeature... features) {\n        int parserSet = _parserFeatures;\n        int parserMask = _parserFeaturesToChange;\n        int newSet = _formatReadFeatures;\n        int newMask = _formatReadFeaturesToChange;\n        for (FormatFeature f : features) {\n            final int mask = f.getMask();\n            newSet |= mask;\n            newMask |= mask;\n\n            if (f instanceof JsonReadFeature) {\n                JsonParser.Feature oldF = ((JsonReadFeature) f).mappedFeature();\n                if (oldF != null) {\n                    final int pmask = oldF.getMask();\n                    parserSet |= pmask;\n                    parserMask |= pmask;\n                }\n            }\n        }\n        return ((_formatReadFeatures == newSet) && (_formatReadFeaturesToChange == newMask)\n                && (_parserFeatures == parserSet) && (_parserFeaturesToChange == parserMask)\n                ) ? this :\n            new DeserializationConfig(this,  _mapperFeatures, _deserFeatures,\n                    parserSet, parserMask, newSet, newMask);\n    }",
+        "distance": 3.0,
+        "title": null,
+        "name": "_withJsonReadFeatures",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "writeValueAsBytes"
+          },
+          {
+            "start_node": "writeValueAsBytes",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ObjectWriter"
+          },
+          {
+            "start_node": "ObjectWriter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withSchema"
+          },
+          {
+            "start_node": "withSchema",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "with"
+          },
+          {
+            "start_node": "with",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "DeserializationConfig"
+          },
+          {
+            "start_node": "DeserializationConfig",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_withJsonReadFeatures"
+          }
+        ],
+        "similarity": 0.051009650051980444,
+        "end_line": 678,
+        "signature": "com.fasterxml.jackson.databind.DeserializationConfig._withJsonReadFeatures(FormatFeature features): DeserializationConfig"
+      },
+      {
+        "start_line": 756,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader forType(TypeReference<?> valueTypeRef) {\n        return forType(_config.getTypeFactory().constructType(valueTypeRef.getType()));\n    }    ",
+        "distance": 1.25,
+        "title": null,
+        "name": "forType",
+        "documentation": "/**\n     * Method for constructing a new reader instance that is configured\n     * to data bind into specified type.\n     *<p>\n     * Note that the method does NOT change state of this reader, but\n     * rather construct and returns a newly configured instance.\n     *\n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "forType"
+          }
+        ],
+        "similarity": 0.050597616941450194,
+        "end_line": 758,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader.forType(TypeReference valueTypeRef): ObjectReader"
+      },
+      {
+        "start_line": 4433,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> T updateValue(T valueToUpdate, Object overrides)",
+        "distance": 2.0,
+        "title": null,
+        "name": "updateValue",
+        "documentation": "/**\n     * Convenience method similar to {@link #convertValue(Object, JavaType)} but one\n     * in which \n     *<p>\n     * Implementation is approximately as follows:\n     *<ol>\n     * <li>Serialize `updateWithValue` into {@link TokenBuffer}</li>\n     * <li>Construct {@link ObjectReader} with `valueToUpdate` (using {@link #readerForUpdating(Object)})\n     *   </li>\n     * <li>Construct {@link JsonParser} (using {@link TokenBuffer#asParser()})\n     *   </li>\n     * <li>Update using {@link ObjectReader#readValue(JsonParser)}.\n     *   </li>\n     * <li>Return `valueToUpdate`\n     *   </li>\n     *</ol>\n     *<p>\n     * Note that update is \"shallow\" in that only first level of properties (or, immediate contents\n     * of container to update) are modified, unless properties themselves indicate that\n     * merging should be applied for contents. Such merging can be specified using\n     * annotations (see <code>JsonMerge</code>) as well as using \"config overrides\" (see\n     * {@link #configOverride(Class)} and {@link #setDefaultMergeable(Boolean)}).\n     *\n     * @param valueToUpdate Object to update\n     * @param overrides Object to conceptually serialize and merge into value to\n     *     update; can be thought of as a provider for overrides to apply.\n     * \n     * @return Either the first argument (`valueToUpdate`), if it is mutable; or a result of\n     *     creating new instance that is result of \"merging\" values (for example, \"updating\" a\n     *     Java array will create a new array)\n     *\n     * @throws JsonMappingException if there are structural incompatibilities that prevent update.\n     * \n     * @since 2.9\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "updateValue"
+          }
+        ],
+        "similarity": 0.05053997643757379,
+        "end_line": 4433,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.updateValue(T valueToUpdate, Object overrides): T"
+      },
+      {
+        "start_line": 391,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader with(DeserializationFeature feature) {\n        return _with(_config.with(feature));\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * Method for constructing a new reader instance that is configured\n     * with specified feature enabled.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.05043948424960409,
+        "end_line": 393,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader.with(DeserializationFeature feature): ObjectReader"
+      }
+    ],
+    "classes": [],
+    "issues": [
+      {
+        "content": "Referring to https://github.com/FasterXML/jackson-databind/issues/2336 because there was a similar issue with polymorphic maps that was addressed there, and at the end of that issue it mentions:\r\n\r\n> If attempts to provide some form of risky merging for polymorphic values are still desired, a new issue should be created (with reference to this issue for back story).\r\n\r\nWe are on version `2.10.0`\r\nI have some classes defined similarly to:\r\n```\r\npublic class MyRequest {\r\n  @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = As.PROPERTY, property = \"type\")\r\n  @JsonSubTypes({\r\n      @Type(value = ThingyAA.class, name = \"ThingyAA\"),\r\n      @Type(value = ThingyBB.class, name = \"ThingyBB\")\r\n  })\r\n  public BaseThingy<?> thingy;\r\n\r\n  @JacksonConstructor\r\n  public MyRequest() {\r\n  }\r\n\r\n  public MyRequest(BaseThingy<?> thingy) {\r\n    this.thingy = thingy;\r\n  }\r\n}\r\n\r\n@JsonIgnoreProperties(value = \"type\", allowGetters = true, allowSetters = false)\r\npublic abstract class BaseThingy<D extends BaseThingyConfig> {\r\n  public Map<Integer, D> config = new HashMap<>();\r\n  public String name;\r\n}\r\n\r\npublic abstract class BaseThingyConfig {\r\n  public final Map<String, Object> data = new HashMap<>();\r\n}\r\n\r\npublic class ThingyAAConfig extends BaseThingyConfig {\r\n  @InternalJSONColumn\r\n  public String foo;\r\n}\r\n\r\npublic class ThingyBBConfig extends BaseThingyConfig {\r\n  @InternalJSONColumn\r\n  public String bar;\r\n}\r\n\r\npublic class ThingyAA extends BaseThingy<ThingyAAConfig> {\r\n  @InternalJSONColumn\r\n  public String stuff;\r\n}\r\n\r\npublic class ThingyBB extends BaseThingy<ThingyBBConfig> {\r\n  @InternalJSONColumn\r\n  public String otherStuff;\r\n}\r\n```\r\n\r\nThe problem we're seeing is the incoming request completely overwrites the existing object instead of merging.\r\n\r\nIf we force a merge using `@JsonMerge` then an exception is thrown:\r\n```Cannot merge polymorphic property 'thingy'```\r\n\r\nThere are a few ways we're thinking of  trying to get around this. One is to create a custom deserializer. And another is to manually merge the json via a deep node merge before passing to the reader similar to:\r\n\r\n```\r\nObjectReader jsonNodeReader = objectMapper.readerFor(JsonNode.class);\r\nJsonNode existingNode = jsonNodeReader.readValue(objectMapper.writeValueAsBytes(currentValue));\r\nJsonNode incomingNode = jsonNodeReader.readValue(request.getInputStream());\r\nJsonNode merged = merge(existingNode, incomingNode);\r\nObjectReader patchReader = objectMapper.readerForUpdating(currentValue);\r\npatchReader.readValue(merged);\r\n\r\npublic static JsonNode merge(JsonNode mainNode, JsonNode updateNode) {\r\n    Iterator<String> fieldNames = updateNode.fieldNames();\r\n\r\n    while (fieldNames.hasNext()) {\r\n      String updatedFieldName = fieldNames.next();\r\n      JsonNode valueToBeUpdated = mainNode.get(updatedFieldName);\r\n      JsonNode updatedValue = updateNode.get(updatedFieldName);\r\n\r\n      // If the node is an @ArrayNode\r\n      if (valueToBeUpdated != null && valueToBeUpdated.isArray() &&\r\n          updatedValue.isArray()) {\r\n        // running a loop for all elements of the updated ArrayNode\r\n        for (int i = 0; i < updatedValue.size(); i++) {\r\n          JsonNode updatedChildNode = updatedValue.get(i);\r\n          // Create a new Node in the node that should be updated, if there was no corresponding node in it\r\n          // Use-case - where the updateNode will have a new element in its Array\r\n          if (valueToBeUpdated.size() <= i) {\r\n            ((ArrayNode) valueToBeUpdated).add(updatedChildNode);\r\n          }\r\n          // getting reference for the node to be updated\r\n          JsonNode childNodeToBeUpdated = valueToBeUpdated.get(i);\r\n          merge(childNodeToBeUpdated, updatedChildNode);\r\n        }\r\n        // if the Node is an @ObjectNode\r\n      } else if (valueToBeUpdated != null && valueToBeUpdated.isObject()) {\r\n        merge(valueToBeUpdated, updatedValue);\r\n      } else {\r\n        if (mainNode instanceof ObjectNode) {\r\n          ((ObjectNode) mainNode).replace(updatedFieldName, updatedValue);\r\n        }\r\n      }\r\n    }\r\n    return mainNode;\r\n  }\r\n```\r\n\r\nCan some type of deep node merge occur in Jackson for this polymorphic scenario to alleviate us having to maintain this json functionality ourselves?\n",
+        "distance": 0,
+        "title": "Cannot merge polymorphic objects",
+        "name": "root",
+        "path": [],
+        "issue_id": "root",
+        "similarity": 2.0,
+        "type": "issue"
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "2541",
+        "type": "issue",
+        "content": "Referring to https://github.com/FasterXML/jackson-databind/issues/2336 because there was a similar issue with polymorphic maps that was addressed there, and at the end of that issue it mentions:\r\n\r\n> If attempts to provide some form of risky merging for polymorphic values are still desired, a new issue should be created (with reference to this issue for back story).\r\n\r\nWe are on version `2.10.0`\r\nI have some classes defined similarly to:\r\n```\r\npublic class MyRequest {\r\n  @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = As.PROPERTY, property = \"type\")\r\n  @JsonSubTypes({\r\n      @Type(value = ThingyAA.class, name = \"ThingyAA\"),\r\n      @Type(value = ThingyBB.class, name = \"ThingyBB\")\r\n  })\r\n  public BaseThingy<?> thingy;\r\n\r\n  @JacksonConstructor\r\n  public MyRequest() {\r\n  }\r\n\r\n  public MyRequest(BaseThingy<?> thingy) {\r\n    this.thingy = thingy;\r\n  }\r\n}\r\n\r\n@JsonIgnoreProperties(value = \"type\", allowGetters = true, allowSetters = false)\r\npublic abstract class BaseThingy<D extends BaseThingyConfig> {\r\n  public Map<Integer, D> config = new HashMap<>();\r\n  public String name;\r\n}\r\n\r\npublic abstract class BaseThingyConfig {\r\n  public final Map<String, Object> data = new HashMap<>();\r\n}\r\n\r\npublic class ThingyAAConfig extends BaseThingyConfig {\r\n  @InternalJSONColumn\r\n  public String foo;\r\n}\r\n\r\npublic class ThingyBBConfig extends BaseThingyConfig {\r\n  @InternalJSONColumn\r\n  public String bar;\r\n}\r\n\r\npublic class ThingyAA extends BaseThingy<ThingyAAConfig> {\r\n  @InternalJSONColumn\r\n  public String stuff;\r\n}\r\n\r\npublic class ThingyBB extends BaseThingy<ThingyBBConfig> {\r\n  @InternalJSONColumn\r\n  public String otherStuff;\r\n}\r\n```\r\n\r\nThe problem we're seeing is the incoming request completely overwrites the existing object instead of merging.\r\n\r\nIf we force a merge using `@JsonMerge` then an exception is thrown:\r\n```Cannot merge polymorphic property 'thingy'```\r\n\r\nThere are a few ways we're thinking of  trying to get around this. One is to create a custom deserializer. And another is to manually merge the json via a deep node merge before passing to the reader similar to:\r\n\r\n```\r\nObjectReader jsonNodeReader = objectMapper.readerFor(JsonNode.class);\r\nJsonNode existingNode = jsonNodeReader.readValue(objectMapper.writeValueAsBytes(currentValue));\r\nJsonNode incomingNode = jsonNodeReader.readValue(request.getInputStream());\r\nJsonNode merged = merge(existingNode, incomingNode);\r\nObjectReader patchReader = objectMapper.readerForUpdating(currentValue);\r\npatchReader.readValue(merged);\r\n\r\npublic static JsonNode merge(JsonNode mainNode, JsonNode updateNode) {\r\n    Iterator<String> fieldNames = updateNode.fieldNames();\r\n\r\n    while (fieldNames.hasNext()) {\r\n      String updatedFieldName = fieldNames.next();\r\n      JsonNode valueToBeUpdated = mainNode.get(updatedFieldName);\r\n      JsonNode updatedValue = updateNode.get(updatedFieldName);\r\n\r\n      // If the node is an @ArrayNode\r\n      if (valueToBeUpdated != null && valueToBeUpdated.isArray() &&\r\n          updatedValue.isArray()) {\r\n        // running a loop for all elements of the updated ArrayNode\r\n        for (int i = 0; i < updatedValue.size(); i++) {\r\n          JsonNode updatedChildNode = updatedValue.get(i);\r\n          // Create a new Node in the node that should be updated, if there was no corresponding node in it\r\n          // Use-case - where the updateNode will have a new element in its Array\r\n          if (valueToBeUpdated.size() <= i) {\r\n            ((ArrayNode) valueToBeUpdated).add(updatedChildNode);\r\n          }\r\n          // getting reference for the node to be updated\r\n          JsonNode childNodeToBeUpdated = valueToBeUpdated.get(i);\r\n          merge(childNodeToBeUpdated, updatedChildNode);\r\n        }\r\n        // if the Node is an @ObjectNode\r\n      } else if (valueToBeUpdated != null && valueToBeUpdated.isObject()) {\r\n        merge(valueToBeUpdated, updatedValue);\r\n      } else {\r\n        if (mainNode instanceof ObjectNode) {\r\n          ((ObjectNode) mainNode).replace(updatedFieldName, updatedValue);\r\n        }\r\n      }\r\n    }\r\n    return mainNode;\r\n  }\r\n```\r\n\r\nCan some type of deep node merge occur in Jackson for this polymorphic scenario to alleviate us having to maintain this json functionality ourselves?\n\n\nComment by matthew-altman:\nThe workaround we ended up going with was writing a custom Deserializer that extends `StdDeserializer` reads the request into a `JsonNode`, get the Thingy from the request, and then use a `readForUpdating` reader to deserialize that normally and put the deserialized object back on the request.\r\nLike so:\r\n```\r\npublic class ThingyDeserializer extends StdDeserializer<MyRequest> {\r\n  public ThingyDeserializer() {\r\n    super(MyRequest.class);\r\n  }\r\n\r\n  @Override\r\n  public MyRequest deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {\r\n    return p.readValueAs(MyRequest.class);\r\n  }\r\n\r\n  @Override\r\n  public MyRequest deserialize(JsonParser p, DeserializationContext ctxt, MyRequest req) throws IOException {\r\n    JsonNode incomingNode = p.getCodec().readTree(p);\r\n    JsonNode thingyNode = incomingNode.get(\"thingy\");\r\n    BaseThingy thingy = req.thingy;\r\n    if (idp == null) {\r\n      idp = getThingy(thingyNode);\r\n    }\r\n\r\n    if (idp != null) {\r\n      ObjectReader reader = ((ObjectMapper) p.getCodec()).readerForUpdating(thingy);\r\n      reader.readValue(thingyNode);\r\n    }\r\n\r\n    req.thingy = thingy;\r\n    return req;\r\n  }\r\n\r\n  private BaseThingy getThingy(JsonNode thingyNode) {\r\n    if (thingyNode == null) {\r\n      return null;\r\n    }\r\n\r\n    String type = thingyNode.get(\"type\").asText();\r\n\r\n    switch (type) {\r\n      case \"ThingyAA\":\r\n        return new ThingyAA();\r\n      case \"ThingyBB\":\r\n        return new ThingyBB();\r\n    }\r\n  }\r\n}\r\n```\n\nComment by jameswangz:\nDo we have any plan to support merging polymorphic objects?  From my point of view, a polymorphic object which needs to be merged should not change its type,  if this is the precondition then the merge process should be easy, just read the original object and set its fields.\r\n\r\nWe have lots of polymorphic models in our project and heavily depend on this feature,  it would be nice to support this in the new version.\n\nComment by cowtowncoder:\nYes, it often appears things are easy when you are not familiar with the details. This may be one of these cases.\r\nA fundamental problem is that the polymorphic type information must be present in case of data merging and figuring out how to handle difference between metadata (type info) and data (properties) is non trivial.\r\nThis is partly since merging is just a slightly special case of regular deserialization, and not separate of its own (if it was things would be easier here although would also require a lot of duplicated code).\r\n\r\nI'd be happy to help anyone who can implement it, but at this point do not have time to try to tackle the problem myself.\r\n\n\nComment by jameswangz:\nThanks for providing the detail information,  I'll try if I can track the problem and send a pull request later.\n\nComment by cowtowncoder:\nGood luck!\n\nComment by jameswangz:\nHi Tatu,\r\n\r\nI have added the merging polymorphic property logic in the code and tested, it works as expected now,  the limitation is we can only merge the same sub type property,  and I think it should be the case for most scenarios,  changing the type of a polymorphic object doesn't make sense and it's not accepted by JPA as well,  below is my implementation, please advice if there are any problems:\r\n\r\n\r\n      SettableBeanProperty.deserializeWith(JsonParser p, DeserializationContext ctxt,\r\n                                        Object toUpdate)\r\n```\r\n        // 20-Oct-2016, tatu: Also tricky -- for now, report an error\r\n        if (_valueTypeDeserializer != null) {\r\n            // 25-Oct-2021 Added by James to support merging polymorphic property\r\n            // https://github.com/FasterXML/jackson-databind/issues/2541\r\n            // Please note we only support merging same type polymorphic property for now,\r\n            // merging different type is hard and usually doesn't make sense\r\n            JavaType subType = ctxt.getTypeFactory().constructType(toUpdate.getClass());\r\n            JsonDeserializer<Object> subTypeValueDeserializer = ctxt.findContextualValueDeserializer(subType, this);\r\n            return subTypeValueDeserializer.deserialize(p, ctxt, toUpdate);\r\n        }\r\n```\n\nComment by jameswangz:\nAny suggestions on the modification? Can I send a pull request for this?\n\nComment by cowtowncoder:\nWould this actually work, for all kinds of polymorphic type embedding? Since this ignores `_valueTypeDeserializer` (which handles type id use/transformations), wouldn't it fail for many cases?\r\n\r\nYou can definitely submit a PR, with tests to show expected working usage. I hope to have to look into it, although right now have bit of a time crunch.\r\nBut maybe we can find others to have a look at proposed changes as well; as well as find likely edge cases.\r\n\n\nComment by jameswangz:\nIt only supports merging the same type polymorphic property, say if we have an old value which type is A,  we can't change it to B in the merging process, like you said, changing the polymorphic type is very hard, and it usually doesn't make sense.\r\n\r\nI'll try to add unit tests to show the usage and submit a PR later, do you know who else can look at this?\n\nComment by cowtowncoder:\nMy concern is beyond different types -- yes, type cannot change, but more important, Type Id information should be incoming (json) content so who should handle that and how?\r\n\r\nIf you submit PR, I can have a look & you can ask others on the mailing list. There are a few active collaborators but they mostly work on specific modules.\r\n",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "Cannot merge polymorphic objects",
+        "name": "issue#2541",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#3371"
+          },
+          {
+            "start_node": "pr#3371",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#2541"
+          }
+        ],
+        "similarity": 0.6817316198804996,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "3371",
+        "type": "issue",
+        "content": "Hi tatu, I have add the test cases for merging polymorphic property, please review, thanks.\n\n",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "Fix #2541 (support merge polymorphic property)",
+        "name": "pr#3371",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#3371"
+          }
+        ],
+        "similarity": 0.5450105049952627,
+        "end_line": null,
+        "signature": null
+      }
+    ]
+  },
+  "artifact_stats": {
+    "skipped_due_to_time": 13,
+    "valid_related_items": 18
+  }
+}

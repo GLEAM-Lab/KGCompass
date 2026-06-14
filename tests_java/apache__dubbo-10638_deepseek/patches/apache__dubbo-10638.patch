@@ -1,0 +1,123 @@
+Based on the issue, the problem is that Dubbo's generic calls don't properly support Java 8 time classes (LocalTime, LocalDate, LocalDateTime) during serialization/deserialization. The issue shows test cases failing when trying to generalize and realize these time objects.
+
+The fix needs to be made in `PojoUtils.java` to handle these time classes specially. We need to modify the `generalize` and `realize0` methods to properly handle these types.
+
+Here are the necessary edits:
+
+```java
+### playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java
+- start_line : 124
+- end_line : 220
+<<<<<<< SEARCH
+    private static Object generalize(Object pojo, Map<Object, Object> history) {
+        if (pojo == null) {
+            return null;
+        }
+
+        if (pojo instanceof Enum<?>) {
+            return ((Enum<?>) pojo).name();
+        }
+        if (pojo.getClass().isArray() && Enum.class.isAssignableFrom(pojo.getClass().getComponentType())) {
+            int len = Array.getLength(pojo);
+            String[] values = new String[len];
+            for (int i = 0; i < len; i++) {
+                values[i] = ((Enum<?>) Array.get(pojo, i)).name();
+            }
+            return values;
+        }
+
+        if (ReflectUtils.isPrimitives(pojo.getClass())) {
+            return pojo;
+        }
+
+        if (pojo instanceof Class) {
+            return ((Class) pojo).getName();
+        }
+=======
+    private static Object generalize(Object pojo, Map<Object, Object> history) {
+        if (pojo == null) {
+            return null;
+        }
+
+        if (pojo instanceof Enum<?>) {
+            return ((Enum<?>) pojo).name();
+        }
+        if (pojo.getClass().isArray() && Enum.class.isAssignableFrom(pojo.getClass().getComponentType())) {
+            int len = Array.getLength(pojo);
+            String[] values = new String[len];
+            for (int i = 0; i < len; i++) {
+                values[i] = ((Enum<?>) Array.get(pojo, i)).name();
+            }
+            return values;
+        }
+
+        if (ReflectUtils.isPrimitives(pojo.getClass())) {
+            return pojo;
+        }
+
+        if (pojo instanceof Class) {
+            return ((Class) pojo).getName();
+        }
+        
+        if (pojo instanceof LocalDateTime || pojo instanceof LocalDate || pojo instanceof LocalTime) {
+            return pojo.toString();
+        }
+>>>>>>> REPLACE
+```
+
+```java
+### playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java
+- start_line : 320
+- end_line : 539
+<<<<<<< SEARCH
+    private static Object realize0(Object pojo, Class<?> type, Type genericType, final Map<Object, Object> history) {
+        if (pojo == null) {
+            return null;
+        }
+
+        if (type != null && type.isEnum() && pojo.getClass() == String.class) {
+            return Enum.valueOf((Class<Enum>) type, (String) pojo);
+        }
+
+        if (ReflectUtils.isPrimitives(pojo.getClass())
+            && !(type != null && type.isArray()
+            && type.getComponentType().isEnum()
+            && pojo.getClass() == String[].class)) {
+            return CompatibleTypeUtils.compatibleTypeConvert(pojo, type);
+        }
+=======
+    private static Object realize0(Object pojo, Class<?> type, Type genericType, final Map<Object, Object> history) {
+        if (pojo == null) {
+            return null;
+        }
+
+        if (type != null && type.isEnum() && pojo.getClass() == String.class) {
+            return Enum.valueOf((Class<Enum>) type, (String) pojo);
+        }
+
+        if (pojo instanceof String) {
+            if (type == LocalDateTime.class) {
+                return LocalDateTime.parse((String) pojo);
+            } else if (type == LocalDate.class) {
+                return LocalDate.parse((String) pojo);
+            } else if (type == LocalTime.class) {
+                return LocalTime.parse((String) pojo);
+            }
+        }
+
+        if (ReflectUtils.isPrimitives(pojo.getClass())
+            && !(type != null && type.isArray()
+            && type.getComponentType().isEnum()
+            && pojo.getClass() == String[].class)) {
+            return CompatibleTypeUtils.compatibleTypeConvert(pojo, type);
+        }
+>>>>>>> REPLACE
+```
+
+These changes:
+
+1. In `generalize()`, we add special handling for LocalDateTime/LocalDate/LocalTime objects to convert them to their string representation using toString()
+
+2. In `realize0()`, we add special handling to convert string representations back to the appropriate time objects when the target type is one of the time classes
+
+The changes ensure that Java 8 time objects are properly serialized to strings during generalization and deserialized back to their proper types during realization, which matches the behavior shown in the test case where the string representation should equal the toString() of the realized object.

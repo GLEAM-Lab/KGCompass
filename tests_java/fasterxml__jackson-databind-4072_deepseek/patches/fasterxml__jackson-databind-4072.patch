@@ -1,0 +1,28 @@
+Based on the issue description, the bug occurs when deserializing custom Throwable subclasses that don't have single-String constructors. The problem stems from the removal of "builder.addIgnorable("localizedMessage")" and "builder.addIgnorable("suppressed")" in BeanDeserializerFactory.java (lines 452 and 454) in commit f27df635.
+
+The fix would be to add back these ignorable properties for Throwable deserialization. Here's the edit:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java
+- start_line : 450
+- end_line : 454
+<<<<<<< SEARCH
+            // 27-May-2022, tatu: [databind#3497] Need to allow "message" as ignorable
+            //   for Throwable subtypes
+            builder.addIgnorable("message");
+=======
+            // 27-May-2022, tatu: [databind#3497] Need to allow "message" as ignorable
+            //   for Throwable subtypes
+            builder.addIgnorable("message");
+            builder.addIgnorable("localizedMessage");
+            builder.addIgnorable("suppressed");
+>>>>>>> REPLACE
+```
+
+This change:
+1. Keeps the existing line for "message" property
+2. Adds back the "localizedMessage" and "suppressed" properties as ignorable
+3. Maintains proper indentation
+4. Preserves the existing comment
+
+The fix allows deserialization of custom Throwable subclasses without requiring FAIL_ON_UNKNOWN_PROPERTIES to be disabled, while still properly handling the standard Throwable properties that may be present in the JSON but shouldn't cause failures if they can't be mapped.

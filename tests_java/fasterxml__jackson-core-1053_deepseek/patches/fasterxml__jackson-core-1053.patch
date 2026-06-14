@@ -1,0 +1,57 @@
+Based on the issue, the bug is in the `Version.compareTo` method in `com/fasterxml/jackson/core/Version.java` where it doesn't compare `_snapshotInfo` (pre-release identifiers) according to semver rules. The current implementation only compares major, minor, and patch versions.
+
+Here's the proposed fix that will compare snapshotInfo alphabetically as suggested in the comments:
+
+```java
+### com/fasterxml/jackson/core/Version.java
+<<<<<<< SEARCH
+    @Override
+    public int compareTo(Version other)
+    {
+        if (other == this) return 0;
+        
+        int diff = _major - other._major;
+        if (diff == 0) {
+            diff = _minor - other._minor;
+            if (diff == 0) {
+                diff = _patchLevel - other._patchLevel;
+            }
+        }
+        return diff;
+    }
+=======
+    @Override
+    public int compareTo(Version other)
+    {
+        if (other == this) return 0;
+        
+        int diff = _major - other._major;
+        if (diff == 0) {
+            diff = _minor - other._minor;
+            if (diff == 0) {
+                diff = _patchLevel - other._patchLevel;
+                if (diff == 0) {
+                    if (_snapshotInfo == null) {
+                        return (other._snapshotInfo == null) ? 0 : 1;
+                    }
+                    if (other._snapshotInfo == null) {
+                        return -1;
+                    }
+                    return _snapshotInfo.compareTo(other._snapshotInfo);
+                }
+            }
+        }
+        return diff;
+    }
+>>>>>>> REPLACE
+```
+
+This change:
+1. Maintains the existing comparison of major, minor, and patch versions
+2. If all those are equal, then compares the snapshotInfo (pre-release identifiers)
+3. Follows semver rules where:
+   - A version without snapshotInfo is considered greater than one with snapshotInfo (1.0.0 > 1.0.0-alpha)
+   - If both have snapshotInfo, they are compared alphabetically (alpha < beta)
+4. Matches the suggested behavior of sorting alphabetically
+
+The fix ensures proper version ordering according to semver specifications while maintaining backward compatibility since the original behavior is preserved for versions without snapshotInfo.

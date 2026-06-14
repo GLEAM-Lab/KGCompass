@@ -1,0 +1,33 @@
+Based on the issue description, the bug is in `FilteringGeneratorDelegate` where it doesn't create a new `filterContext` when `tokenFilter` is null for objects, unlike how it already does for arrays. This causes issues when filtering multiple properties in nested structures.
+
+Looking at the issue and comments, the fix needs to be applied to the object context creation similar to how array context creation works. However, the actual `FilteringGeneratorDelegate.java` file is not included in the provided code segments. 
+
+Since we can't see the exact file content that needs to be modified, I'll provide the likely fix based on the issue description and links to GitHub lines:
+
+```java
+### playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java
+- start_line : 314
+- end_line : 317
+<<<<<<< SEARCH
+        if (_itemFilter == null) {
+            _checkParentPath();
+            return;
+        }
+=======
+        if (_itemFilter == null) {
+            _checkParentPath();
+            _filterContext = _filterContext.createChildObjectContext(_itemFilter, false);
+            return;
+        }
+>>>>>>> REPLACE
+```
+
+This edit:
+1. Matches the lines mentioned in the issue (314-317)
+2. Adds the missing context creation before returning when `_itemFilter` is null
+3. Mirrors the behavior already present for arrays (lines 178-182 as referenced in the issue)
+4. Maintains the same indentation level as surrounding code
+
+The fix ensures that even when filtering returns null (no match), a new context is created to properly track the nesting level and avoid issues with subsequent elements in arrays/objects.
+
+Note: Since we don't have the actual file content, this is an educated guess based on the issue description and GitHub links. The exact line numbers and surrounding context might need adjustment when applied to the real file.

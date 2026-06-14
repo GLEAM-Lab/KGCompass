@@ -1,0 +1,26 @@
+--- a/src/main/java/com/fasterxml/jackson/core/JsonGenerator.java
++++ b/src/main/java/com/fasterxml/jackson/core/JsonGenerator.java
+@@ -2204,6 +2204,11 @@
+         writeNumber(value);
+     }
+ 
++    public void writeNumberField(String fieldName, short value) throws IOException {
++        writeFieldName(fieldName);
++        writeNumber(value);
++    }
++
+     /**
+      * Convenience method for outputting a field entry ("member")
+      * that has the specified numeric value. Equivalent to:
+@@ -2298,6 +2303,11 @@
+      *    issue at format layer
+      */
+     public void writeNumberField(String fieldName, BigDecimal value) throws IOException {
++        writeFieldName(fieldName);
++        writeNumber(value);
++    }
++
++    public void writeNumberField(String fieldName, BigInteger value) throws IOException {
+         writeFieldName(fieldName);
+         writeNumber(value);
+     }

@@ -1,0 +1,30 @@
+Based on the issue, the bug occurs in `DockerConfigCredentialRetriever.java` where a NullPointerException is thrown when trying to parse auth credentials from docker config. The issue happens when an auth entry exists but doesn't have an "auth" field (e.g. only has "identityToken").
+
+The fix needs to handle cases where the auth field is missing by checking for null first. Here's the edit:
+
+```java
+### playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/credentials/DockerConfigCredentialRetriever.java
+- start_line : 146
+- end_line : 150
+<<<<<<< SEARCH
+        String usernameColonPassword =
+            new String(Base64.decodeBase64(auth.getAuth()), StandardCharsets.UTF_8);
+        String username = usernameColonPassword.substring(0, usernameColonPassword.indexOf(":"));
+        String password = usernameColonPassword.substring(usernameColonPassword.indexOf(":") + 1);
+=======
+        if (auth.getAuth() == null) {
+          return Optional.empty();
+        }
+        String usernameColonPassword =
+            new String(Base64.decodeBase64(auth.getAuth()), StandardCharsets.UTF_8);
+        String username = usernameColonPassword.substring(0, usernameColonPassword.indexOf(":"));
+        String password = usernameColonPassword.substring(usernameColonPassword.indexOf(":") + 1);
+>>>>>>> REPLACE
+```
+
+This change:
+1. Adds a null check for auth.getAuth() before attempting to use it
+2. Returns Optional.empty() if auth is null (same behavior as if no auth entry existed)
+3. Otherwise proceeds with the existing auth parsing logic
+
+The fix prevents the NPE when auth entries exist without an "auth" field while maintaining all existing functionality for valid auth entries. This matches the issue description where the problem occurs with registry entries that only have "identityToken" but no "auth" field.

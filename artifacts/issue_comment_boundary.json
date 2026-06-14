@@ -1,0 +1,59 @@
+{
+  "purpose": "Document the paper-valid information boundary for issue comments, fixing artifacts, and benchmark hints.",
+  "core_policy": {
+    "target_issue": "Use only the original issue title/body. Do not use target-issue follow-up comments.",
+    "historical_issues_and_prs": "Use only titles/descriptions from time-eligible historical issues and pull requests. Do not use comments.",
+    "benchmark_hint_fields": "hint_text and hints_text are treated as unavailable benchmark-only fields and are stripped before localization, KG export, test generation, or repair prompts are built.",
+    "temporal_cutoff": "Repository artifacts must have timestamps strictly earlier than the target fixing pull request creation time.",
+    "target_fixing_pull_request": "Do not use the target fixing pull request, its title/body, its patch diff, its merged commit, explicit target fixing PR/issue references from the issue text, or artifacts created at or after it.",
+    "linked_patch_or_commit_expansion": "Linked patch files and raw commit hashes in issue text are not expanded in the paper-valid KG construction path.",
+    "online_artifact_lookup": "The main TSE setting is time-safe rather than strict-offline: issue-time eligible artifact titles/descriptions may be retrieved or loaded, but comments, benchmark hints, future fixing artifacts, and patch/commit expansion are excluded. KGCOMPASS_OFFLINE_ARTIFACTS=1 is not the main TSE configuration."
+  },
+  "why": "Issue and pull-request comments can contain maintainer-provided localization hints, even when they predate the target issue. The reported pipeline therefore excludes comments entirely.",
+  "motivating_case_check": {
+    "instance_id": "django__django-13344",
+    "target_issue_or_ticket": "31949",
+    "observed_target_issue_content_has_comment_by_marker": false,
+    "rank1_path_uses_comment_node": false,
+    "first_gt_path": "root issue -> django/middleware/security.py -> django.middleware.security.SecurityMiddleware.__init__"
+  },
+  "code_guard": [
+    {
+      "path": "kgcompass/fl.py",
+      "guard": "_get_issue_from_id() sets issue.full_body to issue.body only for every GitHub issue/PR artifact."
+    },
+    {
+      "path": "kgcompass/fl.py",
+      "guard": "Django ticket fallback sets full_content to the ticket description only and does not parse comment divs into the KG text."
+    },
+    {
+      "path": "kgcompass/fl.py",
+      "guard": "custom GitHub issue mode builds the problem statement from issue.title and issue.body only; the former 7-day comment window is removed."
+    },
+    {
+      "path": "kgcompass/fl.py",
+      "guard": "KGCOMPASS_EXPAND_PATCH_LINKS defaults to 0; _process_repository() keeps the original problem_statement instead of expanding linked patches or commit hashes."
+    },
+    {
+      "path": "kgcompass/fl.py",
+      "guard": "_strip_target_fix_references() removes explicit target fixing URLs and PR/issue references from target and related issue text before KG construction."
+    },
+    {
+      "path": "mine_kg_bulk.py",
+      "guard": "--evidence-graph applies paper-valid environment defaults including KGCOMPASS_EXPAND_PATCH_LINKS=0, KGCOMPASS_USE_TIMELINE=0, KGCOMPASS_ENABLE_METHOD_CALL_EXPANSION=0, KGCOMPASS_STRICT_IDENTIFIER_FILTER=1, KGCOMPASS_NAME_SEARCH_STRICT=1, and KGCOMPASS_SOURCE_EXTENSIONS=.py. It does not force KGCOMPASS_OFFLINE_ARTIFACTS=1 in the main TSE setting."
+    },
+    {
+      "path": "kgcompass/calc_prefl.py",
+      "guard": "--dataset-jsonl local rows and HuggingFace rows are stripped of hint_text/hints_text before evaluation."
+    },
+    {
+      "path": "kgcompass/export_kg_evidence_graph.py",
+      "guard": "The paper-valid retrieval export ranks by deterministic issue-symbol and path-token anchors plus typed graph support/distance; it does not read comments, hint_text/hints_text, embeddings, or edge weights."
+    },
+    {
+      "path": "kgcompass/benchmark.py",
+      "guard": "BenchmarkManager strips hint_text/hints_text when loading SWE-bench or local benchmark rows."
+    }
+  ],
+  "audit_command": "rg -n \"hint_text|hints_text|comments excluded|Comment by|discussion comments|EXPAND_PATCH_LINKS|USE_TIMELINE|strip_target_fix_references|target_fix_reference\" -S kgcompass mine_kg_bulk.py run_evidence_graph_resume.sh temp_run/run_open_testcase_rounds.py temp_run/run_claudecode_repairs.py temp_run/run_minisweagent_repairs.py temp_run/export_agentless_project_structures.py scripts external/kgcompass-paper"
+}

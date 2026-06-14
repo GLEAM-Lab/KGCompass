@@ -1,0 +1,29 @@
+--- a/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java
++++ b/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java
+@@ -56,6 +56,26 @@
+ 
+     protected TokenFilter() { }
+ 
++    /**
++     * Method called to determine whether an empty array should be included in output.
++     * 
++     * @param contentsFiltered Whether any of the array contents were filtered out
++     * @return True if empty array should be included; false if it should be excluded
++     */
++    public boolean includeEmptyArray(boolean contentsFiltered) {
++        return false;
++    }
++
++    /**
++     * Method called to determine whether an empty object should be included in output.
++     * 
++     * @param contentsFiltered Whether any of the object properties were filtered out
++     * @return True if empty object should be included; false if it should be excluded
++     */
++    public boolean includeEmptyObject(boolean contentsFiltered) {
++        return false;
++    }
++
+     /*
+     /**********************************************************************
+     /* API, structured values

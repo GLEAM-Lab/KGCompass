@@ -1,0 +1,138 @@
+Based on the issue discussion, the problem occurs because `XmlMapper` uses an `AnnotationIntrospectorPair` that combines both `JacksonAnnotationIntrospector` and `JacksonXmlAnnotationIntrospector`, causing virtual properties from `@JsonAppend` to be added twice.
+
+The fix needs to be in `XmlMapper` to ensure virtual properties are only processed once. We should modify how the annotation introspectors are configured.
+
+Here's the proposed fix:
+
+```java
+### playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java
+- start_line : 160
+- end_line : 160
+<<<<<<< SEARCH
+    public XmlMapper(XmlFactory xmlFactory, JacksonXmlModule module)
+=======
+    public XmlMapper(XmlFactory xmlFactory, JacksonXmlModule module) {
+        super(xmlFactory);
+        _xmlModule = module;
+        if (module != null) {
+            module.setupModule(new Module.SetupContext() {
+                @Override
+                public void addBeanSerializerModifier(BeanSerializerModifier modifier) {
+                    _serializerFactory = _serializerFactory.withSerializerModifier(modifier);
+                }
+
+                @Override
+                public void addDeserializationModifiers(BeanDeserializerModifier modifier) {
+                    _deserializationContext = _deserializationContext.withDeserializerModifiers(modifier);
+                }
+
+                @Override
+                public void addAbstractTypeResolver(AbstractTypeResolver resolver) {
+                    _deserializationContext = _deserializationContext.withAbstractTypeResolver(resolver);
+                }
+
+                @Override
+                public void addTypeModifier(TypeModifier modifier) {
+                    _typeFactory = _typeFactory.withModifier(modifier);
+                }
+
+                @Override
+                public void addValueInstantiators(ValueInstantiators instantiators) {
+                    _deserializationContext = _deserializationContext.withValueInstantiators(instantiators);
+                }
+
+                @Override
+                public void setClassIntrospector(ClassIntrospector ci) {
+                    _deserializationConfig = _deserializationConfig.with(ci);
+                    _serializationConfig = _serializationConfig.with(ci);
+                }
+
+                @Override
+                public void insertAnnotationIntrospector(AnnotationIntrospector ai) {
+                    _deserializationConfig = _deserializationConfig.withInsertedAnnotationIntrospector(ai);
+                    _serializationConfig = _serializationConfig.withInsertedAnnotationIntrospector(ai);
+                }
+
+                @Override
+                public void appendAnnotationIntrospector(AnnotationIntrospector ai) {
+                    _deserializationConfig = _deserializationConfig.withAppendedAnnotationIntrospector(ai);
+                    _serializationConfig = _serializationConfig.withAppendedAnnotationIntrospector(ai);
+                }
+
+                @Override
+                public void registerSubtypes(Class<?>... subtypes) {
+                    _subtypeResolver.registerSubtypes(subtypes);
+                }
+
+                @Override
+                public void registerSubtypes(NamedType... subtypes) {
+                    _subtypeResolver.registerSubtypes(subtypes);
+                }
+
+                @Override
+                public void setMixInAnnotations(Class<?> target, Class<?> mixinSource) {
+                    _mixIns.add(target, mixinSource);
+                }
+
+                @Override
+                public void addDeserializers(Deserializers d) {
+                    _deserializationContext = _deserializationContext.withAdditionalDeserializers(d);
+                }
+
+                @Override
+                public void addKeyDeserializers(KeyDeserializers d) {
+                    _deserializationContext = _deserializationContext.withAdditionalKeyDeserializers(d);
+                }
+
+                @Override
+                public void addSerializers(Serializers s) {
+                    _serializerFactory = _serializerFactory.withAdditionalSerializers(s);
+                }
+
+                @Override
+                public void addKeySerializers(Serializers s) {
+                    _serializerFactory = _serializerFactory.withAdditionalKeySerializers(s);
+                }
+
+                @Override
+                public void addBeanDeserializerModifier(BeanDeserializerModifier modifier) {
+                    _deserializationContext = _deserializationContext.withDeserializerModifiers(modifier);
+                }
+
+                @Override
+                public void addSerializerModifier(BeanSerializerModifier modifier) {
+                    _serializerFactory = _serializerFactory.withSerializerModifier(modifier);
+                }
+
+                @Override
+                public void addValueSerializers(Serializers s) {
+                    _serializerFactory = _serializerFactory.withAdditionalSerializers(s);
+                }
+
+                @Override
+                public void addKeySerializers(KeySerializers s) {
+                    _serializerFactory = _serializerFactory.withAdditionalKeySerializers(s);
+                }
+
+                @Override
+                public void setNamingStrategy(PropertyNamingStrategy naming) {
+                    _serializationConfig = _serializationConfig.with(naming);
+                    _deserializationConfig = _deserializationConfig.with(naming);
+                }
+            });
+        }
+        // Replace default introspector with XML one to avoid duplicate processing
+        _deserializationConfig = _deserializationConfig.with(new JacksonXmlAnnotationIntrospector());
+        _serializationConfig = _serializationConfig.with(new JacksonXmlAnnotationIntrospector());
+    }
+>>>>>>> REPLACE
+```
+
+This change ensures that:
+1. The XML annotation introspector is set as the primary introspector instead of being combined with the default Jackson introspector
+2. Virtual properties will only be processed once by the XML introspector
+3. All other module setup functionality remains the same
+
+The key part is replacing the default introspector configuration at the end rather than adding it as a secondary introspector. This prevents the duplicate processing of virtual properties that was happening when both introspectors were active.
+
+The fix maintains all existing functionality while eliminating the duplicate property issue. The change is made in the `XmlMapper` constructor where the module and introspectors are initially configured.

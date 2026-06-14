@@ -1,0 +1,19 @@
+--- a/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java
++++ b/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java
+@@ -151,7 +151,15 @@
+      * Method called to clear out any content text buffer may have, and
+      * initializes buffer to use non-shared data.
+      */
+-    public void resetWithEmpty()
++    public void resetWithEmpty() {
++        _inputStart = -1;
++        _currentSize = 0;
++        _inputLen = 0;
++        _inputBuffer = null;
++        _resultString = null;
++        _resultArray = new char[0]; // Initialize empty array
++        _currentSegment = null;
++    }
+     {
+         _inputStart = -1; // indicates shared buffer not used
+         _currentSize = 0;

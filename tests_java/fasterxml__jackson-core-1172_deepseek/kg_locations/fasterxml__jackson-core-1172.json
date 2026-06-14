@@ -1,0 +1,1712 @@
+{
+    "related_entities": {
+        "methods": [
+            {
+                "start_line": 367,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonPointer append(JsonPointer tail) {\n        if (this == EMPTY) {\n            return tail;\n        }\n        if (tail == EMPTY) {\n            return this;\n        }\n        // 21-Mar-2017, tatu: Not superbly efficient; could probably improve by not concatenating,\n        //    re-decoding -- by stitching together segments -- but for now should be fine.\n\n        String currentJsonPointer = _asString;\n        if (currentJsonPointer.endsWith(\"/\")) {\n            //removes final slash\n            currentJsonPointer = currentJsonPointer.substring(0, currentJsonPointer.length()-1);\n        }\n        return compile(currentJsonPointer + tail._asString);\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "append",
+                "documentation": "/**\n     * Mutant factory method that will return\n     *<ul>\n     * <li>`tail` if `this` instance is \"empty\" pointer, OR\n     *  </li>\n     * <li>`this` instance if `tail` is \"empty\" pointer, OR\n     *  </li>\n     * <li>Newly constructed {@link JsonPointer} instance that starts with all segments\n     *    of `this`, followed by all segments of `tail`.\n     *  </li>\n     *</ul>\n     *\n     * @param tail {@link JsonPointer} instance to append to this one, to create a new pointer instance\n     *\n     * @return Either `this` instance, `tail`, or a newly created combination, as per description above.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    }
+                ],
+                "similarity": 0.24773809214486975,
+                "end_line": 383,
+                "signature": "com.fasterxml.jackson.core.JsonPointer.append(JsonPointer tail): JsonPointer"
+            },
+            {
+                "start_line": 526,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonPointer tail() {\n        return _nextSegment;\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "tail",
+                "documentation": "/**\n     * Accessor for getting a \"sub-pointer\" (or sub-path), instance where current segment\n     * has been removed and pointer includes rest of the segments.\n     * For example, for JSON Pointer \"/root/branch/leaf\", this method would\n     * return pointer \"/branch/leaf\".\n     * For matching state (last segment), will return {@code null}.\n     *<p>\n     * Note that this is a very cheap method to call as it simply returns \"next\" segment\n     * (which has been constructed when pointer instance was constructed).\n     *\n     * @return Tail of this pointer, if it has any; {@code null} if this pointer only\n     *    has the current segment\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    }
+                ],
+                "similarity": 0.161710007787118,
+                "end_line": 528,
+                "signature": "com.fasterxml.jackson.core.JsonPointer.tail(): JsonPointer"
+            },
+            {
+                "start_line": 435,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonPointer appendIndex(int index) {\n        if (index < 0) {\n            throw new IllegalArgumentException(\"Negative index cannot be appended\");\n        }\n        String currentJsonPointer = _asString;\n        if (currentJsonPointer.endsWith(\"/\")) {\n            //removes final slash\n            currentJsonPointer = currentJsonPointer.substring(0, currentJsonPointer.length()-1);\n        }\n        return compile(currentJsonPointer + SEPARATOR + index);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "appendIndex",
+                "documentation": "/**\n     * ATTENTION! {@link JsonPointer} is head-centric, tail appending is much costlier\n     * than head appending.\n     * It is recommended that this method is used sparingly due to possible\n     * sub-par performance.\n     *\n     * Mutant factory method that will return newly constructed {@link JsonPointer} instance that starts with all\n     * segments of `this`, followed by new segment of element 'index'. Element 'index' should be non-negative.\n     *\n     * @param index new segment element index\n     *\n     * @return Newly created combination, as per description above.\n     * @throws IllegalArgumentException if element index is negative\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "appendIndex"
+                    }
+                ],
+                "similarity": 0.15795286828122185,
+                "end_line": 445,
+                "signature": "com.fasterxml.jackson.core.JsonPointer.appendIndex(int index): JsonPointer"
+            },
+            {
+                "start_line": 410,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonPointer appendProperty(String property) {\n        if (property == null) {\n            return this;\n        }\n        // 14-Dec-2023, tatu: [core#1145] Must escape `property`; accept empty String\n        //    as valid segment to match as well\n        StringBuilder sb = new StringBuilder(_asString).append('/');\n        _appendEscaped(sb, property);\n        return compile(sb.toString());\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "appendProperty",
+                "documentation": "/**\n     * ATTENTION! {@link JsonPointer} is head-centric, tail appending is much costlier\n     * than head appending.\n     * It is recommended that this method is used sparingly due to possible\n     * sub-par performance.\n     *\n     * Mutant factory method that will return:\n     *<ul>\n     * <li>`this` instance if `property` is null, OR\n     *  </li>\n     * <li>Newly constructed {@link JsonPointer} instance that starts with all segments\n     *    of `this`, followed by new segment of 'property' name.\n     *  </li>\n     *</ul>\n     * 'property' is name to match: value is escaped as necessary (for any contained\n     * slashes or tildes).\n     *<p>\n     * NOTE! Before Jackson 2.17, no escaping was performed, and leading slash was\n     * dropped if passed. This was incorrect implementation. Empty {@code property}\n     * was also ignored (similar to {@code null}).\n     *\n     * @param property new segment property name\n     *\n     * @return Either `this` instance, or a newly created combination, as per description above.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "appendProperty"
+                    }
+                ],
+                "similarity": 0.15392669964750175,
+                "end_line": 419,
+                "signature": "com.fasterxml.jackson.core.JsonPointer.appendProperty(String property): JsonPointer"
+            },
+            {
+                "start_line": 339,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonPointer last() {\n        JsonPointer current = this;\n        if (current == EMPTY) {\n            return null;\n        }\n        JsonPointer next;\n        while ((next = current._nextSegment) != JsonPointer.EMPTY) {\n            current = next;\n        }\n        return current;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "last",
+                "documentation": "/**\n     * @return  the leaf of current JSON Pointer expression: leaf is the last\n     *    non-null segment of current JSON Pointer.\n     *\n     * @since 2.5\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "last"
+                    }
+                ],
+                "similarity": 0.15375352413472035,
+                "end_line": 349,
+                "signature": "com.fasterxml.jackson.core.JsonPointer.last(): JsonPointer"
+            },
+            {
+                "start_line": 729,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void append(char c) throws IOException {\n        // Using shared buffer so far?\n        if (_inputStart >= 0) {\n            unshare(16);\n        }\n        _resultString = null;\n        _resultArray = null;\n\n        // Room in current segment?\n        char[] curr = _currentSegment;\n        if (_currentSize >= curr.length) {\n            validateAppend(1);\n            expand();\n            curr = _currentSegment;\n        }\n        curr[_currentSize++] = c;\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "append",
+                "documentation": "/**\n     * @param c char to append\n     * @throws IOException if the buffer has grown too large, see {@link com.fasterxml.jackson.core.StreamReadConstraints.Builder#maxStringLength(int)}\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    }
+                ],
+                "similarity": 0.15151885742948862,
+                "end_line": 745,
+                "signature": "com.fasterxml.jackson.core.util.TextBuffer.append(char c): void"
+            },
+            {
+                "start_line": 546,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonPointer head() {\n        JsonPointer h = _head;\n        if (h == null) {\n            if (this != EMPTY) {\n                h = _constructHead();\n            }\n            _head = h;\n        }\n        return h;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "head",
+                "documentation": "/**\n     * Accessor for getting a pointer instance that is identical to this\n     * instance except that the last segment has been dropped.\n     * For example, for JSON Pointer \"/root/branch/leaf\", this method would\n     * return pointer \"/root/branch\" (compared to {@link #tail()} that\n     * would return \"/branch/leaf\").\n     *<p>\n     * Note that whereas {@link #tail} is a very cheap operation to call (as \"tail\" already\n     * exists for single-linked forward direction), this method has to fully\n     * construct a new instance by traversing the chain of segments.\n     *\n     * @return Pointer expression that contains same segments as this one, except for\n     *    the last segment.\n     *\n     * @since 2.5\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "head"
+                    }
+                ],
+                "similarity": 0.1508991765050838,
+                "end_line": 555,
+                "signature": "com.fasterxml.jackson.core.JsonPointer.head(): JsonPointer"
+            },
+            {
+                "start_line": 154,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static JsonPointer compile(String expr) throws IllegalArgumentException",
+                "distance": 1.0,
+                "title": null,
+                "name": "compile",
+                "documentation": "/**\n     * Factory method that parses given input and construct matching pointer\n     * instance, if it represents a valid JSON Pointer: if not, a\n     * {@link IllegalArgumentException} is thrown.\n     *\n     * @param expr Pointer expression to compile\n     *\n     * @return Compiled {@link JsonPointer} path expression\n     *\n     * @throws IllegalArgumentException Thrown if the input does not present a valid JSON Pointer\n     *   expression: currently the only such expression is one that does NOT start with\n     *   a slash ('/').\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "compile"
+                    }
+                ],
+                "similarity": 0.13960400908066875,
+                "end_line": 154,
+                "signature": "com.fasterxml.jackson.core.JsonPointer.compile(String expr): JsonPointer"
+            },
+            {
+                "start_line": 104,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonPointer() {\n        _nextSegment = null;\n        // [core#788]: must be `null` to distinguish from Property with \"\" as key\n        _matchingPropertyName = null;\n        _matchingElementIndex = -1;\n        _asString = \"\";\n        _asStringOffset = 0;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "JsonPointer",
+                "documentation": "/**\n     * Constructor used for creating \"empty\" instance, used to represent\n     * state that matches current node.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    }
+                ],
+                "similarity": 0.13816515402681825,
+                "end_line": 111,
+                "signature": "com.fasterxml.jackson.core.JsonPointer()"
+            },
+            {
+                "start_line": 585,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    @Override public boolean equals(Object o) {\n        if (o == this) return true;\n        if (o == null) return false;\n        if (!(o instanceof JsonPointer)) return false;\n        JsonPointer other = (JsonPointer) o;\n        // 07-Oct-2022, tatu: Ugh.... this gets way more complicated as we MUST\n        //   compare logical representation so cannot simply compare offset\n        //   and String\n        return _compare(_asString, _asStringOffset,\n                other._asString, other._asStringOffset);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "equals",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "equals"
+                    }
+                ],
+                "similarity": 0.12041191502056305,
+                "end_line": 595,
+                "signature": "com.fasterxml.jackson.core.JsonPointer.equals(Object o): boolean"
+            },
+            {
+                "start_line": 768,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonPointer _constructHead(int suffixLength, JsonPointer last)",
+                "distance": 1.5,
+                "title": null,
+                "name": "_constructHead",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_constructHead"
+                    }
+                ],
+                "similarity": 0.11980266273968124,
+                "end_line": 768,
+                "signature": "com.fasterxml.jackson.core.JsonPointer._constructHead(int suffixLength, JsonPointer last): JsonPointer"
+            },
+            {
+                "start_line": 651,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected static JsonPointer _parseTail(final String fullPath)",
+                "distance": 1.5,
+                "title": null,
+                "name": "_parseTail",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_parseTail"
+                    }
+                ],
+                "similarity": 0.11867206593156832,
+                "end_line": 651,
+                "signature": "com.fasterxml.jackson.core.JsonPointer._parseTail(String fullPath): JsonPointer"
+            },
+            {
+                "start_line": 927,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public char[] finishCurrentSegment() throws IOException {\n        if (_segments == null) {\n            _segments = new ArrayList<char[]>();\n        }\n        _hasSegments = true;\n        _segments.add(_currentSegment);\n        int oldLen = _currentSegment.length;\n        _segmentSize += oldLen;\n        if (_segmentSize < 0) {\n            _reportBufferOverflow(_segmentSize - oldLen, oldLen);\n        }\n        _currentSize = 0;\n        validateStringLength(_segmentSize);\n\n        // Let's grow segments by 50%\n        int newLen = oldLen + (oldLen >> 1);\n        if (newLen < MIN_SEGMENT_LEN) {\n            newLen = MIN_SEGMENT_LEN;\n        } else if (newLen > MAX_SEGMENT_LEN) {\n            newLen = MAX_SEGMENT_LEN;\n        }\n        char[] curr = carr(newLen);\n        _currentSegment = curr;\n        return curr;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "finishCurrentSegment",
+                "documentation": "/**\n     * @return char array\n     * @throws IOException if the text is too large, see {@link com.fasterxml.jackson.core.StreamReadConstraints.Builder#maxStringLength(int)}\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    },
+                    {
+                        "start_node": "append",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TextBuffer"
+                    },
+                    {
+                        "start_node": "TextBuffer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "finishCurrentSegment"
+                    }
+                ],
+                "similarity": 0.11810345540690187,
+                "end_line": 951,
+                "signature": "com.fasterxml.jackson.core.util.TextBuffer.finishCurrentSegment(): char[]"
+            },
+            {
+                "start_line": 691,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static JsonPointer _buildPath(final String fullPath, int fullPathOffset,",
+                "distance": 1.5,
+                "title": null,
+                "name": "_buildPath",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_buildPath"
+                    }
+                ],
+                "similarity": 0.11805704669658253,
+                "end_line": 691,
+                "signature": "com.fasterxml.jackson.core.JsonPointer._buildPath(String fullPath, int fullPathOffset, String segment, PointerParent parent): JsonPointer"
+            },
+            {
+                "start_line": 472,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonPointer matchProperty(String name) {\n        if ((_nextSegment != null) && _matchingPropertyName.equals(name)) {\n            return _nextSegment;\n        }\n        return null;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "matchProperty",
+                "documentation": "/**\n     * Method that may be called to check whether the pointer head (first segment)\n     * matches specified Object property (by name) and if so, return\n     * {@link JsonPointer} that represents rest of the path after match.\n     * If there is no match, {@code null} is returned.\n     *\n     * @param name Name of Object property to match\n     *\n     * @return Remaining path after matching specified property, if there is match;\n     *    {@code null} otherwise\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "matchProperty"
+                    }
+                ],
+                "similarity": 0.1155093880746546,
+                "end_line": 477,
+                "signature": "com.fasterxml.jackson.core.JsonPointer.matchProperty(String name): JsonPointer"
+            },
+            {
+                "start_line": 106,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/ByteArrayBuilder.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void append(int i) {\n        if (_currBlockPtr >= _currBlock.length) {\n            _allocMore();\n        }\n        _currBlock[_currBlockPtr++] = (byte) i;\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "append",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    }
+                ],
+                "similarity": 0.1129506601366374,
+                "end_line": 111,
+                "signature": "com.fasterxml.jackson.core.util.ByteArrayBuilder.append(int i): void"
+            },
+            {
+                "start_line": 114,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonPointer(String fullString, int fullStringOffset,",
+                "distance": 1.5,
+                "title": null,
+                "name": "JsonPointer",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    }
+                ],
+                "similarity": 0.11192011114778565,
+                "end_line": 114,
+                "signature": "com.fasterxml.jackson.core.JsonPointer(String fullString, int fullStringOffset, String segment, JsonPointer next)"
+            },
+            {
+                "start_line": 126,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonPointer(String fullString, int fullStringOffset,",
+                "distance": 1.5,
+                "title": null,
+                "name": "JsonPointer",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    }
+                ],
+                "similarity": 0.11192011114778565,
+                "end_line": 126,
+                "signature": "com.fasterxml.jackson.core.JsonPointer(String fullString, int fullStringOffset, String segment, int matchIndex, JsonPointer next)"
+            },
+            {
+                "start_line": 798,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void append(String str, int offset, int len) throws IOException",
+                "distance": 1.0,
+                "title": null,
+                "name": "append",
+                "documentation": "/**\n     * @param str string to append\n     * @param offset the start index within the string (from which we read chars to append)\n     * @param len number of chars to take from the string\n     * @throws IOException if the buffer has grown too large, see {@link com.fasterxml.jackson.core.StreamReadConstraints.Builder#maxStringLength(int)}\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    }
+                ],
+                "similarity": 0.10956145969881621,
+                "end_line": 798,
+                "signature": "com.fasterxml.jackson.core.util.TextBuffer.append(String str, int offset, int len): void"
+            },
+            {
+                "start_line": 753,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void append(char[] c, int start, int len) throws IOException",
+                "distance": 1.0,
+                "title": null,
+                "name": "append",
+                "documentation": "/**\n     * @param c char array to append\n     * @param start the start index within the array (from which we read chars to append)\n     * @param len number of chars to take from the array\n     * @throws IOException if the buffer has grown too large, see {@link com.fasterxml.jackson.core.StreamReadConstraints.Builder#maxStringLength(int)}\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    }
+                ],
+                "similarity": 0.10898608522784038,
+                "end_line": 753,
+                "signature": "com.fasterxml.jackson.core.util.TextBuffer.append(char[] c, int start, int len): void"
+            },
+            {
+                "start_line": 836,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private void validateAppend(int toAppend) throws IOException {\n        int newTotalLength = _segmentSize + _currentSize + toAppend;\n        // guard against overflow\n        if (newTotalLength < 0) {\n            newTotalLength = Integer.MAX_VALUE;\n        }\n        validateStringLength(newTotalLength);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "validateAppend",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    },
+                    {
+                        "start_node": "append",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TextBuffer"
+                    },
+                    {
+                        "start_node": "TextBuffer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "validateAppend"
+                    }
+                ],
+                "similarity": 0.10771921290549752,
+                "end_line": 843,
+                "signature": "com.fasterxml.jackson.core.util.TextBuffer.validateAppend(int toAppend): void"
+            },
+            {
+                "start_line": 506,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonPointer matchElement(int index) {\n        if ((index != _matchingElementIndex) || (index < 0)) {\n            return null;\n        }\n        return _nextSegment;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "matchElement",
+                "documentation": "/**\n     * Method that may be called to check whether the pointer head (first segment)\n     * matches specified Array index and if so, return\n     * {@link JsonPointer} that represents rest of the path after match.\n     * If there is no match, {@code null} is returned.\n     *\n     * @param index Index of Array element to match\n     *\n     * @return Remaining path after matching specified index, if there is match;\n     *    {@code null} otherwise\n     *\n     * @since 2.6\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "matchElement"
+                    }
+                ],
+                "similarity": 0.10771152687443317,
+                "end_line": 511,
+                "signature": "com.fasterxml.jackson.core.JsonPointer.matchElement(int index): JsonPointer"
+            },
+            {
+                "start_line": 273,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/GeneratorBase.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    @Override public JsonGenerator useDefaultPrettyPrinter() {\n        // Should not override a pretty printer if one already assigned.\n        if (getPrettyPrinter() != null) {\n            return this;\n        }\n        return setPrettyPrinter(_constructDefaultPrettyPrinter());\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "useDefaultPrettyPrinter",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "_asString"
+                    },
+                    {
+                        "start_node": "_asString",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GeneratorBase"
+                    },
+                    {
+                        "start_node": "GeneratorBase",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "useDefaultPrettyPrinter"
+                    }
+                ],
+                "similarity": 0.10503284407905333,
+                "end_line": 279,
+                "signature": "com.fasterxml.jackson.core.base.GeneratorBase.useDefaultPrettyPrinter(): JsonGenerator"
+            },
+            {
+                "start_line": 221,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/ByteArrayBuilder.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public byte[] completeAndCoalesce(int lastBlockLength) {\n        _currBlockPtr = lastBlockLength;\n        return toByteArray();\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "completeAndCoalesce",
+                "documentation": "/**\n     * Method that will complete \"manual\" output process, coalesce\n     * content (if necessary) and return results as a contiguous buffer.\n     *\n     * @param lastBlockLength Amount of content in the current segment\n     * buffer.\n     *\n     * @return Coalesced contents\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    },
+                    {
+                        "start_node": "append",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ByteArrayBuilder"
+                    },
+                    {
+                        "start_node": "ByteArrayBuilder",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "completeAndCoalesce"
+                    }
+                ],
+                "similarity": 0.10461341639322638,
+                "end_line": 224,
+                "signature": "com.fasterxml.jackson.core.util.ByteArrayBuilder.completeAndCoalesce(int lastBlockLength): byte[]"
+            },
+            {
+                "start_line": 202,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static JsonPointer forPath(JsonStreamContext context,",
+                "distance": 1.5,
+                "title": null,
+                "name": "forPath",
+                "documentation": "/**\n     * Factory method that will construct a pointer instance that describes\n     * path to location given {@link JsonStreamContext} points to.\n     *\n     * @param context Context to build pointer expression for\n     * @param includeRoot Whether to include number offset for virtual \"root context\"\n     *    or not.\n     *\n     * @return {@link JsonPointer} path to location of given context\n     *\n     * @since 2.9\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "forPath"
+                    }
+                ],
+                "similarity": 0.10272977765673266,
+                "end_line": 202,
+                "signature": "com.fasterxml.jackson.core.JsonPointer.forPath(JsonStreamContext context, boolean includeRoot): JsonPointer"
+            },
+            {
+                "start_line": 1032,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public char[] expandCurrentSegment(int minSize) {\n        char[] curr = _currentSegment;\n        if (curr.length >= minSize) return curr;\n        _currentSegment = curr = Arrays.copyOf(curr, minSize);\n        return curr;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "expandCurrentSegment",
+                "documentation": "/**\n     * Method called to expand size of the current segment, to\n     * accommodate for more contiguous content. Usually only\n     * used when parsing tokens like names if even then.\n     *\n     * @param minSize Required minimum strength of the current segment\n     *\n     * @return Expanded current segment\n     *\n     * @since 2.4\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    },
+                    {
+                        "start_node": "append",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TextBuffer"
+                    },
+                    {
+                        "start_node": "TextBuffer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "expandCurrentSegment"
+                    }
+                ],
+                "similarity": 0.09986477299609756,
+                "end_line": 1037,
+                "signature": "com.fasterxml.jackson.core.util.TextBuffer.expandCurrentSegment(int minSize): char[]"
+            },
+            {
+                "start_line": 1165,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void _reportBufferOverflow(int prev, int curr) {\n        long newSize = (long) prev + (long) curr;\n        throw new IllegalStateException(\"TextBuffer overrun: size reached (\"\n                +newSize+\") exceeds maximum of \"+Integer.MAX_VALUE);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "_reportBufferOverflow",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    },
+                    {
+                        "start_node": "append",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TextBuffer"
+                    },
+                    {
+                        "start_node": "TextBuffer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_reportBufferOverflow"
+                    }
+                ],
+                "similarity": 0.0985504010535875,
+                "end_line": 1169,
+                "signature": "com.fasterxml.jackson.core.util.TextBuffer._reportBufferOverflow(int prev, int curr): void"
+            },
+            {
+                "start_line": 207,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/ByteArrayBuilder.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public byte[] finishCurrentSegment() {\n        _allocMore();\n        return _currBlock;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "finishCurrentSegment",
+                "documentation": "/**\n     * Method called when the current segment buffer is full; will\n     * append to current contents, allocate a new segment buffer\n     * and return it\n     *\n     * @return Segment to use for writing\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    },
+                    {
+                        "start_node": "append",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ByteArrayBuilder"
+                    },
+                    {
+                        "start_node": "ByteArrayBuilder",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "finishCurrentSegment"
+                    }
+                ],
+                "similarity": 0.09817787087290111,
+                "end_line": 210,
+                "signature": "com.fasterxml.jackson.core.util.ByteArrayBuilder.finishCurrentSegment(): byte[]"
+            },
+            {
+                "start_line": 175,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static JsonPointer valueOf(String expr) { return compile(expr); }",
+                "distance": 1.5,
+                "title": null,
+                "name": "valueOf",
+                "documentation": "/**\n     * Alias for {@link #compile}; added to make instances automatically\n     * deserializable by Jackson databind.\n     *\n     * @param expr Pointer expression to compile\n     *\n     * @return Compiled {@link JsonPointer} path expression\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "valueOf"
+                    }
+                ],
+                "similarity": 0.09719540437581217,
+                "end_line": 175,
+                "signature": "com.fasterxml.jackson.core.JsonPointer.valueOf(String expr): JsonPointer"
+            },
+            {
+                "start_line": 129,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected TextBuffer(BufferRecycler allocator, char[] initialSegment) {\n        this(allocator);\n        _currentSegment = initialSegment;\n        _currentSize = initialSegment.length;\n        _inputStart = -1;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "TextBuffer",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    },
+                    {
+                        "start_node": "append",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TextBuffer"
+                    },
+                    {
+                        "start_node": "TextBuffer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "TextBuffer"
+                    }
+                ],
+                "similarity": 0.09635949343668389,
+                "end_line": 134,
+                "signature": "com.fasterxml.jackson.core.util.TextBuffer(BufferRecycler allocator, char[] initialSegment)"
+            },
+            {
+                "start_line": 563,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    @Override public String toString() {\n        if (_asStringOffset <= 0) {\n            return _asString;\n        }\n        return _asString.substring(_asStringOffset);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "toString",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "toString"
+                    }
+                ],
+                "similarity": 0.09565382851741512,
+                "end_line": 568,
+                "signature": "com.fasterxml.jackson.core.JsonPointer.toString(): String"
+            },
+            {
+                "start_line": 740,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static void _appendEscape(StringBuilder sb, char c) {\n        if (c == '0') {\n            c = '~';\n        } else if (c == '1') {\n            c = '/';\n        } else {\n            sb.append('~');\n        }\n        sb.append(c);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "_appendEscape",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_appendEscape"
+                    }
+                ],
+                "similarity": 0.09503551054446767,
+                "end_line": 749,
+                "signature": "com.fasterxml.jackson.core.JsonPointer._appendEscape(StringBuilder sb, char c): void"
+            },
+            {
+                "start_line": 378,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public int size() {\n        if (_inputStart >= 0) { // shared copy from input buf\n            return _inputLen;\n        }\n        if (_resultArray != null) {\n            return _resultArray.length;\n        }\n        if (_resultString != null) {\n            return _resultString.length();\n        }\n        // local segmented buffers\n        return _segmentSize + _currentSize;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "size",
+                "documentation": "/**\n     * @return Number of characters currently stored in this buffer\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    },
+                    {
+                        "start_node": "append",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TextBuffer"
+                    },
+                    {
+                        "start_node": "TextBuffer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "size"
+                    }
+                ],
+                "similarity": 0.09482204451742346,
+                "end_line": 390,
+                "signature": "com.fasterxml.jackson.core.util.TextBuffer.size(): int"
+            },
+            {
+                "start_line": 392,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public int getTextOffset() {\n        /* Only shared input buffer can have non-zero offset; buffer\n         * segments start at 0, and if we have to create a combo buffer,\n         * that too will start from beginning of the buffer\n         */\n        return (_inputStart >= 0) ? _inputStart : 0;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getTextOffset",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    },
+                    {
+                        "start_node": "append",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TextBuffer"
+                    },
+                    {
+                        "start_node": "TextBuffer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getTextOffset"
+                    }
+                ],
+                "similarity": 0.09394679948133844,
+                "end_line": 398,
+                "signature": "com.fasterxml.jackson.core.util.TextBuffer.getTextOffset(): int"
+            },
+            {
+                "start_line": 836,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private Object writeReplace() {\n        // 11-Oct-2022, tatu: very important, must serialize just contents!\n        return new Serialization(toString());\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "writeReplace",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "writeReplace"
+                    }
+                ],
+                "similarity": 0.09333536323184502,
+                "end_line": 839,
+                "signature": "com.fasterxml.jackson.core.JsonPointer.writeReplace(): Object"
+            },
+            {
+                "start_line": 714,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected static int _extractEscapedSegment(String input, int firstCharOffset,",
+                "distance": 1.5,
+                "title": null,
+                "name": "_extractEscapedSegment",
+                "documentation": "/**\n     * Method called to extract the next segment of the path, in case\n     * where we seem to have encountered a (tilde-)escaped character\n     * within segment.\n     *\n     * @param input Full input for the tail being parsed\n     * @param firstCharOffset Offset of the first character of segment (one\n     *    after slash)\n     * @param i Offset to character after tilde\n     * @param sb StringBuilder into which unquoted segment is added\n     *\n     * @return Offset at which slash was encountered, if any, or -1\n     *    if expression ended without seeing unescaped slash\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_extractEscapedSegment"
+                    }
+                ],
+                "similarity": 0.0927649116055282,
+                "end_line": 714,
+                "signature": "com.fasterxml.jackson.core.JsonPointer._extractEscapedSegment(String input, int firstCharOffset, int i, StringBuilder sb): int"
+            },
+            {
+                "start_line": 134,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/GeneratorBase.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected GeneratorBase(int features, ObjectCodec codec, IOContext ioContext, JsonWriteContext jsonWriteContext) {\n        super();\n        _features = features;\n        _objectCodec = codec;\n        _ioContext = ioContext;\n        _writeContext = jsonWriteContext;\n        _cfgNumbersAsStrings = Feature.WRITE_NUMBERS_AS_STRINGS.enabledIn(features);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "GeneratorBase",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "_asString"
+                    },
+                    {
+                        "start_node": "_asString",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GeneratorBase"
+                    },
+                    {
+                        "start_node": "GeneratorBase",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "GeneratorBase"
+                    }
+                ],
+                "similarity": 0.09265976225361486,
+                "end_line": 141,
+                "signature": "com.fasterxml.jackson.core.base.GeneratorBase(int features, ObjectCodec codec, IOContext ioContext, JsonWriteContext jsonWriteContext)"
+            },
+            {
+                "start_line": 1050,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    @Override public String toString() {\n        try {\n            return contentsAsString();\n        } catch (IOException e) {\n            return \"TextBuffer: Exception when reading contents\";\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "toString",
+                "documentation": "/**\n     * Note: calling this method may not be as efficient as calling\n     * {@link #contentsAsString}, since it's not guaranteed that resulting\n     * String is cached.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    },
+                    {
+                        "start_node": "append",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TextBuffer"
+                    },
+                    {
+                        "start_node": "TextBuffer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "toString"
+                    }
+                ],
+                "similarity": 0.09182091005415563,
+                "end_line": 1056,
+                "signature": "com.fasterxml.jackson.core.util.TextBuffer.toString(): String"
+            },
+            {
+                "start_line": 751,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected JsonPointer _constructHead()",
+                "distance": 1.5,
+                "title": null,
+                "name": "_constructHead",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_constructHead"
+                    }
+                ],
+                "similarity": 0.08959961651063415,
+                "end_line": 751,
+                "signature": "com.fasterxml.jackson.core.JsonPointer._constructHead(): JsonPointer"
+            },
+            {
+                "start_line": 909,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public String setCurrentAndReturn(int len) throws IOException {\n        _currentSize = len;\n        // We can simplify handling here compared to full `contentsAsString()`:\n        if (_segmentSize > 0) { // longer text; call main method\n            return contentsAsString();\n        }\n        // more common case: single segment\n        int currLen = _currentSize;\n        validateStringLength(currLen);\n        String str = (currLen == 0) ? \"\" : new String(_currentSegment, 0, currLen);\n        _resultString = str;\n        return str;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "setCurrentAndReturn",
+                "documentation": "/**\n     * Convenience method that finishes the current active content segment\n     * (by specifying how many characters within consists of valid content)\n     * and aggregates and returns resulting contents (similar to a call\n     * to {@link #contentsAsString()}).\n     *\n     * @param len Length of content (in characters) of the current active segment\n     *\n     * @return String that contains all buffered content\n     * @throws IOException if the text is too large, see {@link com.fasterxml.jackson.core.StreamReadConstraints.Builder#maxStringLength(int)}\n     *\n     * @since 2.6\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    },
+                    {
+                        "start_node": "append",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TextBuffer"
+                    },
+                    {
+                        "start_node": "TextBuffer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "setCurrentAndReturn"
+                    }
+                ],
+                "similarity": 0.08942430953512266,
+                "end_line": 921,
+                "signature": "com.fasterxml.jackson.core.util.TextBuffer.setCurrentAndReturn(int len): String"
+            },
+            {
+                "start_line": 280,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static void _appendEscaped(StringBuilder sb, String segment)",
+                "distance": 1.5,
+                "title": null,
+                "name": "_appendEscaped",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_appendEscaped"
+                    }
+                ],
+                "similarity": 0.08751677409244078,
+                "end_line": 280,
+                "signature": "com.fasterxml.jackson.core.JsonPointer._appendEscaped(StringBuilder sb, String segment): void"
+            },
+            {
+                "start_line": 98,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/ByteArrayBuilder.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void release() {\n        reset();\n        if (_bufferRecycler != null && _currBlock != null) {\n            _bufferRecycler.releaseByteBuffer(BufferRecycler.BYTE_WRITE_CONCAT_BUFFER, _currBlock);\n            _currBlock = null;\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "release",
+                "documentation": "/**\n     * Clean up method to call to release all buffers this object may be\n     * using. After calling the method, no other accessors can be used (and\n     * attempt to do so may result in an exception)\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    },
+                    {
+                        "start_node": "append",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ByteArrayBuilder"
+                    },
+                    {
+                        "start_node": "ByteArrayBuilder",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "release"
+                    }
+                ],
+                "similarity": 0.08629867250175212,
+                "end_line": 104,
+                "signature": "com.fasterxml.jackson.core.util.ByteArrayBuilder.release(): void"
+            },
+            {
+                "start_line": 313,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public int length() {\n        return _asString.length() - _asStringOffset;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "length",
+                "documentation": "/**\n     * Functionally same as:\n     *<code>\n     *  toString().length()\n     *</code>\n     * but more efficient as it avoids likely String allocation.\n     *\n     * @return Length of String representation of this pointer instance\n     *\n     * @since 2.14\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "tail"
+                    },
+                    {
+                        "start_node": "tail",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonPointer"
+                    },
+                    {
+                        "start_node": "JsonPointer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "length"
+                    }
+                ],
+                "similarity": 0.08551530077057354,
+                "end_line": 315,
+                "signature": "com.fasterxml.jackson.core.JsonPointer.length(): int"
+            },
+            {
+                "start_line": 356,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/GeneratorBase.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    @Override public void writeRawValue(char[] text, int offset, int len) throws IOException {\n        _verifyValueWrite(\"write raw value\");\n        writeRaw(text, offset, len);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "writeRawValue",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "_asString"
+                    },
+                    {
+                        "start_node": "_asString",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GeneratorBase"
+                    },
+                    {
+                        "start_node": "GeneratorBase",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "writeRawValue"
+                    }
+                ],
+                "similarity": 0.08537997939117206,
+                "end_line": 359,
+                "signature": "com.fasterxml.jackson.core.base.GeneratorBase.writeRawValue(char[] text, int offset, int len): void"
+            },
+            {
+                "start_line": 113,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/ByteArrayBuilder.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void appendTwoBytes(int b16) {\n        if ((_currBlockPtr + 1) < _currBlock.length) {\n            _currBlock[_currBlockPtr++] = (byte) (b16 >> 8);\n            _currBlock[_currBlockPtr++] = (byte) b16;\n        } else {\n            append(b16 >> 8);\n            append(b16);\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "appendTwoBytes",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    },
+                    {
+                        "start_node": "append",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ByteArrayBuilder"
+                    },
+                    {
+                        "start_node": "ByteArrayBuilder",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "appendTwoBytes"
+                    }
+                ],
+                "similarity": 0.08535832250606545,
+                "end_line": 121,
+                "signature": "com.fasterxml.jackson.core.util.ByteArrayBuilder.appendTwoBytes(int b16): void"
+            },
+            {
+                "start_line": 351,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/GeneratorBase.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    @Override public void writeRawValue(String text, int offset, int len) throws IOException {\n        _verifyValueWrite(\"write raw value\");\n        writeRaw(text, offset, len);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "writeRawValue",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "_asString"
+                    },
+                    {
+                        "start_node": "_asString",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GeneratorBase"
+                    },
+                    {
+                        "start_node": "GeneratorBase",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "writeRawValue"
+                    }
+                ],
+                "similarity": 0.08501563988800076,
+                "end_line": 354,
+                "signature": "com.fasterxml.jackson.core.base.GeneratorBase.writeRawValue(String text, int offset, int len): void"
+            },
+            {
+                "start_line": 530,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public double contentsAsDouble(final boolean useFastParser) throws NumberFormatException {\n        try {\n            return NumberInput.parseDouble(contentsAsString(), useFastParser);\n        } catch (IOException e) {\n            // JsonParseException is used to denote a string that is too long\n            throw new NumberFormatException(e.getMessage());\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "contentsAsDouble",
+                "documentation": "/**\n     * Convenience method for converting contents of the buffer\n     * into a Double value.\n     *\n     * @param useFastParser whether to use {@code FastDoubleParser}\n     * @return Buffered text value parsed as a {@link Double}, if possible\n     *\n     * @throws NumberFormatException if contents are not a valid Java number\n     *\n     * @since 2.14\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    },
+                    {
+                        "start_node": "append",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TextBuffer"
+                    },
+                    {
+                        "start_node": "TextBuffer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "contentsAsDouble"
+                    }
+                ],
+                "similarity": 0.08477904046077517,
+                "end_line": 537,
+                "signature": "com.fasterxml.jackson.core.util.TextBuffer.contentsAsDouble(boolean useFastParser): double"
+            },
+            {
+                "start_line": 65,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/ByteArrayBuilder.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private ByteArrayBuilder(BufferRecycler br, byte[] initialBlock, int initialLen) {\n        _bufferRecycler = br;\n        _currBlock = initialBlock;\n        _currBlockPtr = initialLen;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "ByteArrayBuilder",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    },
+                    {
+                        "start_node": "append",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ByteArrayBuilder"
+                    },
+                    {
+                        "start_node": "ByteArrayBuilder",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "ByteArrayBuilder"
+                    }
+                ],
+                "similarity": 0.08372772249299508,
+                "end_line": 69,
+                "signature": "com.fasterxml.jackson.core.util.ByteArrayBuilder(BufferRecycler br, byte[] initialBlock, int initialLen)"
+            },
+            {
+                "start_line": 963,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public String finishAndReturn(int lastSegmentEnd, boolean trimTrailingSpaces) throws IOException",
+                "distance": 1.5,
+                "title": null,
+                "name": "finishAndReturn",
+                "documentation": "/**\n     * @param lastSegmentEnd End offset in the currently active segment,\n     *    could be 0 in the case of first character is\n     *    delimiter or end-of-line\n     * @param trimTrailingSpaces Whether trailing spaces should be trimmed or not\n     * @return token as text\n     * @throws IOException If length constraints (of longest allowed Text value) are violated\n     *\n     * @since 2.15\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "append"
+                    },
+                    {
+                        "start_node": "append",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TextBuffer"
+                    },
+                    {
+                        "start_node": "TextBuffer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "finishAndReturn"
+                    }
+                ],
+                "similarity": 0.08360280547702181,
+                "end_line": 963,
+                "signature": "com.fasterxml.jackson.core.util.TextBuffer.finishAndReturn(int lastSegmentEnd, boolean trimTrailingSpaces): String"
+            },
+            {
+                "start_line": 367,
+                "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/GeneratorBase.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public int writeBinary(Base64Variant b64variant, InputStream data, int dataLength) throws IOException {\n        // Let's implement this as \"unsupported\" to make it easier to add new parser impls\n        _reportUnsupportedOperation();\n        return 0;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "writeBinary",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "_asString"
+                    },
+                    {
+                        "start_node": "_asString",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "GeneratorBase"
+                    },
+                    {
+                        "start_node": "GeneratorBase",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "writeBinary"
+                    }
+                ],
+                "similarity": 0.08178763581254887,
+                "end_line": 371,
+                "signature": "com.fasterxml.jackson.core.base.GeneratorBase.writeBinary(Base64Variant b64variant, InputStream data, int dataLength): int"
+            }
+        ],
+        "classes": [],
+        "issues": [
+            {
+                "content": "Given the following code:\r\n\r\n```java\r\nvar original = JsonPointer.compile(\"/a1/b/c\");\r\n\r\nvar tailPointer = original.tail();\r\n\r\nvar other = JsonPointer.compile(\"/a2\");\r\n\r\nvar concatenated = other.append(tailPointer);\r\n```\r\n\r\nI would expect concatenated to be the same as `JsonPointer.compile(\"/a2/b/c\")`. \r\n\r\nHowever, instead it is `JsonPointer.compile(\"/a2/a1/b/c\")`, because `append` appends `tail._asString` which still contains the segments from before `tail()` was called.\n",
+                "distance": 0,
+                "title": "`JsonPointer.append(JsonPointer.tail())` includes the original pointer",
+                "name": "root",
+                "path": [],
+                "issue_id": "root",
+                "similarity": 2.0,
+                "type": "issue"
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "1168",
+                "type": "issue",
+                "content": "Given the following code:\r\n\r\n```java\r\nvar original = JsonPointer.compile(\"/a1/b/c\");\r\n\r\nvar tailPointer = original.tail();\r\n\r\nvar other = JsonPointer.compile(\"/a2\");\r\n\r\nvar concatenated = other.append(tailPointer);\r\n```\r\n\r\nI would expect concatenated to be the same as `JsonPointer.compile(\"/a2/b/c\")`. \r\n\r\nHowever, instead it is `JsonPointer.compile(\"/a2/a1/b/c\")`, because `append` appends `tail._asString` which still contains the segments from before `tail()` was called.\n\n\nComment by cowtowncoder:\nThat sounds like a bug indeed. Thank you for reporting this @Mahoney !\r\n",
+                "source_code": null,
+                "distance": 0.25,
+                "title": "`JsonPointer.append(JsonPointer.tail())` includes the original pointer ",
+                "name": "issue#1168",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#1168"
+                    }
+                ],
+                "similarity": 0.8314225321924603,
+                "end_line": null,
+                "signature": null
+            }
+        ]
+    },
+    "artifact_stats": {
+        "skipped_due_to_time": 2,
+        "valid_related_items": 16
+    }
+}

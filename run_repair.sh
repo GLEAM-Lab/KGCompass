@@ -71,7 +71,10 @@ FINAL_LOCATIONS_DIR="${RUN_DIR}/final_locations"
 PATCH_DIR="${RUN_DIR}/patches"
 LOG_FILE="${RUN_DIR}/run.log"
 
+# 创建目录并设置权限（确保容器内用户可以写入）
 mkdir -p "$KG_LOCATIONS_DIR" "$LLM_LOCATIONS_DIR" "$FINAL_LOCATIONS_DIR" "$PATCH_DIR"
+# 如果可能，修复权限（在 Docker 容器中可能无效，但不会报错）
+chmod -R 755 "$RUN_DIR" 2>/dev/null || true
 
 
 echo "================================================="

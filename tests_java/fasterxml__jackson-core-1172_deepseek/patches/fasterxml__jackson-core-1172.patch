@@ -1,0 +1,54 @@
+Based on the issue, the bug occurs in `JsonPointer.append(JsonPointer.tail())` where the tail pointer's `_asString` still contains the original segments. The issue is that `tail()` returns `_nextSegment` but doesn't adjust the `_asString` to only include the tail segments.
+
+The fix should modify the `append()` method to use the tail's string representation starting from its offset (`_asStringOffset`), not the full string. Here's the edit:
+
+```java
+### playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java
+- start_line : 367
+- end_line : 383
+<<<<<<< SEARCH
+    public JsonPointer append(JsonPointer tail) {
+        if (this == EMPTY) {
+            return tail;
+        }
+        if (tail == EMPTY) {
+            return this;
+        }
+        // 21-Mar-2017, tatu: Not superbly efficient; could probably improve by not concatenating,
+        //    re-decoding -- by stitching together segments -- but for now should be fine.
+
+        String currentJsonPointer = _asString;
+        if (currentJsonPointer.endsWith("/")) {
+            //removes final slash
+            currentJsonPointer = currentJsonPointer.substring(0, currentJsonPointer.length()-1);
+        }
+        return compile(currentJsonPointer + tail._asString);
+    }
+=======
+    public JsonPointer append(JsonPointer tail) {
+        if (this == EMPTY) {
+            return tail;
+        }
+        if (tail == EMPTY) {
+            return this;
+        }
+        // 21-Mar-2017, tatu: Not superbly efficient; could probably improve by not concatenating,
+        //    re-decoding -- by stitching together segments -- but for now should be fine.
+
+        String currentJsonPointer = _asString;
+        if (currentJsonPointer.endsWith("/")) {
+            //removes final slash
+            currentJsonPointer = currentJsonPointer.substring(0, currentJsonPointer.length()-1);
+        }
+        String tailStr = tail._asString;
+        if (tail._asStringOffset > 0) {
+            tailStr = tailStr.substring(tail._asStringOffset);
+        }
+        return compile(currentJsonPointer + tailStr);
+    }
+>>>>>>> REPLACE
+```
+
+This change ensures that when appending a tail pointer, we only include the segments that come after the tail's offset. This matches the expected behavior where `append(tail())` should only include the segments from the tail onward, not the original pointer's segments.
+
+The fix checks if the tail has an offset (`_asStringOffset > 0`) and if so, uses the substring starting from that offset. This way, when we append a tail pointer, we only get the segments that were actually in the tail portion.

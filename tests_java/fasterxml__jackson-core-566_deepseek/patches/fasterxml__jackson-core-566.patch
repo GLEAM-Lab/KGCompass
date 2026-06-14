@@ -1,0 +1,55 @@
+Based on the issue, the bug is that `JsonGenerator` is missing two `writeNumberField()` variants for `short` and `BigInteger` types, while these types are supported in `writeNumber()`. We need to add these two methods to synchronize the API.
+
+Here are the necessary edits:
+
+```java
+### playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonGenerator.java
+- start_line : 1233
+- end_line : 1236
+<<<<<<< SEARCH
+    public void writeNumberField(String fieldName, int value) throws IOException {
+        writeFieldName(fieldName);
+        writeNumber(value);
+    }
+=======
+    public void writeNumberField(String fieldName, int value) throws IOException {
+        writeFieldName(fieldName);
+        writeNumber(value);
+    }
+
+    public void writeNumberField(String fieldName, short value) throws IOException {
+        writeFieldName(fieldName);
+        writeNumber(value);
+    }
+>>>>>>> REPLACE
+```
+
+```java
+### playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonGenerator.java
+- start_line : 1286
+- end_line : 1289
+<<<<<<< SEARCH
+    public void writeNumberField(String fieldName, BigDecimal value) throws IOException {
+        writeFieldName(fieldName);
+        writeNumber(value);
+    }
+=======
+    public void writeNumberField(String fieldName, BigDecimal value) throws IOException {
+        writeFieldName(fieldName);
+        writeNumber(value);
+    }
+
+    public void writeNumberField(String fieldName, BigInteger value) throws IOException {
+        writeFieldName(fieldName);
+        writeNumber(value);
+    }
+>>>>>>> REPLACE
+```
+
+The changes:
+1. Added `writeNumberField(String fieldName, short value)` method after the int variant
+2. Added `writeNumberField(String fieldName, BigInteger value)` method after the BigDecimal variant
+
+Both methods follow the same pattern as existing number field methods - they first write the field name and then write the number value using the corresponding `writeNumber()` method.
+
+The placement is chosen to keep related methods together (short with int/long, BigInteger with BigDecimal) and maintain logical grouping of numeric types in the file.

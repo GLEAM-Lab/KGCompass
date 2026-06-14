@@ -1,0 +1,46 @@
+Based on the issue, we need to add an extension point in `AnnotationIntrospector` to allow modules to indicate the primary/creator constructor for Kotlin data classes and similar constructs. The issue suggests adding a new method in `AnnotationIntrospector`.
+
+Looking at the code, we should add a new method to detect if a constructor is the canonical/primary constructor. Here's the proposed edit:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java
+- start_line : 1398
+- end_line : 1398
+<<<<<<< SEARCH
+    public JsonCreator.Mode findCreatorAnnotation(MapperConfig<?> config, Annotated ann) {
+        return null;
+    }
+=======
+    public JsonCreator.Mode findCreatorAnnotation(MapperConfig<?> config, Annotated ann) {
+        return null;
+    }
+
+    /**
+     * Method called to determine if given constructor is the canonical/primary constructor
+     * for the class, in cases where no explicit creator annotations are present.
+     * This is typically used for language-specific constructs like Kotlin data classes
+     * or Java Records.
+     *
+     * @param config Configuration in effect
+     * @param ctor Constructor to check
+     * @return True if constructor should be considered the canonical creator
+     *
+     * @since 2.16
+     */
+    public boolean isCanonicalCreator(MapperConfig<?> config, AnnotatedConstructor ctor) {
+        return false;
+    }
+>>>>>>> REPLACE
+```
+
+This edit:
+1. Adds a new method `isCanonicalCreator()` after `findCreatorAnnotation()`
+2. Takes `MapperConfig` and `AnnotatedConstructor` as parameters
+3. Returns boolean to indicate if the constructor is canonical
+4. Includes proper JavaDoc explaining the purpose
+5. Default implementation returns false for backwards compatibility
+6. Places it in a logical location near other creator-related methods
+
+The Kotlin module can then override this method to implement its logic for detecting primary constructors in Kotlin data classes, while other modules (like for Java Records) can also provide their own implementations.
+
+The method is designed to be called when no explicit creator annotations are present, as mentioned in the issue description. This matches the behavior seen in the Kotlin module issue (#805) where they want to better handle primary constructors without annotations.

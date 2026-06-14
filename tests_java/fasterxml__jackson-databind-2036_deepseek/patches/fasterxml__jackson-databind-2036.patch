@@ -1,0 +1,31 @@
+Based on the issue, the problem is that when deserializing JSON without a type property into a concrete class that implements a polymorphic interface, Jackson fails instead of using the concrete class as the default implementation.
+
+The fix needs to be implemented in the type resolution logic, specifically in `StdTypeResolverBuilder.java` where the default implementation is handled. We need to modify the `buildTypeDeserializer` method to consider the concrete target class as the default implementation when no type info is present and no defaultImpl is specified.
+
+Here's the proposed fix:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/StdTypeResolverBuilder.java
+- start_line : 111
+- end_line : 111
+<<<<<<< SEARCH
+    public TypeDeserializer buildTypeDeserializer(DeserializationConfig config,
+=======
+    public TypeDeserializer buildTypeDeserializer(DeserializationConfig config,
+>>>>>>> REPLACE
+```
+
+Wait, actually we need to see more of the method implementation to make the proper changes. Since the full method implementation wasn't provided in the snippets, I'll need to infer the changes needed based on the issue.
+
+The key change would be to modify how the default implementation is determined when building the type deserializer. We should add logic to use the concrete target class as defaultImpl if none is specified and the feature `USE_BASE_TYPE_AS_DEFAULT_IMPL` is enabled.
+
+Since the full method isn't visible in the snippets, I can't provide the exact SEARCH/REPLACE edit. However, the general approach would be:
+
+1. Add a new feature flag `USE_BASE_TYPE_AS_DEFAULT_IMPL` in `MapperFeature`
+2. Modify the type deserializer building logic to check this flag and use the concrete class as defaultImpl when appropriate
+
+Would you be able to provide the full implementation of the `buildTypeDeserializer` method from `StdTypeResolverBuilder.java`? That would allow me to provide the exact SEARCH/REPLACE edit needed to fix this issue.
+
+The core idea is that when deserializing to a concrete class (not an interface/abstract class) and no type info is present, we should use that concrete class as the default implementation rather than failing. This would require changes in both the feature flags and the type resolution logic.
+
+Without seeing the full method implementation, I can't provide the exact edit, but the change would involve checking the target type and using it as defaultImpl when appropriate, similar to how defaultImpl is currently handled but with the additional condition of the concrete target type.

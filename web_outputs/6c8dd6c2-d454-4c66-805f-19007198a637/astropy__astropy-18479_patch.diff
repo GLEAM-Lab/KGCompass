@@ -1,0 +1,13 @@
+--- a/lib/matplotlib/axes/_axes.py
++++ b/lib/matplotlib/axes/_axes.py
+@@ -6654,6 +6654,9 @@ class Axes(martist.Artist):
+         if bins is None:
+             bins = rcParams['hist.bins']
+ 
++        # Fix: Ensure range parameter is respected when density=True
++        if density and range is not None:
++            x = x[(x >= range[0]) & (x <= range[1])]
++
+         # Normalize stacked inputs
+         if stacked is True:
+             stacked = [True] * nx

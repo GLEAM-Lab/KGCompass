@@ -1,0 +1,49 @@
+Based on the issue description, the problem is that Jib doesn't automatically select the correct base image for Java 21 (eclipse-temurin:21-jre) when Java 21 is detected. Looking at the code, this would likely be handled in the JavaContainerBuilder class which is responsible for setting up Java container configurations.
+
+The issue suggests that Jib already handles Java 8, 11 and 17 automatically, so we need to add Java 21 support to the same logic. The fix would involve modifying the JavaContainerBuilder class to recognize Java 21 and use the appropriate base image.
+
+Here's the proposed edit:
+
+```java
+### playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/api/JavaContainerBuilder.java
+- start_line : 95
+- end_line : 101
+<<<<<<< SEARCH
+  public static JavaContainerBuilder fromDistroless() {
+    try {
+      return from(RegistryImage.named("gcr.io/distroless/java"));
+    } catch (InvalidImageReferenceException ignored) {
+      throw new IllegalStateException("Unreachable");
+    }
+  }
+=======
+  public static JavaContainerBuilder fromDistroless() {
+    try {
+      String javaVersion = System.getProperty("java.version");
+      if (javaVersion.startsWith("21")) {
+        return from(RegistryImage.named("eclipse-temurin:21-jre"));
+      } else if (javaVersion.startsWith("17")) {
+        return from(RegistryImage.named("gcr.io/distroless/java17"));
+      } else if (javaVersion.startsWith("11")) {
+        return from(RegistryImage.named("gcr.io/distroless/java11"));
+      } else {
+        return from(RegistryImage.named("gcr.io/distroless/java8"));
+      }
+    } catch (InvalidImageReferenceException ignored) {
+      throw new IllegalStateException("Unreachable");
+    }
+  }
+>>>>>>> REPLACE
+```
+
+This change:
+1. Checks the Java version being used via System.getProperty("java.version")
+2. Selects the appropriate base image based on the Java version:
+   - Java 21: eclipse-temurin:21-jre
+   - Java 17: gcr.io/distroless/java17
+   - Java 11: gcr.io/distroless/java11
+   - Default (Java 8): gcr.io/distroless/java8
+
+The fix maintains backward compatibility while adding support for Java 21. The base image selection follows the same pattern as existing versions but uses the eclipse-temurin image for Java 21 which is the standard base image for newer Java versions.
+
+Note: The actual implementation might need to be more sophisticated to handle different version formats and edge cases, but this captures the core functionality needed to address the issue.

@@ -1,0 +1,43 @@
+Based on the issue description and reproduction, the bug appears to be in how `BeanDeserializer` handles `currentValue` when deserializing empty objects. The key problem is that when deserializing an empty object (`{}`), the current value isn't properly maintained for nested fields.
+
+The issue shows that when deserializing `field2` after an empty `field1`, the current value incorrectly points to `field1`'s value instead of the parent object (`User` in the test case). The suggested fix by cowtowncoder is to get the current value from the parent context when needed.
+
+Looking at the code segments provided, we need to modify how the deserialization context handles current values. The fix should be in the `readPropertyValue` method of `DeserializationContext.java` to ensure proper current value propagation.
+
+Here's the proposed fix:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java
+- start_line : 1019
+- end_line : 1027
+<<<<<<< SEARCH
+    public <T> T readPropertyValue(JsonParser p, BeanProperty prop, JavaType type) throws IOException {
+        JsonDeserializer<Object> deser = findContextualValueDeserializer(type, prop);
+        if (deser == null) {
+            return reportBadDefinition(type, String.format(
+                    "Could not find JsonDeserializer for type %s (via property %s)",
+                    ClassUtil.getTypeDescription(type), ClassUtil.nameOf(prop)));
+        }
+        return (T) deser.deserialize(p, this);
+    }
+=======
+    public <T> T readPropertyValue(JsonParser p, BeanProperty prop, JavaType type) throws IOException {
+        JsonDeserializer<Object> deser = findContextualValueDeserializer(type, prop);
+        if (deser == null) {
+            return reportBadDefinition(type, String.format(
+                    "Could not find JsonDeserializer for type %s (via property %s)",
+                    ClassUtil.getTypeDescription(type), ClassUtil.nameOf(prop)));
+        }
+        // Ensure current value is properly set from parent context if needed
+        Object parentValue = p.getParsingContext().getParent().getCurrentValue();
+        if (parentValue != null) {
+            p.setCurrentValue(parentValue);
+        }
+        return (T) deser.deserialize(p, this);
+    }
+>>>>>>> REPLACE
+```
+
+This change ensures that before deserializing a property value, we check if there's a valid current value in the parent context and set it if needed. This fixes the issue where empty objects would cause the current value to be lost or incorrect for subsequent properties.
+
+The fix maintains the parent object as the current value when deserializing nested properties, which matches the expected behavior shown in the test case where `field2` should see the `User` object as its current value rather than `field1`'s value.

@@ -1,0 +1,1667 @@
+{
+  "related_entities": {
+    "methods": [
+      {
+        "start_line": 1752,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public byte getByteValue() throws IOException {\n        int value = getIntValue();\n        // So far so good: but does it fit?\n        // [JACKSON-804]: Let's actually allow range of [-128, 255], as those are uniquely mapped\n        //  (instead of just signed range of [-128, 127])\n        if (value < MIN_BYTE_I || value > MAX_BYTE_I) {\n            throw new InputCoercionException(this,\n                    String.format(\"Numeric value (%s) out of range of Java byte\", getText()),\n                    JsonToken.VALUE_NUMBER_INT, Byte.TYPE);\n        }\n        return (byte) value;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getByteValue",
+        "documentation": "/**\n     * Numeric accessor that can be called when the current\n     * token is of type {@link JsonToken#VALUE_NUMBER_INT} and\n     * it can be expressed as a value of Java byte primitive type.\n     * Note that in addition to \"natural\" input range of {@code [-128, 127]},\n     * this also allows \"unsigned 8-bit byte\" values {@code [128, 255]}:\n     * but for this range value will be translated by truncation, leading\n     * to sign change.\n     *<p>\n     * It can also be called for {@link JsonToken#VALUE_NUMBER_FLOAT};\n     * if so, it is equivalent to calling {@link #getDoubleValue}\n     * and then casting; except for possible overflow/underflow\n     * exception.\n     *<p>\n     * Note: if the resulting integer value falls outside range of\n     * {@code [-128, 255]},\n     * a {@link InputCoercionException}\n     * will be thrown to indicate numeric overflow/underflow.\n     *\n     * @return Current number value as {@code byte} (if numeric token within\n     *   range of {@code [-128, 255]}); otherwise exception thrown\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getByteValue"
+          }
+        ],
+        "similarity": 0.1321131319434048,
+        "end_line": 1763,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getByteValue(): byte"
+      },
+      {
+        "start_line": 1725,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public abstract NumberType getNumberType() throws IOException;",
+        "distance": 1.25,
+        "title": null,
+        "name": "getNumberType",
+        "documentation": "/**\n     * If current token is of type\n     * {@link JsonToken#VALUE_NUMBER_INT} or\n     * {@link JsonToken#VALUE_NUMBER_FLOAT}, returns\n     * one of {@link NumberType} constants; otherwise returns null.\n     *\n     * @return Type of current number, if parser points to numeric token; {@code null} otherwise\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getNumberType"
+          }
+        ],
+        "similarity": 0.12615556512000414,
+        "end_line": 1725,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getNumberType(): NumberType"
+      },
+      {
+        "start_line": 1658,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public abstract Number getNumberValue() throws IOException;",
+        "distance": 1.25,
+        "title": null,
+        "name": "getNumberValue",
+        "documentation": "/**\n     * Generic number value accessor method that will work for\n     * all kinds of numeric values. It will return the optimal\n     * (simplest/smallest possible) wrapper object that can\n     * express the numeric value just parsed.\n     *\n     * @return Numeric value of the current token in its most optimal\n     *   representation\n     *\n     * @throws IOException Problem with access: {@link JsonParseException} if\n     *    the current token is not numeric, or if decoding of the value fails\n     *    (invalid format for numbers); plain {@link IOException} if underlying\n     *    content read fails (possible if values are extracted lazily)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getNumberValue"
+          }
+        ],
+        "similarity": 0.105079982585118,
+        "end_line": 1658,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getNumberValue(): Number"
+      },
+      {
+        "start_line": 1710,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Object getNumberValueDeferred() throws IOException {\n        return getNumberValue();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getNumberValueDeferred",
+        "documentation": "/**\n     * Method similar to {@link #getNumberValue} but that returns\n     * <b>either</b> same {@link Number} value as {@link #getNumberValue()}\n     * (if already decoded), <b>or</b> {@code String} representation of\n     * as-of-yet undecoded number.\n     * Typically textual formats allow deferred decoding from String, whereas\n     * binary formats either decode numbers eagerly or have binary representation\n     * from which to decode value to return.\n     *<p>\n     * Same constraints apply to calling this method as to {@link #getNumberValue()}:\n     * current token must be either\n     * {@link JsonToken#VALUE_NUMBER_INT} or\n     * {@link JsonToken#VALUE_NUMBER_FLOAT};\n     * otherwise an exception is thrown\n     *<p>\n     * Default implementation simply returns {@link #getNumberValue()}\n     *\n     * @return Either {@link Number} (for already decoded numbers) or\n     *   {@link String} (for deferred decoding).\n     *\n     * @throws IOException Problem with access: {@link JsonParseException} if\n     *    the current token is not numeric, or if decoding of the value fails\n     *    (invalid format for numbers); plain {@link IOException} if underlying\n     *    content read fails (possible if values are extracted lazily)\n     *\n     * @since 2.15\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getNumberValueDeferred"
+          }
+        ],
+        "similarity": 0.10486627074443923,
+        "end_line": 1712,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getNumberValueDeferred(): Object"
+      },
+      {
+        "start_line": 1873,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public abstract float getFloatValue() throws IOException;",
+        "distance": 1.25,
+        "title": null,
+        "name": "getFloatValue",
+        "documentation": "/**\n     * Numeric accessor that can be called when the current\n     * token is of type {@link JsonToken#VALUE_NUMBER_FLOAT} and\n     * it can be expressed as a Java float primitive type.\n     * It can also be called for {@link JsonToken#VALUE_NUMBER_INT};\n     * if so, it is equivalent to calling {@link #getLongValue}\n     * and then casting; except for possible overflow/underflow\n     * exception.\n     *<p>\n     * Note: if the value falls\n     * outside of range of Java float, a {@link InputCoercionException}\n     * will be thrown to indicate numeric overflow/underflow.\n     *\n     * @return Current number value as {@code float} (if numeric token within\n     *   Java {@code float} range); otherwise exception thrown\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getFloatValue"
+          }
+        ],
+        "similarity": 0.10379315053336205,
+        "end_line": 1873,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getFloatValue(): float"
+      },
+      {
+        "start_line": 429,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonParser() {\n        // @since 2.14 do use sane defaults\n        _features = JsonFactory.DEFAULT_PARSER_FEATURE_FLAGS;\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "JsonParser",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          }
+        ],
+        "similarity": 0.10348648231342134,
+        "end_line": 432,
+        "signature": "com.fasterxml.jackson.core.JsonParser()"
+      },
+      {
+        "start_line": 2380,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> T readValueAs(Class<T> valueType) throws IOException {\n        return _codec().readValue(this, valueType);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "readValueAs",
+        "documentation": "/**\n     * Method to deserialize JSON content into a non-container\n     * type (it can be an array type, however): typically a bean, array\n     * or a wrapper type (like {@link java.lang.Boolean}).\n     * <b>Note</b>: method can only be called if the parser has\n     * an object codec assigned; this is true for parsers constructed\n     * by <code>MappingJsonFactory</code> (from \"jackson-databind\" jar)\n     * but not for {@link JsonFactory} (unless its <code>setCodec</code>\n     * method has been explicitly called).\n     *<p>\n     * This method may advance the event stream, for structured types\n     * the current token will be the closing end marker (END_ARRAY,\n     * END_OBJECT) of the bound structure. For non-structured Json types\n     * (and for {@link JsonToken#VALUE_EMBEDDED_OBJECT})\n     * stream is not advanced.\n     *<p>\n     * Note: this method should NOT be used if the result type is a\n     * container ({@link java.util.Collection} or {@link java.util.Map}.\n     * The reason is that due to type erasure, key and value types\n     * can not be introspected when using this method.\n     *\n     * @param <T> Nominal type parameter for value type\n     *\n     * @param valueType Java type to read content as (passed to ObjectCodec that\n     *    deserializes content)\n     *\n     * @return Java value read from content\n     *\n     * @throws IOException if there is either an underlying I/O problem or decoding\n     *    issue at format layer\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readValueAs"
+          }
+        ],
+        "similarity": 0.09962321945615496,
+        "end_line": 2382,
+        "signature": "com.fasterxml.jackson.core.JsonParser.readValueAs(Class valueType): T"
+      },
+      {
+        "start_line": 2413,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> T readValueAs(TypeReference<?> valueTypeRef) throws IOException {\n        return (T) _codec().readValue(this, valueTypeRef);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "readValueAs",
+        "documentation": "/**\n     * Method to deserialize JSON content into a Java type, reference\n     * to which is passed as argument. Type is passed using so-called\n     * \"super type token\"\n     * and specifically needs to be used if the root type is a\n     * parameterized (generic) container type.\n     * <b>Note</b>: method can only be called if the parser has\n     * an object codec assigned; this is true for parsers constructed\n     * by <code>MappingJsonFactory</code> (defined in 'jackson-databind' bundle)\n     * but not for {@link JsonFactory} (unless its <code>setCodec</code>\n     * method has been explicitly called).\n     *<p>\n     * This method may advance the event stream, for structured types\n     * the current token will be the closing end marker (END_ARRAY,\n     * END_OBJECT) of the bound structure. For non-structured Json types\n     * (and for {@link JsonToken#VALUE_EMBEDDED_OBJECT})\n     * stream is not advanced.\n     *\n     * @param <T> Nominal type parameter for value type\n     *\n     * @param valueTypeRef Java type to read content as (passed to ObjectCodec that\n     *    deserializes content)\n     *\n     * @return Java value read from content\n     *\n     * @throws IOException if there is either an underlying I/O problem or decoding\n     *    issue at format layer\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readValueAs"
+          }
+        ],
+        "similarity": 0.0987800076350978,
+        "end_line": 2415,
+        "signature": "com.fasterxml.jackson.core.JsonParser.readValueAs(TypeReference valueTypeRef): T"
+      },
+      {
+        "start_line": 1679,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Number getNumberValueExact() throws IOException {\n        return getNumberValue();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getNumberValueExact",
+        "documentation": "/**\n     * Method similar to {@link #getNumberValue} with the difference that\n     * for floating-point numbers value returned may be {@link BigDecimal}\n     * if the underlying format does not store floating-point numbers using\n     * native representation: for example, textual formats represent numbers\n     * as Strings (which are 10-based), and conversion to {@link java.lang.Double}\n     * is potentially lossy operation.\n     *<p>\n     * Default implementation simply returns {@link #getNumberValue()}\n     *\n     * @return Numeric value of the current token using most accurate representation\n     *\n     * @throws IOException Problem with access: {@link JsonParseException} if\n     *    the current token is not numeric, or if decoding of the value fails\n     *    (invalid format for numbers); plain {@link IOException} if underlying\n     *    content read fails (possible if values are extracted lazily)\n     *\n     * @since 2.12\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getNumberValueExact"
+          }
+        ],
+        "similarity": 0.09573290212658911,
+        "end_line": 1681,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getNumberValueExact(): Number"
+      },
+      {
+        "start_line": 1427,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean isNaN() throws IOException {\n        return false;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "isNaN",
+        "documentation": "/**\n     * Accessor for checking whether current token is a special\n     * \"not-a-number\" (NaN) token (including both \"NaN\" AND\n     * positive/negative infinity!). These values are not supported by all formats:\n     * JSON, for example, only supports them if\n     * {@link JsonReadFeature#ALLOW_NON_NUMERIC_NUMBERS} is enabled.\n     *<p>\n     * NOTE: in case where numeric value is outside range of requested type --\n     * most notably {@link java.lang.Float} or {@link java.lang.Double} -- and\n     * decoding results effectively in a NaN value, this method DOES NOT return\n     * {@code true}: only explicit incoming markers do.\n     * This is because value could still be accessed as a valid {@link BigDecimal}.\n     *\n     * @return {@code True} if the current token is reported as {@link JsonToken#VALUE_NUMBER_FLOAT}\n     *   and represents a \"Not a Number\" value; {@code false} for other tokens and regular\n     *   floating-point numbers.\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     *\n     * @since 2.9 (slight change in semantics in 2.17)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isNaN"
+          }
+        ],
+        "similarity": 0.09527470522782777,
+        "end_line": 1429,
+        "signature": "com.fasterxml.jackson.core.JsonParser.isNaN(): boolean"
+      },
+      {
+        "start_line": 1931,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean getBooleanValue() throws IOException {\n        JsonToken t = currentToken();\n        if (t == JsonToken.VALUE_TRUE) return true;\n        if (t == JsonToken.VALUE_FALSE) return false;\n        throw new JsonParseException(this,\n            String.format(\"Current token (%s) not of boolean type\", t))\n                .withRequestPayload(_requestPayload);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getBooleanValue",
+        "documentation": "/**\n     * Convenience accessor that can be called when the current\n     * token is {@link JsonToken#VALUE_TRUE} or\n     * {@link JsonToken#VALUE_FALSE}, to return matching {@code boolean}\n     * value.\n     * If the current token is of some other type, {@link JsonParseException}\n     * will be thrown\n     *\n     * @return {@code True} if current token is {@code JsonToken.VALUE_TRUE},\n     *   {@code false} if current token is {@code JsonToken.VALUE_FALSE};\n     *   otherwise throws {@link JsonParseException}\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getBooleanValue"
+          }
+        ],
+        "similarity": 0.09340701044767634,
+        "end_line": 1938,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getBooleanValue(): boolean"
+      },
+      {
+        "start_line": 1013,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonParser overrideFormatFeatures(int values, int mask) {\n        // 08-Oct-2018, tatu: For 2.10 we actually do get `JsonReadFeature`s, although they\n        //    are (for 2.x only, not for 3.x) mapper to legacy settings. So do not freak out:\n//        throw new IllegalArgumentException(\"No FormatFeatures defined for parser of type \"+getClass().getName());\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "overrideFormatFeatures",
+        "documentation": "/**\n     * Bulk set method for (re)setting states of {@link FormatFeature}s,\n     * by specifying values (set / clear) along with a mask, to determine\n     * which features to change, if any.\n     *<p>\n     * Default implementation will simply throw an exception to indicate that\n     * the parser implementation does not support any {@link FormatFeature}s.\n     *\n     * @param values Bit mask of set/clear state for features to change\n     * @param mask Bit mask of features to change\n     *\n     * @return This parser, to allow call chaining\n     *\n     * @since 2.6\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "overrideFormatFeatures"
+          }
+        ],
+        "similarity": 0.09198705375967096,
+        "end_line": 1018,
+        "signature": "com.fasterxml.jackson.core.JsonParser.overrideFormatFeatures(int values, int mask): JsonParser"
+      },
+      {
+        "start_line": 1908,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public abstract BigDecimal getDecimalValue() throws IOException;",
+        "distance": 1.25,
+        "title": null,
+        "name": "getDecimalValue",
+        "documentation": "/**\n     * Numeric accessor that can be called when the current\n     * token is of type {@link JsonToken#VALUE_NUMBER_FLOAT} or\n     * {@link JsonToken#VALUE_NUMBER_INT}. No under/overflow exceptions\n     * are ever thrown.\n     *\n     * @return Current number value as {@link BigDecimal} (if numeric token);\n     *   otherwise exception thrown\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getDecimalValue"
+          }
+        ],
+        "similarity": 0.09132563063670288,
+        "end_line": 1908,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getDecimalValue(): BigDecimal"
+      },
+      {
+        "start_line": 1894,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public abstract double getDoubleValue() throws IOException;",
+        "distance": 1.25,
+        "title": null,
+        "name": "getDoubleValue",
+        "documentation": "/**\n     * Numeric accessor that can be called when the current\n     * token is of type {@link JsonToken#VALUE_NUMBER_FLOAT} and\n     * it can be expressed as a Java double primitive type.\n     * It can also be called for {@link JsonToken#VALUE_NUMBER_INT};\n     * if so, it is equivalent to calling {@link #getLongValue}\n     * and then casting; except for possible overflow/underflow\n     * exception.\n     *<p>\n     * Note: if the value falls\n     * outside of range of Java double, a {@link InputCoercionException}\n     * will be thrown to indicate numeric overflow/underflow.\n     *\n     * @return Current number value as {@code double} (if numeric token within\n     *   Java {@code double} range); otherwise exception thrown\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getDoubleValue"
+          }
+        ],
+        "similarity": 0.09037455944083261,
+        "end_line": 1894,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getDoubleValue(): double"
+      },
+      {
+        "start_line": 434,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonParser(int features) { _features = features; }",
+        "distance": 1.0,
+        "title": null,
+        "name": "JsonParser",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          }
+        ],
+        "similarity": 0.08465268358781033,
+        "end_line": 434,
+        "signature": "com.fasterxml.jackson.core.JsonParser(int features)"
+      },
+      {
+        "start_line": 1852,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public abstract BigInteger getBigIntegerValue() throws IOException;",
+        "distance": 1.25,
+        "title": null,
+        "name": "getBigIntegerValue",
+        "documentation": "/**\n     * Numeric accessor that can be called when the current\n     * token is of type {@link JsonToken#VALUE_NUMBER_INT} and\n     * it can not be used as a Java long primitive type due to its\n     * magnitude.\n     * It can also be called for {@link JsonToken#VALUE_NUMBER_FLOAT};\n     * if so, it is equivalent to calling {@link #getDecimalValue}\n     * and then constructing a {@link BigInteger} from that value.\n     *\n     * @return Current number value as {@link BigInteger} (if numeric token);\n     *     otherwise exception thrown\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getBigIntegerValue"
+          }
+        ],
+        "similarity": 0.08368722197435176,
+        "end_line": 1852,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getBigIntegerValue(): BigInteger"
+      },
+      {
+        "start_line": 2154,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public double getValueAsDouble() throws IOException {\n        return getValueAsDouble(0.0);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getValueAsDouble",
+        "documentation": "/**\n     * Method that will try to convert value of current token to a Java\n     * <b>double</b>.\n     * Numbers are coerced using default Java rules; booleans convert to 0.0 (false)\n     * and 1.0 (true), and Strings are parsed using default Java language floating\n     * point parsing rules.\n     *<p>\n     * If representation can not be converted to a double (including structured types\n     * like Objects and Arrays),\n     * default value of <b>0.0</b> will be returned; no exceptions are thrown.\n     *\n     * @return {@code double} value current token is converted to, if possible; exception thrown\n     *    otherwise\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getValueAsDouble"
+          }
+        ],
+        "similarity": 0.08254515387931743,
+        "end_line": 2156,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getValueAsDouble(): double"
+      },
+      {
+        "start_line": 1196,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Boolean nextBooleanValue() throws IOException {\n        JsonToken t = nextToken();\n        if (t == JsonToken.VALUE_TRUE) { return Boolean.TRUE; }\n        if (t == JsonToken.VALUE_FALSE) { return Boolean.FALSE; }\n        return null;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "nextBooleanValue",
+        "documentation": "/**\n     * Method that fetches next token (as if calling {@link #nextToken}) and\n     * if it is {@link JsonToken#VALUE_TRUE} or {@link JsonToken#VALUE_FALSE}\n     * returns matching Boolean value; otherwise return null.\n     * It is functionally equivalent to:\n     *<pre>\n     *  JsonToken t = nextToken();\n     *  if (t == JsonToken.VALUE_TRUE) return Boolean.TRUE;\n     *  if (t == JsonToken.VALUE_FALSE) return Boolean.FALSE;\n     *  return null;\n     *</pre>\n     * but may be faster for parser to process, and can therefore be used if caller\n     * expects to get a Boolean value next from input.\n     *\n     * @return {@code Boolean} value of the {@code JsonToken.VALUE_TRUE} or {@code JsonToken.VALUE_FALSE}\n     *   token parser advanced to; or {@code null} if next token is of some other type\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextBooleanValue"
+          }
+        ],
+        "similarity": 0.08227926887914497,
+        "end_line": 1201,
+        "signature": "com.fasterxml.jackson.core.JsonParser.nextBooleanValue(): Boolean"
+      },
+      {
+        "start_line": 1814,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public abstract int getIntValue() throws IOException;",
+        "distance": 1.25,
+        "title": null,
+        "name": "getIntValue",
+        "documentation": "/**\n     * Numeric accessor that can be called when the current\n     * token is of type {@link JsonToken#VALUE_NUMBER_INT} and\n     * it can be expressed as a value of Java int primitive type.\n     * It can also be called for {@link JsonToken#VALUE_NUMBER_FLOAT};\n     * if so, it is equivalent to calling {@link #getDoubleValue}\n     * and then casting; except for possible overflow/underflow\n     * exception.\n     *<p>\n     * Note: if the resulting integer value falls outside range of\n     * Java {@code int}, a {@link InputCoercionException}\n     * may be thrown to indicate numeric overflow/underflow.\n     *\n     * @return Current number value as {@code int} (if numeric token within\n     *   Java 32-bit signed {@code int} range); otherwise exception thrown\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getIntValue"
+          }
+        ],
+        "similarity": 0.0816477141795383,
+        "end_line": 1814,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getIntValue(): int"
+      },
+      {
+        "start_line": 1835,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public abstract long getLongValue() throws IOException;",
+        "distance": 1.25,
+        "title": null,
+        "name": "getLongValue",
+        "documentation": "/**\n     * Numeric accessor that can be called when the current\n     * token is of type {@link JsonToken#VALUE_NUMBER_INT} and\n     * it can be expressed as a Java long primitive type.\n     * It can also be called for {@link JsonToken#VALUE_NUMBER_FLOAT};\n     * if so, it is equivalent to calling {@link #getDoubleValue}\n     * and then casting to int; except for possible overflow/underflow\n     * exception.\n     *<p>\n     * Note: if the token is an integer, but its value falls\n     * outside of range of Java long, a {@link InputCoercionException}\n     * may be thrown to indicate numeric overflow/underflow.\n     *\n     * @return Current number value as {@code long} (if numeric token within\n     *   Java 32-bit signed {@code long} range); otherwise exception thrown\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getLongValue"
+          }
+        ],
+        "similarity": 0.08041614918986707,
+        "end_line": 1835,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getLongValue(): long"
+      },
+      {
+        "start_line": 2472,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected ObjectCodec _codec() {\n        ObjectCodec c = getCodec();\n        if (c == null) {\n            throw new IllegalStateException(\"No ObjectCodec defined for parser, needed for deserialization\");\n        }\n        return c;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "_codec",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_codec"
+          }
+        ],
+        "similarity": 0.07974379700492062,
+        "end_line": 2478,
+        "signature": "com.fasterxml.jackson.core.JsonParser._codec(): ObjectCodec"
+      },
+      {
+        "start_line": 1060,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public abstract JsonToken nextValue() throws IOException;",
+        "distance": 1.25,
+        "title": null,
+        "name": "nextValue",
+        "documentation": "/**\n     * Iteration method that will advance stream enough\n     * to determine type of the next token that is a value type\n     * (including JSON Array and Object start/end markers).\n     * Or put another way, nextToken() will be called once,\n     * and if {@link JsonToken#FIELD_NAME} is returned, another\n     * time to get the value for the field.\n     * Method is most useful for iterating over value entries\n     * of JSON objects; field name will still be available\n     * by calling {@link #currentName} when parser points to\n     * the value.\n     *\n     * @return Next non-field-name token from the stream, if any found,\n     *   or null to indicate end-of-input (or, for non-blocking\n     *   parsers, {@link JsonToken#NOT_AVAILABLE} if no tokens were\n     *   available yet)\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextToken"
+          },
+          {
+            "start_node": "nextToken",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "nextValue"
+          }
+        ],
+        "similarity": 0.07882210672431555,
+        "end_line": 1060,
+        "signature": "com.fasterxml.jackson.core.JsonParser.nextValue(): JsonToken"
+      },
+      {
+        "start_line": 2549,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonParseException _constructReadException(String msg, Throwable t) {\n        JsonParseException e = new JsonParseException(this, msg, t);\n        if (_requestPayload != null) {\n            e = e.withRequestPayload(_requestPayload);\n        }\n        return e;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "_constructReadException",
+        "documentation": "/**\n     * Helper method for constructing {@link JsonParseException}\n     * based on current state of the parser and indicating that the given\n     * {@link Throwable} is the root cause.\n     *\n     * @param msg Base exception message to construct exception with\n     * @param t Root cause to assign\n     *\n     * @return Read exception (of type {@link JsonParseException}) constructed\n     *\n     * @since 2.13\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_constructReadException"
+          }
+        ],
+        "similarity": 0.0778886523593029,
+        "end_line": 2555,
+        "signature": "com.fasterxml.jackson.core.JsonParser._constructReadException(String msg, Throwable t): JsonParseException"
+      },
+      {
+        "start_line": 2468,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T extends TreeNode> T readValueAsTree() throws IOException {\n        return (T) _codec().readTree(this);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "readValueAsTree",
+        "documentation": "/**\n     * Method to deserialize JSON content into equivalent \"tree model\",\n     * represented by root {@link TreeNode} of resulting model.\n     * For JSON Arrays it will an array node (with child nodes),\n     * for objects object node (with child nodes), and for other types\n     * matching leaf node type. Empty or whitespace documents are null.\n     *\n     * @param <T> Nominal type parameter for result node type (to reduce need for casting)\n     *\n     * @return root of the document, or null if empty or whitespace.\n     *\n     * @throws IOException if there is either an underlying I/O problem or decoding\n     *    issue at format layer\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readValueAsTree"
+          }
+        ],
+        "similarity": 0.07747351300832953,
+        "end_line": 2470,
+        "signature": "com.fasterxml.jackson.core.JsonParser.readValueAsTree(): T"
+      },
+      {
+        "start_line": 1329,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected float _getNumberFloat() throws JsonParseException {\n        if (_numberString != null) {\n            try {\n                _numberFloat = NumberInput.parseFloat(_numberString,\n                        isEnabled(StreamReadFeature.USE_FAST_DOUBLE_PARSER));\n            } catch (NumberFormatException nex) {\n                _wrapError(\"Malformed numeric value (\"+_longNumberDesc(_numberString)+\")\", nex);\n            }\n            _numberString = null;\n        }\n        return _numberFloat;\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "_getNumberFloat",
+        "documentation": "/**\n     * Internal accessor that needs to be used for accessing number value of type\n     * {@code float} which -- as of 2.15 -- will be lazily parsed.\n     *\n     * @return {@code float} value of the current token\n     *\n     * @since 2.15\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "currentName"
+          },
+          {
+            "start_node": "currentName",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "getCurrentName"
+          },
+          {
+            "start_node": "getCurrentName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_getNumberFloat"
+          }
+        ],
+        "similarity": 0.07571819424444048,
+        "end_line": 1340,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase._getNumberFloat(): float"
+      },
+      {
+        "start_line": 1172,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public long nextLongValue(long defaultValue) throws IOException {\n        return (nextToken() == JsonToken.VALUE_NUMBER_INT) ? getLongValue() : defaultValue;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "nextLongValue",
+        "documentation": "/**\n     * Method that fetches next token (as if calling {@link #nextToken}) and\n     * if it is {@link JsonToken#VALUE_NUMBER_INT} returns 64-bit long value;\n     * otherwise returns specified default value\n     * It is functionally equivalent to:\n     *<pre>\n     *  return (nextToken() == JsonToken.VALUE_NUMBER_INT) ? getLongValue() : defaultValue;\n     *</pre>\n     * but may be faster for parser to process, and can therefore be used if caller\n     * expects to get a long value next from input.\n     *<p>\n     * NOTE: value checks are performed similar to {@link #getLongValue()}\n     *\n     * @param defaultValue Value to return if next token is NOT of type {@code JsonToken.VALUE_NUMBER_INT}\n     *\n     * @return {@code long} value of the {@code JsonToken.VALUE_NUMBER_INT} token parser advanced\n     *   to; or {@code defaultValue} if next token is of some other type\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     * @throws InputCoercionException if integer number does not fit in Java {@code long}\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextLongValue"
+          }
+        ],
+        "similarity": 0.07562921125839449,
+        "end_line": 1174,
+        "signature": "com.fasterxml.jackson.core.JsonParser.nextLongValue(long defaultValue): long"
+      },
+      {
+        "start_line": 2519,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonParseException _constructReadException(String msg) {\n        // In 3.0 will be actual `StreamReadException`...\n        return _constructError(msg);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "_constructReadException",
+        "documentation": "/**\n     * Helper method for constructing {@link JsonParseException}\n     * based on current state of the parser.\n     *\n     * @param msg Base exception message to construct exception with\n     *\n     * @return Read exception (of type {@link JsonParseException}) constructed\n     *\n     * @since 2.13\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_constructReadException"
+          }
+        ],
+        "similarity": 0.07516641466586534,
+        "end_line": 2522,
+        "signature": "com.fasterxml.jackson.core.JsonParser._constructReadException(String msg): JsonParseException"
+      },
+      {
+        "start_line": 2176,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public double getValueAsDouble(double def) throws IOException {\n        return def;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getValueAsDouble",
+        "documentation": "/**\n     * Method that will try to convert value of current token to a\n     * Java <b>double</b>.\n     * Numbers are coerced using default Java rules; booleans convert to 0.0 (false)\n     * and 1.0 (true), and Strings are parsed using default Java language floating\n     * point parsing rules.\n     *<p>\n     * If representation can not be converted to a double (including structured types\n     * like Objects and Arrays),\n     * specified <b>def</b> will be returned; no exceptions are thrown.\n     *\n     * @param def Default value to return if conversion to {@code double} is not possible\n     *\n     * @return {@code double} value current token is converted to, if possible; {@code def} otherwise\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getValueAsDouble"
+          }
+        ],
+        "similarity": 0.07502429173622281,
+        "end_line": 2178,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getValueAsDouble(double def): double"
+      },
+      {
+        "start_line": 2070,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public int getValueAsInt() throws IOException {\n        return getValueAsInt(0);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getValueAsInt",
+        "documentation": "/**\n     * Method that will try to convert value of current token to a\n     * Java {@code int} value.\n     * Numbers are coerced using default Java rules; booleans convert to 0 (false)\n     * and 1 (true), and Strings are parsed using default Java language integer\n     * parsing rules.\n     *<p>\n     * If representation can not be converted to an int (including structured type\n     * markers like start/end Object/Array)\n     * default value of <b>0</b> will be returned; no exceptions are thrown.\n     *\n     * @return {@code int} value current token is converted to, if possible; exception thrown\n     *    otherwise\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getValueAsInt"
+          }
+        ],
+        "similarity": 0.07422650805693493,
+        "end_line": 2072,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getValueAsInt(): int"
+      },
+      {
+        "start_line": 1784,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public short getShortValue() throws IOException",
+        "distance": 1.25,
+        "title": null,
+        "name": "getShortValue",
+        "documentation": "/**\n     * Numeric accessor that can be called when the current\n     * token is of type {@link JsonToken#VALUE_NUMBER_INT} and\n     * it can be expressed as a value of Java short primitive type.\n     * It can also be called for {@link JsonToken#VALUE_NUMBER_FLOAT};\n     * if so, it is equivalent to calling {@link #getDoubleValue}\n     * and then casting; except for possible overflow/underflow\n     * exception.\n     *<p>\n     * Note: if the resulting integer value falls outside range of\n     * Java short, a {@link InputCoercionException}\n     * will be thrown to indicate numeric overflow/underflow.\n     *\n     * @return Current number value as {@code short} (if numeric token within\n     *   Java 16-bit signed {@code short} range); otherwise exception thrown\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getShortValue"
+          }
+        ],
+        "similarity": 0.07181763850075593,
+        "end_line": 1784,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getShortValue(): short"
+      },
+      {
+        "start_line": 1264,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonToken currentToken() {\n        // !!! TODO: switch direction in 2.18 or later\n        return getCurrentToken();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "currentToken",
+        "documentation": "/**\n     * Accessor to find which token parser currently points to, if any;\n     * null will be returned if none.\n     * If return value is non-null, data associated with the token\n     * is available via other accessor methods.\n     *\n     * @return Type of the token this parser currently points to,\n     *   if any: null before any tokens have been read, and\n     *   after end-of-input has been encountered, as well as\n     *   if the current token has been explicitly cleared.\n     *\n     * @since 2.8\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "currentToken"
+          }
+        ],
+        "similarity": 0.07123902720280874,
+        "end_line": 1267,
+        "signature": "com.fasterxml.jackson.core.JsonParser.currentToken(): JsonToken"
+      },
+      {
+        "start_line": 1146,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public int nextIntValue(int defaultValue) throws IOException {\n        return (nextToken() == JsonToken.VALUE_NUMBER_INT) ? getIntValue() : defaultValue;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "nextIntValue",
+        "documentation": "/**\n     * Method that fetches next token (as if calling {@link #nextToken}) and\n     * if it is {@link JsonToken#VALUE_NUMBER_INT} returns 32-bit int value;\n     * otherwise returns specified default value\n     * It is functionally equivalent to:\n     *<pre>\n     *  return (nextToken() == JsonToken.VALUE_NUMBER_INT) ? getIntValue() : defaultValue;\n     *</pre>\n     * but may be faster for parser to process, and can therefore be used if caller\n     * expects to get an int value next from input.\n     *<p>\n     * NOTE: value checks are performed similar to {@link #getIntValue()}\n     *\n     * @param defaultValue Value to return if next token is NOT of type {@code JsonToken.VALUE_NUMBER_INT}\n     *\n     * @return Integer ({@code int}) value of the {@code JsonToken.VALUE_NUMBER_INT} token parser advanced\n     *   to; or {@code defaultValue} if next token is of some other type\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     * @throws InputCoercionException if integer number does not fit in Java {@code int}\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextIntValue"
+          }
+        ],
+        "similarity": 0.07122904947721312,
+        "end_line": 1148,
+        "signature": "com.fasterxml.jackson.core.JsonParser.nextIntValue(int defaultValue): int"
+      },
+      {
+        "start_line": 587,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean requiresCustomCodec() { return false;}",
+        "distance": 1.25,
+        "title": null,
+        "name": "requiresCustomCodec",
+        "documentation": "/**\n     * Method that can be called to determine if a custom\n     * {@link ObjectCodec} is needed for binding data parsed\n     * using {@link JsonParser} constructed by this factory\n     * (which typically also implies the same for serialization\n     * with {@link JsonGenerator}).\n     *\n     * @return True if format-specific codec is needed with this parser; false if a general\n     *   {@link ObjectCodec} is enough\n     *\n     * @since 2.1\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "requiresCustomCodec"
+          }
+        ],
+        "similarity": 0.07083569166712915,
+        "end_line": 587,
+        "signature": "com.fasterxml.jackson.core.JsonParser.requiresCustomCodec(): boolean"
+      },
+      {
+        "start_line": 1294,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public abstract JsonToken getCurrentToken();",
+        "distance": 1.25,
+        "title": null,
+        "name": "getCurrentToken",
+        "documentation": "/**\n     * Alias for {@link #currentToken()}, may be deprecated sometime after\n     * Jackson 2.13 (will be removed from 3.0).\n     *\n     * @return Type of the token this parser currently points to,\n     *   if any: null before any tokens have been read, and\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getCurrentToken"
+          }
+        ],
+        "similarity": 0.07064923709324776,
+        "end_line": 1294,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getCurrentToken(): JsonToken"
+      },
+      {
+        "start_line": 2111,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public long getValueAsLong() throws IOException {\n        return getValueAsLong(0);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getValueAsLong",
+        "documentation": "/**\n     * Method that will try to convert value of current token to a\n     * <b>long</b>.\n     * Numbers are coerced using default Java rules; booleans convert to 0 (false)\n     * and 1 (true), and Strings are parsed using default Java language integer\n     * parsing rules.\n     *<p>\n     * If representation can not be converted to a long (including structured type\n     * markers like start/end Object/Array)\n     * default value of <b>0L</b> will be returned; no exceptions are thrown.\n     *\n     * @return {@code long} value current token is converted to, if possible; exception thrown\n     *    otherwise\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getValueAsLong"
+          }
+        ],
+        "similarity": 0.0702046500751987,
+        "end_line": 2113,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getValueAsLong(): long"
+      },
+      {
+        "start_line": 1403,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean isExpectedNumberIntToken() { return currentToken() == JsonToken.VALUE_NUMBER_INT; }",
+        "distance": 1.25,
+        "title": null,
+        "name": "isExpectedNumberIntToken",
+        "documentation": "/**\n     * Similar to {@link #isExpectedStartArrayToken()}, but checks whether stream\n     * currently points to {@link JsonToken#VALUE_NUMBER_INT}.\n     *<p>\n     * The initial use case is for XML backend to efficiently (attempt to) coerce\n     * textual content into numbers.\n     *\n     * @return True if the current token can be considered as a\n     *   start-array marker (such {@link JsonToken#VALUE_NUMBER_INT});\n     *   {@code false} if not\n     *\n     * @since 2.12\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isExpectedNumberIntToken"
+          }
+        ],
+        "similarity": 0.06935138673863046,
+        "end_line": 1403,
+        "signature": "com.fasterxml.jackson.core.JsonParser.isExpectedNumberIntToken(): boolean"
+      },
+      {
+        "start_line": 2197,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean getValueAsBoolean() throws IOException {\n        return getValueAsBoolean(false);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getValueAsBoolean",
+        "documentation": "/**\n     * Method that will try to convert value of current token to a\n     * <b>boolean</b>.\n     * JSON booleans map naturally; integer numbers other than 0 map to true, and\n     * 0 maps to false\n     * and Strings 'true' and 'false' map to corresponding values.\n     *<p>\n     * If representation can not be converted to a boolean value (including structured types\n     * like Objects and Arrays),\n     * default value of <b>false</b> will be returned; no exceptions are thrown.\n     *\n     * @return {@code boolean} value current token is converted to, if possible; exception thrown\n     *    otherwise\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getValueAsBoolean"
+          }
+        ],
+        "similarity": 0.06891493062613095,
+        "end_line": 2199,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getValueAsBoolean(): boolean"
+      },
+      {
+        "start_line": 1038,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public abstract JsonToken nextToken() throws IOException;",
+        "distance": 1.25,
+        "title": null,
+        "name": "nextToken",
+        "documentation": "/**\n     * Main iteration method, which will advance stream enough\n     * to determine type of the next token, if any. If none\n     * remaining (stream has no content other than possible\n     * white space before ending), null will be returned.\n     *\n     * @return Next token from the stream, if any found, or null\n     *   to indicate end-of-input\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextToken"
+          }
+        ],
+        "similarity": 0.06890959382212425,
+        "end_line": 1038,
+        "signature": "com.fasterxml.jackson.core.JsonParser.nextToken(): JsonToken"
+      },
+      {
+        "start_line": 2024,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public int readBinaryValue(OutputStream out) throws IOException {\n        return readBinaryValue(Base64Variants.getDefaultVariant(), out);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "readBinaryValue",
+        "documentation": "/**\n     * Method that can be used as an alternative to {@link #getBigIntegerValue()},\n     * especially when value can be large. The main difference (beyond method\n     * of returning content using {@link OutputStream} instead of as byte array)\n     * is that content will NOT remain accessible after method returns: any content\n     * processed will be consumed and is not buffered in any way. If caller needs\n     * buffering, it has to implement it.\n     *\n     * @param out Output stream to use for passing decoded binary data\n     *\n     * @return Number of bytes that were decoded and written via {@link OutputStream}\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     *\n     * @since 2.1\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readBinaryValue"
+          }
+        ],
+        "similarity": 0.06878612228567188,
+        "end_line": 2026,
+        "signature": "com.fasterxml.jackson.core.JsonParser.readBinaryValue(OutputStream out): int"
+      },
+      {
+        "start_line": 1120,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public String nextTextValue() throws IOException {\n        return (nextToken() == JsonToken.VALUE_STRING) ? getText() : null;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "nextTextValue",
+        "documentation": "/**\n     * Method that fetches next token (as if calling {@link #nextToken}) and\n     * if it is {@link JsonToken#VALUE_STRING} returns contained String value;\n     * otherwise returns null.\n     * It is functionally equivalent to:\n     *<pre>\n     *  return (nextToken() == JsonToken.VALUE_STRING) ? getText() : null;\n     *</pre>\n     * but may be faster for parser to process, and can therefore be used if caller\n     * expects to get a String value next from input.\n     *\n     * @return Text value of the {@code JsonToken.VALUE_STRING} token parser advanced\n     *   to; or {@code null} if next token is of some other type\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextTextValue"
+          }
+        ],
+        "similarity": 0.06761993895662041,
+        "end_line": 1122,
+        "signature": "com.fasterxml.jackson.core.JsonParser.nextTextValue(): String"
+      },
+      {
+        "start_line": 780,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Object currentValue() {\n        // Note: implemented directly in 2.17, no longer delegating to getCurrentValue()\n        JsonStreamContext ctxt = getParsingContext();\n        return (ctxt == null) ? null : ctxt.getCurrentValue();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "currentValue",
+        "documentation": "/**\n     * Helper method, usually equivalent to:\n     *<code>\n     *   getParsingContext().getCurrentValue();\n     *</code>\n     *<p>\n     * Note that \"current value\" is NOT populated (or used) by Streaming parser;\n     * it is only used by higher-level data-binding functionality.\n     * The reason it is included here is that it can be stored and accessed hierarchically,\n     * and gets passed through data-binding.\n     *\n     * @return \"Current value\" associated with the current input context (state) of this parser\n     *\n     * @since 2.13 (added as replacement for older {@link #getCurrentValue()}\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "currentValue"
+          }
+        ],
+        "similarity": 0.0673613726173044,
+        "end_line": 784,
+        "signature": "com.fasterxml.jackson.core.JsonParser.currentValue(): Object"
+      },
+      {
+        "start_line": 1308,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected double _getNumberDouble() throws JsonParseException {\n        if (_numberString != null) {\n            try {\n                _numberDouble = NumberInput.parseDouble(_numberString,\n                        isEnabled(StreamReadFeature.USE_FAST_DOUBLE_PARSER));\n            } catch (NumberFormatException nex) {\n                _wrapError(\"Malformed numeric value (\"+_longNumberDesc(_numberString)+\")\", nex);\n            }\n            _numberString = null;\n        }\n        return _numberDouble;\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "_getNumberDouble",
+        "documentation": "/**\n     * Internal accessor that needs to be used for accessing number value of type\n     * {@code double} which -- as of 2.15 -- will be lazily parsed.\n     *\n     * @return {@code double} value of the current token\n     *\n     * @since 2.15\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "currentName"
+          },
+          {
+            "start_node": "currentName",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "getCurrentName"
+          },
+          {
+            "start_node": "getCurrentName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_getNumberDouble"
+          }
+        ],
+        "similarity": 0.06734445350086636,
+        "end_line": 1319,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase._getNumberDouble(): double"
+      },
+      {
+        "start_line": 1282,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected BigDecimal _getBigDecimal() throws JsonParseException {\n        if (_numberBigDecimal != null) {\n            return _numberBigDecimal;\n        } else if (_numberString == null) {\n            throw new IllegalStateException(\"cannot get BigDecimal from current parser state\");\n        }\n        try {\n            // NOTE! Length of number string has been validated earlier\n            _numberBigDecimal = NumberInput.parseBigDecimal(\n                    _numberString,\n                    isEnabled(StreamReadFeature.USE_FAST_BIG_NUMBER_PARSER));\n        } catch (NumberFormatException nex) {\n            _wrapError(\"Malformed numeric value (\"+_longNumberDesc(_numberString)+\")\", nex);\n        }\n        _numberString = null;\n        return _numberBigDecimal;\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "_getBigDecimal",
+        "documentation": "/**\n     * Internal accessor that needs to be used for accessing number value of type\n     * {@link BigDecimal} which -- as of 2.14 -- is typically lazily parsed.\n     *\n     * @return {@link BigDecimal} value of the current token\n     *\n     * @since 2.14\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "currentName"
+          },
+          {
+            "start_node": "currentName",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "getCurrentName"
+          },
+          {
+            "start_node": "getCurrentName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_getBigDecimal"
+          }
+        ],
+        "similarity": 0.06729338153380084,
+        "end_line": 1298,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase._getBigDecimal(): BigDecimal"
+      },
+      {
+        "start_line": 2494,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonParseException _constructError(String msg) {\n        return new JsonParseException(this, msg)\n            .withRequestPayload(_requestPayload);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "_constructError",
+        "documentation": "/**\n     * Helper method for constructing {@link JsonParseException}s\n     * based on current state of the parser\n     *\n     * @param msg Base exception message to construct exception with\n     *\n     * @return {@link JsonParseException} constructed\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_constructError"
+          }
+        ],
+        "similarity": 0.06607187677914332,
+        "end_line": 2497,
+        "signature": "com.fasterxml.jackson.core.JsonParser._constructError(String msg): JsonParseException"
+      },
+      {
+        "start_line": 1256,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected BigInteger _getBigInteger() throws JsonParseException {\n        if (_numberBigInt != null) {\n            return _numberBigInt;\n        } else if (_numberString == null) {\n            throw new IllegalStateException(\"cannot get BigInteger from current parser state\");\n        }\n        try {\n            // NOTE! Length of number string has been validated earlier\n            _numberBigInt = NumberInput.parseBigInteger(\n                    _numberString,\n                    isEnabled(StreamReadFeature.USE_FAST_BIG_NUMBER_PARSER));\n        } catch (NumberFormatException nex) {\n            _wrapError(\"Malformed numeric value (\"+_longNumberDesc(_numberString)+\")\", nex);\n        }\n        _numberString = null;\n        return _numberBigInt;\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "_getBigInteger",
+        "documentation": "/**\n     * Internal accessor that needs to be used for accessing number value of type\n     * {@link BigInteger} which -- as of 2.14 -- is typically lazily parsed.\n     *\n     * @return {@link BigInteger} value of the current token\n     *\n     * @since 2.14\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "currentName"
+          },
+          {
+            "start_node": "currentName",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "getCurrentName"
+          },
+          {
+            "start_node": "getCurrentName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_getBigInteger"
+          }
+        ],
+        "similarity": 0.06560274477947234,
+        "end_line": 1272,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase._getBigInteger(): BigInteger"
+      },
+      {
+        "start_line": 2092,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public int getValueAsInt(int def) throws IOException { return def; }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getValueAsInt",
+        "documentation": "/**\n     * Method that will try to convert value of current token to a\n     * <b>int</b>.\n     * Numbers are coerced using default Java rules; booleans convert to 0 (false)\n     * and 1 (true), and Strings are parsed using default Java language integer\n     * parsing rules.\n     *<p>\n     * If representation can not be converted to an int (including structured type\n     * markers like start/end Object/Array)\n     * specified <b>def</b> will be returned; no exceptions are thrown.\n     *\n     * @param def Default value to return if conversion to {@code int} is not possible\n     *\n     * @return {@code int} value current token is converted to, if possible; {@code def} otherwise\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getValueAsInt"
+          }
+        ],
+        "similarity": 0.06550678861603447,
+        "end_line": 2092,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getValueAsInt(int def): int"
+      },
+      {
+        "start_line": 544,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void setSchema(FormatSchema schema) {\n        throw new UnsupportedOperationException(\"Parser of type \"+getClass().getName()+\" does not support schema of type '\"\n                +schema.getSchemaType()+\"'\");\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "setSchema",
+        "documentation": "/**\n     * Method to call to make this parser use specified schema. Method must\n     * be called before trying to parse any content, right after parser instance\n     * has been created.\n     * Note that not all parsers support schemas; and those that do usually only\n     * accept specific types of schemas: ones defined for data format parser can read.\n     *<p>\n     * If parser does not support specified schema, {@link UnsupportedOperationException}\n     * is thrown.\n     *\n     * @param schema Schema to use\n     *\n     * @throws UnsupportedOperationException if parser does not support schema\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setSchema"
+          }
+        ],
+        "similarity": 0.06492740866868002,
+        "end_line": 547,
+        "signature": "com.fasterxml.jackson.core.JsonParser.setSchema(FormatSchema schema): void"
+      },
+      {
+        "start_line": 220,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonToken nextValue() throws IOException {\n        // Implementation should be as trivial as follows; only needs to change if\n        // we are to skip other tokens (for example, if comments were exposed as tokens)\n        JsonToken t = nextToken();\n        if (t == JsonToken.FIELD_NAME) {\n            t = nextToken();\n        }\n        return t;\n    }",
+        "distance": 2.25,
+        "title": null,
+        "name": "nextValue",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextToken"
+          },
+          {
+            "start_node": "nextToken",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "nextValue"
+          }
+        ],
+        "similarity": 0.06456696923245418,
+        "end_line": 228,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase.nextValue(): JsonToken"
+      },
+      {
+        "start_line": 2449,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> Iterator<T> readValuesAs(TypeReference<T> valueTypeRef) throws IOException {\n        return _codec().readValues(this, valueTypeRef);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "readValuesAs",
+        "documentation": "/**\n     * Method for reading sequence of Objects from parser stream,\n     * all with same specified value type.\n     *\n     * @param <T> Nominal type parameter for value type\n     *\n     * @param valueTypeRef Java type to read content as (passed to ObjectCodec that\n     *    deserializes content)\n     *\n     * @return Iterator for reading multiple Java values from content\n     *\n     * @throws IOException if there is either an underlying I/O problem or decoding\n     *    issue at format layer\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readValuesAs"
+          }
+        ],
+        "similarity": 0.06397285004538054,
+        "end_line": 2451,
+        "signature": "com.fasterxml.jackson.core.JsonParser.readValuesAs(TypeReference valueTypeRef): Iterator"
+      },
+      {
+        "start_line": 2341,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Object getTypeId() throws IOException { return null; }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getTypeId",
+        "documentation": "/**\n     * Method that can be called to check whether current token\n     * (one that was just read) has an associated type id, and if\n     * so, return it.\n     * Note that while typically caller should check with {@link #canReadTypeId}\n     * first, it is not illegal to call this method even if that method returns\n     * true; but if so, it will return null. This may be used to simplify calling\n     * code.\n     *<p>\n     * Default implementation will simply return null.\n     *\n     * @return Native Type Id associated with the current token, if any; {@code null} if none\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     *\n     * @since 2.3\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getTypeId"
+          }
+        ],
+        "similarity": 0.0633303971446944,
+        "end_line": 2341,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getTypeId(): Object"
+      }
+    ],
+    "classes": [],
+    "issues": [
+      {
+        "content": "Currently `JsonParser` has method `getNumberType()`, with semantics that are loose for many textual formats.\r\nBasically formats like JSON do not have similar types as programming languages: so while we have separate `NumberType` entries representing `float` (32-bit binary FP), `double` (64-bit \"double\"precision binary FP) and `BigDecimal` (unlimited-precision, decimal FP), there is no efficient mechanism to actually produce correct `NumberType` for floating-point values.\r\nBecause of this, basically all FP values claim to be of `NumberType.DOUBLE` for such formats.\r\nThis can be problematic if values are converted first to `double`, then to `BigDecimal`, since former cannot accurately represent all decimal numbers.\r\n\r\nHowever, binary formats often have specific storage representations that can provide this type information.\r\n\r\nThe problem comes when converting to Java types: both `java.lang.Number` (or generally `java.lang.Object`) and `JsonNode`.\r\nIn this case we would ideally use either:\r\n\r\n1. Exact type if known (binary formats) OR\r\n2. Well-known type -- `Double` OR `BigDecimal`, based on configuration\r\n3. In some edge cases (not-a-number aka `NaN`), `Double` as that can represent such values.\r\n\r\n(further complicating things, we also have secondary means of producing `NaN` values: value overflow for `double` (and theoretically, but not practically, `float`) which can produce `+INFINITY`)\r\n\r\nGiven all above confusion, I think we need a new method like `getNumberTypeFP()` -- with matching `enum NumberTypeFP` (to be able to express value `UNKNOWN`, no need for integer types).\r\nThat will allow deserializers to know if \"true number type\", and base logic on that, specifically avoiding conversions in case of Binary formats and allowing their use for Textual formats (or in general formats without explicit type information for FP numbers).\r\n\r\n**EDIT**: originally thought we'd need `getNumberTypeExplicit()`, but since the need is specifically for floating-point numbers, let's call it `getNumberTypeFP()` instead; no need for non-FP types. And can indicate semantics are for strict/explicit type.\r\n\n",
+        "distance": 0,
+        "title": "Add `JsonParser.getNumberTypeFP()`",
+        "name": "root",
+        "path": [],
+        "issue_id": "root",
+        "similarity": 2.0,
+        "type": "issue"
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1149",
+        "type": "issue",
+        "content": "Currently `JsonParser` has method `getNumberType()`, with semantics that are loose for many textual formats.\r\nBasically formats like JSON do not have similar types as programming languages: so while we have separate `NumberType` entries representing `float` (32-bit binary FP), `double` (64-bit \"double\"precision binary FP) and `BigDecimal` (unlimited-precision, decimal FP), there is no efficient mechanism to actually produce correct `NumberType` for floating-point values.\r\nBecause of this, basically all FP values claim to be of `NumberType.DOUBLE` for such formats.\r\nThis can be problematic if values are converted first to `double`, then to `BigDecimal`, since former cannot accurately represent all decimal numbers.\r\n\r\nHowever, binary formats often have specific storage representations that can provide this type information.\r\n\r\nThe problem comes when converting to Java types: both `java.lang.Number` (or generally `java.lang.Object`) and `JsonNode`.\r\nIn this case we would ideally use either:\r\n\r\n1. Exact type if known (binary formats) OR\r\n2. Well-known type -- `Double` OR `BigDecimal`, based on configuration\r\n3. In some edge cases (not-a-number aka `NaN`), `Double` as that can represent such values.\r\n\r\n(further complicating things, we also have secondary means of producing `NaN` values: value overflow for `double` (and theoretically, but not practically, `float`) which can produce `+INFINITY`)\r\n\r\nGiven all above confusion, I think we need a new method like `getNumberTypeFP()` -- with matching `enum NumberTypeFP` (to be able to express value `UNKNOWN`, no need for integer types).\r\nThat will allow deserializers to know if \"true number type\", and base logic on that, specifically avoiding conversions in case of Binary formats and allowing their use for Textual formats (or in general formats without explicit type information for FP numbers).\r\n\r\n**EDIT**: originally thought we'd need `getNumberTypeExplicit()`, but since the need is specifically for floating-point numbers, let's call it `getNumberTypeFP()` instead; no need for non-FP types. And can indicate semantics are for strict/explicit type.\r\n\n\n\nComment by cowtowncoder:\n/cc @pjfanning This with #1137 might let us solve the problems: by using combination of `isNan()` (now reliable) and `getNumberTypeExplicit()` (which will not accidentally coerce type to `DOUBLE`) we should avoid most problems.\r\nThere may still be some complications wrt \"Double value overflow\".\r\n\r\n",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "Add `JsonParser.getNumberTypeFP()`",
+        "name": "issue#1149",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1182"
+          },
+          {
+            "start_node": "pr#1182",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1149"
+          }
+        ],
+        "similarity": 0.6730620138084887,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1182",
+        "type": "issue",
+        "content": "\n\n",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "Fixes #1149: add `JsonParser.getNumberTypeFP()`",
+        "name": "pr#1182",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1182"
+          }
+        ],
+        "similarity": 0.6369621587729754,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1150",
+        "type": "issue",
+        "content": "First part of fixes related to problems with number Overflow/Underflow for `Double` leading to problems with `BigDecimal` access. Second part of solution will be #1149.\n\n\nComment by cowtowncoder:\n@pjfanning I think that this first part should help a bit: we'll simply keep track of input that is NaN and not consider possible Overflow/Underflow-induced cases actual NaNs (since they would be decodable into `BigDecimal`).\r\nThis allows some changes, but more importantly if this goes cleanly, can implement #1149.\r\n\r\n/cc @JooHyukKim ",
+        "source_code": null,
+        "distance": 1.0,
+        "title": "Fix `JsonParser.isNaN()` to be stable, only indicate explicit NaN values; not ones due to coercion",
+        "name": "pr#1150",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1182"
+          },
+          {
+            "start_node": "pr#1182",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1149"
+          },
+          {
+            "start_node": "issue#1149",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1150"
+          }
+        ],
+        "similarity": 0.37431257512803745,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1137",
+        "type": "issue",
+        "content": "Currently it appears that too big (overflow) and too small (underflow) values can produce \"Not a Number\" (NaN) values from `JsonParser`, in addition to optionally supported tokens -- only allowed if enabled -- like `+INF` / `-INF` / `NaN`).\r\n\r\nBut doing this causes problem with `BigDecimal` handling since such \"too big\"/\"too small\" values CAN be represented as `BigDecimal`, whereas \"true\" Not-a-Numbers cannot.\r\n\r\nSo we should improve handling of `JsonParser.isNaN()` method so that it ONLY indicates explicit Not-a-Number cases, and not overflows.\r\n\r\n\r\n\n\n\nComment by pjfanning:\nThere is similar NaN checking in many Jackson modules. If we want to sort this for 2.16, we should delay the release to look at all the modules. I think NaN handling is a rarely needed use case and that it be better to leave this till after 2.16 release.\n\nComment by pjfanning:\nIf we were to tackle this, I would suggest adding isNaNOrInfinite(String) public static method to NumberInput class that does simple String checks instead of trying to parse the input as a number. This could be used in different Jackson modules.\r\n\r\nMost of our parsers keep the data as Strings/char[] and only parse to number representation if needed.\n\nComment by cowtowncoder:\nForgot to tag this as `2.17`, I 100% agree that due to timing we would increase risk by making changes now.\r\n\r\nI don't have a complete idea on how to go about this, due to differences between Double/double/Float/float (with NaN marker values, but limited ranges) vs `BigDecimal` (unlimited range but no NaN values).\r\n\r\nOne existing example of what might be doable are methods `canConvertToXxx` in `JsonNode` (canConvertToInt(), canConvertToLong(), canConvertToExactIntegral()).\r\nSo could potentially add something like\r\n\r\n    JsonParser.isInDoubleRange();\r\n\r\nwhich would be roughly same as `!isNaNOrInfiniteForDouble()`. But also potentially expensive depending on conversion.\r\n\r\nBut then again there is the question of changing observed behavior of `isNaN` even if not changing documented one -- Javadocs do not say that `isNaN` should return `true` in case value is outside range of `Double` and that just occurs as a side-effect of parsing into `double`.\r\n\r\n",
+        "source_code": null,
+        "distance": 1.25,
+        "title": "Improve detection of \"is a NaN\" to only consider explicit cases, not `double` overflow/underflow",
+        "name": "issue#1137",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1182"
+          },
+          {
+            "start_node": "pr#1182",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1149"
+          },
+          {
+            "start_node": "issue#1149",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1137"
+          }
+        ],
+        "similarity": 0.33893834283299745,
+        "end_line": null,
+        "signature": null
+      }
+    ]
+  },
+  "artifact_stats": {
+    "skipped_due_to_time": 5,
+    "valid_related_items": 14
+  }
+}

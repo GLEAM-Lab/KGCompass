@@ -1,0 +1,1669 @@
+{
+    "related_entities": {
+        "methods": [
+            {
+                "start_line": 187,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryEndpointCaller.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  RegistryErrorException newRegistryErrorException(ResponseException responseException) {\n    RegistryErrorExceptionBuilder registryErrorExceptionBuilder =\n        new RegistryErrorExceptionBuilder(\n            registryEndpointProvider.getActionDescription(), responseException);\n\n    try {\n      ErrorResponseTemplate errorResponse =\n          JsonTemplateMapper.readJson(responseException.getContent(), ErrorResponseTemplate.class);\n      for (ErrorEntryTemplate errorEntry : errorResponse.getErrors()) {\n        registryErrorExceptionBuilder.addReason(errorEntry);\n      }\n    } catch (IOException ex) {\n      registryErrorExceptionBuilder.addReason(\n          \"registry returned error code \"\n              + responseException.getStatusCode()\n              + \"; possible causes include invalid or wrong reference. Actual error output follows:\\n\"\n              + responseException.getContent()\n              + \"\\n\");\n    }\n\n    return registryErrorExceptionBuilder.build();\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "newRegistryErrorException",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryEndpointCaller"
+                    },
+                    {
+                        "start_node": "RegistryEndpointCaller",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "newRegistryErrorException"
+                    }
+                ],
+                "similarity": 0.14967340589030262,
+                "end_line": 208,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryEndpointCaller.newRegistryErrorException(ResponseException responseException): RegistryErrorException"
+            },
+            {
+                "start_line": 126,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryEndpointCaller.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private T call(URL url) throws IOException, RegistryException {\n    String serverUrl = registryEndpointRequestProperties.getServerUrl();\n    String imageName = registryEndpointRequestProperties.getImageName();\n\n    Request.Builder requestBuilder =\n        Request.builder()\n            .setUserAgent(userAgent)\n            .setHttpTimeout(JibSystemProperties.getHttpTimeout())\n            .setAccept(registryEndpointProvider.getAccept())\n            .setBody(registryEndpointProvider.getContent())\n            .setAuthorization(authorization);\n\n    try (Response response =\n        httpClient.call(registryEndpointProvider.getHttpMethod(), url, requestBuilder.build())) {\n\n      return registryEndpointProvider.handleResponse(response);\n\n    } catch (ResponseException ex) {\n      // First, see if the endpoint provider handles an exception as an expected response.\n      try {\n        return registryEndpointProvider.handleHttpResponseException(ex);\n\n      } catch (ResponseException responseException) {\n        if (responseException.getStatusCode() == HttpStatusCodes.STATUS_CODE_BAD_REQUEST\n            || responseException.getStatusCode() == HttpStatusCodes.STATUS_CODE_NOT_FOUND\n            || responseException.getStatusCode()\n                == HttpStatusCodes.STATUS_CODE_METHOD_NOT_ALLOWED) {\n          // The name or reference was invalid.\n          throw newRegistryErrorException(responseException);\n\n        } else if (responseException.getStatusCode() == HttpStatusCodes.STATUS_CODE_FORBIDDEN) {\n          throw new RegistryUnauthorizedException(serverUrl, imageName, responseException);\n\n        } else if (responseException.getStatusCode() == HttpStatusCodes.STATUS_CODE_UNAUTHORIZED) {\n          if (responseException.requestAuthorizationCleared()) {\n            throw new RegistryCredentialsNotSentException(serverUrl, imageName);\n          } else {\n            // Credentials are either missing or wrong.\n            throw new RegistryUnauthorizedException(serverUrl, imageName, responseException);\n          }\n\n        } else {\n          // Unknown\n          throw responseException;\n        }\n      }\n\n    } catch (IOException ex) {\n      logError(\"I/O error for image [\" + serverUrl + \"/\" + imageName + \"]:\");\n      logError(\"    \" + ex.getClass().getName());\n      logError(\"    \" + (ex.getMessage() == null ? \"(null exception message)\" : ex.getMessage()));\n      logErrorIfBrokenPipe(ex);\n\n      if (ex instanceof SSLException) {\n        throw new InsecureRegistryException(url, ex);\n      }\n      throw ex;\n    }\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "call",
+                "documentation": "/**\n   * Calls the registry endpoint with a certain {@link URL}.\n   *\n   * @param url the endpoint URL to call\n   * @return an object representing the response\n   * @throws IOException for most I/O exceptions when making the request\n   * @throws RegistryException for known exceptions when interacting with the registry\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryEndpointCaller"
+                    },
+                    {
+                        "start_node": "RegistryEndpointCaller",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "call"
+                    }
+                ],
+                "similarity": 0.13221169916323086,
+                "end_line": 184,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryEndpointCaller.call(URL url): T"
+            },
+            {
+                "start_line": 66,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/BlobPuller.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public Void handleResponse(Response response) throws IOException, UnexpectedBlobDigestException {\n    blobSizeListener.accept(response.getContentLength());\n\n    try (OutputStream outputStream =\n        new NotifyingOutputStream(destinationOutputStream, writtenByteCountListener)) {\n      BlobDescriptor receivedBlobDescriptor =\n          Digests.computeDigest(response.getBody(), outputStream);\n\n      if (!blobDigest.equals(receivedBlobDescriptor.getDigest())) {\n        throw new UnexpectedBlobDigestException(\n            \"The pulled BLOB has digest '\"\n                + receivedBlobDescriptor.getDigest()\n                + \"', but the request digest was '\"\n                + blobDigest\n                + \"'\");\n      }\n    }\n\n    return null;\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "handleResponse",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "BlobPuller"
+                    },
+                    {
+                        "start_node": "BlobPuller",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "handleResponse"
+                    }
+                ],
+                "similarity": 0.09959262574403592,
+                "end_line": 85,
+                "signature": "com.google.cloud.tools.jib.registry.BlobPuller.handleResponse(Response response): Void"
+            },
+            {
+                "start_line": 74,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/BlobPusher.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Optional<URL> handleResponse(Response response) throws RegistryErrorException {\n      switch (response.getStatusCode()) {\n        case HttpURLConnection.HTTP_CREATED:\n          // The BLOB exists in the registry.\n          return Optional.empty();\n\n        case HttpURLConnection.HTTP_ACCEPTED:\n          return Optional.of(getRedirectLocation(response));\n\n        default:\n          throw buildRegistryErrorException(\n              \"Received unrecognized status code \" + response.getStatusCode());\n      }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "handleResponse",
+                "documentation": "/**\n     * Returns a URL to continue pushing the BLOB to, or {@link Optional#empty()} if the BLOB\n     * already exists on the registry.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Initializer"
+                    },
+                    {
+                        "start_node": "Initializer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "handleResponse"
+                    }
+                ],
+                "similarity": 0.09540758166632991,
+                "end_line": 87,
+                "signature": "com.google.cloud.tools.jib.registry.BlobPusher.Initializer.handleResponse(Response response): Optional"
+            },
+            {
+                "start_line": 126,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/ManifestPusher.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public DescriptorDigest handleResponse(Response response) throws IOException {\n    // Checks if the image digest is as expected.\n    DescriptorDigest expectedDigest = Digests.computeJsonDigest(manifestTemplate);\n\n    List<String> receivedDigests = response.getHeader(RESPONSE_DIGEST_HEADER);\n    if (receivedDigests.size() == 1) {\n      try {\n        DescriptorDigest receivedDigest = DescriptorDigest.fromDigest(receivedDigests.get(0));\n        if (expectedDigest.equals(receivedDigest)) {\n          return expectedDigest;\n        }\n\n      } catch (DigestException ex) {\n        // Invalid digest.\n      }\n    }\n\n    // The received digest is not as expected. Warns about this.\n    eventHandlers.dispatch(\n        LogEvent.warn(makeUnexpectedImageDigestWarning(expectedDigest, receivedDigests)));\n    return expectedDigest;\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "handleResponse",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "ManifestPusher"
+                    },
+                    {
+                        "start_node": "ManifestPusher",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "handleResponse"
+                    }
+                ],
+                "similarity": 0.09315724514956374,
+                "end_line": 147,
+                "signature": "com.google.cloud.tools.jib.registry.ManifestPusher.handleResponse(Response response): DescriptorDigest"
+            },
+            {
+                "start_line": 56,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryEndpointCaller.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  static boolean isBrokenPipe(IOException original) {\n    Throwable exception = original;\n    while (exception != null) {\n      String message = exception.getMessage();\n      if (message != null && message.toLowerCase(Locale.US).contains(\"broken pipe\")) {\n        return true;\n      }\n\n      exception = exception.getCause();\n      if (exception == original) { // just in case if there's a circular chain\n        return false;\n      }\n    }\n    return false;\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "isBrokenPipe",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryEndpointCaller"
+                    },
+                    {
+                        "start_node": "RegistryEndpointCaller",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "isBrokenPipe"
+                    }
+                ],
+                "similarity": 0.08853486908094539,
+                "end_line": 70,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryEndpointCaller.isBrokenPipe(IOException original): boolean"
+            },
+            {
+                "start_line": 51,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/BlobChecker.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public Optional<BlobDescriptor> handleResponse(Response response) throws RegistryErrorException {\n    long contentLength = response.getContentLength();\n    if (contentLength < 0) {\n      throw new RegistryErrorExceptionBuilder(getActionDescription())\n          .addReason(\"Did not receive Content-Length header\")\n          .build();\n    }\n\n    return Optional.of(new BlobDescriptor(contentLength, blobDigest));\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "handleResponse",
+                "documentation": "/** Returns the BLOB's content descriptor. */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "BlobChecker"
+                    },
+                    {
+                        "start_node": "BlobChecker",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "handleResponse"
+                    }
+                ],
+                "similarity": 0.087951696347274,
+                "end_line": 60,
+                "signature": "com.google.cloud.tools.jib.registry.BlobChecker.handleResponse(Response response): Optional"
+            },
+            {
+                "start_line": 83,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/ManifestPusher.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public BlobHttpContent getContent() {\n    // TODO: Consider giving progress on manifest push as well?\n    return new BlobHttpContent(\n        Blobs.from(manifestTemplate), manifestTemplate.getManifestMediaType());\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "getContent",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    }
+                ],
+                "similarity": 0.08739676089088103,
+                "end_line": 87,
+                "signature": "com.google.cloud.tools.jib.registry.ManifestPusher.getContent(): BlobHttpContent"
+            },
+            {
+                "start_line": 215,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryEndpointCaller.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private void logErrorIfBrokenPipe(IOException ex) {\n    if (isBrokenPipe(ex)) {\n      logError(\n          \"broken pipe: the server shut down the connection. Check the server log if possible. \"\n              + \"This could also be a proxy issue. For example, a proxy may prevent sending \"\n              + \"packets that are too large.\");\n    }\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "logErrorIfBrokenPipe",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryEndpointCaller"
+                    },
+                    {
+                        "start_node": "RegistryEndpointCaller",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "logErrorIfBrokenPipe"
+                    }
+                ],
+                "similarity": 0.08717764189490734,
+                "end_line": 222,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryEndpointCaller.logErrorIfBrokenPipe(IOException ex): void"
+            },
+            {
+                "start_line": 112,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryEndpointCaller.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  T call() throws IOException, RegistryException {\n    String apiRouteBase = \"https://\" + registryEndpointRequestProperties.getServerUrl() + \"/v2/\";\n    URL initialRequestUrl = registryEndpointProvider.getApiRoute(apiRouteBase);\n    return call(initialRequestUrl);\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "call",
+                "documentation": "/**\n   * Makes the request to the endpoint.\n   *\n   * @return an object representing the response, or {@code null}\n   * @throws IOException for most I/O exceptions when making the request\n   * @throws RegistryException for known exceptions when interacting with the registry\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryEndpointCaller"
+                    },
+                    {
+                        "start_node": "RegistryEndpointCaller",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "call"
+                    }
+                ],
+                "similarity": 0.08457723613205463,
+                "end_line": 116,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryEndpointCaller.call(): T"
+            },
+            {
+                "start_line": 60,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/BlobPusher.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public BlobHttpContent getContent() {\n      return null;\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "getContent",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    }
+                ],
+                "similarity": 0.07740117442773096,
+                "end_line": 62,
+                "signature": "com.google.cloud.tools.jib.registry.BlobPusher.Initializer.getContent(): BlobHttpContent"
+            },
+            {
+                "start_line": 63,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/ManifestPuller.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public BlobHttpContent getContent() {\n    return null;\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "getContent",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    }
+                ],
+                "similarity": 0.07593108458937059,
+                "end_line": 65,
+                "signature": "com.google.cloud.tools.jib.registry.ManifestPuller.getContent(): BlobHttpContent"
+            },
+            {
+                "start_line": 93,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/BlobChecker.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public BlobHttpContent getContent() {\n    return null;\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "getContent",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    }
+                ],
+                "similarity": 0.07593108458937059,
+                "end_line": 95,
+                "signature": "com.google.cloud.tools.jib.registry.BlobChecker.getContent(): BlobHttpContent"
+            },
+            {
+                "start_line": 52,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/AuthenticationMethodRetriever.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public BlobHttpContent getContent() {\n    return null;\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "getContent",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    }
+                ],
+                "similarity": 0.07593108458937059,
+                "end_line": 54,
+                "signature": "com.google.cloud.tools.jib.registry.AuthenticationMethodRetriever.getContent(): BlobHttpContent"
+            },
+            {
+                "start_line": 89,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/BlobPuller.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public BlobHttpContent getContent() {\n    return null;\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "getContent",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    }
+                ],
+                "similarity": 0.07593108458937059,
+                "end_line": 91,
+                "signature": "com.google.cloud.tools.jib.registry.BlobPuller.getContent(): BlobHttpContent"
+            },
+            {
+                "start_line": 63,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/BlobChecker.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public Optional<BlobDescriptor> handleHttpResponseException(ResponseException responseException)",
+                "distance": 1.5,
+                "title": null,
+                "name": "handleHttpResponseException",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "BlobChecker"
+                    },
+                    {
+                        "start_node": "BlobChecker",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "handleHttpResponseException"
+                    }
+                ],
+                "similarity": 0.07337371703748642,
+                "end_line": 63,
+                "signature": "com.google.cloud.tools.jib.registry.BlobChecker.handleHttpResponseException(ResponseException responseException): Optional"
+            },
+            {
+                "start_line": 127,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/BlobPusher.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public BlobHttpContent getContent() {\n      return new BlobHttpContent(blob, MediaType.OCTET_STREAM.toString(), writtenByteCountListener);\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "getContent",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    }
+                ],
+                "similarity": 0.07187618243647519,
+                "end_line": 129,
+                "signature": "com.google.cloud.tools.jib.registry.BlobPusher.Writer.getContent(): BlobHttpContent"
+            },
+            {
+                "start_line": 68,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/ManifestPuller.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public List<String> getAccept() {\n    if (manifestTemplateClass.equals(V21ManifestTemplate.class)) {\n      return Collections.singletonList(V21ManifestTemplate.MEDIA_TYPE);\n    }\n    if (manifestTemplateClass.equals(V22ManifestTemplate.class)) {\n      return Collections.singletonList(V22ManifestTemplate.MANIFEST_MEDIA_TYPE);\n    }\n    if (manifestTemplateClass.equals(OciManifestTemplate.class)) {\n      return Collections.singletonList(OciManifestTemplate.MANIFEST_MEDIA_TYPE);\n    }\n    if (manifestTemplateClass.equals(V22ManifestListTemplate.class)) {\n      return Collections.singletonList(V22ManifestListTemplate.MANIFEST_MEDIA_TYPE);\n    }\n\n    // V22ManifestListTemplate is not included by default, we don't explicitly accept\n    // it, we only handle it if referenced by sha256 (see getManifestTemplateFromJson) in which\n    // case registries ignore the \"accept\" directive and just return a manifest list anyway.\n    return Arrays.asList(\n        OciManifestTemplate.MANIFEST_MEDIA_TYPE,\n        V22ManifestTemplate.MANIFEST_MEDIA_TYPE,\n        V21ManifestTemplate.MEDIA_TYPE);\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getAccept",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ManifestPuller"
+                    },
+                    {
+                        "start_node": "ManifestPuller",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "getAccept"
+                    }
+                ],
+                "similarity": 0.07173899486001549,
+                "end_line": 89,
+                "signature": "com.google.cloud.tools.jib.registry.ManifestPuller.getAccept(): List"
+            },
+            {
+                "start_line": 113,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/BlobPusher.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Optional<URL> handleHttpResponseException(ResponseException responseException)",
+                "distance": 1.5,
+                "title": null,
+                "name": "handleHttpResponseException",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Initializer"
+                    },
+                    {
+                        "start_node": "Initializer",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "handleHttpResponseException"
+                    }
+                ],
+                "similarity": 0.07095433240035336,
+                "end_line": 113,
+                "signature": "com.google.cloud.tools.jib.registry.BlobPusher.Initializer.handleHttpResponseException(ResponseException responseException): Optional"
+            },
+            {
+                "start_line": 88,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/AuthenticationMethodRetriever.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public Optional<RegistryAuthenticator> handleHttpResponseException(",
+                "distance": 1.5,
+                "title": null,
+                "name": "handleHttpResponseException",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "AuthenticationMethodRetriever"
+                    },
+                    {
+                        "start_node": "AuthenticationMethodRetriever",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "handleHttpResponseException"
+                    }
+                ],
+                "similarity": 0.07023196744065445,
+                "end_line": 88,
+                "signature": "com.google.cloud.tools.jib.registry.AuthenticationMethodRetriever.handleHttpResponseException(ResponseException responseException): Optional"
+            },
+            {
+                "start_line": 180,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/json/JsonTemplateMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private static byte[] toByteArray(Object template) throws IOException {\n    ByteArrayOutputStream out = new ByteArrayOutputStream();\n    writeTo(template, out);\n    return out.toByteArray();\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "toByteArray",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonTemplateMapper"
+                    },
+                    {
+                        "start_node": "JsonTemplateMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "toByteArray"
+                    }
+                ],
+                "similarity": 0.06970569418809718,
+                "end_line": 184,
+                "signature": "com.google.cloud.tools.jib.json.JsonTemplateMapper.toByteArray(Object template): byte[]"
+            },
+            {
+                "start_line": 90,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/BlobPusher.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public URL getApiRoute(String apiRouteBase) throws MalformedURLException {\n      StringBuilder url =\n          new StringBuilder(apiRouteBase)\n              .append(registryEndpointRequestProperties.getImageName())\n              .append(\"/blobs/uploads/\");\n      if (sourceRepository != null) {\n        url.append(\"?mount=\").append(blobDigest).append(\"&from=\").append(sourceRepository);\n      }\n\n      return new URL(url.toString());\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getApiRoute",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Initializer"
+                    },
+                    {
+                        "start_node": "Initializer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getApiRoute"
+                    }
+                ],
+                "similarity": 0.06746898827936439,
+                "end_line": 100,
+                "signature": "com.google.cloud.tools.jib.registry.BlobPusher.Initializer.getApiRoute(String apiRouteBase): URL"
+            },
+            {
+                "start_line": 120,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/BlobPuller.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public Void handleHttpResponseException(ResponseException responseException)",
+                "distance": 1.5,
+                "title": null,
+                "name": "handleHttpResponseException",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "BlobPuller"
+                    },
+                    {
+                        "start_node": "BlobPuller",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "handleHttpResponseException"
+                    }
+                ],
+                "similarity": 0.06502531027796002,
+                "end_line": 120,
+                "signature": "com.google.cloud.tools.jib.registry.BlobPuller.handleHttpResponseException(ResponseException responseException): Void"
+            },
+            {
+                "start_line": 68,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/AuthenticationMethodRetriever.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public Optional<RegistryAuthenticator> handleResponse(Response response) {\n    return Optional.empty();\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "handleResponse",
+                "documentation": "/**\n   * The request did not error, meaning that the registry does not require authentication.\n   *\n   * @param response ignored\n   * @return {@link Optional#empty()}\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "AuthenticationMethodRetriever"
+                    },
+                    {
+                        "start_node": "AuthenticationMethodRetriever",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "handleResponse"
+                    }
+                ],
+                "similarity": 0.06430700751342668,
+                "end_line": 70,
+                "signature": "com.google.cloud.tools.jib.registry.AuthenticationMethodRetriever.handleResponse(Response response): Optional"
+            },
+            {
+                "start_line": 95,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/ManifestPusher.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public DescriptorDigest handleHttpResponseException(ResponseException responseException)",
+                "distance": 1.5,
+                "title": null,
+                "name": "handleHttpResponseException",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "ManifestPusher"
+                    },
+                    {
+                        "start_node": "ManifestPusher",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "handleHttpResponseException"
+                    }
+                ],
+                "similarity": 0.06336716544288636,
+                "end_line": 95,
+                "signature": "com.google.cloud.tools.jib.registry.ManifestPusher.handleHttpResponseException(ResponseException responseException): DescriptorDigest"
+            },
+            {
+                "start_line": 164,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/BlobPusher.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public URL handleHttpResponseException(ResponseException responseException)",
+                "distance": 1.5,
+                "title": null,
+                "name": "handleHttpResponseException",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Writer"
+                    },
+                    {
+                        "start_node": "Writer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "handleHttpResponseException"
+                    }
+                ],
+                "similarity": 0.06332885462389679,
+                "end_line": 164,
+                "signature": "com.google.cloud.tools.jib.registry.BlobPusher.Writer.handleHttpResponseException(ResponseException responseException): URL"
+            },
+            {
+                "start_line": 108,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/BlobChecker.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public String getActionDescription() {\n    return \"check BLOB exists for \"\n        + registryEndpointRequestProperties.getServerUrl()\n        + \"/\"\n        + registryEndpointRequestProperties.getImageName()\n        + \" with digest \"\n        + blobDigest;\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getActionDescription",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "BlobChecker"
+                    },
+                    {
+                        "start_node": "BlobChecker",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getActionDescription"
+                    }
+                ],
+                "similarity": 0.06256246996817366,
+                "end_line": 115,
+                "signature": "com.google.cloud.tools.jib.registry.BlobChecker.getActionDescription(): String"
+            },
+            {
+                "start_line": 151,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/json/JsonTemplateMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static String toUtf8String(JsonTemplate template) throws IOException {\n    return toUtf8String((Object) template);\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "toUtf8String",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonTemplateMapper"
+                    },
+                    {
+                        "start_node": "JsonTemplateMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "toUtf8String"
+                    }
+                ],
+                "similarity": 0.062460662530669925,
+                "end_line": 153,
+                "signature": "com.google.cloud.tools.jib.json.JsonTemplateMapper.toUtf8String(JsonTemplate template): String"
+            },
+            {
+                "start_line": 159,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/json/JsonTemplateMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static byte[] toByteArray(JsonTemplate template) throws IOException {\n    return toByteArray((Object) template);\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "toByteArray",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonTemplateMapper"
+                    },
+                    {
+                        "start_node": "JsonTemplateMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "toByteArray"
+                    }
+                ],
+                "similarity": 0.0621853883848716,
+                "end_line": 161,
+                "signature": "com.google.cloud.tools.jib.json.JsonTemplateMapper.toByteArray(JsonTemplate template): byte[]"
+            },
+            {
+                "start_line": 166,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/ManifestPuller.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public ManifestAndDigest<T> handleHttpResponseException(ResponseException responseException)",
+                "distance": 1.5,
+                "title": null,
+                "name": "handleHttpResponseException",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ManifestPuller"
+                    },
+                    {
+                        "start_node": "ManifestPuller",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "handleHttpResponseException"
+                    }
+                ],
+                "similarity": 0.06211950415996568,
+                "end_line": 166,
+                "signature": "com.google.cloud.tools.jib.registry.ManifestPuller.handleHttpResponseException(ResponseException responseException): ManifestAndDigest"
+            },
+            {
+                "start_line": 138,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/BlobPusher.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public URL handleResponse(Response response) throws RegistryException {\n      // TODO: Handle 204 No Content\n      return getRedirectLocation(response);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "handleResponse",
+                "documentation": "/** Returns a URL to continue pushing the BLOB to. */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Writer"
+                    },
+                    {
+                        "start_node": "Writer",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "handleResponse"
+                    }
+                ],
+                "similarity": 0.06141043790188971,
+                "end_line": 141,
+                "signature": "com.google.cloud.tools.jib.registry.BlobPusher.Writer.handleResponse(Response response): URL"
+            },
+            {
+                "start_line": 110,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/BlobPuller.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public String getActionDescription() {\n    return \"pull BLOB for \"\n        + registryEndpointRequestProperties.getServerUrl()\n        + \"/\"\n        + registryEndpointRequestProperties.getImageName()\n        + \" with digest \"\n        + blobDigest;\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getActionDescription",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "BlobPuller"
+                    },
+                    {
+                        "start_node": "BlobPuller",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "getActionDescription"
+                    }
+                ],
+                "similarity": 0.05928536366411428,
+                "end_line": 117,
+                "signature": "com.google.cloud.tools.jib.registry.BlobPuller.getActionDescription(): String"
+            },
+            {
+                "start_line": 176,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/json/JsonTemplateMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private static String toUtf8String(Object template) throws IOException {\n    return new String(toByteArray(template), StandardCharsets.UTF_8);\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "toUtf8String",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonTemplateMapper"
+                    },
+                    {
+                        "start_node": "JsonTemplateMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "toUtf8String"
+                    }
+                ],
+                "similarity": 0.059151835437420544,
+                "end_line": 178,
+                "signature": "com.google.cloud.tools.jib.json.JsonTemplateMapper.toUtf8String(Object template): String"
+            },
+            {
+                "start_line": 161,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/ManifestPusher.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public String getActionDescription() {\n    return \"push image manifest for \"\n        + registryEndpointRequestProperties.getServerUrl()\n        + \"/\"\n        + registryEndpointRequestProperties.getImageName()\n        + \":\"\n        + imageTag;\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getActionDescription",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "ManifestPusher"
+                    },
+                    {
+                        "start_node": "ManifestPusher",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "getActionDescription"
+                    }
+                ],
+                "similarity": 0.05804298164989137,
+                "end_line": 168,
+                "signature": "com.google.cloud.tools.jib.registry.ManifestPusher.getActionDescription(): String"
+            },
+            {
+                "start_line": 115,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/ManifestPuller.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public String getActionDescription() {\n    return \"pull image manifest for \"\n        + registryEndpointRequestProperties.getServerUrl()\n        + \"/\"\n        + registryEndpointRequestProperties.getImageName()\n        + \":\"\n        + imageTag;\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getActionDescription",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ManifestPuller"
+                    },
+                    {
+                        "start_node": "ManifestPuller",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getActionDescription"
+                    }
+                ],
+                "similarity": 0.05745812486846333,
+                "end_line": 122,
+                "signature": "com.google.cloud.tools.jib.registry.ManifestPuller.getActionDescription(): String"
+            },
+            {
+                "start_line": 190,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/json/JsonTemplateMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private JsonTemplateMapper() {}",
+                "distance": 1.25,
+                "title": null,
+                "name": "JsonTemplateMapper",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonTemplateMapper"
+                    },
+                    {
+                        "start_node": "JsonTemplateMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "JsonTemplateMapper"
+                    }
+                ],
+                "similarity": 0.05514691234508847,
+                "end_line": 190,
+                "signature": "com.google.cloud.tools.jib.json.JsonTemplateMapper()"
+            },
+            {
+                "start_line": 155,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/json/JsonTemplateMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static String toUtf8String(List<? extends JsonTemplate> templates) throws IOException {\n    return toUtf8String((Object) templates);\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "toUtf8String",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonTemplateMapper"
+                    },
+                    {
+                        "start_node": "JsonTemplateMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "toUtf8String"
+                    }
+                ],
+                "similarity": 0.05460677271822574,
+                "end_line": 157,
+                "signature": "com.google.cloud.tools.jib.json.JsonTemplateMapper.toUtf8String(List templates): String"
+            },
+            {
+                "start_line": 163,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/json/JsonTemplateMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static byte[] toByteArray(List<? extends JsonTemplate> templates) throws IOException {\n    return toByteArray((Object) templates);\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "toByteArray",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonTemplateMapper"
+                    },
+                    {
+                        "start_node": "JsonTemplateMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "toByteArray"
+                    }
+                ],
+                "similarity": 0.053986406791214,
+                "end_line": 165,
+                "signature": "com.google.cloud.tools.jib.json.JsonTemplateMapper.toByteArray(List templates): byte[]"
+            },
+            {
+                "start_line": 258,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/BlobPusher.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private RegistryErrorException buildRegistryErrorException(String reason) {\n    RegistryErrorExceptionBuilder registryErrorExceptionBuilder =\n        new RegistryErrorExceptionBuilder(getActionDescription());\n    registryErrorExceptionBuilder.addReason(reason);\n    return registryErrorExceptionBuilder.build();\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "buildRegistryErrorException",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "BlobChecker"
+                    },
+                    {
+                        "start_node": "BlobChecker",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getActionDescription"
+                    },
+                    {
+                        "start_node": "getActionDescription",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "buildRegistryErrorException"
+                    }
+                ],
+                "similarity": 0.05393160543180876,
+                "end_line": 263,
+                "signature": "com.google.cloud.tools.jib.registry.BlobPusher.buildRegistryErrorException(String reason): RegistryErrorException"
+            },
+            {
+                "start_line": 167,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/json/JsonTemplateMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static void writeTo(JsonTemplate template, OutputStream out) throws IOException {\n    writeTo((Object) template, out);\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "writeTo",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonTemplateMapper"
+                    },
+                    {
+                        "start_node": "JsonTemplateMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "writeTo"
+                    }
+                ],
+                "similarity": 0.05178386629554514,
+                "end_line": 169,
+                "signature": "com.google.cloud.tools.jib.json.JsonTemplateMapper.writeTo(JsonTemplate template, OutputStream out): void"
+            },
+            {
+                "start_line": 86,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/BlobChecker.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public URL getApiRoute(String apiRouteBase) throws MalformedURLException {\n    return new URL(\n        apiRouteBase + registryEndpointRequestProperties.getImageName() + \"/blobs/\" + blobDigest);\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getApiRoute",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "BlobChecker"
+                    },
+                    {
+                        "start_node": "BlobChecker",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getApiRoute"
+                    }
+                ],
+                "similarity": 0.04979295028784039,
+                "end_line": 89,
+                "signature": "com.google.cloud.tools.jib.registry.BlobChecker.getApiRoute(String apiRouteBase): URL"
+            },
+            {
+                "start_line": 99,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/BlobPuller.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public URL getApiRoute(String apiRouteBase) throws MalformedURLException {\n    return new URL(\n        apiRouteBase + registryEndpointRequestProperties.getImageName() + \"/blobs/\" + blobDigest);\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getApiRoute",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "BlobPuller"
+                    },
+                    {
+                        "start_node": "BlobPuller",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getApiRoute"
+                    }
+                ],
+                "similarity": 0.04979295028784039,
+                "end_line": 102,
+                "signature": "com.google.cloud.tools.jib.registry.BlobPuller.getApiRoute(String apiRouteBase): URL"
+            },
+            {
+                "start_line": 211,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryEndpointCaller.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private void logError(String message) {\n    eventHandlers.dispatch(LogEvent.error(\"\\u001B[31;1m\" + message + \"\\u001B[0m\"));\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "logError",
+                "documentation": "/** Logs error message in red. */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryEndpointCaller"
+                    },
+                    {
+                        "start_node": "RegistryEndpointCaller",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "logError"
+                    }
+                ],
+                "similarity": 0.04966885921663332,
+                "end_line": 213,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryEndpointCaller.logError(String message): void"
+            },
+            {
+                "start_line": 314,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private boolean doBearerAuth(boolean readOnlyBearerAuth) throws IOException, RegistryException {\n    String registry = registryEndpointRequestProperties.getServerUrl();\n    String repository = registryEndpointRequestProperties.getImageName();\n    String image = registry + \"/\" + repository;\n    eventHandlers.dispatch(LogEvent.debug(\"attempting bearer auth for \" + image + \"...\"));\n\n    Optional<RegistryAuthenticator> authenticator =\n        callRegistryEndpoint(\n            new AuthenticationMethodRetriever(\n                registryEndpointRequestProperties, getUserAgent(), httpClient));\n    if (!authenticator.isPresent()) {\n      eventHandlers.dispatch(LogEvent.debug(\"server requires basic auth for \" + image));\n      return false; // server returned \"WWW-Authenticate: Basic ...\"\n    }\n\n    initialBearerAuthenticator.set(authenticator.get());\n    if (readOnlyBearerAuth) {\n      authorization.set(authenticator.get().authenticatePull(credential));\n    } else {\n      authorization.set(authenticator.get().authenticatePush(credential));\n    }\n    this.readOnlyBearerAuth = readOnlyBearerAuth;\n    eventHandlers.dispatch(LogEvent.debug(\"bearer auth succeeded for \" + image));\n    return true;\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "doBearerAuth",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "AuthenticationMethodRetriever"
+                    },
+                    {
+                        "start_node": "AuthenticationMethodRetriever",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "AuthenticationMethodRetriever"
+                    },
+                    {
+                        "start_node": "AuthenticationMethodRetriever",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "doBearerAuth"
+                    }
+                ],
+                "similarity": 0.04862370056461197,
+                "end_line": 338,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryClient.doBearerAuth(boolean readOnlyBearerAuth): boolean"
+            },
+            {
+                "start_line": 150,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/ManifestPusher.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public URL getApiRoute(String apiRouteBase) throws MalformedURLException {\n    return new URL(\n        apiRouteBase + registryEndpointRequestProperties.getImageName() + \"/manifests/\" + imageTag);\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getApiRoute",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "ManifestPusher"
+                    },
+                    {
+                        "start_node": "ManifestPusher",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getApiRoute"
+                    }
+                ],
+                "similarity": 0.047897534813710015,
+                "end_line": 153,
+                "signature": "com.google.cloud.tools.jib.registry.ManifestPusher.getApiRoute(String apiRouteBase): URL"
+            },
+            {
+                "start_line": 104,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/ManifestPuller.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public URL getApiRoute(String apiRouteBase) throws MalformedURLException {\n    return new URL(\n        apiRouteBase + registryEndpointRequestProperties.getImageName() + \"/manifests/\" + imageTag);\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getApiRoute",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getContent"
+                    },
+                    {
+                        "start_node": "getContent",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ManifestPuller"
+                    },
+                    {
+                        "start_node": "ManifestPuller",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "getApiRoute"
+                    }
+                ],
+                "similarity": 0.047897534813710015,
+                "end_line": 107,
+                "signature": "com.google.cloud.tools.jib.registry.ManifestPuller.getApiRoute(String apiRouteBase): URL"
+            },
+            {
+                "start_line": 530,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  static boolean canAttemptBlobMount(@Nullable Authorization authorization, String repository) {\n    if (!isBearerAuth(authorization)) {\n      // Authorization methods other than the Docker Container Registry Token don't provide\n      // information as to which repositories are accessible.  The caller should attempt the mount\n      // and rely on the registry fallback as required by the spec.\n      // https://docs.docker.com/registry/spec/api/#pushing-an-image\n      return true;\n    }\n    // if null then does not appear to be a DCRT\n    Multimap<String, String> repositoryGrants =\n        decodeTokenRepositoryGrants(Verify.verifyNotNull(authorization).getToken());\n    return repositoryGrants == null || repositoryGrants.containsEntry(repository, \"pull\");\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "canAttemptBlobMount",
+                "documentation": "/**\n   * Check if the authorization allows using the specified repository can be mounted by the remote\n   * registry as a source for blobs. More specifically, we can only check if the repository is not\n   * disallowed.\n   *\n   * @param repository repository in question\n   * @return {@code true} if the repository appears to be mountable\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryEndpointCaller"
+                    },
+                    {
+                        "start_node": "RegistryEndpointCaller",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "callRegistryEndpoint"
+                    },
+                    {
+                        "start_node": "callRegistryEndpoint",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "RegistryClient"
+                    },
+                    {
+                        "start_node": "RegistryClient",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "canAttemptBlobMount"
+                    }
+                ],
+                "similarity": 0.04645211510062191,
+                "end_line": 542,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryClient.canAttemptBlobMount(Authorization authorization, String repository): boolean"
+            },
+            {
+                "start_line": 130,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/json/JsonTemplateMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static <T extends JsonTemplate> T readJson(byte[] jsonBytes, Class<T> templateClass)",
+                "distance": 1.25,
+                "title": null,
+                "name": "readJson",
+                "documentation": "/**\n   * Deserializes a JSON object from a JSON byte array.\n   *\n   * @param <T> child type of {@link JsonTemplate}\n   * @param jsonBytes a JSON byte array\n   * @param templateClass the template to deserialize the string to\n   * @return the template filled with the values parsed from {@code jsonBytes}\n   * @throws IOException if an error occurred during parsing the JSON\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonTemplateMapper"
+                    },
+                    {
+                        "start_node": "JsonTemplateMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "readJson"
+                    }
+                ],
+                "similarity": 0.04608627804443785,
+                "end_line": 130,
+                "signature": "com.google.cloud.tools.jib.json.JsonTemplateMapper.readJson(byte[] jsonBytes, Class templateClass): T"
+            },
+            {
+                "start_line": 271,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void configureBasicAuth() {\n    Preconditions.checkNotNull(credential);\n    Preconditions.checkState(!credential.isOAuth2RefreshToken());\n\n    authorization.set(\n        Authorization.fromBasicCredentials(credential.getUsername(), credential.getPassword()));\n\n    String registry = registryEndpointRequestProperties.getServerUrl();\n    String repository = registryEndpointRequestProperties.getImageName();\n    eventHandlers.dispatch(\n        LogEvent.debug(\"configured basic auth for \" + registry + \"/\" + repository));\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "configureBasicAuth",
+                "documentation": "/** Configure basic authentication on this registry client. */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "RegistryEndpointCaller"
+                    },
+                    {
+                        "start_node": "RegistryEndpointCaller",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "callRegistryEndpoint"
+                    },
+                    {
+                        "start_node": "callRegistryEndpoint",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "RegistryClient"
+                    },
+                    {
+                        "start_node": "RegistryClient",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "configureBasicAuth"
+                    }
+                ],
+                "similarity": 0.04595061192957766,
+                "end_line": 282,
+                "signature": "com.google.cloud.tools.jib.registry.RegistryClient.configureBasicAuth(): void"
+            },
+            {
+                "start_line": 186,
+                "file_path": "playground/googlecontainertools__jib/jib-core/src/main/java/com/google/cloud/tools/jib/json/JsonTemplateMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private static void writeTo(Object template, OutputStream out) throws IOException {\n    objectMapper.writeValue(out, template);\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "writeTo",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonTemplateMapper"
+                    },
+                    {
+                        "start_node": "JsonTemplateMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "writeTo"
+                    }
+                ],
+                "similarity": 0.044116919506582745,
+                "end_line": 188,
+                "signature": "com.google.cloud.tools.jib.json.JsonTemplateMapper.writeTo(Object template, OutputStream out): void"
+            }
+        ],
+        "classes": [],
+        "issues": [
+            {
+                "content": "A user reported an NPE on the [Gitter channel](https://gitter.im/google/jib).\r\n\r\n```\r\nCaused by: java.lang.NullPointerException\r\n\tat com.fasterxml.jackson.core.JsonFactory.createParser(JsonFactory.java:889)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3005)\r\n\tat com.google.cloud.tools.jib.json.JsonTemplateMapper.readJson(JsonTemplateMapper.java:118)\r\n\tat com.google.cloud.tools.jib.json.JsonTemplateMapper.readJson (JsonTemplateMapper.java:118)\r\n\tat com.google.cloud.tools.jib.registry.RegistryEndpointCaller.newRegistryErrorException (RegistryEndpointCaller.java:194)\r\n```\r\n\r\nThe NPE is when there was an error communicating with the server. Jib tries to parse the content of the error message (supposed to be a JSON) from the server.\r\n```java\r\n      ErrorResponseTemplate errorResponse =\r\n          JsonTemplateMapper.readJson(responseException.getContent(), ErrorResponseTemplate.class);\r\n```\r\n\r\nI noticed that if we pass a null string, `JsonTemplateMapper.readJson()` throws NPE with the same stacktrace.\r\n```java\r\nJsonTemplateMapper.readJson((String) null, ErrorResponseTemplate.class);\r\n```\r\n\r\nTurns out `responseException.getContent()` can return null if there was no content from the server. The reason I think NullAway couldn't catch this is that the return value of `getContet()` basically comes from a method in the Google HTTP Client library.\n",
+                "distance": 0,
+                "title": "NPE if the server doesn't provide any HTTP content for an error",
+                "name": "root",
+                "path": [],
+                "issue_id": "root",
+                "similarity": 2.0,
+                "type": "issue"
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "2532",
+                "type": "issue",
+                "content": "A user reported an NPE on the [Gitter channel](https://gitter.im/google/jib).\r\n\r\n```\r\nCaused by: java.lang.NullPointerException\r\n\tat com.fasterxml.jackson.core.JsonFactory.createParser(JsonFactory.java:889)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3005)\r\n\tat com.google.cloud.tools.jib.json.JsonTemplateMapper.readJson(JsonTemplateMapper.java:118)\r\n\tat com.google.cloud.tools.jib.json.JsonTemplateMapper.readJson (JsonTemplateMapper.java:118)\r\n\tat com.google.cloud.tools.jib.registry.RegistryEndpointCaller.newRegistryErrorException (RegistryEndpointCaller.java:194)\r\n```\r\n\r\nThe NPE is when there was an error communicating with the server. Jib tries to parse the content of the error message (supposed to be a JSON) from the server.\r\n```java\r\n      ErrorResponseTemplate errorResponse =\r\n          JsonTemplateMapper.readJson(responseException.getContent(), ErrorResponseTemplate.class);\r\n```\r\n\r\nI noticed that if we pass a null string, `JsonTemplateMapper.readJson()` throws NPE with the same stacktrace.\r\n```java\r\nJsonTemplateMapper.readJson((String) null, ErrorResponseTemplate.class);\r\n```\r\n\r\nTurns out `responseException.getContent()` can return null if there was no content from the server. The reason I think NullAway couldn't catch this is that the return value of `getContet()` basically comes from a method in the Google HTTP Client library.\n\n",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "NPE if the server doesn't provide any HTTP content for an error",
+                "name": "issue#2532",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#2542"
+                    },
+                    {
+                        "start_node": "pr#2542",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "issue#2532"
+                    }
+                ],
+                "similarity": 0.7737875589366321,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "2542",
+                "type": "issue",
+                "content": "Fixes #2532 \r\n\n\n",
+                "source_code": null,
+                "distance": 0.25,
+                "title": "Solved : NPE if the server doesn't provide any HTTP content for an error",
+                "name": "pr#2542",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "pr#2542"
+                    }
+                ],
+                "similarity": 0.5090952411715086,
+                "end_line": null,
+                "signature": null
+            }
+        ]
+    },
+    "artifact_stats": {
+        "skipped_due_to_time": 3,
+        "valid_related_items": 7
+    }
+}

@@ -1,0 +1,18 @@
+--- a/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java
++++ b/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java
+@@ -884,7 +884,14 @@
+      * String collections.
+      */
+     @Override
+-    public String nextTextValue() throws IOException
++    public String nextTextValue() throws IOException {
++        String text = _xmlTokens.nextText();
++        // Unescape special characters in element names
++        if (text != null && text.contains("_x0024_")) {
++            text = text.replace("_x0024_", "$");
++        }
++        return text;
++    }
+     {
+         _binaryValue = null;
+         if (_nextToken != null) {

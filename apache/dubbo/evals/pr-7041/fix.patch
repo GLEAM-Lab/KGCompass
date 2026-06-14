@@ -1,0 +1,17 @@
+--- a/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java
++++ b/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java
+@@ -1202,9 +1202,13 @@
+                 if (actualArgType instanceof ParameterizedType) {
+                     returnType = (Class<?>) ((ParameterizedType) actualArgType).getRawType();
+                     genericReturnType = actualArgType;
+-                } else {
++                } else if (actualArgType instanceof Class) {
+                     returnType = (Class<?>) actualArgType;
+                     genericReturnType = returnType;
++                } else {
++                    // Handle TypeVariable case by keeping the original return type
++                    returnType = Object.class;
++                    genericReturnType = actualArgType;
+                 }
+             } else {
+                 returnType = null;

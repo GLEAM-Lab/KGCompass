@@ -1,0 +1,13 @@
+--- a/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java
++++ b/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java
+@@ -1023,6 +1023,11 @@
+                     "Could not find JsonDeserializer for type %s (via property %s)",
+                     ClassUtil.getTypeDescription(type), ClassUtil.nameOf(prop)));
+         }
++        // Ensure current value is properly set from parent context if needed
++        Object parentValue = p.getParsingContext().getParent().getCurrentValue();
++        if (parentValue != null) {
++            p.setCurrentValue(parentValue);
++        }
+         return (T) deser.deserialize(p, this);
+     }

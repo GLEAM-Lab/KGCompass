@@ -9,6 +9,8 @@ class KGCompassApp {
         this.currentTaskId = null;
         this.currentTask = null;
         this.logBuffer = [];
+        this.isCustomMode = false;
+        this.validatedRepoInfo = null;
         
         this.initializeApp();
     }
@@ -89,6 +91,45 @@ class KGCompassApp {
         newTaskBtn.addEventListener('click', () => {
             this.resetInterface();
         });
+        
+        // 模式切换监听 - 使用 Bootstrap tab 事件
+        const predefinedTab = document.getElementById('predefined-tab');
+        const customTab = document.getElementById('custom-tab');
+        
+        // 监听 Bootstrap tab 显示事件
+        predefinedTab.addEventListener('shown.bs.tab', () => {
+            this.isCustomMode = false;
+            this.validatedRepoInfo = null;
+            console.log('切换到预定义模式');
+        });
+        
+        customTab.addEventListener('shown.bs.tab', () => {
+            this.isCustomMode = true;
+            console.log('切换到自定义模式');
+        });
+        
+        // 验证仓库按钮
+        const validateRepoBtn = document.getElementById('validateRepoBtn');
+        if (validateRepoBtn) {
+            validateRepoBtn.addEventListener('click', () => {
+                this.validateGitHubRepo();
+            });
+        }
+        
+        // GitHub URL 输入框失去焦点时自动验证
+        const githubUrl = document.getElementById('githubUrl');
+        if (githubUrl) {
+            let validateTimeout;
+            githubUrl.addEventListener('input', () => {
+                clearTimeout(validateTimeout);
+                validateTimeout = setTimeout(() => {
+                    const url = githubUrl.value.trim();
+                    if (url) {
+                        this.validateGitHubRepo();
+                    }
+                }, 1000); // 1秒后自动验证
+            });
+        }
     }
 
     /**
@@ -105,12 +146,14 @@ class KGCompassApp {
             const examples = window.exampleIssues[repoKey];
             if (examples && examples.length > 0) {
                 // 只显示第一个示例，避免界面过于拥挤
-                const exampleId = examples[0];
+                const issueNumber = examples[0];
                 const button = document.createElement('button');
                 button.type = 'button';
                 button.className = 'btn btn-outline-secondary btn-sm example-btn';
-                button.textContent = exampleId;
-                button.onclick = () => this.fillExample(repoKey, exampleId);
+                // 获取仓库的简短名称（取最后一部分）
+                const repoShortName = repoKey.split('__')[1] || repoKey;
+                button.textContent = `#${issueNumber} (${repoShortName})`;
+                button.onclick = () => this.fillExample(repoKey, issueNumber);
                 
                 exampleContainer.appendChild(button);
             }
@@ -123,6 +166,7 @@ class KGCompassApp {
     setupRepoSelector() {
         const repoSelect = document.getElementById('repoSelect');
         const repoDescription = document.getElementById('repoDescription');
+        const repoPrefix = document.getElementById('repoPrefix');
         
         repoSelect.addEventListener('change', (e) => {
             const selectedRepo = e.target.value;
@@ -133,10 +177,15 @@ class KGCompassApp {
                 const stars = option.dataset.stars;
                 repoDescription.textContent = `${description} (${stars} ⭐)`;
                 
+                // 更新前缀显示 - 只显示仓库简称
+                const repoShortName = selectedRepo.split('__')[1] || selectedRepo;
+                repoPrefix.textContent = `${repoShortName} Issue`;
+                
                 // 更新示例按钮
                 this.updateExampleButtons(selectedRepo);
             } else {
                 repoDescription.textContent = '';
+                repoPrefix.textContent = 'Issue 编号';
                 this.setupExampleButtons(); // 重置为所有示例
             }
         });
@@ -151,12 +200,12 @@ class KGCompassApp {
         
         const examples = window.exampleIssues[repoKey];
         if (examples && examples.length > 0) {
-            examples.forEach(exampleId => {
+            examples.forEach(issueNumber => {
                 const button = document.createElement('button');
                 button.type = 'button';
                 button.className = 'btn btn-outline-info btn-sm example-btn';
-                button.textContent = exampleId;
-                button.onclick = () => this.fillExample(repoKey, exampleId);
+                button.textContent = `#${issueNumber}`;
+                button.onclick = () => this.fillExample(repoKey, issueNumber);
                 
                 exampleContainer.appendChild(button);
             });
@@ -166,45 +215,202 @@ class KGCompassApp {
     /**
      * 填充示例数据
      */
-    fillExample(repoKey, instanceId) {
+    fillExample(repoKey, issueNumber) {
         document.getElementById('repoSelect').value = repoKey;
-        document.getElementById('instanceId').value = instanceId;
+        document.getElementById('issueNumber').value = issueNumber;
         
         // 触发仓库选择器的 change 事件
         const repoSelect = document.getElementById('repoSelect');
         const event = new Event('change');
         repoSelect.dispatchEvent(event);
         
-        this.showNotification(`已填充示例: ${instanceId}`, 'info');
+        this.showNotification(`已选择 Issue #${issueNumber}`, 'info');
+    }
+
+    /**
+     * 验证 GitHub 仓库
+     */
+    async validateGitHubRepo() {
+        const githubUrl = document.getElementById('githubUrl').value.trim();
+        const issueNumber = document.getElementById('customIssueNumber').value.trim();
+        
+        const repoStatusEl = document.getElementById('repoValidationStatus');
+        const issueStatusEl = document.getElementById('issueValidationStatus');
+        const customRepoInfo = document.getElementById('customRepoInfo');
+        
+        if (!githubUrl) {
+            repoStatusEl.innerHTML = '';
+            return;
+        }
+        
+        // 显示加载状态
+        repoStatusEl.innerHTML = '<span class="text-muted"><i class="fas fa-spinner fa-spin me-1"></i>验证中...</span>';
+        
+        try {
+            const response = await fetch('/api/validate_github_repo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    github_url: githubUrl,
+                    issue_number: issueNumber
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                // 仓库验证成功
+                this.validatedRepoInfo = result;
+                repoStatusEl.innerHTML = `
+                    <div class="alert alert-success py-2 mb-0">
+                        <i class="fas fa-check-circle me-1"></i>
+                        仓库验证成功: ${result.repo_name}
+                    </div>
+                `;
+                
+                // 显示仓库信息
+                if (result.repo_info) {
+                    const repoDetails = document.getElementById('customRepoDetails');
+                    repoDetails.innerHTML = `
+                        <p class="mb-1"><strong>仓库:</strong> ${result.repo_name}</p>
+                        <p class="mb-1"><strong>描述:</strong> ${result.repo_info.description || '无'}</p>
+                        <p class="mb-1"><strong>语言:</strong> ${result.repo_info.language || '未知'}</p>
+                        <p class="mb-0"><strong>Stars:</strong> ${result.repo_info.stars || 0} ⭐</p>
+                    `;
+                    customRepoInfo.classList.remove('d-none');
+                }
+                
+                // 验证 Issue
+                if (issueNumber && result.issue_valid) {
+                    issueStatusEl.innerHTML = `
+                        <div class="alert alert-success py-2 mb-0">
+                            <i class="fas fa-check-circle me-1"></i>
+                            Issue #${issueNumber} 验证成功: ${result.issue_info.title}
+                        </div>
+                    `;
+                } else if (issueNumber && result.issue_valid === false) {
+                    issueStatusEl.innerHTML = `
+                        <div class="alert alert-warning py-2 mb-0">
+                            <i class="fas fa-exclamation-triangle me-1"></i>
+                            ${result.issue_error || 'Issue 不存在'}
+                        </div>
+                    `;
+                } else {
+                    issueStatusEl.innerHTML = '';
+                }
+                
+            } else {
+                // 仓库验证失败
+                this.validatedRepoInfo = null;
+                repoStatusEl.innerHTML = `
+                    <div class="alert alert-danger py-2 mb-0">
+                        <i class="fas fa-times-circle me-1"></i>
+                        ${result.error}
+                        ${result.hint ? '<br><small>' + result.hint + '</small>' : ''}
+                    </div>
+                `;
+                customRepoInfo.classList.add('d-none');
+            }
+            
+        } catch (error) {
+            console.error('Error validating repository:', error);
+            repoStatusEl.innerHTML = `
+                <div class="alert alert-danger py-2 mb-0">
+                    <i class="fas fa-times-circle me-1"></i>
+                    验证失败，请检查网络连接
+                </div>
+            `;
+        }
     }
 
     /**
      * 启动修复任务
      */
     async startRepairTask() {
-        const repoKey = document.getElementById('repoSelect').value;
-        const instanceId = document.getElementById('instanceId').value.trim();
-        
-        if (!repoKey || !instanceId) {
-            this.showNotification('请选择仓库和填写实例ID', 'error');
-            return;
-        }
-        
         // 禁用提交按钮
         const submitBtn = document.getElementById('startRepairBtn');
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="loading-spinner me-2"></span>启动中...';
         
+        console.log('启动修复任务，当前模式:', this.isCustomMode ? '自定义' : '预定义');
+        
         try {
+            let requestData;
+            
+            if (this.isCustomMode) {
+                // 自定义仓库模式
+                const githubUrl = document.getElementById('githubUrl').value.trim();
+                const issueNumber = document.getElementById('customIssueNumber').value.trim();
+                
+                console.log('自定义模式 - URL:', githubUrl, 'Issue:', issueNumber);
+                
+                if (!githubUrl || !issueNumber) {
+                    this.showNotification('请填写 GitHub 仓库 URL 和 Issue 编号', 'error');
+                    this.resetSubmitButton();
+                    return;
+                }
+                
+                // 验证 issueNumber 是否为数字
+                if (!/^\d+$/.test(issueNumber)) {
+                    this.showNotification('Issue 编号必须是数字', 'error');
+                    this.resetSubmitButton();
+                    return;
+                }
+                
+                // 如果还没验证，先自动验证
+                if (!this.validatedRepoInfo) {
+                    this.showNotification('正在验证仓库...', 'info');
+                    await this.validateGitHubRepo();
+                    
+                    // 验证后再检查
+                    if (!this.validatedRepoInfo) {
+                        this.showNotification('仓库验证失败，请检查 URL 是否正确', 'error');
+                        this.resetSubmitButton();
+                        return;
+                    }
+                }
+                
+                requestData = {
+                    is_custom: true,
+                    github_url: githubUrl,
+                    issue_number: issueNumber
+                };
+                
+            } else {
+                // 预定义仓库模式
+                const repoKey = document.getElementById('repoSelect').value;
+                const issueNumber = document.getElementById('issueNumber').value.trim();
+                
+                console.log('预定义模式 - Repo:', repoKey, 'Issue:', issueNumber);
+                
+                if (!repoKey || !issueNumber) {
+                    this.showNotification('请选择仓库并填写 Issue 编号', 'error');
+                    this.resetSubmitButton();
+                    return;
+                }
+                
+                // 验证 issueNumber 是否为数字
+                if (!/^\d+$/.test(issueNumber)) {
+                    this.showNotification('Issue 编号必须是数字', 'error');
+                    this.resetSubmitButton();
+                    return;
+                }
+                
+                requestData = {
+                    is_custom: false,
+                    repo_key: repoKey,
+                    issue_number: issueNumber
+                };
+            }
+            
             const response = await fetch('/api/start_repair', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    repo_key: repoKey,
-                    instance_id: instanceId
-                })
+                body: JSON.stringify(requestData)
             });
             
             const result = await response.json();
@@ -212,10 +418,16 @@ class KGCompassApp {
             if (result.success) {
                 this.currentTaskId = result.task_id;
                 this.currentTask = {
-                    repo_key: repoKey,
-                    instance_id: instanceId,
-                    repo_name: window.repoInfo[repoKey].name
+                    instance_id: result.instance_id,
+                    repo_name: result.repo_name,
+                    is_custom: this.isCustomMode
                 };
+                
+                if (this.isCustomMode) {
+                    this.currentTask.issue_title = result.issue_title;
+                } else {
+                    this.currentTask.repo_key = requestData.repo_key;
+                }
                 
                 this.showTaskInterface();
                 this.showNotification(result.message, 'success');
@@ -281,6 +493,16 @@ class KGCompassApp {
     }
 
     /**
+     * 停止状态检查
+     */
+    stopStatusCheck() {
+        if (this.statusPollingInterval) {
+            clearInterval(this.statusPollingInterval);
+            this.statusPollingInterval = null;
+        }
+    }
+
+    /**
      * 检查任务状态
      */
     async checkTaskStatus() {
@@ -288,6 +510,15 @@ class KGCompassApp {
         
         try {
             const response = await fetch(`/api/task_status/${this.currentTaskId}`);
+            
+            // 如果任务不存在（404），停止查询
+            if (response.status === 404) {
+                console.log(`Task ${this.currentTaskId} not found, stopping status checks`);
+                this.currentTaskId = null;
+                this.stopStatusCheck();
+                return;
+            }
+            
             const result = await response.json();
             
             if (result.success) {
@@ -434,7 +665,7 @@ class KGCompassApp {
      * 下载补丁
      */
     downloadPatch() {
-        if (!this.currentTaskId) return;
+        if (!this.currentTaskId || !this.currentTask) return;
         
         const downloadUrl = `/api/download_patch/${this.currentTaskId}`;
         const link = document.createElement('a');
@@ -469,6 +700,7 @@ class KGCompassApp {
         this.currentTaskId = null;
         this.currentTask = null;
         this.logBuffer = [];
+        this.validatedRepoInfo = null;
         
         // 重置界面
         document.getElementById('taskStatus').classList.add('d-none');
@@ -478,6 +710,14 @@ class KGCompassApp {
         // 清空表单
         document.getElementById('repairForm').reset();
         document.getElementById('repoDescription').textContent = '';
+        
+        // 重置自定义仓库状态
+        const repoStatusEl = document.getElementById('repoValidationStatus');
+        const issueStatusEl = document.getElementById('issueValidationStatus');
+        const customRepoInfo = document.getElementById('customRepoInfo');
+        if (repoStatusEl) repoStatusEl.innerHTML = '';
+        if (issueStatusEl) issueStatusEl.innerHTML = '';
+        if (customRepoInfo) customRepoInfo.classList.add('d-none');
         
         // 重置提交按钮
         this.resetSubmitButton();

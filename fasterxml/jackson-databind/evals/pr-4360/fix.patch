@@ -1,0 +1,23 @@
+--- a/src/main/java/com/fasterxml/jackson/databind/util/EnumValues.java
++++ b/src/main/java/com/fasterxml/jackson/databind/util/EnumValues.java
+@@ -142,7 +142,19 @@
+      * @deprecated since 2.16; use {@link #constructFromToString(MapperConfig, AnnotatedClass)} instead
+      */
+     @Deprecated
+-    public static EnumValues constructFromToString(MapperConfig<?> config, Class<Enum<?>> enumClass)
++    public static EnumValues constructFromToString(MapperConfig<?> config, Class<Enum<?>> enumClass) {
++        Enum<?>[] values = _enumConstants(enumClass);
++        SerializableString[] textual = new SerializableString[values.length];
++        for (int i = 0; i < values.length; ++i) {
++            String str = values[i].toString();
++            // If toString() returns null, fall back to enum name
++            if (str == null) {
++                str = values[i].name();
++            }
++            textual[i] = config.compileString(str);
++        }
++        return new EnumValues(enumClass, textual);
++    }
+     {
+         Class<? extends Enum<?>> cls = ClassUtil.findEnumType(enumClass);
+         Enum<?>[] values = cls.getEnumConstants();

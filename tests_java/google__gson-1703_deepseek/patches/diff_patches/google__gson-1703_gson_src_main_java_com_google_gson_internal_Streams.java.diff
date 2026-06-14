@@ -1,0 +1,30 @@
+--- a/gson/src/main/java/com/google/gson/internal/Streams.java
++++ b/gson/src/main/java/com/google/gson/internal/Streams.java
+@@ -88,6 +88,27 @@
+       this.appendable = appendable;
+     }
+ 
++    private class CurrentWrite implements CharSequence {
++      char[] chars;
++      int length;
++
++      @Override public int length() {
++        return length;
++      }
++
++      @Override public char charAt(int i) {
++        return chars[i];
++      }
++
++      @Override public CharSequence subSequence(int start, int end) {
++        return new String(chars, start, end - start);
++      }
++
++      @Override public String toString() {
++        return new String(chars, 0, length);
++      }
++    }
++
+     @Override public void write(char[] chars, int offset, int length) throws IOException {
+       currentWrite.chars = chars;
+       appendable.append(currentWrite, offset, offset + length);

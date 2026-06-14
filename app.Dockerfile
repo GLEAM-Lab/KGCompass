@@ -18,5 +18,8 @@ RUN pip install -r requirements.txt
 # Copy the rest of the application's code into the container
 COPY . .
 
+# 配置 Git 允许所有目录（系统级别配置，适用于所有用户）
+RUN git config --system --add safe.directory '*'
+
 # Keep the container running to allow for exec commands
 CMD ["tail", "-f", "/dev/null"] 

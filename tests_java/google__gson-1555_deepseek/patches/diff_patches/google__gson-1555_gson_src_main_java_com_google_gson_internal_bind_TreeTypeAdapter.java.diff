@@ -1,0 +1,43 @@
+--- a/gson/src/main/java/com/google/gson/internal/bind/TreeTypeAdapter.java
++++ b/gson/src/main/java/com/google/gson/internal/bind/TreeTypeAdapter.java
+@@ -49,7 +49,7 @@
+   /** The delegate is lazily created because it may not be needed, and creating it may fail. */
+   private TypeAdapter<T> delegate;
+ 
+-  public TreeTypeAdapter(JsonSerializer<T> serializer, JsonDeserializer<T> deserializer,
++  public TreeTypeAdapter(JsonSerializer<T> serializer, JsonDeserializer<T> deserializer, boolean nullSafe,
+       Gson gson, TypeToken<T> typeToken, TypeAdapterFactory skipPast) {
+     this.serializer = serializer;
+     this.deserializer = deserializer;
+@@ -64,6 +64,9 @@
+     }
+     JsonElement value = Streams.parse(in);
+     if (value.isJsonNull()) {
++      if (!nullSafe) {
++        throw new JsonSyntaxException("null value not allowed");
++      }
+       return null;
+     }
+     return deserializer.deserialize(value, typeToken.getType(), context);
+@@ -75,7 +78,11 @@
+       return;
+     }
+     if (value == null) {
+-      out.nullValue();
++      if (nullSafe) {
++        out.nullValue();
++      } else {
++        throw new JsonSyntaxException("null value not allowed");
++      }
+       return;
+     }
+     JsonElement tree = serializer.serialize(value, typeToken.getType(), context);
+@@ -145,7 +152,7 @@
+           : hierarchyType.isAssignableFrom(type.getRawType());
+       return matches
+           ? new TreeTypeAdapter<T>((JsonSerializer<T>) serializer,
+-              (JsonDeserializer<T>) deserializer, gson, type, this)
++              (JsonDeserializer<T>) deserializer, false, gson, type, this)
+           : null;
+     }
+   }

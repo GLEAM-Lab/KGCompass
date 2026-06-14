@@ -1,0 +1,1602 @@
+{
+    "related_entities": {
+        "methods": [
+            {
+                "start_line": 522,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JsonWriter value(Number value) throws IOException {\n    if (value == null) {\n      return nullValue();\n    }\n\n    writeDeferredName();\n    String string = value.toString();\n    if (!lenient\n        && (string.equals(\"-Infinity\") || string.equals(\"Infinity\") || string.equals(\"NaN\"))) {\n      throw new IllegalArgumentException(\"Numeric values must be finite, but was \" + value);\n    }\n    beforeValue();\n    out.append(string);\n    return this;\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "value",
+                "documentation": "/**\n   * Encodes {@code value}.\n   *\n   * @param value a finite value. May not be {@link Double#isNaN() NaNs} or\n   *     {@link Double#isInfinite() infinities}.\n   * @return this writer.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "value"
+                    }
+                ],
+                "similarity": 0.21690323713889295,
+                "end_line": 536,
+                "signature": "com.google.gson.stream.JsonWriter.value(Number value): JsonWriter"
+            },
+            {
+                "start_line": 493,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JsonWriter value(double value) throws IOException {\n    if (Double.isNaN(value) || Double.isInfinite(value)) {\n      throw new IllegalArgumentException(\"Numeric values must be finite, but was \" + value);\n    }\n    writeDeferredName();\n    beforeValue();\n    out.append(Double.toString(value));\n    return this;\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "value",
+                "documentation": "/**\n   * Encodes {@code value}.\n   *\n   * @param value a finite value. May not be {@link Double#isNaN() NaNs} or\n   *     {@link Double#isInfinite() infinities}.\n   * @return this writer.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "value"
+                    }
+                ],
+                "similarity": 0.18837015751126207,
+                "end_line": 501,
+                "signature": "com.google.gson.stream.JsonWriter.value(double value): JsonWriter"
+            },
+            {
+                "start_line": 198,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/MapTypeAdapterFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    @Override public void write(JsonWriter out, Map<K, V> map) throws IOException {\n      if (map == null) {\n        out.nullValue();\n        return;\n      }\n\n      if (!complexMapKeySerialization) {\n        out.beginObject();\n        for (Map.Entry<K, V> entry : map.entrySet()) {\n          out.name(String.valueOf(entry.getKey()));\n          valueTypeAdapter.write(out, entry.getValue());\n        }\n        out.endObject();\n        return;\n      }\n\n      boolean hasComplexKeys = false;\n      List<JsonElement> keys = new ArrayList<JsonElement>(map.size());\n\n      List<V> values = new ArrayList<V>(map.size());\n      for (Map.Entry<K, V> entry : map.entrySet()) {\n        JsonElement keyElement = keyTypeAdapter.toJsonTree(entry.getKey());\n        keys.add(keyElement);\n        values.add(entry.getValue());\n        hasComplexKeys |= keyElement.isJsonArray() || keyElement.isJsonObject();\n      }\n\n      if (hasComplexKeys) {\n        out.beginArray();\n        for (int i = 0, size = keys.size(); i < size; i++) {\n          out.beginArray(); // entry array\n          Streams.write(keys.get(i), out);\n          valueTypeAdapter.write(out, values.get(i));\n          out.endArray();\n        }\n        out.endArray();\n      } else {\n        out.beginObject();\n        for (int i = 0, size = keys.size(); i < size; i++) {\n          JsonElement keyElement = keys.get(i);\n          out.name(keyToString(keyElement));\n          valueTypeAdapter.write(out, values.get(i));\n        }\n        out.endObject();\n      }\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "write",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    }
+                ],
+                "similarity": 0.14354599335168342,
+                "end_line": 243,
+                "signature": "com.google.gson.internal.bind.MapTypeAdapterFactory.Adapter.write(JsonWriter out, Map map): void"
+            },
+            {
+                "start_line": 72,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TreeTypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  @Override public void write(JsonWriter out, T value) throws IOException {\n    if (serializer == null) {\n      delegate().write(out, value);\n      return;\n    }\n    if (value == null) {\n      out.nullValue();\n      return;\n    }\n    JsonElement tree = serializer.serialize(value, typeToken.getType(), context);\n    Streams.write(tree, out);\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "write",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    }
+                ],
+                "similarity": 0.14189528598518714,
+                "end_line": 83,
+                "signature": "com.google.gson.internal.bind.TreeTypeAdapter.write(JsonWriter out, T value): void"
+            },
+            {
+                "start_line": 564,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private void string(String value) throws IOException {\n    String[] replacements = htmlSafe ? HTML_SAFE_REPLACEMENT_CHARS : REPLACEMENT_CHARS;\n    out.write(\"\\\"\");\n    int last = 0;\n    int length = value.length();\n    for (int i = 0; i < length; i++) {\n      char c = value.charAt(i);\n      String replacement;\n      if (c < 128) {\n        replacement = replacements[c];\n        if (replacement == null) {\n          continue;\n        }\n      } else if (c == '\\u2028') {\n        replacement = \"\\\\u2028\";\n      } else if (c == '\\u2029') {\n        replacement = \"\\\\u2029\";\n      } else {\n        continue;\n      }\n      if (last < i) {\n        out.write(value, last, i - last);\n      }\n      out.write(replacement);\n      last = i + 1;\n    }\n    if (last < length) {\n      out.write(value, last, length - last);\n    }\n    out.write(\"\\\"\");\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "string",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonWriter"
+                    },
+                    {
+                        "start_node": "JsonWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "string"
+                    }
+                ],
+                "similarity": 0.12280178962612096,
+                "end_line": 594,
+                "signature": "com.google.gson.stream.JsonWriter.string(String value): void"
+            },
+            {
+                "start_line": 628,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private void beforeValue() throws IOException {\n    switch (peek()) {\n    case NONEMPTY_DOCUMENT:\n      if (!lenient) {\n        throw new IllegalStateException(\n            \"JSON must have only one top-level value.\");\n      }\n      // fall-through\n    case EMPTY_DOCUMENT: // first in document\n      replaceTop(NONEMPTY_DOCUMENT);\n      break;\n\n    case EMPTY_ARRAY: // first in array\n      replaceTop(NONEMPTY_ARRAY);\n      newline();\n      break;\n\n    case NONEMPTY_ARRAY: // another in array\n      out.append(',');\n      newline();\n      break;\n\n    case DANGLING_NAME: // value for name\n      out.append(separator);\n      replaceTop(NONEMPTY_OBJECT);\n      break;\n\n    default:\n      throw new IllegalStateException(\"Nesting problem.\");\n    }\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "beforeValue",
+                "documentation": "/**\n   * Inserts any necessary separators and whitespace before a literal value,\n   * inline array, or inline object. Also adjusts the stack to expect either a\n   * closing bracket or another element.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonWriter"
+                    },
+                    {
+                        "start_node": "JsonWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "beforeValue"
+                    }
+                ],
+                "similarity": 0.12197419394279899,
+                "end_line": 658,
+                "signature": "com.google.gson.stream.JsonWriter.beforeValue(): void"
+            },
+            {
+                "start_line": 86,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/DefaultDateTypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void write(JsonWriter out, Date value) throws IOException {\n    synchronized (localFormat) {\n      String dateFormatAsString = enUsFormat.format(value);\n      out.value(dateFormatAsString);\n    }\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "write",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    }
+                ],
+                "similarity": 0.12097516571564293,
+                "end_line": 91,
+                "signature": "com.google.gson.DefaultDateTypeAdapter.write(JsonWriter out, Date value): void"
+            },
+            {
+                "start_line": 476,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JsonWriter value(Boolean value) throws IOException {\n    if (value == null) {\n      return nullValue();\n    }\n    writeDeferredName();\n    beforeValue();\n    out.write(value ? \"true\" : \"false\");\n    return this;\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "value",
+                "documentation": "/**\n   * Encodes {@code value}.\n   *\n   * @return this writer.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "value"
+                    }
+                ],
+                "similarity": 0.11908234966752565,
+                "end_line": 484,
+                "signature": "com.google.gson.stream.JsonWriter.value(Boolean value): JsonWriter"
+            },
+            {
+                "start_line": 508,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JsonWriter value(long value) throws IOException {\n    writeDeferredName();\n    beforeValue();\n    out.write(Long.toString(value));\n    return this;\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "value",
+                "documentation": "/**\n   * Encodes {@code value}.\n   *\n   * @return this writer.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "value"
+                    }
+                ],
+                "similarity": 0.11766069762491496,
+                "end_line": 513,
+                "signature": "com.google.gson.stream.JsonWriter.value(long value): JsonWriter"
+            },
+            {
+                "start_line": 445,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JsonWriter nullValue() throws IOException {\n    if (deferredName != null) {\n      if (serializeNulls) {\n        writeDeferredName();\n      } else {\n        deferredName = null;\n        return this; // skip the name and the value\n      }\n    }\n    beforeValue();\n    out.write(\"null\");\n    return this;\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "nullValue",
+                "documentation": "/**\n   * Encodes {@code null}.\n   *\n   * @return this writer.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonWriter"
+                    },
+                    {
+                        "start_node": "JsonWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "nullValue"
+                    }
+                ],
+                "similarity": 0.11650841588160223,
+                "end_line": 457,
+                "signature": "com.google.gson.stream.JsonWriter.nullValue(): JsonWriter"
+            },
+            {
+                "start_line": 63,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TimeTypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  @Override public synchronized void write(JsonWriter out, Time value) throws IOException {\n    out.value(value == null ? null : format.format(value));\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "write",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    }
+                ],
+                "similarity": 0.11318582723969306,
+                "end_line": 65,
+                "signature": "com.google.gson.internal.bind.TimeTypeAdapter.write(JsonWriter out, Time value): void"
+            },
+            {
+                "start_line": 64,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/SqlDateTypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public synchronized void write(JsonWriter out, java.sql.Date value) throws IOException {\n    out.value(value == null ? null : format.format(value));\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "write",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    }
+                ],
+                "similarity": 0.11205814349127562,
+                "end_line": 66,
+                "signature": "com.google.gson.internal.bind.SqlDateTypeAdapter.write(JsonWriter out, java value): void"
+            },
+            {
+                "start_line": 464,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JsonWriter value(boolean value) throws IOException {\n    writeDeferredName();\n    beforeValue();\n    out.write(value ? \"true\" : \"false\");\n    return this;\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "value",
+                "documentation": "/**\n   * Encodes {@code value}.\n   *\n   * @return this writer.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "value"
+                    }
+                ],
+                "similarity": 0.1099483115429648,
+                "end_line": 469,
+                "signature": "com.google.gson.stream.JsonWriter.value(boolean value): JsonWriter"
+            },
+            {
+                "start_line": 183,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/JsonTreeWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  @Override public JsonWriter value(Number value) throws IOException {\n    if (value == null) {\n      return nullValue();\n    }\n\n    if (!isLenient()) {\n      double d = value.doubleValue();\n      if (Double.isNaN(d) || Double.isInfinite(d)) {\n        throw new IllegalArgumentException(\"JSON forbids NaN and infinities: \" + value);\n      }\n    }\n\n    put(new JsonPrimitive(value));\n    return this;\n  }",
+                "distance": 2.25,
+                "title": null,
+                "name": "value",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonWriter"
+                    },
+                    {
+                        "start_node": "JsonWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "nullValue"
+                    },
+                    {
+                        "start_node": "nullValue",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "value"
+                    }
+                ],
+                "similarity": 0.10917055355046136,
+                "end_line": 197,
+                "signature": "com.google.gson.internal.bind.JsonTreeWriter.value(Number value): JsonWriter"
+            },
+            {
+                "start_line": 385,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JsonWriter name(String name) throws IOException {\n    if (name == null) {\n      throw new NullPointerException(\"name == null\");\n    }\n    if (deferredName != null) {\n      throw new IllegalStateException();\n    }\n    if (stackSize == 0) {\n      throw new IllegalStateException(\"JsonWriter is closed.\");\n    }\n    deferredName = name;\n    return this;\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "name",
+                "documentation": "/**\n   * Encodes the property name.\n   *\n   * @param name the name of the forthcoming value. May not be null.\n   * @return this writer.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonWriter"
+                    },
+                    {
+                        "start_node": "JsonWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "name"
+                    }
+                ],
+                "similarity": 0.10725758749475378,
+                "end_line": 397,
+                "signature": "com.google.gson.stream.JsonWriter.name(String name): JsonWriter"
+            },
+            {
+                "start_line": 413,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JsonWriter value(String value) throws IOException {\n    if (value == null) {\n      return nullValue();\n    }\n    writeDeferredName();\n    beforeValue();\n    string(value);\n    return this;\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "value",
+                "documentation": "/**\n   * Encodes {@code value}.\n   *\n   * @param value the literal string value, or null to encode a null literal.\n   * @return this writer.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "value"
+                    }
+                ],
+                "similarity": 0.10606438550618057,
+                "end_line": 421,
+                "signature": "com.google.gson.stream.JsonWriter.value(String value): JsonWriter"
+            },
+            {
+                "start_line": 206,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/JsonTreeReader.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  @Override public double nextDouble() throws IOException {\n    JsonToken token = peek();\n    if (token != JsonToken.NUMBER && token != JsonToken.STRING) {\n      throw new IllegalStateException(\n          \"Expected \" + JsonToken.NUMBER + \" but was \" + token + locationString());\n    }\n    double result = ((JsonPrimitive) peekStack()).getAsDouble();\n    if (!isLenient() && (Double.isNaN(result) || Double.isInfinite(result))) {\n      throw new NumberFormatException(\"JSON forbids NaN and infinities: \" + result);\n    }\n    popStack();\n    if (stackSize > 0) {\n      pathIndices[stackSize - 1]++;\n    }\n    return result;\n  }",
+                "distance": 2.25,
+                "title": null,
+                "name": "nextDouble",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonWriter"
+                    },
+                    {
+                        "start_node": "JsonWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "isLenient"
+                    },
+                    {
+                        "start_node": "isLenient",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "nextDouble"
+                    }
+                ],
+                "similarity": 0.10602384893044224,
+                "end_line": 221,
+                "signature": "com.google.gson.internal.bind.JsonTreeReader.nextDouble(): double"
+            },
+            {
+                "start_line": 37,
+                "file_path": "playground/google__gson/extras/src/main/java/com/google/gson/typeadapters/UtcDateTypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void write(JsonWriter out, Date date) throws IOException {\n    if (date == null) {\n      out.nullValue();\n    } else {\n      String value = format(date, true, UTC_TIME_ZONE);\n      out.value(value);\n    }\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "write",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    }
+                ],
+                "similarity": 0.1052209605356364,
+                "end_line": 44,
+                "signature": "com.google.gson.typeadapters.UtcDateTypeAdapter.write(JsonWriter out, Date date): void"
+            },
+            {
+                "start_line": 170,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/JsonTreeWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  @Override public JsonWriter value(double value) throws IOException {\n    if (!isLenient() && (Double.isNaN(value) || Double.isInfinite(value))) {\n      throw new IllegalArgumentException(\"JSON forbids NaN and infinities: \" + value);\n    }\n    put(new JsonPrimitive(value));\n    return this;\n  }",
+                "distance": 2.25,
+                "title": null,
+                "name": "value",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonWriter"
+                    },
+                    {
+                        "start_node": "JsonWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "isLenient"
+                    },
+                    {
+                        "start_node": "isLenient",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "value"
+                    }
+                ],
+                "similarity": 0.10299185423617666,
+                "end_line": 176,
+                "signature": "com.google.gson.internal.bind.JsonTreeWriter.value(double value): JsonWriter"
+            },
+            {
+                "start_line": 185,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/TypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public final TypeAdapter<T> nullSafe() {\n    return new TypeAdapter<T>() {\n      @Override public void write(JsonWriter out, T value) throws IOException {\n        if (value == null) {\n          out.nullValue();\n        } else {\n          TypeAdapter.this.write(out, value);\n        }\n      }\n      @Override public T read(JsonReader reader) throws IOException {\n        if (reader.peek() == JsonToken.NULL) {\n          reader.nextNull();\n          return null;\n        }\n        return TypeAdapter.this.read(reader);\n      }\n    };\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "nullSafe",
+                "documentation": "/**\n   * This wrapper method is used to make a type adapter null tolerant. In general, a\n   * type adapter is required to handle nulls in write and read methods. Here is how this\n   * is typically done:<br>\n   * <pre>   {@code\n   *\n   * Gson gson = new GsonBuilder().registerTypeAdapter(Foo.class,\n   *   new TypeAdapter<Foo>() {\n   *     public Foo read(JsonReader in) throws IOException {\n   *       if (in.peek() == JsonToken.NULL) {\n   *         in.nextNull();\n   *         return null;\n   *       }\n   *       // read a Foo from in and return it\n   *     }\n   *     public void write(JsonWriter out, Foo src) throws IOException {\n   *       if (src == null) {\n   *         out.nullValue();\n   *         return;\n   *       }\n   *       // write src as JSON to out\n   *     }\n   *   }).create();\n   * }</pre>\n   * You can avoid this boilerplate handling of nulls by wrapping your type adapter with\n   * this method. Here is how we will rewrite the above example:\n   * <pre>   {@code\n   *\n   * Gson gson = new GsonBuilder().registerTypeAdapter(Foo.class,\n   *   new TypeAdapter<Foo>() {\n   *     public Foo read(JsonReader in) throws IOException {\n   *       // read a Foo from in and return it\n   *     }\n   *     public void write(JsonWriter out, Foo src) throws IOException {\n   *       // write src as JSON to out\n   *     }\n   *   }.nullSafe()).create();\n   * }</pre>\n   * Note that we didn't need to check for nulls in our type adapter after we used nullSafe.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    },
+                    {
+                        "start_node": "write",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TypeAdapter"
+                    },
+                    {
+                        "start_node": "TypeAdapter",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    }
+                ],
+                "similarity": 0.10073079270430207,
+                "end_line": 202,
+                "signature": "com.google.gson.TypeAdapter.nullSafe(): TypeAdapter"
+            },
+            {
+                "start_line": 802,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TypeAdapters.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    @Override public void write(JsonWriter out, T value) throws IOException {\n      out.value(value == null ? null : constantToName.get(value));\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "write",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    }
+                ],
+                "similarity": 0.10040499902982031,
+                "end_line": 804,
+                "signature": "com.google.gson.internal.bind.TypeAdapters.EnumTypeAdapter.write(JsonWriter out, T value): void"
+            },
+            {
+                "start_line": 94,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/DefaultDateTypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public Date read(JsonReader in) throws IOException {\n    if (in.peek() != JsonToken.STRING) {\n      throw new JsonParseException(\"The date should be a string value\");\n    }\n    Date date = deserializeToDate(in.nextString());\n    if (dateType == Date.class) {\n      return date;\n    } else if (dateType == Timestamp.class) {\n      return new Timestamp(date.getTime());\n    } else if (dateType == java.sql.Date.class) {\n      return new java.sql.Date(date.getTime());\n    } else {\n      // This must never happen: dateType is guarded in the primary constructor\n      throw new AssertionError();\n    }\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "read",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    },
+                    {
+                        "start_node": "write",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DefaultDateTypeAdapter"
+                    },
+                    {
+                        "start_node": "DefaultDateTypeAdapter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "read"
+                    }
+                ],
+                "similarity": 0.10021682319338311,
+                "end_line": 109,
+                "signature": "com.google.gson.DefaultDateTypeAdapter.read(JsonReader in): Date"
+            },
+            {
+                "start_line": 160,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/MapTypeAdapterFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    @Override public Map<K, V> read(JsonReader in) throws IOException {\n      JsonToken peek = in.peek();\n      if (peek == JsonToken.NULL) {\n        in.nextNull();\n        return null;\n      }\n\n      Map<K, V> map = constructor.construct();\n\n      if (peek == JsonToken.BEGIN_ARRAY) {\n        in.beginArray();\n        while (in.hasNext()) {\n          in.beginArray(); // entry array\n          K key = keyTypeAdapter.read(in);\n          V value = valueTypeAdapter.read(in);\n          V replaced = map.put(key, value);\n          if (replaced != null) {\n            throw new JsonSyntaxException(\"duplicate key: \" + key);\n          }\n          in.endArray();\n        }\n        in.endArray();\n      } else {\n        in.beginObject();\n        while (in.hasNext()) {\n          JsonReaderInternalAccess.INSTANCE.promoteNameToValue(in);\n          K key = keyTypeAdapter.read(in);\n          V value = valueTypeAdapter.read(in);\n          V replaced = map.put(key, value);\n          if (replaced != null) {\n            throw new JsonSyntaxException(\"duplicate key: \" + key);\n          }\n        }\n        in.endObject();\n      }\n      return map;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "read",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    },
+                    {
+                        "start_node": "write",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Adapter"
+                    },
+                    {
+                        "start_node": "Adapter",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "read"
+                    }
+                ],
+                "similarity": 0.09949529453946943,
+                "end_line": 196,
+                "signature": "com.google.gson.internal.bind.MapTypeAdapterFactory.Adapter.read(JsonReader in): Map"
+            },
+            {
+                "start_line": 293,
+                "file_path": "playground/google__gson/extras/src/main/java/com/google/gson/graph/GraphAdapterBuilder.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    void write(JsonWriter out) throws IOException {\n      typeAdapter.write(out, value);\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "write",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    }
+                ],
+                "similarity": 0.09876260871140441,
+                "end_line": 295,
+                "signature": "com.google.gson.graph.GraphAdapterBuilder.Element.write(JsonWriter out): void"
+            },
+            {
+                "start_line": 430,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JsonWriter jsonValue(String value) throws IOException {\n    if (value == null) {\n      return nullValue();\n    }\n    writeDeferredName();\n    beforeValue();\n    out.append(value);\n    return this;\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "jsonValue",
+                "documentation": "/**\n   * Writes {@code value} directly to the writer without quoting or\n   * escaping.\n   *\n   * @param value the literal string value, or null to encode a null literal.\n   * @return this writer.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonWriter"
+                    },
+                    {
+                        "start_node": "JsonWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "jsonValue"
+                    }
+                ],
+                "similarity": 0.09736514015268956,
+                "end_line": 438,
+                "signature": "com.google.gson.stream.JsonWriter.jsonValue(String value): JsonWriter"
+            },
+            {
+                "start_line": 305,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/JsonPrimitive.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public boolean equals(Object obj) {\n    if (this == obj) {\n      return true;\n    }\n    if (obj == null || getClass() != obj.getClass()) {\n      return false;\n    }\n    JsonPrimitive other = (JsonPrimitive)obj;\n    if (value == null) {\n      return other.value == null;\n    }\n    if (isIntegral(this) && isIntegral(other)) {\n      return getAsNumber().longValue() == other.getAsNumber().longValue();\n    }\n    if (value instanceof Number && other.value instanceof Number) {\n      double a = getAsNumber().doubleValue();\n      // Java standard types other than double return true for two NaN. So, need\n      // special handling for double.\n      double b = other.getAsNumber().doubleValue();\n      return a == b || (Double.isNaN(a) && Double.isNaN(b));\n    }\n    return value.equals(other.value);\n  }",
+                "distance": 2.0,
+                "title": null,
+                "name": "equals",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "equals"
+                    },
+                    {
+                        "start_node": "equals",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "equals"
+                    }
+                ],
+                "similarity": 0.09641777495551197,
+                "end_line": 327,
+                "signature": "com.google.gson.JsonPrimitive.equals(Object obj): boolean"
+            },
+            {
+                "start_line": 234,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public final void setLenient(boolean lenient) {\n    this.lenient = lenient;\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "setLenient",
+                "documentation": "/**\n   * Configure this writer to relax its syntax rules. By default, this writer\n   * only emits well-formed JSON as specified by <a\n   * href=\"http://www.ietf.org/rfc/rfc7159.txt\">RFC 7159</a>. Setting the writer\n   * to lenient permits the following:\n   * <ul>\n   *   <li>Top-level values of any type. With strict writing, the top-level\n   *       value must be an object or an array.\n   *   <li>Numbers may be {@link Double#isNaN() NaNs} or {@link\n   *       Double#isInfinite() infinities}.\n   * </ul>\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonWriter"
+                    },
+                    {
+                        "start_node": "JsonWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "setLenient"
+                    }
+                ],
+                "similarity": 0.09501293248546724,
+                "end_line": 236,
+                "signature": "com.google.gson.stream.JsonWriter.setLenient(boolean lenient): void"
+            },
+            {
+                "start_line": 274,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private TypeAdapter<Number> doubleAdapter(boolean serializeSpecialFloatingPointValues) {\n    if (serializeSpecialFloatingPointValues) {\n      return TypeAdapters.DOUBLE;\n    }\n    return new TypeAdapter<Number>() {\n      @Override public Double read(JsonReader in) throws IOException {\n        if (in.peek() == JsonToken.NULL) {\n          in.nextNull();\n          return null;\n        }\n        return in.nextDouble();\n      }\n      @Override public void write(JsonWriter out, Number value) throws IOException {\n        if (value == null) {\n          out.nullValue();\n          return;\n        }\n        double doubleValue = value.doubleValue();\n        checkValidFloatingPoint(doubleValue);\n        out.value(value);\n      }\n    };\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "doubleAdapter",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonWriter"
+                    },
+                    {
+                        "start_node": "JsonWriter",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "newJsonWriter"
+                    },
+                    {
+                        "start_node": "newJsonWriter",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Gson"
+                    },
+                    {
+                        "start_node": "Gson",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "doubleAdapter"
+                    }
+                ],
+                "similarity": 0.0946646176682307,
+                "end_line": 296,
+                "signature": "com.google.gson.Gson.doubleAdapter(boolean serializeSpecialFloatingPointValues): TypeAdapter"
+            },
+            {
+                "start_line": 68,
+                "file_path": "playground/google__gson/metrics/src/main/java/com/google/gson/metrics/BagOfPrimitives.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public boolean equals(Object obj) {\n    if (this == obj)\n      return true;\n    if (obj == null)\n      return false;\n    if (getClass() != obj.getClass())\n      return false;\n    BagOfPrimitives other = (BagOfPrimitives) obj;\n    if (booleanValue != other.booleanValue)\n      return false;\n    if (intValue != other.intValue)\n      return false;\n    if (longValue != other.longValue)\n      return false;\n    if (stringValue == null) {\n      if (other.stringValue != null)\n        return false;\n    } else if (!stringValue.equals(other.stringValue))\n      return false;\n    return true;\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "equals",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "equals"
+                    }
+                ],
+                "similarity": 0.09422369927285333,
+                "end_line": 88,
+                "signature": "com.google.gson.metrics.BagOfPrimitives.equals(Object obj): boolean"
+            },
+            {
+                "start_line": 232,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/ReflectiveTypeAdapterFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    @Override public void write(JsonWriter out, T value) throws IOException {\n      if (value == null) {\n        out.nullValue();\n        return;\n      }\n\n      out.beginObject();\n      try {\n        for (BoundField boundField : boundFields.values()) {\n          if (boundField.writeField(value)) {\n            out.name(boundField.name);\n            boundField.write(out, value);\n          }\n        }\n      } catch (IllegalAccessException e) {\n        throw new AssertionError(e);\n      }\n      out.endObject();\n    }",
+                "distance": 2.0,
+                "title": null,
+                "name": "write",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    },
+                    {
+                        "start_node": "write",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    }
+                ],
+                "similarity": 0.09401797518870189,
+                "end_line": 250,
+                "signature": "com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.Adapter.write(JsonWriter out, T value): void"
+            },
+            {
+                "start_line": 47,
+                "file_path": "playground/google__gson/extras/src/main/java/com/google/gson/typeadapters/UtcDateTypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public Date read(JsonReader in) throws IOException {\n    try {\n      switch (in.peek()) {\n      case NULL:\n        in.nextNull();\n        return null;\n      default:\n        String date = in.nextString();\n        // Instead of using iso8601Format.parse(value), we use Jackson's date parsing\n        // This is because Android doesn't support XXX because it is JDK 1.6\n        return parse(date, new ParsePosition(0));\n      }\n    } catch (ParseException e) {\n      throw new JsonParseException(e);\n    }\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "read",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    },
+                    {
+                        "start_node": "write",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "UtcDateTypeAdapter"
+                    },
+                    {
+                        "start_node": "UtcDateTypeAdapter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "read"
+                    }
+                ],
+                "similarity": 0.09175506672829753,
+                "end_line": 62,
+                "signature": "com.google.gson.typeadapters.UtcDateTypeAdapter.read(JsonReader in): Date"
+            },
+            {
+                "start_line": 214,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/TypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public final String toJson(T value) {\n    StringWriter stringWriter = new StringWriter();\n    try {\n      toJson(stringWriter, value);\n    } catch (IOException e) {\n      throw new AssertionError(e); // No I/O writing to a StringWriter.\n    }\n    return stringWriter.toString();\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "toJson",
+                "documentation": "/**\n   * Converts {@code value} to a JSON document. Unlike Gson's similar {@link\n   * Gson#toJson(Object) toJson} method, this write is strict. Create a {@link\n   * JsonWriter#setLenient(boolean) lenient} {@code JsonWriter} and call\n   * {@link #write(com.google.gson.stream.JsonWriter, Object)} for lenient\n   * writing.\n   *\n   * @param value the Java object to convert. May be null.\n   * @since 2.2\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    },
+                    {
+                        "start_node": "write",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TypeAdapter"
+                    },
+                    {
+                        "start_node": "TypeAdapter",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "toJson"
+                    }
+                ],
+                "similarity": 0.09155566745510857,
+                "end_line": 222,
+                "signature": "com.google.gson.TypeAdapter.toJson(T value): String"
+            },
+            {
+                "start_line": 127,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/TypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public abstract void write(JsonWriter out, T value) throws IOException;",
+                "distance": 1.0,
+                "title": null,
+                "name": "write",
+                "documentation": "/**\n   * Writes one JSON value (an array, object, string, number, boolean or null)\n   * for {@code value}.\n   *\n   * @param value the Java object to write. May be null.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    }
+                ],
+                "similarity": 0.09048528138032091,
+                "end_line": 127,
+                "signature": "com.google.gson.TypeAdapter.write(JsonWriter out, T value): void"
+            },
+            {
+                "start_line": 306,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JsonWriter beginObject() throws IOException {\n    writeDeferredName();\n    return open(EMPTY_OBJECT, \"{\");\n  }\n\n  /**\n   * Ends encoding the current object.\n   *\n   * @return this writer.\n   */\n  public JsonWriter endObject() throws IOException {\n    return close(EMPTY_OBJECT, NONEMPTY_OBJECT, \"}\");\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "beginObject",
+                "documentation": "/**\n   * Begins encoding a new object. Each call to this method must be paired\n   * with a call to {@link #endObject}.\n   *\n   * @return this writer.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonWriter"
+                    },
+                    {
+                        "start_node": "JsonWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "beginObject"
+                    }
+                ],
+                "similarity": 0.09032093452525304,
+                "end_line": 318,
+                "signature": "com.google.gson.stream.JsonWriter.beginObject(): JsonWriter"
+            },
+            {
+                "start_line": 257,
+                "file_path": "playground/google__gson/extras/src/main/java/com/google/gson/typeadapters/UtcDateTypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private static int parseInt(String value, int beginIndex, int endIndex) throws NumberFormatException {\n    if (beginIndex < 0 || endIndex > value.length() || beginIndex > endIndex) {\n      throw new NumberFormatException(value);\n    }\n    // use same logic as in Integer.parseInt() but less generic we're not supporting negative values\n    int i = beginIndex;\n    int result = 0;\n    int digit;\n    if (i < endIndex) {\n      digit = Character.digit(value.charAt(i++), 10);\n      if (digit < 0) {\n        throw new NumberFormatException(\"Invalid number: \" + value);\n      }\n      result = -digit;\n    }\n    while (i < endIndex) {\n      digit = Character.digit(value.charAt(i++), 10);\n      if (digit < 0) {\n        throw new NumberFormatException(\"Invalid number: \" + value);\n      }\n      result *= 10;\n      result -= digit;\n    }\n    return -result;\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "parseInt",
+                "documentation": "/**\n   * Parse an integer located between 2 given offsets in a string\n   *\n   * @param value the string to parse\n   * @param beginIndex the start index for the integer in the string\n   * @param endIndex the end index for the integer in the string\n   * @return the int\n   * @throws NumberFormatException if the value is not a number\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    },
+                    {
+                        "start_node": "write",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "UtcDateTypeAdapter"
+                    },
+                    {
+                        "start_node": "UtcDateTypeAdapter",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "parseInt"
+                    }
+                ],
+                "similarity": 0.0894741048563334,
+                "end_line": 281,
+                "signature": "com.google.gson.typeadapters.UtcDateTypeAdapter.parseInt(String value, int beginIndex, int endIndex): int"
+            },
+            {
+                "start_line": 298,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private TypeAdapter<Number> floatAdapter(boolean serializeSpecialFloatingPointValues) {\n    if (serializeSpecialFloatingPointValues) {\n      return TypeAdapters.FLOAT;\n    }\n    return new TypeAdapter<Number>() {\n      @Override public Float read(JsonReader in) throws IOException {\n        if (in.peek() == JsonToken.NULL) {\n          in.nextNull();\n          return null;\n        }\n        return (float) in.nextDouble();\n      }\n      @Override public void write(JsonWriter out, Number value) throws IOException {\n        if (value == null) {\n          out.nullValue();\n          return;\n        }\n        float floatValue = value.floatValue();\n        checkValidFloatingPoint(floatValue);\n        out.value(value);\n      }\n    };\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "floatAdapter",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonWriter"
+                    },
+                    {
+                        "start_node": "JsonWriter",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "newJsonWriter"
+                    },
+                    {
+                        "start_node": "newJsonWriter",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Gson"
+                    },
+                    {
+                        "start_node": "Gson",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "floatAdapter"
+                    }
+                ],
+                "similarity": 0.08665992668120097,
+                "end_line": 320,
+                "signature": "com.google.gson.Gson.floatAdapter(boolean serializeSpecialFloatingPointValues): TypeAdapter"
+            },
+            {
+                "start_line": 245,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/MapTypeAdapterFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private String keyToString(JsonElement keyElement) {\n      if (keyElement.isJsonPrimitive()) {\n        JsonPrimitive primitive = keyElement.getAsJsonPrimitive();\n        if (primitive.isNumber()) {\n          return String.valueOf(primitive.getAsNumber());\n        } else if (primitive.isBoolean()) {\n          return Boolean.toString(primitive.getAsBoolean());\n        } else if (primitive.isString()) {\n          return primitive.getAsString();\n        } else {\n          throw new AssertionError();\n        }\n      } else if (keyElement.isJsonNull()) {\n        return \"null\";\n      } else {\n        throw new AssertionError();\n      }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "keyToString",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    },
+                    {
+                        "start_node": "write",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Adapter"
+                    },
+                    {
+                        "start_node": "Adapter",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "keyToString"
+                    }
+                ],
+                "similarity": 0.08648337910598755,
+                "end_line": 262,
+                "signature": "com.google.gson.internal.bind.MapTypeAdapterFactory.Adapter.keyToString(JsonElement keyElement): String"
+            },
+            {
+                "start_line": 197,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JsonWriter(Writer out) {\n    if (out == null) {\n      throw new NullPointerException(\"out == null\");\n    }\n    this.out = out;\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "JsonWriter",
+                "documentation": "/**\n   * Creates a new instance that writes a JSON-encoded stream to {@code out}.\n   * For best performance, ensure {@link Writer} is buffered; wrapping in\n   * {@link java.io.BufferedWriter BufferedWriter} if necessary.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonWriter"
+                    }
+                ],
+                "similarity": 0.08531679384126802,
+                "end_line": 202,
+                "signature": "com.google.gson.stream.JsonWriter(Writer out)"
+            },
+            {
+                "start_line": 50,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/SqlDateTypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public synchronized java.sql.Date read(JsonReader in) throws IOException {\n    if (in.peek() == JsonToken.NULL) {\n      in.nextNull();\n      return null;\n    }\n    try {\n      final long utilDate = format.parse(in.nextString()).getTime();\n      return new java.sql.Date(utilDate);\n    } catch (ParseException e) {\n      throw new JsonSyntaxException(e);\n    }\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "read",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    },
+                    {
+                        "start_node": "write",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "SqlDateTypeAdapter"
+                    },
+                    {
+                        "start_node": "SqlDateTypeAdapter",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "read"
+                    }
+                ],
+                "similarity": 0.08331817842589163,
+                "end_line": 61,
+                "signature": "com.google.gson.internal.bind.SqlDateTypeAdapter.read(JsonReader in): java"
+            },
+            {
+                "start_line": 297,
+                "file_path": "playground/google__gson/extras/src/main/java/com/google/gson/graph/GraphAdapterBuilder.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    void read(Graph graph) throws IOException {\n      if (graph.nextCreate != null) {\n        throw new IllegalStateException(\"Unexpected recursive call to read() for \" + id);\n      }\n      graph.nextCreate = this;\n      value = typeAdapter.fromJsonTree(element);\n      if (value == null) {\n        throw new IllegalStateException(\"non-null value deserialized to null: \" + element);\n      }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "read",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    },
+                    {
+                        "start_node": "write",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Element"
+                    },
+                    {
+                        "start_node": "Element",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "read"
+                    }
+                ],
+                "similarity": 0.08313201383979363,
+                "end_line": 306,
+                "signature": "com.google.gson.graph.GraphAdapterBuilder.Element.read(Graph graph): void"
+            },
+            {
+                "start_line": 140,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/TypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public final void toJson(Writer out, T value) throws IOException {\n    JsonWriter writer = new JsonWriter(out);\n    write(writer, value);\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "toJson",
+                "documentation": "/**\n   * Converts {@code value} to a JSON document and writes it to {@code out}.\n   * Unlike Gson's similar {@link Gson#toJson(JsonElement, Appendable) toJson}\n   * method, this write is strict. Create a {@link\n   * JsonWriter#setLenient(boolean) lenient} {@code JsonWriter} and call\n   * {@link #write(com.google.gson.stream.JsonWriter, Object)} for lenient\n   * writing.\n   *\n   * @param value the Java object to convert. May be null.\n   * @since 2.2\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    },
+                    {
+                        "start_node": "write",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TypeAdapter"
+                    },
+                    {
+                        "start_node": "TypeAdapter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "toJson"
+                    }
+                ],
+                "similarity": 0.08260559661679116,
+                "end_line": 143,
+                "signature": "com.google.gson.TypeAdapter.toJson(Writer out, T value): void"
+            },
+            {
+                "start_line": 50,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TimeTypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  @Override public synchronized Time read(JsonReader in) throws IOException {\n    if (in.peek() == JsonToken.NULL) {\n      in.nextNull();\n      return null;\n    }\n    try {\n      Date date = format.parse(in.nextString());\n      return new Time(date.getTime());\n    } catch (ParseException e) {\n      throw new JsonSyntaxException(e);\n    }\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "read",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    },
+                    {
+                        "start_node": "write",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TimeTypeAdapter"
+                    },
+                    {
+                        "start_node": "TimeTypeAdapter",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "read"
+                    }
+                ],
+                "similarity": 0.082532198531056,
+                "end_line": 61,
+                "signature": "com.google.gson.internal.bind.TimeTypeAdapter.read(JsonReader in): Time"
+            },
+            {
+                "start_line": 107,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/$Gson$Types.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static Type canonicalize(Type type) {\n    if (type instanceof Class) {\n      Class<?> c = (Class<?>) type;\n      return c.isArray() ? new GenericArrayTypeImpl(canonicalize(c.getComponentType())) : c;\n\n    } else if (type instanceof ParameterizedType) {\n      ParameterizedType p = (ParameterizedType) type;\n      return new ParameterizedTypeImpl(p.getOwnerType(),\n          p.getRawType(), p.getActualTypeArguments());\n\n    } else if (type instanceof GenericArrayType) {\n      GenericArrayType g = (GenericArrayType) type;\n      return new GenericArrayTypeImpl(g.getGenericComponentType());\n\n    } else if (type instanceof WildcardType) {\n      WildcardType w = (WildcardType) type;\n      return new WildcardTypeImpl(w.getUpperBounds(), w.getLowerBounds());\n\n    } else {\n      // type is either serializable as-is or unsupported\n      return type;\n    }\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "canonicalize",
+                "documentation": "/**\n   * Returns a type that is functionally equal but not necessarily equal\n   * according to {@link Object#equals(Object) Object.equals()}. The returned\n   * type is {@link java.io.Serializable}.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "equals"
+                    },
+                    {
+                        "start_node": "equals",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "$Gson$Types"
+                    },
+                    {
+                        "start_node": "$Gson$Types",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "canonicalize"
+                    }
+                ],
+                "similarity": 0.08139865578441674,
+                "end_line": 129,
+                "signature": "com.google.gson.internal.$Gson$Types.canonicalize(Type type): Type"
+            },
+            {
+                "start_line": 61,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TreeTypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  @Override public T read(JsonReader in) throws IOException {\n    if (deserializer == null) {\n      return delegate().read(in);\n    }\n    JsonElement value = Streams.parse(in);\n    if (value.isJsonNull()) {\n      return null;\n    }\n    return deserializer.deserialize(value, typeToken.getType(), context);\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "read",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    },
+                    {
+                        "start_node": "write",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "TreeTypeAdapter"
+                    },
+                    {
+                        "start_node": "TreeTypeAdapter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "read"
+                    }
+                ],
+                "similarity": 0.08137909592624326,
+                "end_line": 70,
+                "signature": "com.google.gson.internal.bind.TreeTypeAdapter.read(JsonReader in): T"
+            },
+            {
+                "start_line": 554,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void close() throws IOException {\n    out.close();\n\n    int size = stackSize;\n    if (size > 1 || size == 1 && stack[size - 1] != NONEMPTY_DOCUMENT) {\n      throw new IOException(\"Incomplete document\");\n    }\n    stackSize = 0;\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "close",
+                "documentation": "/**\n   * Flushes and closes this writer and the underlying {@link Writer}.\n   *\n   * @throws IOException if the JSON document is incomplete.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonWriter"
+                    },
+                    {
+                        "start_node": "JsonWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "close"
+                    }
+                ],
+                "similarity": 0.0805154120293858,
+                "end_line": 562,
+                "signature": "com.google.gson.stream.JsonWriter.close(): void"
+            },
+            {
+                "start_line": 712,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JsonWriter newJsonWriter(Writer writer) throws IOException {\n    if (generateNonExecutableJson) {\n      writer.write(JSON_NON_EXECUTABLE_PREFIX);\n    }\n    JsonWriter jsonWriter = new JsonWriter(writer);\n    if (prettyPrinting) {\n      jsonWriter.setIndent(\"  \");\n    }\n    jsonWriter.setSerializeNulls(serializeNulls);\n    return jsonWriter;\n  }",
+                "distance": 2.0,
+                "title": null,
+                "name": "newJsonWriter",
+                "documentation": "/**\n   * Returns a new JSON writer configured for the settings on this Gson instance.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonWriter"
+                    },
+                    {
+                        "start_node": "JsonWriter",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "newJsonWriter"
+                    }
+                ],
+                "similarity": 0.07791888676615749,
+                "end_line": 722,
+                "signature": "com.google.gson.Gson.newJsonWriter(Writer writer): JsonWriter"
+            },
+            {
+                "start_line": 45,
+                "file_path": "playground/google__gson/metrics/src/main/java/com/google/gson/metrics/BagOfPrimitives.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public String getExpectedJson() {\n    StringBuilder sb = new StringBuilder();\n    sb.append(\"{\");\n    sb.append(\"\\\"longValue\\\":\").append(longValue).append(\",\");\n    sb.append(\"\\\"intValue\\\":\").append(intValue).append(\",\");\n    sb.append(\"\\\"booleanValue\\\":\").append(booleanValue).append(\",\");\n    sb.append(\"\\\"stringValue\\\":\\\"\").append(stringValue).append(\"\\\"\");\n    sb.append(\"}\");\n    return sb.toString();\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getExpectedJson",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "equals"
+                    },
+                    {
+                        "start_node": "equals",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "BagOfPrimitives"
+                    },
+                    {
+                        "start_node": "BagOfPrimitives",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getExpectedJson"
+                    }
+                ],
+                "similarity": 0.07742437401014221,
+                "end_line": 54,
+                "signature": "com.google.gson.metrics.BagOfPrimitives.getExpectedJson(): String"
+            },
+            {
+                "start_line": 111,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/DefaultDateTypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private Date deserializeToDate(String s) {\n    synchronized (localFormat) {\n      try {\n        return localFormat.parse(s);\n      } catch (ParseException ignored) {}\n      try {\n        return enUsFormat.parse(s);\n      } catch (ParseException ignored) {}\n      try {\n        return ISO8601Utils.parse(s, new ParsePosition(0));\n      } catch (ParseException e) {\n        throw new JsonSyntaxException(s, e);\n      }\n    }\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "deserializeToDate",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    },
+                    {
+                        "start_node": "write",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "DefaultDateTypeAdapter"
+                    },
+                    {
+                        "start_node": "DefaultDateTypeAdapter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "deserializeToDate"
+                    }
+                ],
+                "similarity": 0.07602595386686956,
+                "end_line": 125,
+                "signature": "com.google.gson.DefaultDateTypeAdapter.deserializeToDate(String s): Date"
+            },
+            {
+                "start_line": 542,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void flush() throws IOException {\n    if (stackSize == 0) {\n      throw new IllegalStateException(\"JsonWriter is closed.\");\n    }\n    out.flush();\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "flush",
+                "documentation": "/**\n   * Ensures all buffered data is written to the underlying {@link Writer}\n   * and flushes that writer.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonWriter"
+                    },
+                    {
+                        "start_node": "JsonWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "flush"
+                    }
+                ],
+                "similarity": 0.07569637109483374,
+                "end_line": 547,
+                "signature": "com.google.gson.stream.JsonWriter.flush(): void"
+            },
+            {
+                "start_line": 330,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private static TypeAdapter<Number> longAdapter(LongSerializationPolicy longSerializationPolicy) {\n    if (longSerializationPolicy == LongSerializationPolicy.DEFAULT) {\n      return TypeAdapters.LONG;\n    }\n    return new TypeAdapter<Number>() {\n      @Override public Number read(JsonReader in) throws IOException {\n        if (in.peek() == JsonToken.NULL) {\n          in.nextNull();\n          return null;\n        }\n        return in.nextLong();\n      }\n      @Override public void write(JsonWriter out, Number value) throws IOException {\n        if (value == null) {\n          out.nullValue();\n          return;\n        }\n        out.value(value.toString());\n      }\n    };\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "longAdapter",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "JsonWriter"
+                    },
+                    {
+                        "start_node": "JsonWriter",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "newJsonWriter"
+                    },
+                    {
+                        "start_node": "newJsonWriter",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Gson"
+                    },
+                    {
+                        "start_node": "Gson",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "longAdapter"
+                    }
+                ],
+                "similarity": 0.07564850332345774,
+                "end_line": 350,
+                "signature": "com.google.gson.Gson.longAdapter(LongSerializationPolicy longSerializationPolicy): TypeAdapter"
+            }
+        ],
+        "classes": [],
+        "issues": [
+            {
+                "content": "In lenient mode, JsonWriter#value(java.lang.Number) can write pseudo-numeric values like `NaN`, `Infinity`, `-Infinity`:\r\n```java\r\n    if (!lenient\r\n        && (string.equals(\"-Infinity\") || string.equals(\"Infinity\") || string.equals(\"NaN\"))) {\r\n      throw new IllegalArgumentException(\"Numeric values must be finite, but was \" + value);\r\n    }\r\n```\r\n\r\nBut JsonWriter#value(double) behaves in different way: \r\n```java\r\n    if (Double.isNaN(value) || Double.isInfinite(value)) {\r\n      throw new IllegalArgumentException(\"Numeric values must be finite, but was \" + value);\r\n    }\r\n```\r\n\r\nSo, while working with streaming, it's impossible to write semi-numeric value without boxing a double (e. g. `out.value((Number) Double.valueOf(Double.NaN))`).\r\n\r\nI think, this should be possible, because boxing gives worse performance.\nJsonWriter#value(java.lang.Number) can be lenient, but JsonWriter#value(double) can't,\nIn lenient mode, JsonWriter#value(java.lang.Number) can write pseudo-numeric values like `NaN`, `Infinity`, `-Infinity`:\r\n```java\r\n    if (!lenient\r\n        && (string.equals(\"-Infinity\") || string.equals(\"Infinity\") || string.equals(\"NaN\"))) {\r\n      throw new IllegalArgumentException(\"Numeric values must be finite, but was \" + value);\r\n    }\r\n```\r\n\r\nBut JsonWriter#value(double) behaves in different way: \r\n```java\r\n    if (Double.isNaN(value) || Double.isInfinite(value)) {\r\n      throw new IllegalArgumentException(\"Numeric values must be finite, but was \" + value);\r\n    }\r\n```\r\n\r\nSo, while working with streaming, it's impossible to write semi-numeric value without boxing a double (e. g. `out.value((Number) Double.valueOf(Double.NaN))`).\r\n\r\nI think, this should be possible, because boxing gives worse performance.\n",
+                "distance": 0,
+                "title": "JsonWriter#value(java.lang.Number) can be lenient, but JsonWriter#value(double) can't,",
+                "name": "root",
+                "path": [],
+                "issue_id": "root",
+                "similarity": 2.0,
+                "type": "issue"
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "1090",
+                "type": "issue",
+                "content": "In lenient mode, JsonWriter#value(java.lang.Number) can write pseudo-numeric values like `NaN`, `Infinity`, `-Infinity`:\r\n```java\r\n    if (!lenient\r\n        && (string.equals(\"-Infinity\") || string.equals(\"Infinity\") || string.equals(\"NaN\"))) {\r\n      throw new IllegalArgumentException(\"Numeric values must be finite, but was \" + value);\r\n    }\r\n```\r\n\r\nBut JsonWriter#value(double) behaves in different way: \r\n```java\r\n    if (Double.isNaN(value) || Double.isInfinite(value)) {\r\n      throw new IllegalArgumentException(\"Numeric values must be finite, but was \" + value);\r\n    }\r\n```\r\n\r\nSo, while working with streaming, it's impossible to write semi-numeric value without boxing a double (e. g. `out.value((Number) Double.valueOf(Double.NaN))`).\r\n\r\nI think, this should be possible, because boxing gives worse performance.\n\n\nComment by inder123:\nCan you create a Pull Request with a JUnit test that fails? Even better would be a fix that makes the test pass. Thanks.",
+                "source_code": null,
+                "distance": 0.25,
+                "title": "JsonWriter#value(java.lang.Number) can be lenient, but JsonWriter#value(double) can't,",
+                "name": "issue#1090",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#1090"
+                    }
+                ],
+                "similarity": 0.8367817713569928,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "1093",
+                "type": "issue",
+                "content": "Fixes #1090.\n\n",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "value(double) can write NaN and infinite values when lenient, as value(Number) does",
+                "name": "pr#1093",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#1090"
+                    },
+                    {
+                        "start_node": "issue#1090",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "pr#1093"
+                    }
+                ],
+                "similarity": 0.5501724526864816,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "372",
+                "type": "issue",
+                "content": "```\nThe gson JsonParser is final and it's #parse(JsonReader json) does this:\njson.setLenient(true); \n\nIn my unit tests I validate the output of my json rest api and I would like to \nhave a parser with strict parsing. Creating my own StrictJsonReader also is not \npossible unless I put it in the com.google.gson package.\n\nMaybe you could add a setter or constructor param for lenient or strict parsing?\n```\n\nOriginal issue reported on code.google.com by `franci...@gmail.com` on 26 Oct 2011 at 2:11\n\n\n\nComment by sgbrown:\nI think Gson.lenient flag probably does more harm than good in the current state.  The comments on the GsonBuilder.setLenient() method say \n\n> By default, Gson is strict and only accepts JSON as specified by <a href=\"http://www.ietf.org/rfc/rfc4627.txt\">RFC 4627</a>.\n\nThe comments on Gson.setLenient() also references the JsonReader.setLenient(boolean) method which has a great explanation of what should and shouldn't be considered when using the lenient flag.\n\nThe unfortunate fact here is that due to the Gson.fromJson(JsonReader, Type) method always setting the lenient flag to true when parsing, almost none of what is commented in GsonBuilder about the default behavior of Gson is true.  The only affect that setting the lenient flag on Gson will do is to allow comments to be at the end of your json buffer when calling Gson.fromJson(Reader, Type) since the assertFullConsumption(Object, JsonReader) method will be called from here and only checks for data at the end of the buffer having not been consumed (e.g. comments at the end).\n\nConsider, for example, the test in com.google.gson.functional.LeniencyTest\n\n```\n    @Override\n   protected void setUp() throws Exception {\n     super.setUp();\n     gson = new GsonBuilder().setLenient().create();\n   }\n\n   public void testLenientFromJson() {\n     List<String> json = gson.fromJson(\"\"\n         + \"[ # One!\\n\"\n         + \"  'Hi' #Element!\\n\"\n         + \"] # Array!\", new TypeToken<List<String>>() {}.getType());\n     assertEquals(singletonList(\"Hi\"), json);\n   }\n```\n\nIf you were to remove the comment at the end of the String (\"# Array!\"), then it would not make any difference at all whether or not the lenient flag had been set.  The following would also pass:\n\n```\n     List<String> json = new GsonBuilder().create().fromJson(\"\"\n         + \"[ # One!\\n\"\n         + \"  'Hi' #Element!\\n\"\n         + \"]\", new TypeToken<List<String>>() {}.getType());\n     assertEquals(singletonList(\"Hi\"), json);\n```\n\nIt seems counterintuitive that with the lenient flag unset, comments in the middle of the JSON data would be ignored but comments at the end would cause a failure when the Gson parser is supposed to be \"strict\".\n\nIf it is considered undesirable to change the default behavior (to the behavior that is documented) by actually respecting a default lenient flag being set to false (i.e. default to strict), then perhaps the correct answer is to respect the lenient flag, default Gson to have the lenient flag set to true, and update the javadocs to reflect that Gson by default is lenient.\n",
+                "source_code": null,
+                "distance": 0.75,
+                "title": "GsonBuilder.setLenient(false)",
+                "name": "issue#372",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#1090"
+                    },
+                    {
+                        "start_node": "issue#1090",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "pr#1093"
+                    },
+                    {
+                        "start_node": "pr#1093",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#372"
+                    }
+                ],
+                "similarity": 0.2756438770766934,
+                "end_line": null,
+                "signature": null
+            }
+        ]
+    },
+    "artifact_stats": {
+        "skipped_due_to_time": 10,
+        "valid_related_items": 12
+    }
+}

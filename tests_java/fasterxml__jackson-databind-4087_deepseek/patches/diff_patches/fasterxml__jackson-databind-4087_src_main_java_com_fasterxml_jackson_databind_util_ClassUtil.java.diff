@@ -1,0 +1,11 @@
+--- a/src/main/java/com/fasterxml/jackson/databind/util/ClassUtil.java
++++ b/src/main/java/com/fasterxml/jackson/databind/util/ClassUtil.java
+@@ -990,7 +990,7 @@
+             final Class<?> declaringClass = member.getDeclaringClass();
+             boolean isPublic = Modifier.isPublic(member.getModifiers())
+                     && Modifier.isPublic(declaringClass.getModifiers());
+-            if (!isPublic || (evenIfAlreadyPublic && !isJDKClass(declaringClass))) {
++            if (!isJDKClass(declaringClass) && (!isPublic || evenIfAlreadyPublic)) {
+                 ao.setAccessible(true);
+             }
+         } catch (SecurityException se) {

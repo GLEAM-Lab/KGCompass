@@ -1,0 +1,42 @@
+Based on the issue, the bug is in `StdDeserializer` where integer values are being coerced to floats even when configured to fail. The issue specifically mentions the `_parseFloatPrimitive` method doesn't distinguish between ints and floats.
+
+Looking at the code segments provided, I don't see the actual `_parseFloatPrimitive` method implementation. However, from the issue description and context, we need to modify the float deserialization to respect the coercion configuration for integer inputs.
+
+Since the full `StdDeserializer.java` file isn't provided in the segments, I'll make an educated guess about where the fix needs to be based on standard Jackson patterns. The fix should:
+
+1. Check the coercion configuration before converting integer values to float
+2. Throw `MismatchedInputException` if coercion from integer to float is configured to fail
+
+Here's the proposed fix:
+
+```java
+### src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
+<<<<<<< SEARCH
+    protected final float _parseFloatPrimitive(JsonParser p, DeserializationContext ctxt) throws IOException {
+        switch (p.currentTokenId()) {
+        case JsonTokenId.ID_NUMBER_INT:
+        case JsonTokenId.ID_NUMBER_FLOAT:
+            return p.getFloatValue();
+=======
+    protected final float _parseFloatPrimitive(JsonParser p, DeserializationContext ctxt) throws IOException {
+        switch (p.currentTokenId()) {
+        case JsonTokenId.ID_NUMBER_INT:
+            if (ctxt.findCoercionAction(logicalType(), Float.class, CoercionInputShape.Integer) == CoercionAction.Fail) {
+                return (Float) ctxt.handleWeirdNumberValue(Float.TYPE, p.getNumberValue(),
+                    "Cannot coerce Integer value to `float` (enable `CoercionConfig` to allow)");
+            }
+            return p.getFloatValue();
+        case JsonTokenId.ID_NUMBER_FLOAT:
+            return p.getFloatValue();
+>>>>>>> REPLACE
+```
+
+This change:
+1. Separates the handling of integer and float tokens
+2. For integer tokens, checks the coercion configuration first
+3. If coercion is set to fail, uses `handleWeirdNumberValue` to throw an appropriate exception
+4. Otherwise proceeds with the float conversion as before
+
+The fix maintains backward compatibility while adding the requested coercion control. The `logicalType()` method should return `LogicalType.Float` for float primitive deserializers.
+
+Note: If the actual `StdDeserializer.java` file has a different structure, the exact line numbers and surrounding context may need adjustment. The key concept is to add the coercion check specifically for integer-to-float conversions.

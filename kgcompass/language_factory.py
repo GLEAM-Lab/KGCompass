@@ -2,8 +2,10 @@ import ast
 import clang.cindex
 import javalang
 from abc import ABC, abstractmethod
+import copy
 import os
 import re
+from config import STRONG_CONNECTION
 
 # === 新增：扩展名 → 语言 的映射 ==============
 EXT_LANG_MAP = {
@@ -104,16 +106,17 @@ class MethodCallVisitor(ast.NodeVisitor):
                     self.processed_calls.add((self.caller['name'], callee_name))
 
                     # Ensure caller is created as an entity (if not already)
-                    # self.kg.create_method_entity(
-                    #     self.caller['name'],
-                    #     self.caller.get('signature', self.caller['name']),
-                    #     self.caller['file_path'],
-                    #     self.caller['start_line'],
-                    #     self.caller['end_line'],
-                    #     self.caller.get('source_code', ''), # Make sure source_code is available
-                    #     self.caller.get('doc_string', ''),  # Make sure doc_string is available
-                    #     STRONG_CONNECTION # This constant needs to be defined or imported
-                    # )
+                    if self.caller.get('name') and self.caller.get('file_path'):
+                        self.kg.create_method_entity(
+                            self.caller['name'],
+                            self.caller.get('signature', self.caller['name']),
+                            self.caller['file_path'],
+                            self.caller.get('start_line', 0),
+                            self.caller.get('end_line', self.caller.get('start_line', 0)),
+                            self.caller.get('source_code', ''),
+                            self.caller.get('doc_string', ''),
+                            STRONG_CONNECTION
+                        )
                     
                     print(f"Found method call: {self.caller['name']} -> {callee_name}")
                     self.kg.link_method_calls(
@@ -219,8 +222,8 @@ class JavaLanguageConfig(LanguageConfig):
         return {
             'class': rf'class\s+{escaped_name}\s*{{',
             'interface': rf'interface\s+{escaped_name}\s*{{',
-            'method': rf'(?:public|protected|private|static|final|synchronized|abstract|default|\s)*\s*[\w.<>,\\[\\]?]+\s+{escaped_name}\s*\([^)]*\)\s*(?:{{|throws|;)',
-            'variable_declaration': rf'(?:private|public|protected|static|final)?\s*[\w.<>,\\[\\]]+\s+{escaped_name}\s*(?:=|;)',
+            'method': rf'(?:public|protected|private|static|final|synchronized|abstract|default|\s)*\s*[\w.<>,\[\]?]+\s+{escaped_name}\s*\([^)]*\)\s*(?:{{|throws|;)',
+            'variable_declaration': rf'(?:private|public|protected|static|final)?\s*[\w.<>,\[\]]+\s+{escaped_name}\s*(?:=|;)',
             'import': rf'import\s+(?:static\s+)?(?:[\w.]+\.)?{escaped_name}(?:\.\*)?;',
             'string': rf'"[^"]*{escaped_name}[^"]*"',
             'comment': rf'(?://.*{escaped_name}|/\*.*?{escaped_name}.*?\*/)',
@@ -249,7 +252,7 @@ class CppLanguageConfig(LanguageConfig):
         return {
             'class_struct_union': rf'(?:class|struct|union)\s+{escaped_name}\s*{{',
             'function_method': rf'[\w:]+\s+{escaped_name}\s*\([^)]*\)\s*{{', # Very basic
-            'variable_declaration': rf'[\w:]+\s+{escaped_name}\s*(?:=|;|\\[|\()', # Very basic
+            'variable_declaration': rf'[\w:]+\s+{escaped_name}\s*(?:=|;|\[|\()', # Very basic
             'namespace': rf'namespace\s+{escaped_name}\s*{{',
             'include': rf'#include\s*(?:<[^>]*{escaped_name}[^>]*>|"[^"]*{escaped_name}[^"]*")',
             'define': rf'#define\s+{escaped_name}',
@@ -489,11 +492,28 @@ class PythonParser(BaseParser):
                     if isinstance(target, ast.Name):
                         try:
                             value = ast.literal_eval(node.value)
+                            # Get short representation of value for signature
+                            value_type = type(value).__name__
+                            if isinstance(value, (dict, list, set, tuple)):
+                                value_repr = f"{value_type} with {len(value)} items"
+                            elif isinstance(value, str) and len(value) > 50:
+                                value_repr = f"str: {repr(value[:47])}..."
+                            else:
+                                value_repr = repr(value) if len(repr(value)) <= 100 else f"{value_type}"
                         except (ValueError, SyntaxError):
-                            value = ast.get_source_segment(content, node.value)
+                            # Cannot evaluate, get source segment but limit length
+                            source_segment = ast.get_source_segment(content, node.value)
+                            if source_segment and len(source_segment) > 100:
+                                value_repr = f"{source_segment[:97]}..."
+                            else:
+                                value_repr = source_segment or "complex expression"
+                        
+                        # Signature should be short and meaningful
+                        signature = f"{module_path}.{target.id}: {value_repr}"
+                        
                         variables.append({
                             "name": f"{module_path}.{target.id}",
-                            "signature": f"{module_path}.{target.id} = {value}",
+                            "signature": signature,
                             "file_path": clean_file_path,
                             "start_line": node.lineno,
                             "end_line": node.end_lineno if hasattr(node, 'end_lineno') else None,
@@ -596,14 +616,16 @@ class PythonParser(BaseParser):
 class CppParser(BaseParser):
     def __init__(self):
         super().__init__('cpp')
+        self._file_content_cache = {}
+        self._analysis_cache = {}
         # Initialize Clang index if not already done by a shared instance
         try:
             if not clang.cindex.Config.loaded:
                 # Attempt to find libclang.so or libclang.dylib
                 # Common paths, adjust if necessary for your system
                 libclang_paths = [
-                    '/usr/lib/llvm-14/lib/libclang-14.so.1', # Example for specific LLVM version
-                    '/usr/lib/x86_64-linux-gnu/libclang-14.so.1',
+                    '/usr/lib/llvm-20/lib/libclang-20.so.1', # Example for specific LLVM version
+                    '/usr/lib/x86_64-linux-gnu/libclang-20.so.1',
                     '/usr/lib/libclang.so',
                     '/usr/local/lib/libclang.so',
                     '/Library/Developer/CommandLineTools/usr/lib/libclang.dylib', # macOS
@@ -628,8 +650,8 @@ class CppParser(BaseParser):
             return self._file_ast_cache[file_path]
         try:
             # For C++, TU (Translation Unit) is the equivalent of CompilationUnit
-            # Parsing options can be added here, e.g., include directories
-            tu = self.index.parse(file_path, args=['-std=c++17']) # Example args
+            # Keep parse behavior consistent with legacy parse_file() (no explicit args).
+            tu = self.index.parse(file_path)
             if not tu:
                 print(f"Failed to parse C++ file {file_path}")
                 self._file_ast_cache[file_path] = None
@@ -646,21 +668,78 @@ class CppParser(BaseParser):
             return None
 
     def parse_file(self, file_path):
-        index = clang.cindex.Index.create()
-        return index.parse(file_path)
-        
-    def extract_classes(self, file_path):
-        tu = self.parse_file(file_path)
+        return self.get_compilation_unit(file_path)
+
+    def _get_file_content(self, file_path):
+        if file_path in self._file_content_cache:
+            return self._file_content_cache[file_path]
+        try:
+            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+        except Exception:
+            content = ""
+        self._file_content_cache[file_path] = content
+        return content
+
+    def _clone(self, value):
+        return copy.deepcopy(value)
+
+    def _analyze_file(self, file_path):
+        if file_path in self._analysis_cache:
+            return self._analysis_cache[file_path]
+
+        tu = self.get_compilation_unit(file_path)
+        if not tu:
+            result = {'classes': [], 'methods': [], 'variables': [], 'imports': {}}
+            self._analysis_cache[file_path] = result
+            return result
+
         classes = []
+        methods = []
+        variables = []
+        imports = {}
+
         for node in tu.cursor.walk_preorder():
-            if node.kind == clang.cindex.CursorKind.CLASS_DECL:
+            kind = node.kind
+            if kind == clang.cindex.CursorKind.INCLUSION_DIRECTIVE:
+                imports[node.spelling] = node.spelling
+            elif kind == clang.cindex.CursorKind.CLASS_DECL:
                 classes.append({
                     'name': node.spelling,
                     'start_line': node.location.line,
                     'end_line': node.extent.end.line,
                     'methods': self._extract_class_methods(node)
                 })
-        return classes
+            elif kind == clang.cindex.CursorKind.FUNCTION_DECL:
+                methods.append({
+                    'name': node.spelling,
+                    'signature': node.displayname,
+                    'start_line': node.location.line,
+                    'end_line': node.extent.end.line,
+                    'source_code': self._get_source_code(node),
+                    'doc_string': self._get_docstring(node)
+                })
+            elif kind == clang.cindex.CursorKind.VAR_DECL:
+                variables.append({
+                    'name': node.spelling,
+                    'signature': node.displayname,
+                    'start_line': node.location.line,
+                    'end_line': node.extent.end.line,
+                    'source_code': self._get_source_code(node),
+                    'doc_string': self._get_docstring(node)
+                })
+
+        result = {
+            'classes': classes,
+            'methods': methods,
+            'variables': variables,
+            'imports': imports,
+        }
+        self._analysis_cache[file_path] = result
+        return result
+        
+    def extract_classes(self, file_path):
+        return self._clone(self._analyze_file(file_path)['classes'])
         
     def _extract_class_methods(self, class_node):
         methods = []
@@ -679,71 +758,41 @@ class CppParser(BaseParser):
     def _get_source_code(self, node):
         start = node.extent.start.offset
         end = node.extent.end.offset
-        with open(node.location.file.name, 'r', encoding='utf-8') as f:
-            return f.read()[start:end]
+        file_obj = node.location.file
+        if not file_obj:
+            return ''
+        content = self._get_file_content(file_obj.name)
+        if not content:
+            return ''
+        return content[start:end]
             
     def _get_docstring(self, node):
-        for child in node.get_children():
-            if child.kind == clang.cindex.CursorKind.COMMENT:
-                return child.spelling
+        # CursorKind.COMMENT is not available in some libclang builds.
+        kind_comment = getattr(clang.cindex.CursorKind, "COMMENT", None)
+        if kind_comment is not None:
+            for child in node.get_children():
+                if child.kind == kind_comment:
+                    return child.spelling
+        raw_comment = getattr(node, "raw_comment", None)
+        if raw_comment:
+            return raw_comment
         return None
         
     def extract_methods(self, file_path):
-        tu = self.parse_file(file_path)
-        methods = []
-        for node in tu.cursor.walk_preorder():
-            if node.kind == clang.cindex.CursorKind.FUNCTION_DECL:
-                methods.append({
-                    'name': node.spelling,
-                    'signature': node.displayname,
-                    'start_line': node.location.line,
-                    'end_line': node.extent.end.line,
-                    'source_code': self._get_source_code(node),
-                    'doc_string': self._get_docstring(node)
-                })
-        return methods
+        return self._clone(self._analyze_file(file_path)['methods'])
 
     def get_imports(self, file_path):
-        imports = {}
         try:
-            tu = self.parse_file(file_path)
-            for node in tu.cursor.walk_preorder():
-                if node.kind == clang.cindex.CursorKind.INCLUSION_DIRECTIVE:
-                    imports[node.spelling] = node.spelling
-            return imports
+            return self._clone(self._analyze_file(file_path)['imports'])
         except Exception as e:
             print(f"Error while parsing include statements in file {file_path}: {str(e)}")
             return {}
 
     def get_global_methods(self, file_path, repo_name):
-        tu = self.parse_file(file_path)
-        methods = []
-        for node in tu.cursor.walk_preorder():
-            if node.kind == clang.cindex.CursorKind.FUNCTION_DECL:
-                methods.append({
-                    'name': node.spelling,
-                    'signature': node.displayname,
-                    'start_line': node.location.line,
-                    'end_line': node.extent.end.line,
-                    'source_code': self._get_source_code(node),
-                    'doc_string': self._get_docstring(node)
-                })
-        return methods
+        return self._clone(self._analyze_file(file_path)['methods'])
 
     def get_global_variables(self, file_path, repo_name):
-        tu = self.parse_file(file_path)
-        variables = []
-        for node in tu.cursor.walk_preorder():
-            if node.kind == clang.cindex.CursorKind.VAR_DECL:
-                variables.append({
-                    'name': node.spelling,
-                    'signature': node.displayname,
-                    'start_line': node.location.line,
-                    'end_line': node.extent.end.line,
-                    'source_code': self._get_source_code(node),
-                    'doc_string': self._get_docstring(node)
-                })
-        return variables
+        return self._clone(self._analyze_file(file_path)['variables'])
 
     def analyze_method_calls_in_method(self, local_method_info, all_methods, kg, imports, repo_name):
         # print(f"Method call analysis not implemented for C++ for method {local_method_info.get('name')}")
@@ -1251,10 +1300,10 @@ class JavaParser(BaseParser):
                            m_info['name'].endswith('.' + callee_name_str): # Heuristic for simple name match to FQN
                             
                             kg.link_method_calls(
-                                caller_method_name=local_method_info['name'],
-                                caller_method_signature=local_method_info.get('signature', local_method_info['name']),
-                                callee_method_name=m_info['name'],
-                                callee_method_signature=m_info.get('signature', m_info['name'])
+                                local_method_info['name'],
+                                local_method_info.get('signature', local_method_info['name']),
+                                m_info['name'],
+                                m_info.get('signature', m_info['name'])
                             )
                             # Found a match, ideally break if we are sure, but multiple overloads might exist.
                             # For simplicity, link first match. More advanced would check signature.

@@ -1,0 +1,1921 @@
+{
+  "related_entities": {
+    "methods": [
+      {
+        "start_line": 334,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper disable(FromXmlParser.Feature f) {\n        ((XmlFactory)_jsonFactory).disable(f);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "disable",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          }
+        ],
+        "similarity": 0.06189368541631573,
+        "end_line": 337,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.disable(FromXmlParser f): ObjectMapper"
+      },
+      {
+        "start_line": 280,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public XmlMapper setDefaultUseWrapper(boolean state) {\n        // ser and deser configs should usually have the same introspector, so:\n        AnnotationIntrospector ai0 = getDeserializationConfig().getAnnotationIntrospector();\n        for (AnnotationIntrospector ai : ai0.allIntrospectors()) {\n            if (ai instanceof JacksonXmlAnnotationIntrospector) {\n                ((JacksonXmlAnnotationIntrospector) ai).setDefaultUseWrapper(state);\n            }\n        }\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "setDefaultUseWrapper",
+        "documentation": "/**\n     * Since 2.7\n     * \n     * @deprecated Since 2.10 use {@link Builder#defaultUseWrapper(boolean)} instead\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setDefaultUseWrapper"
+          }
+        ],
+        "similarity": 0.061515373091019065,
+        "end_line": 289,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.setDefaultUseWrapper(boolean state): XmlMapper"
+      },
+      {
+        "start_line": 329,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper disable(ToXmlGenerator.Feature f) {\n        ((XmlFactory)_jsonFactory).disable(f);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "disable",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          }
+        ],
+        "similarity": 0.060083614934528,
+        "end_line": 332,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.disable(ToXmlGenerator f): ObjectMapper"
+      },
+      {
+        "start_line": 408,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void writeValue(XMLStreamWriter w, Object value) throws IOException {\n        @SuppressWarnings(\"resource\")\n        ToXmlGenerator g = createGenerator(w);\n        super.writeValue(g, value);\n        // NOTE: above call should do flush(); and we should NOT close here.\n        // Finally, 'g' has no buffers to release.\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "writeValue",
+        "documentation": "/**\n     * Method for serializing given value using specific {@link XMLStreamReader}:\n     * useful when building large XML files by binding individual items, one at\n     * a time.\n     * \n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "writeValue"
+          }
+        ],
+        "similarity": 0.058483215201400506,
+        "end_line": 414,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.writeValue(XMLStreamWriter w, Object value): void"
+      },
+      {
+        "start_line": 324,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper enable(FromXmlParser.Feature f) {\n        ((XmlFactory)_jsonFactory).enable(f);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "enable",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enable"
+          }
+        ],
+        "similarity": 0.058282348504153356,
+        "end_line": 327,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.enable(FromXmlParser f): ObjectMapper"
+      },
+      {
+        "start_line": 160,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public XmlMapper(XmlFactory xmlFactory, JacksonXmlModule module)",
+        "distance": 1.25,
+        "title": null,
+        "name": "XmlMapper",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          }
+        ],
+        "similarity": 0.0578633919728972,
+        "end_line": 160,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper(XmlFactory xmlFactory, JacksonXmlModule module)"
+      },
+      {
+        "start_line": 319,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper enable(ToXmlGenerator.Feature f) {\n        ((XmlFactory)_jsonFactory).enable(f);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "enable",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enable"
+          }
+        ],
+        "similarity": 0.057307753779737534,
+        "end_line": 322,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.enable(ToXmlGenerator f): ObjectMapper"
+      },
+      {
+        "start_line": 305,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public XmlFactory getFactory() {\n        return (XmlFactory) _jsonFactory;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getFactory",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getFactory"
+          }
+        ],
+        "similarity": 0.0539612670645617,
+        "end_line": 307,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.getFactory(): XmlFactory"
+      },
+      {
+        "start_line": 141,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public XmlMapper(XMLInputFactory inputF, XMLOutputFactory outF) {\n        this(new XmlFactory(inputF, outF));\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "XmlMapper",
+        "documentation": "/**\n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          }
+        ],
+        "similarity": 0.05323369908235314,
+        "end_line": 143,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper(XMLInputFactory inputF, XMLOutputFactory outF)"
+      },
+      {
+        "start_line": 309,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper configure(ToXmlGenerator.Feature f, boolean state) {\n        ((XmlFactory)_jsonFactory).configure(f, state);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "configure",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "configure"
+          }
+        ],
+        "similarity": 0.052905503584323936,
+        "end_line": 312,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.configure(ToXmlGenerator f, boolean state): ObjectMapper"
+      },
+      {
+        "start_line": 314,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper configure(FromXmlParser.Feature f, boolean state) {\n        ((XmlFactory)_jsonFactory).configure(f, state);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "configure",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "configure"
+          }
+        ],
+        "similarity": 0.0527674982962826,
+        "end_line": 317,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.configure(FromXmlParser f, boolean state): ObjectMapper"
+      },
+      {
+        "start_line": 134,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public XmlMapper() {\n        this(new XmlFactory());\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "XmlMapper",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          }
+        ],
+        "similarity": 0.052321266470106535,
+        "end_line": 136,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper()"
+      },
+      {
+        "start_line": 156,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public XmlMapper(JacksonXmlModule module) {\n        this(new XmlFactory(), module);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "XmlMapper",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          }
+        ],
+        "similarity": 0.05175816592280908,
+        "end_line": 158,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper(JacksonXmlModule module)"
+      },
+      {
+        "start_line": 152,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public XmlMapper(XmlFactory xmlFactory) {\n        this(xmlFactory, DEFAULT_XML_MODULE);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "XmlMapper",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          }
+        ],
+        "similarity": 0.051322315349050206,
+        "end_line": 154,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper(XmlFactory xmlFactory)"
+      },
+      {
+        "start_line": 148,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public XmlMapper(XMLInputFactory inputF) {\n        this(new XmlFactory(inputF));\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "XmlMapper",
+        "documentation": "/**\n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          }
+        ],
+        "similarity": 0.0491434892838157,
+        "end_line": 150,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper(XMLInputFactory inputF)"
+      },
+      {
+        "start_line": 395,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> T readValue(XMLStreamReader r, JavaType valueType) throws IOException",
+        "distance": 1.25,
+        "title": null,
+        "name": "readValue",
+        "documentation": "/**\n     * Method for reading a single XML value from given XML-specific input\n     * source; useful for incremental data-binding, combining traversal using\n     * basic Stax {@link XMLStreamReader} with data-binding by Jackson.\n     * \n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readValue"
+          }
+        ],
+        "similarity": 0.04732082419752353,
+        "end_line": 395,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.readValue(XMLStreamReader r, JavaType valueType): T"
+      },
+      {
+        "start_line": 203,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected XmlMapper(XmlMapper src) {\n        super(src);\n        _xmlModule = src._xmlModule;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "XmlMapper",
+        "documentation": "/**\n     * @since 2.8.9\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          }
+        ],
+        "similarity": 0.041590194758530936,
+        "end_line": 206,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper(XmlMapper src)"
+      },
+      {
+        "start_line": 383,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> T readValue(XMLStreamReader r, TypeReference<T> valueTypeRef) throws IOException {\n        return readValue(r, _typeFactory.constructType(valueTypeRef));\n    } ",
+        "distance": 1.25,
+        "title": null,
+        "name": "readValue",
+        "documentation": "/**\n     * Method for reading a single XML value from given XML-specific input\n     * source; useful for incremental data-binding, combining traversal using\n     * basic Stax {@link XMLStreamReader} with data-binding by Jackson.\n     * \n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readValue"
+          }
+        ],
+        "similarity": 0.041543771709644704,
+        "end_line": 385,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.readValue(XMLStreamReader r, TypeReference valueTypeRef): T"
+      },
+      {
+        "start_line": 372,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> T readValue(XMLStreamReader r, Class<T> valueType) throws IOException {\n        return readValue(r, _typeFactory.constructType(valueType));\n    } ",
+        "distance": 1.25,
+        "title": null,
+        "name": "readValue",
+        "documentation": "/**\n     * Method for reading a single XML value from given XML-specific input\n     * source; useful for incremental data-binding, combining traversal using\n     * basic Stax {@link XMLStreamReader} with data-binding by Jackson.\n     * \n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readValue"
+          }
+        ],
+        "similarity": 0.041231601420199035,
+        "end_line": 374,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.readValue(XMLStreamReader r, Class valueType): T"
+      },
+      {
+        "start_line": 224,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlFactory.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected Object readResolve() {\n        if (_jdkXmlInFactory == null) {\n            throw new IllegalStateException(\"No XMLInputFactory class name read during JDK deserialization\");\n        }\n        if (_jdkXmlOutFactory == null) {\n            throw new IllegalStateException(\"No XMLOutputFactory class name read during JDK deserialization\");\n        }\n        final XMLInputFactory inf;\n        XMLOutputFactory outf;\n        try {\n            inf = (XMLInputFactory) Class.forName(_jdkXmlInFactory).getDeclaredConstructor().newInstance();\n            outf = (XMLOutputFactory) Class.forName(_jdkXmlOutFactory).getDeclaredConstructor().newInstance();\n        } catch (Exception e) {\n            throw new IllegalArgumentException(e);\n        }\n\treturn new XmlFactory(_objectCodec, _xmlParserFeatures, _xmlGeneratorFeatures,\n\t\t\t      inf, outf, _cfgNameForTextElement);\n    }",
+        "distance": 2.5,
+        "title": null,
+        "name": "readResolve",
+        "documentation": "/**\n     * Method that we need to override to actually make restoration go\n     * through constructors etc.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "XmlRootNameLookup"
+          },
+          {
+            "start_node": "XmlRootNameLookup",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "XmlRootNameLookup"
+          },
+          {
+            "start_node": "XmlRootNameLookup",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "readResolve"
+          }
+        ],
+        "similarity": 0.03985946937987711,
+        "end_line": 241,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlFactory.readResolve(): Object"
+      },
+      {
+        "start_line": 218,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static XmlMapper.Builder xmlBuilder() {\n        return new XmlMapper.Builder(new XmlMapper());\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "xmlBuilder",
+        "documentation": "/**\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "xmlBuilder"
+          }
+        ],
+        "similarity": 0.03734853385593202,
+        "end_line": 220,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.xmlBuilder(): XmlMapper"
+      },
+      {
+        "start_line": 248,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected TypeResolverBuilder<?> _constructDefaultTypeResolverBuilder(DefaultTyping applicability,",
+        "distance": 1.25,
+        "title": null,
+        "name": "_constructDefaultTypeResolverBuilder",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_constructDefaultTypeResolverBuilder"
+          }
+        ],
+        "similarity": 0.03567837985425286,
+        "end_line": 248,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper._constructDefaultTypeResolverBuilder(DefaultTyping applicability, PolymorphicTypeValidator ptv): TypeResolverBuilder"
+      },
+      {
+        "start_line": 361,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ToXmlGenerator createGenerator(XMLStreamWriter w) throws IOException {\n        return getFactory().createGenerator(w);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "createGenerator",
+        "documentation": "/**\n     * Overloaded variant that allows constructing {@link ToXmlGenerator}\n     * for given Stax {@link XMLStreamWriter}.\n     *\n     * @since 2.17\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "createGenerator"
+          }
+        ],
+        "similarity": 0.035454948876541034,
+        "end_line": 363,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.createGenerator(XMLStreamWriter w): ToXmlGenerator"
+      },
+      {
+        "start_line": 232,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static XmlMapper.Builder builder(XmlFactory streamFactory) {\n        return new XmlMapper.Builder(new XmlMapper(streamFactory));\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "builder",
+        "documentation": "/**\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "builder"
+          }
+        ],
+        "similarity": 0.035220394137881986,
+        "end_line": 234,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.builder(XmlFactory streamFactory): XmlMapper"
+      },
+      {
+        "start_line": 40,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/XmlDeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private XmlDeserializationContext(XmlDeserializationContext src,",
+        "distance": 2.25,
+        "title": null,
+        "name": "XmlDeserializationContext",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "XmlDeserializationContext"
+          },
+          {
+            "start_node": "XmlDeserializationContext",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "XmlDeserializationContext"
+          },
+          {
+            "start_node": "XmlDeserializationContext",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "XmlDeserializationContext"
+          }
+        ],
+        "similarity": 0.03512705153325126,
+        "end_line": 40,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.XmlDeserializationContext(XmlDeserializationContext src, DeserializationConfig config, JsonParser p, InjectableValues values)"
+      },
+      {
+        "start_line": 59,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/XmlSerializerProvider.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected XmlSerializerProvider(XmlSerializerProvider src) {\n        super(src);\n        // 21-May-2018, tatu: As per [dataformat-xml#282], should NOT really copy\n        //    root name lookup as that may link back to diff version, configuration\n        _rootNameLookup = new XmlRootNameLookup();\n    }",
+        "distance": 2.25,
+        "title": null,
+        "name": "XmlSerializerProvider",
+        "documentation": "/**\n     * @since 2.8.9\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "XmlSerializerProvider"
+          },
+          {
+            "start_node": "XmlSerializerProvider",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "XmlSerializerProvider"
+          },
+          {
+            "start_node": "XmlSerializerProvider",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "XmlSerializerProvider"
+          }
+        ],
+        "similarity": 0.03486090365355303,
+        "end_line": 64,
+        "signature": "com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider(XmlSerializerProvider src)"
+      },
+      {
+        "start_line": 270,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void setXMLTextElementName(String name) {\n        getFactory().setXMLTextElementName(name);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "setXMLTextElementName",
+        "documentation": "/**\n     * Method called by {@link JacksonXmlModule} to pass configuration\n     * information to {@link XmlFactory}, during registration; NOT\n     * exposed as public method since configuration should be done\n     * via {@link JacksonXmlModule}.\n     * \n     * @since 2.1\n     *\n     * @deprecated Since 2.10 use {@link Builder#nameForTextElement(String)} instead\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setXMLTextElementName"
+          }
+        ],
+        "similarity": 0.034423600700024586,
+        "end_line": 272,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.setXMLTextElementName(String name): void"
+      },
+      {
+        "start_line": 294,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void setXmlNameProcessor(XmlNameProcessor processor) {\n        getFactory().setXmlNameProcessor(processor);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "setXmlNameProcessor",
+        "documentation": "/**\n     * @since 2.14\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setXmlNameProcessor"
+          }
+        ],
+        "similarity": 0.03441272206702153,
+        "end_line": 296,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.setXmlNameProcessor(XmlNameProcessor processor): void"
+      },
+      {
+        "start_line": 247,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/XmlSerializerProvider.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _serializeXmlNull(JsonGenerator gen) throws IOException",
+        "distance": 2.75,
+        "title": null,
+        "name": "_serializeXmlNull",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "XmlSerializerProvider"
+          },
+          {
+            "start_node": "XmlSerializerProvider",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "XmlSerializerProvider"
+          },
+          {
+            "start_node": "XmlSerializerProvider",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "_serializeXmlNull"
+          }
+        ],
+        "similarity": 0.033544051539620465,
+        "end_line": 247,
+        "signature": "com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider._serializeXmlNull(JsonGenerator gen): void"
+      },
+      {
+        "start_line": 209,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public XmlMapper copy()",
+        "distance": 1.25,
+        "title": null,
+        "name": "copy",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "XmlFactory"
+          },
+          {
+            "start_node": "XmlFactory",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "XmlFactory"
+          },
+          {
+            "start_node": "XmlFactory",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "copy"
+          }
+        ],
+        "similarity": 0.03352464387181272,
+        "end_line": 209,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.copy(): XmlMapper"
+      },
+      {
+        "start_line": 314,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/XmlSerializerProvider.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _serializeUnwrappedObjectNode(ToXmlGenerator xgen, Object value,",
+        "distance": 2.75,
+        "title": null,
+        "name": "_serializeUnwrappedObjectNode",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "XmlSerializerProvider"
+          },
+          {
+            "start_node": "XmlSerializerProvider",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "XmlSerializerProvider"
+          },
+          {
+            "start_node": "XmlSerializerProvider",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_serializeUnwrappedObjectNode"
+          }
+        ],
+        "similarity": 0.03202801136255441,
+        "end_line": 314,
+        "signature": "com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider._serializeUnwrappedObjectNode(ToXmlGenerator xgen, Object value, JsonSerializer ser): void"
+      },
+      {
+        "start_line": 101,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlFactory.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public XmlFactory(ObjectCodec oc, XMLInputFactory xmlIn, XMLOutputFactory xmlOut)",
+        "distance": 2.0,
+        "title": null,
+        "name": "XmlFactory",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "XmlFactory"
+          }
+        ],
+        "similarity": 0.030803597579652144,
+        "end_line": 101,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlFactory(ObjectCodec oc, XMLInputFactory xmlIn, XMLOutputFactory xmlOut)"
+      },
+      {
+        "start_line": 112,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlFactoryBuilder.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected XMLInputFactory defaultInputFactory() {\n        XMLInputFactory xmlIn = StaxUtil.defaultInputFactory(_classLoaderForStax);\n        // as per [dataformat-xml#190], disable external entity expansion by default\n        xmlIn.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);\n        // and ditto wrt [dataformat-xml#211], SUPPORT_DTD\n        xmlIn.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);\n        return xmlIn;\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "defaultInputFactory",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          },
+          {
+            "start_node": "disable",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "configure"
+          },
+          {
+            "start_node": "configure",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "XmlFactoryBuilder"
+          },
+          {
+            "start_node": "XmlFactoryBuilder",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "defaultInputFactory"
+          }
+        ],
+        "similarity": 0.03058323875542473,
+        "end_line": 119,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlFactoryBuilder.defaultInputFactory(): XMLInputFactory"
+      },
+      {
+        "start_line": 1183,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public NumberTypeFP getNumberTypeFP() throws IOException {\n        return NumberTypeFP.UNKNOWN;\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "getNumberTypeFP",
+        "documentation": "/**\n     * XML has no notion of natural/native floating-point type (has to be\n     * provided externally via Schema or so), so need to ensure we indicate that.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          },
+          {
+            "start_node": "disable",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "configure"
+          },
+          {
+            "start_node": "configure",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getNumberTypeFP"
+          }
+        ],
+        "similarity": 0.029536722577724404,
+        "end_line": 1185,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.getNumberTypeFP(): NumberTypeFP"
+      },
+      {
+        "start_line": 1257,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public double getDoubleValue() throws IOException {\n        if ((_numTypesValid & NR_DOUBLE) == 0) {\n            if (_numTypesValid == NR_UNKNOWN) {\n                _checkNumericValue(NR_DOUBLE);\n            }\n        }\n        return _convertNumberToDouble();\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "getDoubleValue",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          },
+          {
+            "start_node": "disable",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "configure"
+          },
+          {
+            "start_node": "configure",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getDoubleValue"
+          }
+        ],
+        "similarity": 0.029430001472247405,
+        "end_line": 1264,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.getDoubleValue(): double"
+      },
+      {
+        "start_line": 1371,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected double _convertNumberToDouble() throws IOException",
+        "distance": 2.75,
+        "title": null,
+        "name": "_convertNumberToDouble",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          },
+          {
+            "start_node": "disable",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "configure"
+          },
+          {
+            "start_node": "configure",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_convertNumberToDouble"
+          }
+        ],
+        "similarity": 0.028757621249033905,
+        "end_line": 1371,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser._convertNumberToDouble(): double"
+      },
+      {
+        "start_line": 39,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/util/XmlRootNameLookup.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected Object readResolve() {\n        // just need to make 100% sure it gets set to non-null, that's all\n        // 05-Jan-2020, tatu: How is that possibly, you ask? JDK serialization, that's how\n        //   (it by-passes calls to constructors, as well as initializers)\n        //   ... and if you don't believe, try commenting it out and see test failure you get\n        if (_rootNames == null) {\n            return new XmlRootNameLookup();\n        }\n        return this;\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "readResolve",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "XmlRootNameLookup"
+          },
+          {
+            "start_node": "XmlRootNameLookup",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "XmlRootNameLookup"
+          },
+          {
+            "start_node": "XmlRootNameLookup",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "readResolve"
+          }
+        ],
+        "similarity": 0.028617556166449436,
+        "end_line": 48,
+        "signature": "com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup.readResolve(): Object"
+      },
+      {
+        "start_line": 776,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void writeRawValue(String text) throws IOException {\n        // [dataformat-xml#39]\n        if (_stax2Emulation) {\n            _reportUnimplementedStax2(\"writeRawValue\");\n        }\n        try {\n            _verifyValueWrite(\"write raw value\");\n            if (_nextName == null) {\n                handleMissingName();\n            }\n\n            if (_nextIsAttribute) {\n                _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), text);\n            } else if (checkNextIsUnwrapped()) {\n                _xmlWriter.writeRaw(text);\n            } else {\n                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());\n                _xmlWriter.writeRaw(text);\n                _xmlWriter.writeEndElement();\n            }\n        } catch (XMLStreamException e) {\n            StaxUtil.throwAsGenerationException(e, this);\n        }\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "writeRawValue",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          },
+          {
+            "start_node": "disable",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "configure"
+          },
+          {
+            "start_node": "configure",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ToXmlGenerator"
+          },
+          {
+            "start_node": "ToXmlGenerator",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "writeRawValue"
+          }
+        ],
+        "similarity": 0.02848568087140409,
+        "end_line": 799,
+        "signature": "com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator.writeRawValue(String text): void"
+      },
+      {
+        "start_line": 259,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlFactory.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private void writeObject(ObjectOutputStream out) throws IOException {\n        out.defaultWriteObject();\n        out.writeUTF(_xmlInputFactory.getClass().getName());\n        out.writeUTF(_xmlOutputFactory.getClass().getName());\n    }",
+        "distance": 2.5,
+        "title": null,
+        "name": "writeObject",
+        "documentation": "/**\n     * In addition to default serialization, which mostly works, need\n     * to handle case of XML factories, hence override.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "XmlFactory"
+          },
+          {
+            "start_node": "XmlFactory",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "XmlFactory"
+          },
+          {
+            "start_node": "XmlFactory",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "writeObject"
+          }
+        ],
+        "similarity": 0.028169606630474624,
+        "end_line": 263,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlFactory.writeObject(ObjectOutputStream out): void"
+      },
+      {
+        "start_line": 128,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlFactoryBuilder.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected XMLOutputFactory defaultOutputFactory() {\n        XMLOutputFactory xmlOut = StaxUtil.defaultOutputFactory(_classLoaderForStax);\n        // [dataformat-xml#326]: Better ensure namespaces get built properly:\n        xmlOut.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);\n        return xmlOut;\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "defaultOutputFactory",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          },
+          {
+            "start_node": "disable",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "configure"
+          },
+          {
+            "start_node": "configure",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "XmlFactoryBuilder"
+          },
+          {
+            "start_node": "XmlFactoryBuilder",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "defaultOutputFactory"
+          }
+        ],
+        "similarity": 0.028101735161323773,
+        "end_line": 133,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlFactoryBuilder.defaultOutputFactory(): XMLOutputFactory"
+      },
+      {
+        "start_line": 225,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static XmlMapper.Builder builder() {\n        return new XmlMapper.Builder(new XmlMapper());\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "builder",
+        "documentation": "/**\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "builder"
+          }
+        ],
+        "similarity": 0.027956220675701717,
+        "end_line": 227,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlMapper.builder(): XmlMapper"
+      },
+      {
+        "start_line": 306,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/XmlSerializerProvider.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected boolean _shouldUnwrapObjectNode(ToXmlGenerator xgen, Object value)",
+        "distance": 2.75,
+        "title": null,
+        "name": "_shouldUnwrapObjectNode",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "XmlSerializerProvider"
+          },
+          {
+            "start_node": "XmlSerializerProvider",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "XmlSerializerProvider"
+          },
+          {
+            "start_node": "XmlSerializerProvider",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "_shouldUnwrapObjectNode"
+          }
+        ],
+        "similarity": 0.027589331080864324,
+        "end_line": 306,
+        "signature": "com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider._shouldUnwrapObjectNode(ToXmlGenerator xgen, Object value): boolean"
+      },
+      {
+        "start_line": 1354,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected float _convertNumberToFloat() throws IOException",
+        "distance": 2.75,
+        "title": null,
+        "name": "_convertNumberToFloat",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          },
+          {
+            "start_node": "disable",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "configure"
+          },
+          {
+            "start_node": "configure",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_convertNumberToFloat"
+          }
+        ],
+        "similarity": 0.026708047958845,
+        "end_line": 1354,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser._convertNumberToFloat(): float"
+      },
+      {
+        "start_line": 425,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonParser overrideFormatFeatures(int values, int mask) {\n        _formatFeatures = (_formatFeatures & ~mask) | (values & mask);\n        _xmlTokens.setFormatFeatures(_formatFeatures);\n        return this;\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "overrideFormatFeatures",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          },
+          {
+            "start_node": "disable",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "configure"
+          },
+          {
+            "start_node": "configure",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "overrideFormatFeatures"
+          }
+        ],
+        "similarity": 0.026594498880879815,
+        "end_line": 429,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.overrideFormatFeatures(int values, int mask): JsonParser"
+      },
+      {
+        "start_line": 1466,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _skipEndElement() throws IOException {\n        try {\n            _xmlTokens.skipEndElement();\n        } catch (XMLStreamException e) {\n            StaxUtil.throwAsParseException(e, this);\n        } catch (Exception e) {\n            throw new JsonParseException(this, e.getMessage(), e);\n        }\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "_skipEndElement",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          },
+          {
+            "start_node": "disable",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "configure"
+          },
+          {
+            "start_node": "configure",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "FromXmlParser"
+          },
+          {
+            "start_node": "FromXmlParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_skipEndElement"
+          }
+        ],
+        "similarity": 0.026515103965826955,
+        "end_line": 1474,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser._skipEndElement(): void"
+      },
+      {
+        "start_line": 41,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/XmlSerializerProvider.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public XmlSerializerProvider(XmlSerializerProvider src,",
+        "distance": 2.75,
+        "title": null,
+        "name": "XmlSerializerProvider",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "XmlSerializerProvider"
+          },
+          {
+            "start_node": "XmlSerializerProvider",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "XmlSerializerProvider"
+          },
+          {
+            "start_node": "XmlSerializerProvider",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "XmlSerializerProvider"
+          }
+        ],
+        "similarity": 0.026184632016159268,
+        "end_line": 41,
+        "signature": "com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider(XmlSerializerProvider src, SerializationConfig config, SerializerFactory f)"
+      },
+      {
+        "start_line": 134,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/XmlSerializerProvider.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void serializeValue(JsonGenerator gen, Object value, JavaType rootType) throws IOException",
+        "distance": 2.75,
+        "title": null,
+        "name": "serializeValue",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "XmlSerializerProvider"
+          },
+          {
+            "start_node": "XmlSerializerProvider",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "XmlSerializerProvider"
+          },
+          {
+            "start_node": "XmlSerializerProvider",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "serializeValue"
+          }
+        ],
+        "similarity": 0.026150820137279984,
+        "end_line": 134,
+        "signature": "com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider.serializeValue(JsonGenerator gen, Object value, JavaType rootType): void"
+      },
+      {
+        "start_line": 193,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/XmlFactory.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public XmlFactory copy() {\n        _checkInvalidCopy(XmlFactory.class);\n        return new XmlFactory(this, null);\n    }",
+        "distance": 2.5,
+        "title": null,
+        "name": "copy",
+        "documentation": "/**\n     * Note: compared to base implementation by {@link JsonFactory},\n     * here the copy will actually share underlying XML input and\n     * output factories, as there is no way to make copies of those.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "XmlFactory"
+          },
+          {
+            "start_node": "XmlFactory",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "XmlFactory"
+          },
+          {
+            "start_node": "XmlFactory",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "copy"
+          }
+        ],
+        "similarity": 0.02604909656765546,
+        "end_line": 196,
+        "signature": "com.fasterxml.jackson.dataformat.xml.XmlFactory.copy(): XmlFactory"
+      },
+      {
+        "start_line": 72,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/XmlDeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public DefaultDeserializationContext createDummyInstance(DeserializationConfig config) {\n        // need to be careful to create non-blue-print instance\n        return new XmlDeserializationContext(this, config);\n    }",
+        "distance": 2.75,
+        "title": null,
+        "name": "createDummyInstance",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "XmlDeserializationContext"
+          },
+          {
+            "start_node": "XmlDeserializationContext",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "XmlDeserializationContext"
+          },
+          {
+            "start_node": "XmlDeserializationContext",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "createDummyInstance"
+          }
+        ],
+        "similarity": 0.02591573908835542,
+        "end_line": 75,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.XmlDeserializationContext.createDummyInstance(DeserializationConfig config): DefaultDeserializationContext"
+      },
+      {
+        "start_line": 45,
+        "file_path": "playground/fasterxml__jackson-dataformat-xml/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/XmlDeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private XmlDeserializationContext(XmlDeserializationContext src) { super(src); }",
+        "distance": 2.75,
+        "title": null,
+        "name": "XmlDeserializationContext",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "XmlMapper"
+          },
+          {
+            "start_node": "XmlMapper",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "XmlDeserializationContext"
+          },
+          {
+            "start_node": "XmlDeserializationContext",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "XmlDeserializationContext"
+          },
+          {
+            "start_node": "XmlDeserializationContext",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "XmlDeserializationContext"
+          }
+        ],
+        "similarity": 0.025862239938934495,
+        "end_line": 45,
+        "signature": "com.fasterxml.jackson.dataformat.xml.deser.XmlDeserializationContext(XmlDeserializationContext src)"
+      }
+    ],
+    "classes": [],
+    "issues": [
+      {
+        "content": "As of version 2.16.1, infinite values of `float` and `double` are serialized in a way that is incompatible with [the XML Schema definition](https://www.w3.org/TR/xmlschema-2/#double) and JAXB. Specifically, jackson-dataformat-xml serializes these values as the strings `Infinity` or `-Infinity`. XML Schema, however, says they should be serialized as `INF` or `-INF`, and that is what JAXB does.\r\n\r\n<details>\r\n<summary>Example program (click to show)</summary>\r\n\r\n```java\r\npackage org.example;\r\n\r\nimport com.fasterxml.jackson.core.JsonProcessingException;\r\nimport com.fasterxml.jackson.dataformat.xml.XmlMapper;\r\nimport java.io.IOException;\r\nimport java.io.StringReader;\r\nimport java.io.StringWriter;\r\nimport javax.xml.bind.JAXB;\r\nimport javax.xml.bind.annotation.XmlElement;\r\nimport javax.xml.bind.annotation.XmlRootElement;\r\n\r\npublic class Main {\r\n\tpublic static void main(String[] args) throws IOException {\r\n\t\tExampleObject original, deserialized;\r\n\t\tString serialized;\r\n\r\n\t\toriginal = new ExampleObject();\r\n\t\toriginal.x = Double.POSITIVE_INFINITY;\r\n\t\toriginal.y = Double.NEGATIVE_INFINITY;\r\n\t\toriginal.z = Double.NaN;\r\n\t\toriginal.fx = Float.POSITIVE_INFINITY;\r\n\t\toriginal.fy = Float.NEGATIVE_INFINITY;\r\n\t\toriginal.fz = Float.NaN;\r\n\r\n\t\tSystem.out.println(\"--- Jackson serialization ---\");\r\n\t\tserialized = serializeWithJackson(original);\r\n\t\tSystem.out.println(serialized);\r\n\r\n\t\tSystem.out.println(\"--- Jackson deserialization ---\");\r\n\t\tdeserialized = deserializeWithJackson(serialized);\r\n\t\tSystem.out.println(deserialized);\r\n\r\n\t\tSystem.out.println(\"--- JAXB serialization ---\");\r\n\t\tserialized = serializeWithJaxb(original);\r\n\t\tSystem.out.println(serialized);\r\n\r\n\t\tSystem.out.println(\"--- JAXB deserialization ---\");\r\n\t\tdeserialized = deserializeWithJaxb(serialized);\r\n\t\tSystem.out.println(deserialized);\r\n\r\n\t\tSystem.out.println(\"--- serialized with JAXB, deserialized with Jackson ---\");\r\n\t\tdeserialized = deserializeWithJackson(serialized);\r\n\t\tSystem.out.println(deserialized);\r\n\r\n\t\tSystem.out.println(\"--- serialized with Jackson, deserialized with JAXB ---\");\r\n\t\tserialized = serializeWithJackson(original);\r\n\t\tdeserialized = deserializeWithJaxb(serialized);\r\n\t\tSystem.out.println(deserialized);\r\n\t}\r\n\r\n\tprivate static String serializeWithJackson(ExampleObject object) throws IOException {\r\n\t\tvar buf = new StringWriter();\r\n\t\tnew XmlMapper().writeValue(buf, object);\r\n\t\treturn buf.toString();\r\n\t}\r\n\r\n\tprivate static ExampleObject deserializeWithJackson(String xml) throws JsonProcessingException {\r\n\t\treturn new XmlMapper().readValue(xml, ExampleObject.class);\r\n\t}\r\n\r\n\tprivate static String serializeWithJaxb(ExampleObject object) {\r\n\t\tvar buf = new StringWriter();\r\n\t\tJAXB.marshal(object, buf);\r\n\t\treturn buf.toString();\r\n\t}\r\n\r\n\tprivate static ExampleObject deserializeWithJaxb(String xml) {\r\n\t\treturn JAXB.unmarshal(new StringReader(xml), ExampleObject.class);\r\n\t}\r\n}\r\n\r\n@XmlRootElement(name = \"example\")\r\nclass ExampleObject {\r\n\t@XmlElement\r\n\tpublic double x, y, z;\r\n\r\n\t@XmlElement\r\n\tpublic float fx, fy, fz;\r\n\r\n\t@Override\r\n\tpublic String toString() {\r\n\t\treturn String.format(\"x=%f y=%f z=%f fx=%f fy=%f fz=%f\", x, y, z, fx, fy, fz);\r\n\t}\r\n}\r\n```\r\n\r\n</details>\r\n\r\n<details>\r\n<summary>Maven POM for example program (click to show)</summary>\r\n\r\n```xml\r\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\r\n\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n\txsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\r\n\t<modelVersion>4.0.0</modelVersion>\r\n\r\n\t<groupId>org.example</groupId>\r\n\t<artifactId>jackson-xml-double</artifactId>\r\n\t<version>1.0-SNAPSHOT</version>\r\n\r\n\t<properties>\r\n\t\t<maven.compiler.source>17</maven.compiler.source>\r\n\t\t<maven.compiler.target>17</maven.compiler.target>\r\n\t\t<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>\r\n\t</properties>\r\n\r\n\t<dependencies>\r\n\t\t<dependency>\r\n\t\t\t<groupId>com.fasterxml.jackson.core</groupId>\r\n\t\t\t<artifactId>jackson-databind</artifactId>\r\n\t\t\t<version>2.16.1</version>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>com.fasterxml.jackson.core</groupId>\r\n\t\t\t<artifactId>jackson-annotations</artifactId>\r\n\t\t\t<version>2.16.1</version>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>com.fasterxml.jackson.dataformat</groupId>\r\n\t\t\t<artifactId>jackson-dataformat-xml</artifactId>\r\n\t\t\t<version>2.16.1</version>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>javax.xml.bind</groupId>\r\n\t\t\t<artifactId>jaxb-api</artifactId>\r\n\t\t\t<version>2.3.0</version>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.glassfish.jaxb</groupId>\r\n\t\t\t<artifactId>jaxb-runtime</artifactId>\r\n\t\t\t<version>2.3.3</version>\r\n\t\t</dependency>\r\n\t</dependencies>\r\n</project>\r\n```\r\n\r\n</details>\r\n\r\n<details>\r\n<summary>Output from example program (click to show)</summary>\r\n\r\n```\r\n--- Jackson serialization ---\r\n<ExampleObject><x>Infinity</x><y>-Infinity</y><z>NaN</z><fx>Infinity</fx><fy>-Infinity</fy><fz>NaN</fz></ExampleObject>\r\n--- Jackson deserialization ---\r\nx=Infinity y=-Infinity z=NaN fx=Infinity fy=-Infinity fz=NaN\r\n--- JAXB serialization ---\r\n<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n<example>\r\n    <x>INF</x>\r\n    <y>-INF</y>\r\n    <z>NaN</z>\r\n    <fx>INF</fx>\r\n    <fy>-INF</fy>\r\n    <fz>NaN</fz>\r\n</example>\r\n\r\n--- JAXB deserialization ---\r\nx=Infinity y=-Infinity z=NaN fx=Infinity fy=-Infinity fz=NaN\r\n--- serialized with JAXB, deserialized with Jackson ---\r\nx=Infinity y=-Infinity z=NaN fx=Infinity fy=-Infinity fz=NaN\r\n--- serialized with Jackson, deserialized with JAXB ---\r\nx=0.000000 y=0.000000 z=NaN fx=0.000000 fy=0.000000 fz=NaN\r\n```\r\n\r\n</details>\r\n\r\nAs the example program's output shows, Jackson understands both its own format and the XML Schema format for floating-point infinity. JAXB, however, understands only the XML Schema format, and fails to parse Jackson's format.\r\n\r\nThe problem seems to be that jackson-dataformat-xml calls [`TypedXMLStreamWriter` methods](https://github.com/FasterXML/jackson-dataformat-xml/blob/\nCommit: 7101dc8bfb2d90290dced0d128d323a013853ace\nAuthor: Tatu Saloranta\nDate: 2023-12-24 05:31:23+00:00\n\nMessage:\n[maven-release-plugin] prepare release jackson-dataformat-xml-2.16.1\n\nModified files:\n- Modified: pom.xml\n   Added: 3 lines\n   Removed: 3 lines\n/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java#L1158) to serialize floating-point values, which ultimately uses [`NumberUtil.write{Float,Double}` from StAX2](https://github.com/FasterXML/stax2-api/blob/Cannot get information of commit 67d598842d99266a43d7ecf839c2b1f0f70f2bdc/src/main/java/org/codehaus/stax2/ri/typed/NumberUtil.java#L322), which in turn uses `java.lang.String.valueOf` to serialize the number, without any special handling of infinity.\r\n\r\n**De**serialization of XML Schema-formatted numbers seems to work correctly. Only serialization has an issue.\r\n\r\nThis issue only affects positive and negative infinity. `java.lang.String.valueOf` differs from XML Schema only in how it represents infinity; it uses the same format as XML Schema for NaN and finite values.\nXML serialization of floating-point infinity is incompatible with JAXB and XML Schema\nAs of version 2.16.1, infinite values of `float` and `double` are serialized in a way that is incompatible with [the XML Schema definition](https://www.w3.org/TR/xmlschema-2/#double) and JAXB. Specifically, jackson-dataformat-xml serializes these values as the strings `Infinity` or `-Infinity`. XML Schema, however, says they should be serialized as `INF` or `-INF`, and that is what JAXB does.\r\n\r\n<details>\r\n<summary>Example program (click to show)</summary>\r\n\r\n```java\r\npackage org.example;\r\n\r\nimport com.fasterxml.jackson.core.JsonProcessingException;\r\nimport com.fasterxml.jackson.dataformat.xml.XmlMapper;\r\nimport java.io.IOException;\r\nimport java.io.StringReader;\r\nimport java.io.StringWriter;\r\nimport javax.xml.bind.JAXB;\r\nimport javax.xml.bind.annotation.XmlElement;\r\nimport javax.xml.bind.annotation.XmlRootElement;\r\n\r\npublic class Main {\r\n\tpublic static void main(String[] args) throws IOException {\r\n\t\tExampleObject original, deserialized;\r\n\t\tString serialized;\r\n\r\n\t\toriginal = new ExampleObject();\r\n\t\toriginal.x = Double.POSITIVE_INFINITY;\r\n\t\toriginal.y = Double.NEGATIVE_INFINITY;\r\n\t\toriginal.z = Double.NaN;\r\n\t\toriginal.fx = Float.POSITIVE_INFINITY;\r\n\t\toriginal.fy = Float.NEGATIVE_INFINITY;\r\n\t\toriginal.fz = Float.NaN;\r\n\r\n\t\tSystem.out.println(\"--- Jackson serialization ---\");\r\n\t\tserialized = serializeWithJackson(original);\r\n\t\tSystem.out.println(serialized);\r\n\r\n\t\tSystem.out.println(\"--- Jackson deserialization ---\");\r\n\t\tdeserialized = deserializeWithJackson(serialized);\r\n\t\tSystem.out.println(deserialized);\r\n\r\n\t\tSystem.out.println(\"--- JAXB serialization ---\");\r\n\t\tserialized = serializeWithJaxb(original);\r\n\t\tSystem.out.println(serialized);\r\n\r\n\t\tSystem.out.println(\"--- JAXB deserialization ---\");\r\n\t\tdeserialized = deserializeWithJaxb(serialized);\r\n\t\tSystem.out.println(deserialized);\r\n\r\n\t\tSystem.out.println(\"--- serialized with JAXB, deserialized with Jackson ---\");\r\n\t\tdeserialized = deserializeWithJackson(serialized);\r\n\t\tSystem.out.println(deserialized);\r\n\r\n\t\tSystem.out.println(\"--- serialized with Jackson, deserialized with JAXB ---\");\r\n\t\tserialized = serializeWithJackson(original);\r\n\t\tdeserialized = deserializeWithJaxb(serialized);\r\n\t\tSystem.out.println(deserialized);\r\n\t}\r\n\r\n\tprivate static String serializeWithJackson(ExampleObject object) throws IOException {\r\n\t\tvar buf = new StringWriter();\r\n\t\tnew XmlMapper().writeValue(buf, object);\r\n\t\treturn buf.toString();\r\n\t}\r\n\r\n\tprivate static ExampleObject deserializeWithJackson(String xml) throws JsonProcessingException {\r\n\t\treturn new XmlMapper().readValue(xml, ExampleObject.class);\r\n\t}\r\n\r\n\tprivate static String serializeWithJaxb(ExampleObject object) {\r\n\t\tvar buf = new StringWriter();\r\n\t\tJAXB.marshal(object, buf);\r\n\t\treturn buf.toString();\r\n\t}\r\n\r\n\tprivate static ExampleObject deserializeWithJaxb(String xml) {\r\n\t\treturn JAXB.unmarshal(new StringReader(xml), ExampleObject.class);\r\n\t}\r\n}\r\n\r\n@XmlRootElement(name = \"example\")\r\nclass ExampleObject {\r\n\t@XmlElement\r\n\tpublic double x, y, z;\r\n\r\n\t@XmlElement\r\n\tpublic float fx, fy, fz;\r\n\r\n\t@Override\r\n\tpublic String toString() {\r\n\t\treturn String.format(\"x=%f y=%f z=%f fx=%f fy=%f fz=%f\", x, y, z, fx, fy, fz);\r\n\t}\r\n}\r\n```\r\n\r\n</details>\r\n\r\n<details>\r\n<summary>Maven POM for example program (click to show)</summary>\r\n\r\n```xml\r\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\r\n\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n\txsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\r\n\t<modelVersion>4.0.0</modelVersion>\r\n\r\n\t<groupId>org.example</groupId>\r\n\t<artifactId>jackson-xml-double</artifactId>\r\n\t<version>1.0-SNAPSHOT</version>\r\n\r\n\t<properties>\r\n\t\t<maven.compiler.source>17</maven.compiler.source>\r\n\t\t<maven.compiler.target>17</maven.compiler.target>\r\n\t\t<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>\r\n\t</properties>\r\n\r\n\t<dependencies>\r\n\t\t<dependency>\r\n\t\t\t<groupId>com.fasterxml.jackson.core</groupId>\r\n\t\t\t<artifactId>jackson-databind</artifactId>\r\n\t\t\t<version>2.16.1</version>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>com.fasterxml.jackson.core</groupId>\r\n\t\t\t<artifactId>jackson-annotations</artifactId>\r\n\t\t\t<version>2.16.1</version>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>com.fasterxml.jackson.dataformat</groupId>\r\n\t\t\t<artifactId>jackson-dataformat-xml</artifactId>\r\n\t\t\t<version>2.16.1</version>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>javax.xml.bind</groupId>\r\n\t\t\t<artifactId>jaxb-api</artifactId>\r\n\t\t\t<version>2.3.0</version>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.glassfish.jaxb</groupId>\r\n\t\t\t<artifactId>jaxb-runtime</artifactId>\r\n\t\t\t<version>2.3.3</version>\r\n\t\t</dependency>\r\n\t</dependencies>\r\n</project>\r\n```\r\n\r\n</details>\r\n\r\n<details>\r\n<summary>Output from example program (click to show)</summary>\r\n\r\n```\r\n--- Jackson serialization ---\r\n<ExampleObject><x>Infinity</x><y>-Infinity</y><z>NaN</z><fx>Infinity</fx><fy>-Infinity</fy><fz>NaN</fz></ExampleObject>\r\n--- Jackson deserialization ---\r\nx=Infinity y=-Infinity z=NaN fx=Infinity fy=-Infinity fz=NaN\r\n--- JAXB serialization ---\r\n<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n<example>\r\n    <x>INF</x>\r\n    <y>-INF</y>\r\n    <z>NaN</z>\r\n    <fx>INF</fx>\r\n    <fy>-INF</fy>\r\n    <fz>NaN</fz>\r\n</example>\r\n\r\n--- JAXB deserialization ---\r\nx=Infinity y=-Infinity z=NaN fx=Infinity fy=-Infinity fz=NaN\r\n--- serialized with JAXB, deserialized with Jackson ---\r\nx=Infinity y=-Infinity z=NaN fx=Infinity fy=-Infinity fz=NaN\r\n--- serialized with Jackson, deserialized with JAXB ---\r\nx=0.000000 y=0.000000 z=NaN fx=0.000000 fy=0.000000 fz=NaN\r\n```\r\n\r\n</details>\r\n\r\nAs the example program's output shows, Jackson understands both its own format and the XML Schema format for floating-point infinity. JAXB, however, understands only the XML Schema format, and fails to parse Jackson's format.\r\n\r\nThe problem seems to be that jackson-dataformat-xml calls [`TypedXMLStreamWriter` methods](https://github.com/FasterXML/jackson-dataformat-xml/blob/\nCommit: 7101dc8bfb2d90290dced0d128d323a013853ace\nAuthor: Tatu Saloranta\nDate: 2023-12-24 05:31:23+00:00\n\nMessage:\n[maven-release-plugin] prepare release jackson-dataformat-xml-2.16.1\n\nModified files:\n- Modified: pom.xml\n   Added: 3 lines\n   Removed: 3 lines\n/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java#L1158) to serialize floating-point values, which ultimately uses [`NumberUtil.write{Float,Double}` from StAX2](https://github.com/FasterXML/stax2-api/blob/Cannot get information of commit 67d598842d99266a43d7ecf839c2b1f0f70f2bdc/src/main/java/org/codehaus/stax2/ri/typed/NumberUtil.java#L322), which in turn uses `java.lang.String.valueOf` to serialize the number, without any special handling of infinity.\r\n\r\n**De**serialization of XML Schema-formatted numbers seems to work correctly. Only serialization has an issue.\r\n\r\nThis issue only affects positive and negative infinity. `java.lang.String.valueOf` differs from XML Schema only in how it represents infinity; it uses the same format as XML Schema for NaN and finite values.\n",
+        "distance": 0,
+        "title": "XML serialization of floating-point infinity is incompatible with JAXB and XML Schema",
+        "name": "root",
+        "path": [],
+        "issue_id": "root",
+        "similarity": 2.0,
+        "type": "issue"
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "643",
+        "type": "issue",
+        "content": "As of version 2.16.1, infinite values of `float` and `double` are serialized in a way that is incompatible with [the XML Schema definition](https://www.w3.org/TR/xmlschema-2/#double) and JAXB. Specifically, jackson-dataformat-xml serializes these values as the strings `Infinity` or `-Infinity`. XML Schema, however, says they should be serialized as `INF` or `-INF`, and that is what JAXB does.\r\n\r\n<details>\r\n<summary>Example program (click to show)</summary>\r\n\r\n```java\r\npackage org.example;\r\n\r\nimport com.fasterxml.jackson.core.JsonProcessingException;\r\nimport com.fasterxml.jackson.dataformat.xml.XmlMapper;\r\nimport java.io.IOException;\r\nimport java.io.StringReader;\r\nimport java.io.StringWriter;\r\nimport javax.xml.bind.JAXB;\r\nimport javax.xml.bind.annotation.XmlElement;\r\nimport javax.xml.bind.annotation.XmlRootElement;\r\n\r\npublic class Main {\r\n\tpublic static void main(String[] args) throws IOException {\r\n\t\tExampleObject original, deserialized;\r\n\t\tString serialized;\r\n\r\n\t\toriginal = new ExampleObject();\r\n\t\toriginal.x = Double.POSITIVE_INFINITY;\r\n\t\toriginal.y = Double.NEGATIVE_INFINITY;\r\n\t\toriginal.z = Double.NaN;\r\n\t\toriginal.fx = Float.POSITIVE_INFINITY;\r\n\t\toriginal.fy = Float.NEGATIVE_INFINITY;\r\n\t\toriginal.fz = Float.NaN;\r\n\r\n\t\tSystem.out.println(\"--- Jackson serialization ---\");\r\n\t\tserialized = serializeWithJackson(original);\r\n\t\tSystem.out.println(serialized);\r\n\r\n\t\tSystem.out.println(\"--- Jackson deserialization ---\");\r\n\t\tdeserialized = deserializeWithJackson(serialized);\r\n\t\tSystem.out.println(deserialized);\r\n\r\n\t\tSystem.out.println(\"--- JAXB serialization ---\");\r\n\t\tserialized = serializeWithJaxb(original);\r\n\t\tSystem.out.println(serialized);\r\n\r\n\t\tSystem.out.println(\"--- JAXB deserialization ---\");\r\n\t\tdeserialized = deserializeWithJaxb(serialized);\r\n\t\tSystem.out.println(deserialized);\r\n\r\n\t\tSystem.out.println(\"--- serialized with JAXB, deserialized with Jackson ---\");\r\n\t\tdeserialized = deserializeWithJackson(serialized);\r\n\t\tSystem.out.println(deserialized);\r\n\r\n\t\tSystem.out.println(\"--- serialized with Jackson, deserialized with JAXB ---\");\r\n\t\tserialized = serializeWithJackson(original);\r\n\t\tdeserialized = deserializeWithJaxb(serialized);\r\n\t\tSystem.out.println(deserialized);\r\n\t}\r\n\r\n\tprivate static String serializeWithJackson(ExampleObject object) throws IOException {\r\n\t\tvar buf = new StringWriter();\r\n\t\tnew XmlMapper().writeValue(buf, object);\r\n\t\treturn buf.toString();\r\n\t}\r\n\r\n\tprivate static ExampleObject deserializeWithJackson(String xml) throws JsonProcessingException {\r\n\t\treturn new XmlMapper().readValue(xml, ExampleObject.class);\r\n\t}\r\n\r\n\tprivate static String serializeWithJaxb(ExampleObject object) {\r\n\t\tvar buf = new StringWriter();\r\n\t\tJAXB.marshal(object, buf);\r\n\t\treturn buf.toString();\r\n\t}\r\n\r\n\tprivate static ExampleObject deserializeWithJaxb(String xml) {\r\n\t\treturn JAXB.unmarshal(new StringReader(xml), ExampleObject.class);\r\n\t}\r\n}\r\n\r\n@XmlRootElement(name = \"example\")\r\nclass ExampleObject {\r\n\t@XmlElement\r\n\tpublic double x, y, z;\r\n\r\n\t@XmlElement\r\n\tpublic float fx, fy, fz;\r\n\r\n\t@Override\r\n\tpublic String toString() {\r\n\t\treturn String.format(\"x=%f y=%f z=%f fx=%f fy=%f fz=%f\", x, y, z, fx, fy, fz);\r\n\t}\r\n}\r\n```\r\n\r\n</details>\r\n\r\n<details>\r\n<summary>Maven POM for example program (click to show)</summary>\r\n\r\n```xml\r\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\r\n\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n\txsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\r\n\t<modelVersion>4.0.0</modelVersion>\r\n\r\n\t<groupId>org.example</groupId>\r\n\t<artifactId>jackson-xml-double</artifactId>\r\n\t<version>1.0-SNAPSHOT</version>\r\n\r\n\t<properties>\r\n\t\t<maven.compiler.source>17</maven.compiler.source>\r\n\t\t<maven.compiler.target>17</maven.compiler.target>\r\n\t\t<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>\r\n\t</properties>\r\n\r\n\t<dependencies>\r\n\t\t<dependency>\r\n\t\t\t<groupId>com.fasterxml.jackson.core</groupId>\r\n\t\t\t<artifactId>jackson-databind</artifactId>\r\n\t\t\t<version>2.16.1</version>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>com.fasterxml.jackson.core</groupId>\r\n\t\t\t<artifactId>jackson-annotations</artifactId>\r\n\t\t\t<version>2.16.1</version>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>com.fasterxml.jackson.dataformat</groupId>\r\n\t\t\t<artifactId>jackson-dataformat-xml</artifactId>\r\n\t\t\t<version>2.16.1</version>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>javax.xml.bind</groupId>\r\n\t\t\t<artifactId>jaxb-api</artifactId>\r\n\t\t\t<version>2.3.0</version>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.glassfish.jaxb</groupId>\r\n\t\t\t<artifactId>jaxb-runtime</artifactId>\r\n\t\t\t<version>2.3.3</version>\r\n\t\t</dependency>\r\n\t</dependencies>\r\n</project>\r\n```\r\n\r\n</details>\r\n\r\n<details>\r\n<summary>Output from example program (click to show)</summary>\r\n\r\n```\r\n--- Jackson serialization ---\r\n<ExampleObject><x>Infinity</x><y>-Infinity</y><z>NaN</z><fx>Infinity</fx><fy>-Infinity</fy><fz>NaN</fz></ExampleObject>\r\n--- Jackson deserialization ---\r\nx=Infinity y=-Infinity z=NaN fx=Infinity fy=-Infinity fz=NaN\r\n--- JAXB serialization ---\r\n<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n<example>\r\n    <x>INF</x>\r\n    <y>-INF</y>\r\n    <z>NaN</z>\r\n    <fx>INF</fx>\r\n    <fy>-INF</fy>\r\n    <fz>NaN</fz>\r\n</example>\r\n\r\n--- JAXB deserialization ---\r\nx=Infinity y=-Infinity z=NaN fx=Infinity fy=-Infinity fz=NaN\r\n--- serialized with JAXB, deserialized with Jackson ---\r\nx=Infinity y=-Infinity z=NaN fx=Infinity fy=-Infinity fz=NaN\r\n--- serialized with Jackson, deserialized with JAXB ---\r\nx=0.000000 y=0.000000 z=NaN fx=0.000000 fy=0.000000 fz=NaN\r\n```\r\n\r\n</details>\r\n\r\nAs the example program's output shows, Jackson understands both its own format and the XML Schema format for floating-point infinity. JAXB, however, understands only the XML Schema format, and fails to parse Jackson's format.\r\n\r\nThe problem seems to be that jackson-dataformat-xml calls [`TypedXMLStreamWriter` methods](https://github.com/FasterXML/jackson-dataformat-xml/blob/7101dc8bfb2d90290dced0d128d323a013853ace/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java#L1158) to serialize floating-point values, which ultimately uses [`NumberUtil.write{Float,Double}` from StAX2](https://github.com/FasterXML/stax2-api/blob/67d598842d99266a43d7ecf839c2b1f0f70f2bdc/src/main/java/org/codehaus/stax2/ri/typed/NumberUtil.java#L322), which in turn uses `java.lang.String.valueOf` to serialize the number, without any special handling of infinity.\r\n\r\n**De**serialization of XML Schema-formatted numbers seems to work correctly. Only serialization has an issue.\r\n\r\nThis issue only affects positive and negative infinity. `java.lang.String.valueOf` differs from XML Schema only in how it represents infinity; it uses the same format as XML Schema for NaN and finite values.\n\n\nComment by cowtowncoder:\nJackson XML module is neither JAXB implementation, nor make any use of XML Schema.\r\nSo in that sense expected behavior is not necessarily same.\r\n\r\nHaving said that, if anyone has time to come up with a PR I'd be happy to help get that merged -- the only (?) requirement would be to have new `ToXMLGenerator.Feature` for enabling different serialization: this is needed for backwards compatibility.\r\n\r\n\r\n",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "XML serialization of floating-point infinity is incompatible with JAXB and XML Schema",
+        "name": "issue#643",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#643"
+          }
+        ],
+        "similarity": 0.8801117367933934,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "644",
+        "type": "issue",
+        "content": "This PR adds a `ToXmlGenerator.Feature` to use XML Schema-compatible representation for floating-point infinity.\r\n\r\nFixes #643.\n\n",
+        "source_code": null,
+        "distance": 0.5,
+        "title": "Fix #643: Add `ToXmlGenerator.Feature` or allowing XML Schema/JAXB compatible Infinity representation",
+        "name": "pr#644",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#643"
+          },
+          {
+            "start_node": "issue#643",
+            "description": "referenced by issue",
+            "type": "RELATED",
+            "end_node": "pr#644"
+          }
+        ],
+        "similarity": 0.5529446847366276,
+        "end_line": null,
+        "signature": null
+      }
+    ]
+  },
+  "artifact_stats": {
+    "skipped_due_to_time": 5,
+    "valid_related_items": 5
+  }
+}

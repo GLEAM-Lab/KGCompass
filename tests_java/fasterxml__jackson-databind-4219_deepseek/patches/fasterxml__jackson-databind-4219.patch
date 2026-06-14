@@ -1,0 +1,42 @@
+Based on the issue description, the bug is in `BasicDeserializerFactory.java` where primitive array deserializers are returned directly without going through the deserializer modifier. The issue specifically points to line 1351 where primitive array deserializers are handled differently from object arrays.
+
+Looking at the code segments provided, we need to modify the `createArrayDeserializer` method in `BasicDeserializerFactory.java` to ensure primitive array deserializers also go through the modifier. Here's the fix:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java
+- start_line : 1329
+- end_line : 1329
+<<<<<<< SEARCH
+    public JsonDeserializer<?> createArrayDeserializer(DeserializationContext ctxt,
+=======
+    public JsonDeserializer<?> createArrayDeserializer(DeserializationContext ctxt,
+        ArrayType type, BeanDescription beanDesc) throws JsonMappingException
+    {
+        JsonDeserializer<?> deser = _findCustomArrayDeserializer(type, ctxt.getConfig(),
+                beanDesc, null, null);
+        if (deser != null) {
+            return deser;
+        }
+        // Primitive arrays have specialized deserializers
+        Class<?> rawClass = type.getRawClass();
+        if (rawClass.isPrimitive()) {
+            deser = PrimitiveArrayDeserializers.forType(rawClass);
+        } else {
+            deser = createArrayDeserializer(ctxt, type, beanDesc, null, null);
+        }
+        // Apply modifier if any
+        if (deser != null && _factoryConfig.hasDeserializerModifiers()) {
+            for (BeanDeserializerModifier mod : _factoryConfig.deserializerModifiers()) {
+                deser = mod.modifyArrayDeserializer(ctxt.getConfig(), type, beanDesc, deser);
+            }
+        }
+        return deser;
+>>>>>>> REPLACE
+```
+
+This change:
+1. Moves the primitive array deserializer creation before the modifier application
+2. Ensures both primitive and object array deserializers go through the modifier chain
+3. Maintains the same behavior but now includes primitive arrays in the modification process
+
+The fix ensures that both primitive arrays (like `byte[]`) and object arrays (like `Byte[]`) will be processed by any registered `BeanDeserializerModifier` instances.

@@ -1,0 +1,53 @@
+Based on the issue, the bug is in the `looksLikeValidNumber()` method in `NumberInput.java`. The issue states that numbers with trailing dots (like "3.") should be allowed, but the current implementation doesn't handle this case properly since it relies on `PATTERN_FLOAT` which may be too strict.
+
+Looking at the code, we see that `looksLikeValidNumber()` first checks for simple cases (null/empty/single digit) and then falls back to `PATTERN_FLOAT.matcher(s).matches()`. Since the issue specifically mentions allowing trailing dots, we should modify this method to handle this case explicitly before falling back to the pattern matcher.
+
+Here's the proposed fix:
+
+```java
+### playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java
+- start_line : 583
+- end_line : 593
+<<<<<<< SEARCH
+    public static boolean looksLikeValidNumber(final String s) {
+        // While PATTERN_FLOAT handles most cases we can optimize some simple ones:
+        if (s == null || s.isEmpty()) {
+            return false;
+        }
+        if (s.length() == 1) {
+            char c = s.charAt(0);
+            return (c <= '9') && (c >= '0');
+        }
+        return PATTERN_FLOAT.matcher(s).matches();
+    }
+=======
+    public static boolean looksLikeValidNumber(final String s) {
+        // While PATTERN_FLOAT handles most cases we can optimize some simple ones:
+        if (s == null || s.isEmpty()) {
+            return false;
+        }
+        if (s.length() == 1) {
+            char c = s.charAt(0);
+            return (c <= '9') && (c >= '0');
+        }
+        // First check for trailing dot case (like "3.")
+        if (s.charAt(s.length() - 1) == '.') {
+            String prefix = s.substring(0, s.length() - 1);
+            if (prefix.length() > 0) {
+                return PATTERN_FLOAT.matcher(prefix).matches();
+            }
+        }
+        return PATTERN_FLOAT.matcher(s).matches();
+    }
+>>>>>>> REPLACE
+```
+
+This change:
+1. Keeps all the existing checks for null/empty/single digit
+2. Adds a new check for trailing dot case
+3. If there is a trailing dot, verifies the prefix (everything before the dot) is a valid number
+4. Otherwise falls back to the original pattern matching
+
+This will allow numbers like "3." while maintaining all other validation rules. The fix matches the issue's requirement to relax validation for trailing dots while keeping all other number validation rules intact.
+
+Note that we don't need to modify `PATTERN_FLOAT` itself since we're handling the trailing dot case separately before using it. This approach is cleaner than trying to modify the regex pattern to accommodate this special case.

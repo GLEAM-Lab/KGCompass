@@ -1,0 +1,14 @@
+--- a/src/main/java/com/fasterxml/jackson/databind/DeserializationConfig.java
++++ b/src/main/java/com/fasterxml/jackson/databind/DeserializationConfig.java
+@@ -704,6 +704,11 @@
+                 }
+             }
+         }
++        // Ensure null values from unknown enums/subtypes are skipped if configured
++        if (_configOverrides.getDefaultSetterInfo().getContentNulls() == Nulls.SKIP) {
++            newSet &= ~DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL.getMask();
++            newSet &= ~DeserializationFeature.FAIL_ON_INVALID_SUBTYPE.getMask();
++        }
+         return ((_formatReadFeatures == newSet) && (_formatReadFeaturesToChange == newMask)
+                 && (_parserFeatures == parserSet) && (_parserFeaturesToChange == parserMask)
+                 ) ? this :

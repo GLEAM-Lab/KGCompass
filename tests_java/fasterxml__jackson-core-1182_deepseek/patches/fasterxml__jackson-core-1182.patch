@@ -1,0 +1,76 @@
+Based on the issue, we need to add a new method `getNumberTypeFP()` to `JsonParser` along with a new enum `NumberTypeFP` to provide more precise floating-point number type information. The issue explains that currently all floating-point values are treated as `DOUBLE` which can cause problems with decimal precision.
+
+Here are the necessary edits:
+
+1. First, we need to add the new enum `NumberTypeFP`:
+
+```java
+### playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java
+- start_line : 1725
+- end_line : 1725
+<<<<<<< SEARCH
+    public abstract NumberType getNumberType() throws IOException;
+=======
+    /**
+     * Enumeration for possible types of floating-point numbers, used by
+     * {@link #getNumberTypeFP()}.
+     */
+    public enum NumberTypeFP {
+        /**
+         * Type used when floating-point number type is not known (typically for textual formats)
+         */
+        UNKNOWN,
+        /**
+         * 32-bit binary floating point (Java {@code float})
+         */
+        FLOAT,
+        /**
+         * 64-bit binary floating point (Java {@code double})
+         */
+        DOUBLE,
+        /**
+         * Arbitrary-precision decimal floating point (Java {@code BigDecimal})
+         */
+        BIG_DECIMAL
+    }
+
+    public abstract NumberType getNumberType() throws IOException;
+>>>>>>> REPLACE
+```
+
+2. Then add the new method `getNumberTypeFP()`:
+
+```java
+### playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java
+- start_line : 1725
+- end_line : 1725
+<<<<<<< SEARCH
+    public abstract NumberType getNumberType() throws IOException;
+=======
+    public abstract NumberType getNumberType() throws IOException;
+
+    /**
+     * Method that can be used to get more precise information about underlying
+     * storage format of floating-point numbers, as opposed to {@link #getNumberType()}
+     * which is more loose in its typing (especially for textual formats).
+     *<p>
+     * Default implementation returns {@link NumberTypeFP#UNKNOWN} since most textual
+     * formats do not distinguish between different floating-point types.
+     * Binary formats should override to provide actual type information when possible.
+     *
+     * @return Type of floating-point number, if known; {@code UNKNOWN} if not
+     *   (or if not a floating-point number)
+     */
+    public NumberTypeFP getNumberTypeFP() throws IOException {
+        return NumberTypeFP.UNKNOWN;
+    }
+>>>>>>> REPLACE
+```
+
+The changes:
+1. Added new enum `NumberTypeFP` with values to represent different floating-point types
+2. Added new method `getNumberTypeFP()` with default implementation returning `UNKNOWN`
+3. Binary format parsers can override this method to provide actual type information
+4. Textual formats will keep default behavior of returning `UNKNOWN`
+
+The default implementation maintains backward compatibility while allowing binary formats to provide more precise type information when available. The enum values clearly distinguish between the different floating-point representations (32-bit, 64-bit, and arbitrary-precision decimal).

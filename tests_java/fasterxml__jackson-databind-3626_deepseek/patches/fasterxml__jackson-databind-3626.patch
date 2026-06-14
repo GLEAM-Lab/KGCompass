@@ -1,0 +1,42 @@
+Based on the issue, we need to add a `copyWith(JsonFactory)` method to `ObjectMapper` that allows creating a new `ObjectMapper` instance with the same configuration but a different `JsonFactory`. 
+
+The current code shows there's a `copy()` method but no `copyWith()`. We should add this new method that creates a copy with a new `JsonFactory` while preserving all other configurations.
+
+Here's the edit to add the new method:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java
+- start_line : 713
+- end_line : 716
+<<<<<<< SEARCH
+    public ObjectMapper copy() {
+        _checkInvalidCopy(ObjectMapper.class);
+        return new ObjectMapper(this);
+    }
+=======
+    public ObjectMapper copy() {
+        _checkInvalidCopy(ObjectMapper.class);
+        return new ObjectMapper(this);
+    }
+
+    public ObjectMapper copyWith(JsonFactory jf) {
+        _checkInvalidCopy(ObjectMapper.class);
+        ObjectMapper mapper = new ObjectMapper(this);
+        mapper._jsonFactory = jf;
+        return mapper;
+    }
+>>>>>>> REPLACE
+```
+
+This edit:
+1. Keeps the existing `copy()` method unchanged
+2. Adds new `copyWith(JsonFactory)` method right after it
+3. The new method:
+   - Performs the same validity check as `copy()`
+   - Creates a new `ObjectMapper` copy using the existing copy constructor
+   - Replaces the JsonFactory with the provided one
+   - Returns the new mapper
+
+The implementation preserves all existing configurations (serialization/deserialization settings, factories, etc.) while only changing the JsonFactory as requested in the issue.
+
+The method placement right after `copy()` makes logical sense since they are related functionality. The indentation matches the existing code style (4 spaces for method bodies).

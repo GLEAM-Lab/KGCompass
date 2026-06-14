@@ -1,0 +1,1579 @@
+{
+  "related_entities": {
+    "methods": [
+      {
+        "start_line": 965,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> T readValue(JsonParser p, JavaType type) throws IOException {\n        JsonDeserializer<Object> deser = findRootValueDeserializer(type);\n        if (deser == null) {\n            return reportBadDefinition(type,\n                    \"Could not find JsonDeserializer for type \"+ClassUtil.getTypeDescription(type));\n        }\n        return (T) deser.deserialize(p, this);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "readValue",
+        "documentation": "/**\n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          }
+        ],
+        "similarity": 0.11339088812169468,
+        "end_line": 972,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext.readValue(JsonParser p, JavaType type): T"
+      },
+      {
+        "start_line": 4206,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader readerForArrayOf(Class<?> type) {\n        _assertNotNull(\"type\", type);\n        return _newReader(getDeserializationConfig(),\n                _typeFactory.constructArrayType(type), null,\n                null, _injectableValues);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "readerForArrayOf",
+        "documentation": "/**\n     * Factory method for constructing {@link ObjectReader} that will\n     * read values of a type {@code List<type>}.\n     * Functionally same as:\n     *<pre>\n     *    readerFor(type[].class);\n     *</pre>\n     *\n     * @since 2.11\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readerForArrayOf"
+          }
+        ],
+        "similarity": 0.10474908819393512,
+        "end_line": 4211,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.readerForArrayOf(Class type): ObjectReader"
+      },
+      {
+        "start_line": 2672,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper configure(DatatypeFeature f, boolean state) {\n        if (state) {\n            _deserializationConfig = _deserializationConfig.with(f);\n            _serializationConfig = _serializationConfig.with(f);\n        } else {\n            _deserializationConfig = _deserializationConfig.without(f);\n            _serializationConfig = _serializationConfig.without(f);\n        }\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "configure",
+        "documentation": "/**\n     * Method for changing state of an on/off datatype-specific feature for\n     * this object mapper.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "configure"
+          }
+        ],
+        "similarity": 0.10266339408897743,
+        "end_line": 2681,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.configure(DatatypeFeature f, boolean state): ObjectMapper"
+      },
+      {
+        "start_line": 2618,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper configure(DeserializationFeature f, boolean state) {\n        _deserializationConfig = state ?\n                _deserializationConfig.with(f) : _deserializationConfig.without(f);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "configure",
+        "documentation": "/**\n     * Method for changing state of an on/off deserialization feature for\n     * this object mapper.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "configure"
+          }
+        ],
+        "similarity": 0.09250652734941359,
+        "end_line": 2622,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.configure(DeserializationFeature f, boolean state): ObjectMapper"
+      },
+      {
+        "start_line": 998,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> T readPropertyValue(JsonParser p, BeanProperty prop, JavaType type) throws IOException {\n        JsonDeserializer<Object> deser = findContextualValueDeserializer(type, prop);\n        if (deser == null) {\n            return reportBadDefinition(type, String.format(\n                    \"Could not find JsonDeserializer for type %s (via property %s)\",\n                    ClassUtil.getTypeDescription(type), ClassUtil.nameOf(prop)));\n        }\n        return (T) deser.deserialize(p, this);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "readPropertyValue",
+        "documentation": "/**\n     * Same as {@link #readPropertyValue(JsonParser, BeanProperty, Class)} but with\n     * fully resolved {@link JavaType} as target: needs to be used for generic types,\n     * for example.\n     *\n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          },
+          {
+            "start_node": "DeserializationContext",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readPropertyValue"
+          }
+        ],
+        "similarity": 0.09090941909796603,
+        "end_line": 1006,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext.readPropertyValue(JsonParser p, BeanProperty prop, JavaType type): T"
+      },
+      {
+        "start_line": 264,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected ObjectReader(ObjectReader base, TokenFilter filter) {\n        _config = base._config;\n        _context = base._context;\n        _rootDeserializers = base._rootDeserializers;\n        _parserFactory = base._parserFactory;\n        _valueType = base._valueType;\n        _rootDeserializer = base._rootDeserializer;\n        _valueToUpdate = base._valueToUpdate;\n        _schema = base._schema;\n        _injectableValues = base._injectableValues;\n        _unwrapRoot = base._unwrapRoot;\n        _dataFormatReaders = base._dataFormatReaders;\n        _filter = filter;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "ObjectReader",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          }
+        ],
+        "similarity": 0.09029667302611098,
+        "end_line": 277,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader(ObjectReader base, TokenFilter filter)"
+      },
+      {
+        "start_line": 957,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> T readValue(JsonParser p, Class<T> type) throws IOException {\n        return readValue(p, getTypeFactory().constructType(type));\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "readValue",
+        "documentation": "/**\n     * Convenience method that may be used by composite or container deserializers,\n     * for reading one-off values contained (for sequences, it is more efficient\n     * to actually fetch deserializer once for the whole collection).\n     *<p>\n     * NOTE: when deserializing values of properties contained in composite types,\n     * rather use {@link #readPropertyValue(JsonParser, BeanProperty, Class)};\n     * this method does not allow use of contextual annotations.\n     * \n     * @since 2.4\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          }
+        ],
+        "similarity": 0.08990555797747561,
+        "end_line": 959,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext.readValue(JsonParser p, Class type): T"
+      },
+      {
+        "start_line": 2230,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected String _shapeForToken(JsonToken t) {\n        if (t != null) {\n            switch (t) {\n            // Likely Object values\n            case START_OBJECT:\n            case END_OBJECT:\n            case FIELD_NAME:\n                return \"Object value\";\n\n            // Likely Array values\n            case START_ARRAY:\n            case END_ARRAY:\n                return \"Array value\";\n\n            case VALUE_FALSE:\n            case VALUE_TRUE:\n                return \"Boolean value\";\n\n            case VALUE_EMBEDDED_OBJECT:\n                return \"Embedded Object\";\n\n            case VALUE_NUMBER_FLOAT:\n                return \"Floating-point value\";\n            case VALUE_NUMBER_INT:\n                return \"Integer value\";\n            case VALUE_STRING:\n                return \"String value\";\n\n            case VALUE_NULL:\n                return \"Null value\";\n\n            case NOT_AVAILABLE:\n            default:\n                return \"[Unavailable value]\";\n            }\n        }\n        return \"<end of input>\";\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_shapeForToken",
+        "documentation": "/**\n     * Helper method for constructing description like \"Object value\" given\n     * {@link JsonToken} encountered.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          },
+          {
+            "start_node": "DeserializationContext",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_shapeForToken"
+          }
+        ],
+        "similarity": 0.0896315631524488,
+        "end_line": 2267,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext._shapeForToken(JsonToken t): String"
+      },
+      {
+        "start_line": 1663,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper setSubtypeResolver(SubtypeResolver str) {\n        _subtypeResolver = str;\n        _deserializationConfig = _deserializationConfig.with(str);\n        _serializationConfig = _serializationConfig.with(str);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "setSubtypeResolver",
+        "documentation": "/**\n     * Method for setting custom subtype resolver to use.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setSubtypeResolver"
+          }
+        ],
+        "similarity": 0.08959039545162052,
+        "end_line": 1668,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.setSubtypeResolver(SubtypeResolver str): ObjectMapper"
+      },
+      {
+        "start_line": 4154,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader readerForUpdating(Object valueToUpdate) {\n        JavaType t = (valueToUpdate == null) ? null\n                : _typeFactory.constructType(valueToUpdate.getClass());\n        return _newReader(getDeserializationConfig(), t, valueToUpdate,\n                null, _injectableValues);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "readerForUpdating",
+        "documentation": "/**\n     * Factory method for constructing {@link ObjectReader} that will\n     * update given Object (usually Bean, but can be a Collection or Map\n     * as well, but NOT an array) with JSON data. Deserialization occurs\n     * normally except that the root-level value in JSON is not used for\n     * instantiating a new object; instead give updateable object is used\n     * as root.\n     * Runtime type of value object is used for locating deserializer,\n     * unless overridden by other factory methods of {@link ObjectReader}\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readerForUpdating"
+          }
+        ],
+        "similarity": 0.08812611191174062,
+        "end_line": 4159,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.readerForUpdating(Object valueToUpdate): ObjectReader"
+      },
+      {
+        "start_line": 4223,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader readerForListOf(Class<?> type) {\n        _assertNotNull(\"type\", type);\n        return _newReader(getDeserializationConfig(),\n                _typeFactory.constructCollectionType(List.class, type), null,\n                null, _injectableValues);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "readerForListOf",
+        "documentation": "/**\n     * Factory method for constructing {@link ObjectReader} that will\n     * read or update instances of a type {@code List<type>}.\n     * Functionally same as:\n     *<pre>\n     *    readerFor(new TypeReference&lt;List&lt;type&gt;&gt;() { });\n     *</pre>\n     *\n     * @since 2.11\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readerForListOf"
+          }
+        ],
+        "similarity": 0.0865554026573224,
+        "end_line": 4228,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.readerForListOf(Class type): ObjectReader"
+      },
+      {
+        "start_line": 4128,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader reader(DeserializationFeature feature) {\n        return _newReader(getDeserializationConfig().with(feature));\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "reader",
+        "documentation": "/**\n     * Factory method for constructing {@link ObjectReader} with\n     * specified feature enabled (compared to settings that this\n     * mapper instance has).\n     * Note that the resulting instance is NOT usable as is,\n     * without defining expected value type.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "reader"
+          }
+        ],
+        "similarity": 0.08462537701101944,
+        "end_line": 4130,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.reader(DeserializationFeature feature): ObjectReader"
+      },
+      {
+        "start_line": 2510,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper configure(MapperFeature f, boolean state) {\n        _serializationConfig = state ?\n                _serializationConfig.with(f) : _serializationConfig.without(f);\n        _deserializationConfig = state ?\n                _deserializationConfig.with(f) : _deserializationConfig.without(f);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "configure",
+        "documentation": "/**\n     * @deprecated Since 2.13 use {@code JsonMapper.builder().configure(...)}\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "configure"
+          }
+        ],
+        "similarity": 0.08435630805205989,
+        "end_line": 2516,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.configure(MapperFeature f, boolean state): ObjectMapper"
+      },
+      {
+        "start_line": 978,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected ObjectReader _with(DeserializationConfig newConfig) {\n        if (newConfig == _config) {\n            return this;\n        }\n        ObjectReader r = _new(this, newConfig);\n        if (_dataFormatReaders != null) {\n            r  = r.withFormatDetection(_dataFormatReaders.with(newConfig));\n        }\n        return r;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_with",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_with"
+          }
+        ],
+        "similarity": 0.08414527974234538,
+        "end_line": 987,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader._with(DeserializationConfig newConfig): ObjectReader"
+      },
+      {
+        "start_line": 591,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean hasValueDeserializerFor(JavaType type, AtomicReference<Throwable> cause) {\n        try {\n            return _cache.hasValueDeserializerFor(this, _factory, type);\n        } catch (DatabindException e) {\n            if (cause != null) {\n                cause.set(e);\n            }\n        } catch (RuntimeException e) {\n            if (cause == null) { // earlier behavior\n                throw e;\n            }\n            cause.set(e);\n        }\n        return false;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "hasValueDeserializerFor",
+        "documentation": "/**\n     * Method for checking whether we could find a deserializer\n     * for given type.\n     *\n     * @param type Type to check\n     * @param cause (optional) Reference set to root cause if no deserializer\n     *    could be found due to exception (to find the reason for failure)\n     *\n     * @since 2.3\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          },
+          {
+            "start_node": "DeserializationContext",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "hasValueDeserializerFor"
+          }
+        ],
+        "similarity": 0.08280753113794996,
+        "end_line": 605,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext.hasValueDeserializerFor(JavaType type, AtomicReference cause): boolean"
+      },
+      {
+        "start_line": 2647,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper disable(DeserializationFeature feature) {\n        _deserializationConfig = _deserializationConfig.without(feature);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "disable",
+        "documentation": "/**\n     * Method for disabling specified {@link DeserializationConfig} features.\n     * Modifies and returns this instance; no new object is created.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          }
+        ],
+        "similarity": 0.08252269710436524,
+        "end_line": 2650,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.disable(DeserializationFeature feature): ObjectMapper"
+      },
+      {
+        "start_line": 4263,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader reader(FormatSchema schema) {\n        // NOTE: ok to have `null` for schema; means none used\n        _verifySchemaType(schema);\n        return _newReader(getDeserializationConfig(), null, null,\n                schema, _injectableValues);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "reader",
+        "documentation": "/**\n     * Factory method for constructing {@link ObjectReader} that will\n     * pass specific schema object to {@link JsonParser} used for\n     * reading content.\n     * \n     * @param schema Schema to pass to parser\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "reader"
+          }
+        ],
+        "similarity": 0.0812876493637744,
+        "end_line": 4268,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.reader(FormatSchema schema): ObjectReader"
+      },
+      {
+        "start_line": 2628,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper enable(DeserializationFeature feature) {\n        _deserializationConfig = _deserializationConfig.with(feature);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "enable",
+        "documentation": "/**\n     * Method for enabling specified {@link DeserializationConfig} features.\n     * Modifies and returns this instance; no new object is created.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enable"
+          }
+        ],
+        "similarity": 0.08119751060754517,
+        "end_line": 2631,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.enable(DeserializationFeature feature): ObjectMapper"
+      },
+      {
+        "start_line": 2556,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper configure(SerializationFeature f, boolean state) {\n        _serializationConfig = state ?\n                _serializationConfig.with(f) : _serializationConfig.without(f);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "configure",
+        "documentation": "/**\n     * Method for changing state of an on/off serialization feature for\n     * this object mapper.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "configure"
+          }
+        ],
+        "similarity": 0.08019447261648426,
+        "end_line": 2560,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.configure(SerializationFeature f, boolean state): ObjectMapper"
+      },
+      {
+        "start_line": 2064,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonMappingException instantiationException(Class<?> instClass, String msg0) {\n        // [databind#2162]: use specific exception type as we don't know if it's\n        // due to type definition, input, or neither\n        return ValueInstantiationException.from(_parser,\n                String.format(\"Cannot construct instance of %s: %s\",\n                        ClassUtil.nameOf(instClass), msg0),\n                constructType(instClass));\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "instantiationException",
+        "documentation": "/**\n     * Helper method for constructing instantiation exception for specified type,\n     * to indicate that instantiation failed due to missing instantiator\n     * (creator; constructor or factory method).\n     *<p>\n     * Note that most of the time this method should NOT be called; instead,\n     * {@link #handleMissingInstantiator} should be called which will call this method\n     * if necessary.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          },
+          {
+            "start_node": "DeserializationContext",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "instantiationException"
+          }
+        ],
+        "similarity": 0.080020007706296,
+        "end_line": 2071,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext.instantiationException(Class instClass, String msg0): JsonMappingException"
+      },
+      {
+        "start_line": 4331,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader reader(TypeReference<?> type) {\n        return _newReader(getDeserializationConfig(), _typeFactory.constructType(type), null,\n                null, _injectableValues);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "reader",
+        "documentation": "/**\n     * @deprecated Since 2.5, use {@link #readerFor(TypeReference)} instead\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "reader"
+          }
+        ],
+        "similarity": 0.07968454598431914,
+        "end_line": 4334,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.reader(TypeReference type): ObjectReader"
+      },
+      {
+        "start_line": 1280,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> T readValue(JsonParser p, ResolvedType valueType) throws IOException {\n        _assertNotNull(\"p\", p);\n        return (T) forType((JavaType)valueType).readValue(p);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "readValue",
+        "documentation": "/**\n     * Convenience method that binds content read using given parser, using\n     * configuration of this reader, except that expected value type\n     * is specified with the call (instead of currently configured root type).\n     * Value return is either newly constructed, or root value that\n     * was specified with {@link #withValueToUpdate(Object)}.\n     *<p>\n     * NOTE: this method never tries to auto-detect format, since actual\n     * (data-format specific) parser is given.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          }
+        ],
+        "similarity": 0.07935526547067019,
+        "end_line": 1283,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader.readValue(JsonParser p, ResolvedType valueType): T"
+      },
+      {
+        "start_line": 2041,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonMappingException instantiationException(Class<?> instClass, Throwable cause) {\n        String excMsg;\n        if (cause == null) {\n            excMsg = \"N/A\";\n        } else if ((excMsg = ClassUtil.exceptionMessage(cause)) == null) {\n            excMsg = ClassUtil.nameOf(cause.getClass());\n        }\n        String msg = String.format(\"Cannot construct instance of %s, problem: %s\",\n                ClassUtil.nameOf(instClass), excMsg);\n        // [databind#2162]: use specific exception type as we don't know if it's\n        // due to type definition, input, or neither\n        return ValueInstantiationException.from(_parser, msg, constructType(instClass), cause);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "instantiationException",
+        "documentation": "/**\n     * Helper method for constructing instantiation exception for specified type,\n     * to indicate problem with physically constructing instance of\n     * specified class (missing constructor, exception from constructor)\n     *<p>\n     * Note that most of the time this method should NOT be called directly; instead,\n     * {@link #handleInstantiationProblem} should be called which will call this method\n     * if necessary.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          },
+          {
+            "start_node": "DeserializationContext",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "instantiationException"
+          }
+        ],
+        "similarity": 0.07896354676896242,
+        "end_line": 2053,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext.instantiationException(Class instClass, Throwable cause): JsonMappingException"
+      },
+      {
+        "start_line": 2532,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper disable(MapperFeature... f) {\n        _deserializationConfig = _deserializationConfig.without(f);\n        _serializationConfig = _serializationConfig.without(f);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "disable",
+        "documentation": "/**\n     * @deprecated Since 2.13 use {@code JsonMapper.builder().disable(...)}\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          }
+        ],
+        "similarity": 0.07882765976638861,
+        "end_line": 2536,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.disable(MapperFeature f): ObjectMapper"
+      },
+      {
+        "start_line": 1292,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> T readValue(JsonParser p, JavaType valueType) throws IOException {\n        _assertNotNull(\"p\", p);\n        return (T) forType(valueType).readValue(p);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "readValue",
+        "documentation": "/**\n     * Type-safe overloaded method, basically alias for {@link #readValue(JsonParser, ResolvedType)}.\n     *<p>\n     * NOTE: this method never tries to auto-detect format, since actual\n     * (data-format specific) parser is given.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          }
+        ],
+        "similarity": 0.078639828086434,
+        "end_line": 1295,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader.readValue(JsonParser p, JavaType valueType): T"
+      },
+      {
+        "start_line": 4322,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader reader(Class<?> type) {\n        return _newReader(getDeserializationConfig(), _typeFactory.constructType(type), null,\n                null, _injectableValues);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "reader",
+        "documentation": "/**\n     * @deprecated Since 2.5, use {@link #readerFor(Class)} instead\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "reader"
+          }
+        ],
+        "similarity": 0.07730668501169433,
+        "end_line": 4325,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.reader(Class type): ObjectReader"
+      },
+      {
+        "start_line": 2522,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper enable(MapperFeature... f) {\n        _deserializationConfig = _deserializationConfig.with(f);\n        _serializationConfig = _serializationConfig.with(f);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "enable",
+        "documentation": "/**\n     * @deprecated Since 2.13 use {@code JsonMapper.builder().enable(...)}\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enable"
+          }
+        ],
+        "similarity": 0.07717534865447674,
+        "end_line": 2526,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.enable(MapperFeature f): ObjectMapper"
+      },
+      {
+        "start_line": 2273,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper addHandler(DeserializationProblemHandler h) {\n        _deserializationConfig = _deserializationConfig.withHandler(h);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "addHandler",
+        "documentation": "/**\n     * Method for adding specified {@link DeserializationProblemHandler}\n     * to be used for handling specific problems during deserialization.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "addHandler"
+          }
+        ],
+        "similarity": 0.07716728502263191,
+        "end_line": 2276,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.addHandler(DeserializationProblemHandler h): ObjectMapper"
+      },
+      {
+        "start_line": 4178,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader readerFor(Class<?> type) {\n        JavaType t = (type == null) ? null : _typeFactory.constructType(type);\n        return _newReader(getDeserializationConfig(), t, null,\n                null, _injectableValues);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "readerFor",
+        "documentation": "/**\n     * Factory method for constructing {@link ObjectReader} that will\n     * read or update instances of specified type\n     * \n     * @since 2.6\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readerFor"
+          }
+        ],
+        "similarity": 0.07667847076148081,
+        "end_line": 4182,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.readerFor(Class type): ObjectReader"
+      },
+      {
+        "start_line": 2585,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper disable(SerializationFeature f) {\n        _serializationConfig = _serializationConfig.without(f);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "disable",
+        "documentation": "/**\n     * Method for disabling specified {@link DeserializationConfig} features.\n     * Modifies and returns this instance; no new object is created.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          }
+        ],
+        "similarity": 0.07639500083081938,
+        "end_line": 2588,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.disable(SerializationFeature f): ObjectMapper"
+      },
+      {
+        "start_line": 4313,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader reader(JavaType type) {\n        return _newReader(getDeserializationConfig(), type, null,\n                null, _injectableValues);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "reader",
+        "documentation": "/**\n     * @deprecated Since 2.5, use {@link #readerFor(JavaType)} instead\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "reader"
+          }
+        ],
+        "similarity": 0.07629704359197749,
+        "end_line": 4316,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.reader(JavaType type): ObjectReader"
+      },
+      {
+        "start_line": 2091,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper enableDefaultTyping(DefaultTyping applicability, JsonTypeInfo.As includeAs) {\n        return activateDefaultTyping(getPolymorphicTypeValidator(), applicability, includeAs);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "enableDefaultTyping",
+        "documentation": "/**\n     * @deprecated Since 2.10 use {@link #activateDefaultTyping(PolymorphicTypeValidator,DefaultTyping,JsonTypeInfo.As)} instead\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enableDefaultTyping"
+          }
+        ],
+        "similarity": 0.07629627906730538,
+        "end_line": 2093,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.enableDefaultTyping(DefaultTyping applicability, JsonTypeInfo includeAs): ObjectMapper"
+      },
+      {
+        "start_line": 1355,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonParser createParser(char[] content) throws IOException {\n        _assertNotNull(\"content\", content);\n        return _deserializationConfig.initialize(_jsonFactory.createParser(content));\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "createParser",
+        "documentation": "/**\n     * Factory method for constructing properly initialized {@link JsonParser}\n     * to read content from specified character array\n     * Parser is not managed (or \"owned\") by ObjectMapper: caller is responsible\n     * for properly closing it once content reading is complete.\n     *\n     * @since 2.11\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "createParser"
+          }
+        ],
+        "similarity": 0.07608462376042882,
+        "end_line": 1358,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.createParser(char[] content): JsonParser"
+      },
+      {
+        "start_line": 2194,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonMappingException mappingException(Class<?> targetClass, JsonToken token) {\n        return JsonMappingException.from(_parser,\n                String.format(\"Cannot deserialize instance of %s out of %s token\",\n                        ClassUtil.nameOf(targetClass), token));\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "mappingException",
+        "documentation": "/**\n     * @deprecated Since 2.8 use {@link #handleUnexpectedToken(Class, JsonParser)} instead\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          },
+          {
+            "start_node": "DeserializationContext",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "mappingException"
+          }
+        ],
+        "similarity": 0.07585440162333874,
+        "end_line": 2198,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext.mappingException(Class targetClass, JsonToken token): JsonMappingException"
+      },
+      {
+        "start_line": 1368,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonParser createParser(char[] content, int offset, int len) throws IOException {\n        _assertNotNull(\"content\", content);\n        return _deserializationConfig.initialize(_jsonFactory.createParser(content, offset, len));\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "createParser",
+        "documentation": "/**\n     * Factory method for constructing properly initialized {@link JsonParser}\n     * to read content from specified character array.\n     * Parser is not managed (or \"owned\") by ObjectMapper: caller is responsible\n     * for properly closing it once content reading is complete.\n     *\n     * @since 2.11\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "createParser"
+          }
+        ],
+        "similarity": 0.07582303851488699,
+        "end_line": 1371,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.createParser(char[] content, int offset, int len): JsonParser"
+      },
+      {
+        "start_line": 1018,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonNode readTree(JsonParser p) throws IOException {\n        JsonToken t = p.currentToken();\n        if (t == null) {\n            t = p.nextToken();\n            if (t == null) {\n                return getNodeFactory().missingNode();\n            }\n        }\n        if (t == JsonToken.VALUE_NULL) {\n            return getNodeFactory().nullNode();\n        }\n        return (JsonNode) findRootValueDeserializer(_config.constructType(JsonNode.class))\n                .deserialize(p, this);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "readTree",
+        "documentation": "/**\n     * Convenience method for reading the value that passed {@link JsonParser}\n     * points to as a {@link JsonNode}.\n     *\n     * @param p Parser that points to the first token of the value to read\n     *\n     * @return Value read as {@link JsonNode}\n     *\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          },
+          {
+            "start_node": "DeserializationContext",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readTree"
+          }
+        ],
+        "similarity": 0.07566126928462412,
+        "end_line": 1031,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext.readTree(JsonParser p): JsonNode"
+      },
+      {
+        "start_line": 4240,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader readerForMapOf(Class<?> type) {\n        _assertNotNull(\"type\", type);\n        return _newReader(getDeserializationConfig(),\n                _typeFactory.constructMapType(Map.class, String.class, type), null,\n                null, _injectableValues);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "readerForMapOf",
+        "documentation": "/**\n     * Factory method for constructing {@link ObjectReader} that will\n     * read or update instances of a type {@code Map<String, type>}\n     * Functionally same as:\n     *<pre>\n     *    readerFor(new TypeReference&lt;Map&lt;String, type&gt;&gt;() { });\n     *</pre>\n     *\n     * @since 2.11\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readerForMapOf"
+          }
+        ],
+        "similarity": 0.07560071756916903,
+        "end_line": 4245,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.readerForMapOf(Class type): ObjectReader"
+      },
+      {
+        "start_line": 4377,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> T convertValue(Object fromValue, Class<T> toValueType)",
+        "distance": 1.25,
+        "title": null,
+        "name": "convertValue",
+        "documentation": "/**\n     * Convenience method for doing two-step conversion from given value, into\n     * instance of given value type, by writing value into temporary buffer\n     * and reading from the buffer into specified target type.\n     *<p>\n     * This method is functionally similar to first\n     * serializing given value into JSON, and then binding JSON data into value\n     * of given type, but should be more efficient since full serialization does\n     * not (need to) occur.\n     * However, same converters (serializers, deserializers) will be used as for\n     * data binding, meaning same object mapper configuration works.\n     *<p>\n     * Note that behavior changed slightly between Jackson 2.9 and 2.10 so that\n     * whereas earlier some optimizations were used to avoid write/read cycle\n     * in case input was of target type, from 2.10 onwards full processing is\n     * always performed. See\n     * <a href=\"https://github.com/FasterXML/jackson-databind/issues/2220\">databind#2220</a>\n     * for full details of the change.\n     *<p>\n     * Further note that it is possible that in some cases behavior does differ\n     * from full serialize-then-deserialize cycle: in most case differences are\n     * unintentional (that is, flaws to fix) and should be reported, but\n     * the behavior is not guaranteed to be 100% the same:\n     * the goal is to allow efficient value conversions for structurally\n     * compatible Objects, according to standard Jackson configuration.\n     *<p>\n     * Finally, this functionality is not designed to support \"advanced\" use\n     * cases, such as conversion of polymorphic values, or cases where Object Identity\n     * is used.\n     *      \n     * @throws IllegalArgumentException If conversion fails due to incompatible type;\n     *    if so, root cause will contain underlying checked exception data binding\n     *    functionality threw\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "convertValue"
+          }
+        ],
+        "similarity": 0.07512185574442069,
+        "end_line": 4377,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.convertValue(Object fromValue, Class toValueType): T"
+      },
+      {
+        "start_line": 2566,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper enable(SerializationFeature f) {\n        _serializationConfig = _serializationConfig.with(f);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "enable",
+        "documentation": "/**\n     * Method for enabling specified {@link DeserializationConfig} feature.\n     * Modifies and returns this instance; no new object is created.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enable"
+          }
+        ],
+        "similarity": 0.07435268347235402,
+        "end_line": 2569,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.enable(SerializationFeature f): ObjectMapper"
+      },
+      {
+        "start_line": 3268,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ArrayNode createArrayNode() {\n        return _deserializationConfig.getNodeFactory().arrayNode();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "createArrayNode",
+        "documentation": "/**\n     *<p>\n     * Note: return type is co-variant, as basic ObjectCodec\n     * abstraction cannot refer to concrete node types (as it's\n     * part of core package, whereas impls are part of mapper\n     * package)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "createArrayNode"
+          }
+        ],
+        "similarity": 0.07423399640979897,
+        "end_line": 3270,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.createArrayNode(): ArrayNode"
+      },
+      {
+        "start_line": 693,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader with(JsonFactory f) {\n        if (f == _parserFactory) {\n            return this;\n        }\n        ObjectReader r = _new(this, f);\n        // Also, try re-linking, if possible...\n        if (f.getCodec() == null) {\n            f.setCodec(r);\n        }\n        return r;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "with",
+        "documentation": "/**\n     * Method for constructing a new reader instance with configuration that uses\n     * passed {@link JsonFactory} for constructing underlying Readers.\n     *<p>\n     * NOTE: only factories that <b>DO NOT REQUIRE SPECIAL MAPPERS</b>\n     * (that is, ones that return <code>false</code> for\n     * {@link JsonFactory#requiresCustomCodec()}) can be used: trying\n     * to use one that requires custom codec will throw exception\n     * \n     * @since 2.1\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "with"
+          }
+        ],
+        "similarity": 0.07414599004943845,
+        "end_line": 703,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader.with(JsonFactory f): ObjectReader"
+      },
+      {
+        "start_line": 247,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected DeserializationContext(DeserializationContext src) {\n        _cache = new DeserializerCache();\n        _factory = src._factory;\n\n        _config = src._config;\n        _featureFlags = src._featureFlags;\n        _readCapabilities = src._readCapabilities;\n        _view = src._view;\n        _injectableValues = null;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "DeserializationContext",
+        "documentation": "/**\n     * Copy-constructor for use with <code>copy()</code> by {@link ObjectMapper#copy()}\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          },
+          {
+            "start_node": "DeserializationContext",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          }
+        ],
+        "similarity": 0.07413368005514209,
+        "end_line": 256,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext(DeserializationContext src)"
+      },
+      {
+        "start_line": 2024,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonMappingException weirdNativeValueException(Object value, Class<?> instClass)",
+        "distance": 1.5,
+        "title": null,
+        "name": "weirdNativeValueException",
+        "documentation": "/**\n     * Helper method for constructing exception to indicate that input JSON\n     * token of type \"native value\" (see {@link JsonToken#VALUE_EMBEDDED_OBJECT})\n     * is of incompatible type (and there is no delegating creator or such to use)\n     * and can not be used to construct value of specified type (usually POJO).\n     * Note that most of the time this method should NOT be called; instead,\n     * {@link #handleWeirdNativeValue} should be called which will call this method\n     *\n     * @since 2.9\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "DeserializationContext"
+          },
+          {
+            "start_node": "DeserializationContext",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "weirdNativeValueException"
+          }
+        ],
+        "similarity": 0.07404007856908966,
+        "end_line": 2024,
+        "signature": "com.fasterxml.jackson.databind.DeserializationContext.weirdNativeValueException(Object value, Class instClass): JsonMappingException"
+      },
+      {
+        "start_line": 4190,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectReader readerFor(TypeReference<?> typeRef) {\n        _assertNotNull(\"type\", typeRef);\n        return _newReader(getDeserializationConfig(), _typeFactory.constructType(typeRef), null,\n                null, _injectableValues);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "readerFor",
+        "documentation": "/**\n     * Factory method for constructing {@link ObjectReader} that will\n     * read or update instances of specified type\n     * \n     * @since 2.6\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readerFor"
+          }
+        ],
+        "similarity": 0.07358222134083367,
+        "end_line": 4194,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.readerFor(TypeReference typeRef): ObjectReader"
+      },
+      {
+        "start_line": 1800,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper setSerializationInclusion(JsonInclude.Include incl) {\n        setPropertyInclusion(JsonInclude.Value.construct(incl, incl));\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "setSerializationInclusion",
+        "documentation": "/**\n     * Convenience method, equivalent to calling:\n     *<pre>\n     *  setPropertyInclusion(JsonInclude.Value.construct(incl, incl));\n     *</pre>\n     *<p>\n     * NOTE: behavior differs slightly from 2.8, where second argument was\n     * implied to be <code>JsonInclude.Include.ALWAYS</code>.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setSerializationInclusion"
+          }
+        ],
+        "similarity": 0.07352765789575133,
+        "end_line": 1803,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.setSerializationInclusion(JsonInclude incl): ObjectMapper"
+      },
+      {
+        "start_line": 1342,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public <T> Iterator<T> readValues(JsonParser p, TypeReference<T> valueTypeRef) throws IOException {\n        _assertNotNull(\"p\", p);\n        return forType(valueTypeRef).readValues(p);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "readValues",
+        "documentation": "/**\n     * Convenience method that is equivalent to:\n     *<pre>\n     *   withType(valueTypeRef).readValues(p);\n     *</pre>\n     *<p>\n     * Method reads a sequence of Objects from parser stream.\n     * Sequence can be either root-level \"unwrapped\" sequence (without surrounding\n     * JSON array), or a sequence contained in a JSON Array.\n     * In either case {@link JsonParser} <b>MUST</b> point to the first token of\n     * the first element, OR not point to any token (in which case it is advanced\n     * to the next token). This means, specifically, that for wrapped sequences,\n     * parser MUST NOT point to the surrounding <code>START_ARRAY</code> (one that\n     * contains values to read) but rather to the token following it which is the first\n     * token of the first value to read.\n     *<p>\n     * NOTE: this method never tries to auto-detect format, since actual\n     * (data-format specific) parser is given.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "readValue"
+          },
+          {
+            "start_node": "readValue",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ObjectReader"
+          },
+          {
+            "start_node": "ObjectReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readValues"
+          }
+        ],
+        "similarity": 0.07347194960173423,
+        "end_line": 1345,
+        "signature": "com.fasterxml.jackson.databind.ObjectReader.readValues(JsonParser p, TypeReference valueTypeRef): Iterator"
+      },
+      {
+        "start_line": 2282,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper clearProblemHandlers() {\n        _deserializationConfig = _deserializationConfig.withNoProblemHandlers();\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "clearProblemHandlers",
+        "documentation": "/**\n     * Method for removing all registered {@link DeserializationProblemHandler}s\n     * instances from this mapper.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "clearProblemHandlers"
+          }
+        ],
+        "similarity": 0.07320978730729236,
+        "end_line": 2285,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.clearProblemHandlers(): ObjectMapper"
+      },
+      {
+        "start_line": 1680,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper setAnnotationIntrospector(AnnotationIntrospector ai) {\n        _serializationConfig = _serializationConfig.with(ai);\n        _deserializationConfig = _deserializationConfig.with(ai);\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "setAnnotationIntrospector",
+        "documentation": "/**\n     * Method for setting {@link AnnotationIntrospector} used by this\n     * mapper instance for both serialization and deserialization.\n     * Note that doing this will replace the current introspector, which\n     * may lead to unavailability of core Jackson annotations.\n     * If you want to combine handling of multiple introspectors,\n     * have a look at {@link com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair}.\n     * \n     * @see com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setAnnotationIntrospector"
+          }
+        ],
+        "similarity": 0.07281307895885249,
+        "end_line": 1684,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.setAnnotationIntrospector(AnnotationIntrospector ai): ObjectMapper"
+      },
+      {
+        "start_line": 2656,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ObjectMapper disable(DeserializationFeature first,",
+        "distance": 1.25,
+        "title": null,
+        "name": "disable",
+        "documentation": "/**\n     * Method for disabling specified {@link DeserializationConfig} features.\n     * Modifies and returns this instance; no new object is created.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "disable"
+          }
+        ],
+        "similarity": 0.07274556098702013,
+        "end_line": 2656,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.disable(DeserializationFeature first, DeserializationFeature f): ObjectMapper"
+      },
+      {
+        "start_line": 1228,
+        "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonGenerator createGenerator(File outputFile, JsonEncoding enc) throws IOException {\n        _assertNotNull(\"outputFile\", outputFile);\n        JsonGenerator g = _jsonFactory.createGenerator(outputFile, enc);\n        _serializationConfig.initialize(g);\n        return g;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "createGenerator",
+        "documentation": "/**\n     * Factory method for constructing properly initialized {@link JsonGenerator}\n     * to write content to specified {@link File}, using specified encoding.\n     * Generator is not managed (or \"owned\") by mapper: caller is responsible\n     * for properly closing it once content generation is complete.\n     *\n     * @since 2.11\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ObjectMapper"
+          },
+          {
+            "start_node": "ObjectMapper",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "createGenerator"
+          }
+        ],
+        "similarity": 0.07211905374535152,
+        "end_line": 1233,
+        "signature": "com.fasterxml.jackson.databind.ObjectMapper.createGenerator(File outputFile, JsonEncoding enc): JsonGenerator"
+      }
+    ],
+    "classes": [],
+    "issues": [
+      {
+        "content": "Using Jackson `2.9.9.3`.\r\n\r\nThis issue was carried over from micronaut-core: https://github.com/micronaut-projects/micronaut-core/issues/8215\r\n\r\nExample test-case:\r\n\r\n```java\r\npackage arrayissue;\r\n\r\nimport com.fasterxml.jackson.core.JsonProcessingException;\r\nimport com.fasterxml.jackson.databind.DeserializationFeature;\r\nimport com.fasterxml.jackson.databind.ObjectMapper;\r\nimport com.fasterxml.jackson.annotation.JsonCreator;\r\n\r\nenum MyEnum {\r\n    FOO(\"FOO\"),\r\n    BAR(\"BAR\");\r\n\r\n    private String value;\r\n\r\n    MyEnum(String value) {\r\n        this.value = value;\r\n    }\r\n\r\n    public static void main(String[] args) throws JsonProcessingException {\r\n        ObjectMapper om = new ObjectMapper();\r\n        om.enable(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS);\r\n        System.out.println(om.readValue(\"\\\"FOO\\\"\", MyEnum.class));\r\n        System.out.println(om.readValue(\"[\\\"FOO\\\"]\", MyEnum.class));\r\n    }\r\n\r\n    @JsonCreator\r\n    public static MyEnum fromValue(String text) {\r\n        System.out.println(\"-- CONVERTING FROM: \" + text);\r\n        return MyEnum.FOO;\r\n    }\r\n}\r\n```\r\n\r\nResult:\r\n\r\n```\r\n-- CONVERTING FROM: FOO\r\nFOO\r\n-- CONVERTING FROM: null\r\nFOO\r\n```\n",
+        "distance": 0,
+        "title": "`Enum` values can not be read from single-element array even with `DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS`",
+        "name": "root",
+        "path": [],
+        "issue_id": "root",
+        "similarity": 2.0,
+        "type": "issue"
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "3655",
+        "type": "issue",
+        "content": "Using Jackson `2.9.9.3`.\r\n\r\nThis issue was carried over from micronaut-core: https://github.com/micronaut-projects/micronaut-core/issues/8215\r\n\r\nExample test-case:\r\n\r\n```java\r\npackage arrayissue;\r\n\r\nimport com.fasterxml.jackson.core.JsonProcessingException;\r\nimport com.fasterxml.jackson.databind.DeserializationFeature;\r\nimport com.fasterxml.jackson.databind.ObjectMapper;\r\nimport com.fasterxml.jackson.annotation.JsonCreator;\r\n\r\nenum MyEnum {\r\n    FOO(\"FOO\"),\r\n    BAR(\"BAR\");\r\n\r\n    private String value;\r\n\r\n    MyEnum(String value) {\r\n        this.value = value;\r\n    }\r\n\r\n    public static void main(String[] args) throws JsonProcessingException {\r\n        ObjectMapper om = new ObjectMapper();\r\n        om.enable(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS);\r\n        System.out.println(om.readValue(\"\\\"FOO\\\"\", MyEnum.class));\r\n        System.out.println(om.readValue(\"[\\\"FOO\\\"]\", MyEnum.class));\r\n    }\r\n\r\n    @JsonCreator\r\n    public static MyEnum fromValue(String text) {\r\n        System.out.println(\"-- CONVERTING FROM: \" + text);\r\n        return MyEnum.FOO;\r\n    }\r\n}\r\n```\r\n\r\nResult:\r\n\r\n```\r\n-- CONVERTING FROM: FOO\r\nFOO\r\n-- CONVERTING FROM: null\r\nFOO\r\n```\n\n\nComment by AndrejMitrovic:\nAdded version info (2.9.9.3).\n\nComment by cowtowncoder:\n2.9.x is ancient version, will need to test against later (2.14.0). For now assuming problem still exists.\r\n\r\nRoot cause likely due to code not checking there is legit `String` value; nor considering unwrapping, so would need to add latter at least (and probably otherwise fail if `String` / number expected, Object/Array encountered).\r\n\n\nComment by yawkat:\n@cowtowncoder i think the same happens without UNWRAP_SINGLE_VALUE_ARRAYS, what should be the behavior then? i can work on this since it came up with micronaut.\n\nComment by cowtowncoder:\n@yawkat sounds good, I appreciate your help here -- it is/was on my short TODO-NEXT list :)",
+        "source_code": null,
+        "distance": 0.5,
+        "title": "`Enum` values can not be read from single-element array even with `DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS`",
+        "name": "issue#3655",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#3666"
+          },
+          {
+            "start_node": "pr#3666",
+            "description": "referenced by issue",
+            "type": "RELATED",
+            "end_node": "issue#3655"
+          }
+        ],
+        "similarity": 0.7318850050993713,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "3666",
+        "type": "issue",
+        "content": "- it seems that the DoS fix in `BeanDeserializer` incorrectly advanced the parser. I've fixed this, but this is potentially security-sensitive, so please take a careful look if this is right :)\r\n- I also changed `FactoryBasedEnumDeserializer` to handle unwrapping of strings properly. I haven't touched  the error handling when there is another token, that is handled by the branch with the comment `Could argue we should throw an exception but...`. imo that should throw an exception, can we change that in a minor release?\r\n\r\nFixes #3655\n\n",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "Fix string-based creators with UNWRAP_SINGLE_VALUE_ARRAYS",
+        "name": "pr#3666",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#3666"
+          }
+        ],
+        "similarity": 0.5654009680449378,
+        "end_line": null,
+        "signature": null
+      }
+    ]
+  },
+  "artifact_stats": {
+    "skipped_due_to_time": 6,
+    "valid_related_items": 15
+  }
+}

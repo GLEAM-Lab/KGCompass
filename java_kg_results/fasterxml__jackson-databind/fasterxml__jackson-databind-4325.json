@@ -1,0 +1,1627 @@
+{
+    "related_entities": {
+        "methods": [
+            {
+                "start_line": 62,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonDeserializer<Object> unwrappingDeserializer(NameTransformer unwrapper) {\n        if (getClass() != ThrowableDeserializer.class) {\n            return this;\n        }\n        // main thing really is to just enforce ignoring of unknown\n        // properties; since there may be multiple unwrapped values\n        // and properties for all may be interleaved...\n        return new ThrowableDeserializer(this, unwrapper);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "unwrappingDeserializer",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeFromObject"
+                    },
+                    {
+                        "start_node": "deserializeFromObject",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ThrowableDeserializer"
+                    },
+                    {
+                        "start_node": "ThrowableDeserializer",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "unwrappingDeserializer"
+                    }
+                ],
+                "similarity": 0.09716573251531968,
+                "end_line": 70,
+                "signature": "com.fasterxml.jackson.databind.deser.std.ThrowableDeserializer.unwrappingDeserializer(NameTransformer unwrapper): JsonDeserializer"
+            },
+            {
+                "start_line": 33,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ThrowableDeserializer(BeanDeserializer baseDeserializer) {\n        super(baseDeserializer);\n        // need to disable this, since we do post-processing\n        _vanillaProcessing = false;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "ThrowableDeserializer",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeFromObject"
+                    },
+                    {
+                        "start_node": "deserializeFromObject",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ThrowableDeserializer"
+                    },
+                    {
+                        "start_node": "ThrowableDeserializer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "ThrowableDeserializer"
+                    }
+                ],
+                "similarity": 0.09302914814386411,
+                "end_line": 37,
+                "signature": "com.fasterxml.jackson.databind.deser.std.ThrowableDeserializer(BeanDeserializer baseDeserializer)"
+            },
+            {
+                "start_line": 336,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/SettableAnyProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "        public SettableAnyProperty withValueDeserializer(JsonDeserializer<Object> deser) {\n            return new MapFieldAnyProperty(_property, _setter, _type,\n                    _keyDeserializer, deser, _valueTypeDeserializer,\n                    _valueInstantiator);\n        }",
+                "distance": 1.5,
+                "title": null,
+                "name": "withValueDeserializer",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "_set"
+                    },
+                    {
+                        "start_node": "_set",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "MapFieldAnyProperty"
+                    },
+                    {
+                        "start_node": "MapFieldAnyProperty",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "withValueDeserializer"
+                    }
+                ],
+                "similarity": 0.08788659558765945,
+                "end_line": 340,
+                "signature": "com.fasterxml.jackson.databind.deser.SettableAnyProperty.MapFieldAnyProperty.withValueDeserializer(JsonDeserializer deser): SettableAnyProperty"
+            },
+            {
+                "start_line": 986,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public <T> T readValue(JsonParser p, JavaType type) throws IOException {\n        JsonDeserializer<Object> deser = findRootValueDeserializer(type);\n        if (deser == null) {\n            return reportBadDefinition(type,\n                    \"Could not find JsonDeserializer for type \"+ClassUtil.getTypeDescription(type));\n        }\n        return (T) deser.deserialize(p, this);\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "readValue",
+                "documentation": "/**\n     * @since 2.4\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    }
+                ],
+                "similarity": 0.0849046559775521,
+                "end_line": 993,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.readValue(JsonParser p, JavaType type): T"
+            },
+            {
+                "start_line": 63,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/impl/SetterlessProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public SettableBeanProperty withValueDeserializer(JsonDeserializer<?> deser) {\n        if (_valueDeserializer == deser) {\n            return this;\n        }\n        // 07-May-2019, tatu: As per [databind#2303], must keep VD/NVP in-sync if they were\n        NullValueProvider nvp = (_valueDeserializer == _nullProvider) ? deser : _nullProvider;\n        return new SetterlessProperty(this, deser, nvp);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "withValueDeserializer",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeAndSet"
+                    },
+                    {
+                        "start_node": "deserializeAndSet",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "SetterlessProperty"
+                    },
+                    {
+                        "start_node": "SetterlessProperty",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "withValueDeserializer"
+                    }
+                ],
+                "similarity": 0.08308330955199505,
+                "end_line": 70,
+                "signature": "com.fasterxml.jackson.databind.deser.impl.SetterlessProperty.withValueDeserializer(JsonDeserializer deser): SettableBeanProperty"
+            },
+            {
+                "start_line": 297,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/CreatorProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public PropertyMetadata getMetadata() {\n        // 03-Jun-2019, tatu: Added as per [databind#2280] to support merge.\n        //   Not 100% sure why it would be needed (or fixes things) but... appears to.\n        //   Need to understand better in future as it seems like it should probably be\n        //   linked earlier during construction or something.\n        // 22-Sep-2019, tatu: Was hoping [databind#2458] fixed this, too, but no such luck\n        PropertyMetadata md = super.getMetadata();\n        if (_fallbackSetter != null) {\n            return md.withMergeInfo(_fallbackSetter.getMetadata().getMergeInfo());\n        }\n        return md;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getMetadata",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeAndSet"
+                    },
+                    {
+                        "start_node": "deserializeAndSet",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CreatorProperty"
+                    },
+                    {
+                        "start_node": "CreatorProperty",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getMetadata"
+                    }
+                ],
+                "similarity": 0.08153268546235015,
+                "end_line": 308,
+                "signature": "com.fasterxml.jackson.databind.deser.CreatorProperty.getMetadata(): PropertyMetadata"
+            },
+            {
+                "start_line": 166,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/CreatorProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public SettableBeanProperty withValueDeserializer(JsonDeserializer<?> deser) {\n        if (_valueDeserializer == deser) {\n            return this;\n        }\n        // 07-May-2019, tatu: As per [databind#2303], must keep VD/NVP in-sync if they were\n        NullValueProvider nvp = (_valueDeserializer == _nullProvider) ? deser : _nullProvider;\n        return new CreatorProperty(this, deser, nvp);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "withValueDeserializer",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeAndSet"
+                    },
+                    {
+                        "start_node": "deserializeAndSet",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CreatorProperty"
+                    },
+                    {
+                        "start_node": "CreatorProperty",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "withValueDeserializer"
+                    }
+                ],
+                "similarity": 0.08052725306675865,
+                "end_line": 173,
+                "signature": "com.fasterxml.jackson.databind.deser.CreatorProperty.withValueDeserializer(JsonDeserializer deser): SettableBeanProperty"
+            },
+            {
+                "start_line": 107,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonDeserializer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public abstract T deserialize(JsonParser p, DeserializationContext ctxt)",
+                "distance": 1.0,
+                "title": null,
+                "name": "deserialize",
+                "documentation": "/**\n     * Method that can be called to ask implementation to deserialize\n     * JSON content into the value type this serializer handles.\n     * Returned instance is to be constructed by method itself.\n     *<p>\n     * Pre-condition for this method is that the parser points to the\n     * first event that is part of value to deserializer (and which\n     * is never JSON 'null' literal, more on this below): for simple\n     * types it may be the only value; and for structured types the\n     * Object start marker or a FIELD_NAME.\n     * </p>\n     * <p>\n     * The two possible input conditions for structured types result\n     * from polymorphism via fields. In the ordinary case, Jackson\n     * calls this method when it has encountered an OBJECT_START,\n     * and the method implementation must advance to the next token to\n     * see the first field name. If the application configures\n     * polymorphism via a field, then the object looks like the following.\n     *  <pre>\n     *      {\n     *          \"@class\": \"class name\",\n     *          ...\n     *      }\n     *  </pre>\n     *  Jackson consumes the two tokens (the <tt>@class</tt> field name\n     *  and its value) in order to learn the class and select the deserializer.\n     *  Thus, the stream is pointing to the FIELD_NAME for the first field\n     *  after the @class. Thus, if you want your method to work correctly\n     *  both with and without polymorphism, you must begin your method with:\n     *  <pre>\n     *       if (p.currentToken() == JsonToken.START_OBJECT) {\n     *         p.nextToken();\n     *       }\n     *  </pre>\n     * This results in the stream pointing to the field name, so that\n     * the two conditions align.\n     * <p>\n     * Post-condition is that the parser will point to the last\n     * event that is part of deserialized value (or in case deserialization\n     * fails, event that was not recognized or usable, which may be\n     * the same event as the one it pointed to upon call).\n     *<p>\n     * Note that this method is never called for JSON null literal,\n     * and thus deserializers need (and should) not check for it.\n     *\n     * @param p Parsed used for reading JSON content\n     * @param ctxt Context that can be used to access information about\n     *   this deserialization activity.\n     *\n     * @return Deserialized value\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserialize"
+                    }
+                ],
+                "similarity": 0.07969959044952668,
+                "end_line": 107,
+                "signature": "com.fasterxml.jackson.databind.JsonDeserializer.deserialize(JsonParser p, DeserializationContext ctxt): T"
+            },
+            {
+                "start_line": 309,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/SettableAnyProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "        public SettableAnyProperty withValueDeserializer(JsonDeserializer<Object> deser) {\n            return new MethodAnyProperty(_property, _setter, _type,\n                    _keyDeserializer, deser, _valueTypeDeserializer);\n        }",
+                "distance": 1.5,
+                "title": null,
+                "name": "withValueDeserializer",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "_set"
+                    },
+                    {
+                        "start_node": "_set",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "MethodAnyProperty"
+                    },
+                    {
+                        "start_node": "MethodAnyProperty",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "withValueDeserializer"
+                    }
+                ],
+                "similarity": 0.07927092842568019,
+                "end_line": 312,
+                "signature": "com.fasterxml.jackson.databind.deser.SettableAnyProperty.MethodAnyProperty.withValueDeserializer(JsonDeserializer deser): SettableAnyProperty"
+            },
+            {
+                "start_line": 2003,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonMappingException instantiationException(Class<?> instClass, Throwable cause) {\n        String excMsg;\n        if (cause == null) {\n            excMsg = \"N/A\";\n        } else if ((excMsg = ClassUtil.exceptionMessage(cause)) == null) {\n            excMsg = ClassUtil.nameOf(cause.getClass());\n        }\n        String msg = String.format(\"Cannot construct instance of %s, problem: %s\",\n                ClassUtil.nameOf(instClass), excMsg);\n        // [databind#2162]: use specific exception type as we don't know if it's\n        // due to type definition, input, or neither\n        return ValueInstantiationException.from(_parser, msg, constructType(instClass), cause);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "instantiationException",
+                "documentation": "/**\n     * Helper method for constructing instantiation exception for specified type,\n     * to indicate problem with physically constructing instance of\n     * specified class (missing constructor, exception from constructor)\n     *<p>\n     * Note that most of the time this method should NOT be called directly; instead,\n     * {@link #handleInstantiationProblem} should be called which will call this method\n     * if necessary.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "instantiationException"
+                    }
+                ],
+                "similarity": 0.07896082027244916,
+                "end_line": 2015,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.instantiationException(Class instClass, Throwable cause): JsonMappingException"
+            },
+            {
+                "start_line": 121,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/SettableAnyProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public abstract SettableAnyProperty withValueDeserializer(JsonDeserializer<Object> deser);",
+                "distance": 1.5,
+                "title": null,
+                "name": "withValueDeserializer",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "_set"
+                    },
+                    {
+                        "start_node": "_set",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "SettableAnyProperty"
+                    },
+                    {
+                        "start_node": "SettableAnyProperty",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "withValueDeserializer"
+                    }
+                ],
+                "similarity": 0.07866159168282062,
+                "end_line": 121,
+                "signature": "com.fasterxml.jackson.databind.deser.SettableAnyProperty.withValueDeserializer(JsonDeserializer deser): SettableAnyProperty"
+            },
+            {
+                "start_line": 264,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected ObjectReader(ObjectReader base, TokenFilter filter) {\n        _config = base._config;\n        _context = base._context;\n        _rootDeserializers = base._rootDeserializers;\n        _parserFactory = base._parserFactory;\n        _valueType = base._valueType;\n        _rootDeserializer = base._rootDeserializer;\n        _valueToUpdate = base._valueToUpdate;\n        _schema = base._schema;\n        _injectableValues = base._injectableValues;\n        _unwrapRoot = base._unwrapRoot;\n        _dataFormatReaders = base._dataFormatReaders;\n        _filter = filter;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "ObjectReader",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "ObjectReader"
+                    },
+                    {
+                        "start_node": "ObjectReader",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "ObjectReader"
+                    }
+                ],
+                "similarity": 0.07781487290305772,
+                "end_line": 277,
+                "signature": "com.fasterxml.jackson.databind.ObjectReader(ObjectReader base, TokenFilter filter)"
+            },
+            {
+                "start_line": 346,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/CreatorProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private void _reportMissingSetter(JsonParser p, DeserializationContext ctxt) throws IOException",
+                "distance": 1.5,
+                "title": null,
+                "name": "_reportMissingSetter",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeAndSet"
+                    },
+                    {
+                        "start_node": "deserializeAndSet",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "CreatorProperty"
+                    },
+                    {
+                        "start_node": "CreatorProperty",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_reportMissingSetter"
+                    }
+                ],
+                "similarity": 0.07759653080046111,
+                "end_line": 346,
+                "signature": "com.fasterxml.jackson.databind.deser.CreatorProperty._reportMissingSetter(JsonParser p, DeserializationContext ctxt): void"
+            },
+            {
+                "start_line": 137,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/SettableAnyProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    Object readResolve() {\n        // sanity check...\n        if (_setter == null || _setter.getAnnotated() == null) {\n            throw new IllegalArgumentException(\"Missing method/field (broken JDK (de)serialization?)\");\n        }\n        return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "readResolve",
+                "documentation": "/**\n     * Need to define this to verify that we retain actual Method reference\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "_set"
+                    },
+                    {
+                        "start_node": "_set",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "SettableAnyProperty"
+                    },
+                    {
+                        "start_node": "SettableAnyProperty",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "readResolve"
+                    }
+                ],
+                "similarity": 0.07667611890444162,
+                "end_line": 143,
+                "signature": "com.fasterxml.jackson.databind.deser.SettableAnyProperty.readResolve(): Object"
+            },
+            {
+                "start_line": 2026,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonMappingException instantiationException(Class<?> instClass, String msg0) {\n        // [databind#2162]: use specific exception type as we don't know if it's\n        // due to type definition, input, or neither\n        return ValueInstantiationException.from(_parser,\n                String.format(\"Cannot construct instance of %s: %s\",\n                        ClassUtil.nameOf(instClass), msg0),\n                constructType(instClass));\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "instantiationException",
+                "documentation": "/**\n     * Helper method for constructing instantiation exception for specified type,\n     * to indicate that instantiation failed due to missing instantiator\n     * (creator; constructor or factory method).\n     *<p>\n     * Note that most of the time this method should NOT be called; instead,\n     * {@link #handleMissingInstantiator} should be called which will call this method\n     * if necessary.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "instantiationException"
+                    }
+                ],
+                "similarity": 0.0757473903233236,
+                "end_line": 2033,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.instantiationException(Class instClass, String msg0): JsonMappingException"
+            },
+            {
+                "start_line": 60,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/impl/ManagedReferenceProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void deserializeAndSet(JsonParser p, DeserializationContext ctxt, Object instance)",
+                "distance": 1.0,
+                "title": null,
+                "name": "deserializeAndSet",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeAndSet"
+                    }
+                ],
+                "similarity": 0.07444401860850912,
+                "end_line": 60,
+                "signature": "com.fasterxml.jackson.databind.deser.impl.ManagedReferenceProperty.deserializeAndSet(JsonParser p, DeserializationContext ctxt, Object instance): void"
+            },
+            {
+                "start_line": 72,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/impl/InnerClassProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void deserializeAndSet(JsonParser p, DeserializationContext ctxt, Object bean)",
+                "distance": 1.0,
+                "title": null,
+                "name": "deserializeAndSet",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeAndSet"
+                    }
+                ],
+                "similarity": 0.07435503895566599,
+                "end_line": 72,
+                "signature": "com.fasterxml.jackson.databind.deser.impl.InnerClassProperty.deserializeAndSet(JsonParser p, DeserializationContext ctxt, Object bean): void"
+            },
+            {
+                "start_line": 436,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/SettableAnyProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "        public SettableAnyProperty withValueDeserializer(JsonDeserializer<Object> deser) {\n            return this;\n        }",
+                "distance": 1.5,
+                "title": null,
+                "name": "withValueDeserializer",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeAndSet"
+                    },
+                    {
+                        "start_node": "deserializeAndSet",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "JsonNodeFieldAnyProperty"
+                    },
+                    {
+                        "start_node": "JsonNodeFieldAnyProperty",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "withValueDeserializer"
+                    }
+                ],
+                "similarity": 0.07392967177794996,
+                "end_line": 438,
+                "signature": "com.fasterxml.jackson.databind.deser.SettableAnyProperty.JsonNodeFieldAnyProperty.withValueDeserializer(JsonDeserializer deser): SettableAnyProperty"
+            },
+            {
+                "start_line": 1116,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected Exception _creatorReturnedNullException() {\n        if (_nullFromCreator == null) {\n            _nullFromCreator = new NullPointerException(\"JSON Creator returned null\");\n        }\n        return _nullFromCreator;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "_creatorReturnedNullException",
+                "documentation": "/**\n     * Helper method for getting a lazily construct exception to be reported\n     * to {@link DeserializationContext#handleInstantiationProblem(Class, Object, Throwable)}.\n     *\n     * @since 2.8\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeFromObject"
+                    },
+                    {
+                        "start_node": "deserializeFromObject",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "BeanDeserializer"
+                    },
+                    {
+                        "start_node": "BeanDeserializer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_creatorReturnedNullException"
+                    }
+                ],
+                "similarity": 0.07259433131069988,
+                "end_line": 1121,
+                "signature": "com.fasterxml.jackson.databind.deser.BeanDeserializer._creatorReturnedNullException(): Exception"
+            },
+            {
+                "start_line": 1916,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonMappingException wrongTokenException(JsonParser p, Class<?> targetType,",
+                "distance": 1.5,
+                "title": null,
+                "name": "wrongTokenException",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "wrongTokenException"
+                    }
+                ],
+                "similarity": 0.07202468038919572,
+                "end_line": 1916,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.wrongTokenException(JsonParser p, Class targetType, JsonToken expToken, String extra): JsonMappingException"
+            },
+            {
+                "start_line": 1636,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void handleBadMerge(JsonDeserializer<?> deser) throws JsonMappingException",
+                "distance": 1.5,
+                "title": null,
+                "name": "handleBadMerge",
+                "documentation": "/**\n     * Method that deserializer may call if it is called to do an update (\"merge\")\n     * but deserializer operates on a non-mergeable type. Although this should\n     * usually be caught earlier, sometimes it may only be caught during operation\n     * and if so this is the method to call.\n     * Note that if {@link MapperFeature#IGNORE_MERGE_FOR_UNMERGEABLE} is enabled,\n     * this method will simply return null; otherwise {@link InvalidDefinitionException}\n     * will be thrown.\n     *\n     * @since 2.10\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "handleBadMerge"
+                    }
+                ],
+                "similarity": 0.07100055989557773,
+                "end_line": 1636,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.handleBadMerge(JsonDeserializer deser): void"
+            },
+            {
+                "start_line": 782,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/SettableBeanProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "        public void deserializeAndSet(JsonParser p, DeserializationContext ctxt,",
+                "distance": 1.0,
+                "title": null,
+                "name": "deserializeAndSet",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeAndSet"
+                    }
+                ],
+                "similarity": 0.06988110739546331,
+                "end_line": 782,
+                "signature": "com.fasterxml.jackson.databind.deser.SettableBeanProperty.Delegating.deserializeAndSet(JsonParser p, DeserializationContext ctxt, Object instance): void"
+            },
+            {
+                "start_line": 393,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/SettableAnyProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "        public void deserializeAndSet(JsonParser p, DeserializationContext ctxt,",
+                "distance": 1.0,
+                "title": null,
+                "name": "deserializeAndSet",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeAndSet"
+                    }
+                ],
+                "similarity": 0.06988110739546331,
+                "end_line": 393,
+                "signature": "com.fasterxml.jackson.databind.deser.SettableAnyProperty.JsonNodeFieldAnyProperty.deserializeAndSet(JsonParser p, DeserializationContext ctxt, Object instance, String propName): void"
+            },
+            {
+                "start_line": 1019,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public <T> T readPropertyValue(JsonParser p, BeanProperty prop, JavaType type) throws IOException {\n        JsonDeserializer<Object> deser = findContextualValueDeserializer(type, prop);\n        if (deser == null) {\n            return reportBadDefinition(type, String.format(\n                    \"Could not find JsonDeserializer for type %s (via property %s)\",\n                    ClassUtil.getTypeDescription(type), ClassUtil.nameOf(prop)));\n        }\n        return (T) deser.deserialize(p, this);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "readPropertyValue",
+                "documentation": "/**\n     * Same as {@link #readPropertyValue(JsonParser, BeanProperty, Class)} but with\n     * fully resolved {@link JavaType} as target: needs to be used for generic types,\n     * for example.\n     *\n     * @since 2.4\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "readPropertyValue"
+                    }
+                ],
+                "similarity": 0.0696058062118241,
+                "end_line": 1027,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.readPropertyValue(JsonParser p, BeanProperty prop, JavaType type): T"
+            },
+            {
+                "start_line": 57,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected ThrowableDeserializer(BeanDeserializer src, NameTransformer unwrapper) {\n        super(src, unwrapper);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "ThrowableDeserializer",
+                "documentation": "/**\n     * Alternative constructor used when creating \"unwrapping\" deserializers\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeFromObject"
+                    },
+                    {
+                        "start_node": "deserializeFromObject",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ThrowableDeserializer"
+                    },
+                    {
+                        "start_node": "ThrowableDeserializer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "ThrowableDeserializer"
+                    }
+                ],
+                "similarity": 0.06958218854608512,
+                "end_line": 59,
+                "signature": "com.fasterxml.jackson.databind.deser.std.ThrowableDeserializer(BeanDeserializer src, NameTransformer unwrapper)"
+            },
+            {
+                "start_line": 172,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/SettableAnyProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void deserializeAndSet(JsonParser p, DeserializationContext ctxt,",
+                "distance": 1.0,
+                "title": null,
+                "name": "deserializeAndSet",
+                "documentation": "/**\n     * Method called to deserialize appropriate value, given parser (and\n     * context), and set it using appropriate method (a setter method).\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeAndSet"
+                    }
+                ],
+                "similarity": 0.06804209471590135,
+                "end_line": 172,
+                "signature": "com.fasterxml.jackson.databind.deser.SettableAnyProperty.deserializeAndSet(JsonParser p, DeserializationContext ctxt, Object instance, String propName): void"
+            },
+            {
+                "start_line": 267,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/CreatorProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void deserializeAndSet(JsonParser p, DeserializationContext ctxt,",
+                "distance": 1.0,
+                "title": null,
+                "name": "deserializeAndSet",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeAndSet"
+                    }
+                ],
+                "similarity": 0.06798913319285624,
+                "end_line": 267,
+                "signature": "com.fasterxml.jackson.databind.deser.CreatorProperty.deserializeAndSet(JsonParser p, DeserializationContext ctxt, Object instance): void"
+            },
+            {
+                "start_line": 70,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/impl/MergingSettableBeanProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void deserializeAndSet(JsonParser p, DeserializationContext ctxt,",
+                "distance": 1.0,
+                "title": null,
+                "name": "deserializeAndSet",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeAndSet"
+                    }
+                ],
+                "similarity": 0.06798913319285624,
+                "end_line": 70,
+                "signature": "com.fasterxml.jackson.databind.deser.impl.MergingSettableBeanProperty.deserializeAndSet(JsonParser p, DeserializationContext ctxt, Object instance): void"
+            },
+            {
+                "start_line": 103,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/impl/SetterlessProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public final void deserializeAndSet(JsonParser p, DeserializationContext ctxt,",
+                "distance": 1.0,
+                "title": null,
+                "name": "deserializeAndSet",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeAndSet"
+                    }
+                ],
+                "similarity": 0.06784493356931594,
+                "end_line": 103,
+                "signature": "com.fasterxml.jackson.databind.deser.impl.SetterlessProperty.deserializeAndSet(JsonParser p, DeserializationContext ctxt, Object instance): void"
+            },
+            {
+                "start_line": 565,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected final Object _deserializeWithErrorWrapping(JsonParser p,",
+                "distance": 1.5,
+                "title": null,
+                "name": "_deserializeWithErrorWrapping",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeFromObject"
+                    },
+                    {
+                        "start_node": "deserializeFromObject",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "BeanDeserializer"
+                    },
+                    {
+                        "start_node": "BeanDeserializer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_deserializeWithErrorWrapping"
+                    }
+                ],
+                "similarity": 0.06771820764928839,
+                "end_line": 565,
+                "signature": "com.fasterxml.jackson.databind.deser.BeanDeserializer._deserializeWithErrorWrapping(JsonParser p, DeserializationContext ctxt, SettableBeanProperty prop): Object"
+            },
+            {
+                "start_line": 79,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Object deserializeFromObject(JsonParser p, DeserializationContext ctxt) throws IOException",
+                "distance": 1.0,
+                "title": null,
+                "name": "deserializeFromObject",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeFromObject"
+                    }
+                ],
+                "similarity": 0.06743587383180887,
+                "end_line": 79,
+                "signature": "com.fasterxml.jackson.databind.deser.std.ThrowableDeserializer.deserializeFromObject(JsonParser p, DeserializationContext ctxt): Object"
+            },
+            {
+                "start_line": 190,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/impl/BeanAsArrayBuilderDeserializer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Object deserializeFromObject(JsonParser p, DeserializationContext ctxt) throws IOException",
+                "distance": 1.0,
+                "title": null,
+                "name": "deserializeFromObject",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeFromObject"
+                    }
+                ],
+                "similarity": 0.06743587383180887,
+                "end_line": 190,
+                "signature": "com.fasterxml.jackson.databind.deser.impl.BeanAsArrayBuilderDeserializer.deserializeFromObject(JsonParser p, DeserializationContext ctxt): Object"
+            },
+            {
+                "start_line": 910,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ObjectReader withHandler(DeserializationProblemHandler h) {\n        return _with(_config.withHandler(h));\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "withHandler",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "ObjectReader"
+                    },
+                    {
+                        "start_node": "ObjectReader",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "withHandler"
+                    }
+                ],
+                "similarity": 0.06736216974540053,
+                "end_line": 912,
+                "signature": "com.fasterxml.jackson.databind.ObjectReader.withHandler(DeserializationProblemHandler h): ObjectReader"
+            },
+            {
+                "start_line": 1134,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public boolean handleUnknownProperty(JsonParser p, JsonDeserializer<?> deser,",
+                "distance": 1.5,
+                "title": null,
+                "name": "handleUnknownProperty",
+                "documentation": "/**\n     * Method that deserializers should call if they encounter an unrecognized\n     * property (and once that is not explicitly designed as ignorable), to\n     * inform possibly configured {@link DeserializationProblemHandler}s and\n     * let it handle the problem.\n     *\n     * @return True if there was a configured problem handler that was able to handle the\n     *   problem\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "handleUnknownProperty"
+                    }
+                ],
+                "similarity": 0.06723319296646661,
+                "end_line": 1134,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.handleUnknownProperty(JsonParser p, JsonDeserializer deser, Object instanceOrClass, String propName): boolean"
+            },
+            {
+                "start_line": 488,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/SettableBeanProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public abstract void deserializeAndSet(JsonParser p,",
+                "distance": 1.0,
+                "title": null,
+                "name": "deserializeAndSet",
+                "documentation": "/**\n     * Method called to deserialize appropriate value, given parser (and\n     * context), and set it using appropriate mechanism.\n     * Pre-condition is that passed parser must point to the first token\n     * that should be consumed to produce the value (the only value for\n     * scalars, multiple for Objects and Arrays).\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeAndSet"
+                    }
+                ],
+                "similarity": 0.06716227592037594,
+                "end_line": 488,
+                "signature": "com.fasterxml.jackson.databind.deser.SettableBeanProperty.deserializeAndSet(JsonParser p, DeserializationContext ctxt, Object instance): void"
+            },
+            {
+                "start_line": 612,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public boolean hasValueDeserializerFor(JavaType type, AtomicReference<Throwable> cause) {\n        try {\n            return _cache.hasValueDeserializerFor(this, _factory, type);\n        } catch (DatabindException e) {\n            if (cause != null) {\n                cause.set(e);\n            }\n        } catch (RuntimeException e) {\n            if (cause == null) { // earlier behavior\n                throw e;\n            }\n            cause.set(e);\n        }\n        return false;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "hasValueDeserializerFor",
+                "documentation": "/**\n     * Method for checking whether we could find a deserializer\n     * for given type.\n     *\n     * @param type Type to check\n     * @param cause (optional) Reference set to root cause if no deserializer\n     *    could be found due to exception (to find the reason for failure)\n     *\n     * @since 2.3\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "hasValueDeserializerFor"
+                    }
+                ],
+                "similarity": 0.06701422009110197,
+                "end_line": 626,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.hasValueDeserializerFor(JavaType type, AtomicReference cause): boolean"
+            },
+            {
+                "start_line": 830,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected Object deserializeUsingPropertyBasedWithUnwrapped(JsonParser p, DeserializationContext ctxt)",
+                "distance": 1.5,
+                "title": null,
+                "name": "deserializeUsingPropertyBasedWithUnwrapped",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeFromObject"
+                    },
+                    {
+                        "start_node": "deserializeFromObject",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "BeanDeserializer"
+                    },
+                    {
+                        "start_node": "BeanDeserializer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "deserializeUsingPropertyBasedWithUnwrapped"
+                    }
+                ],
+                "similarity": 0.06611400062874118,
+                "end_line": 830,
+                "signature": "com.fasterxml.jackson.databind.deser.BeanDeserializer.deserializeUsingPropertyBasedWithUnwrapped(JsonParser p, DeserializationContext ctxt): Object"
+            },
+            {
+                "start_line": 686,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/SettableBeanProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "        public SettableBeanProperty withValueDeserializer(JsonDeserializer<?> deser) {\n            return _with(delegate.withValueDeserializer(deser));\n        }",
+                "distance": 1.5,
+                "title": null,
+                "name": "withValueDeserializer",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeAndSet"
+                    },
+                    {
+                        "start_node": "deserializeAndSet",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Delegating"
+                    },
+                    {
+                        "start_node": "Delegating",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "withValueDeserializer"
+                    }
+                ],
+                "similarity": 0.06530689459039714,
+                "end_line": 688,
+                "signature": "com.fasterxml.jackson.databind.deser.SettableBeanProperty.Delegating.withValueDeserializer(JsonDeserializer deser): SettableBeanProperty"
+            },
+            {
+                "start_line": 206,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/impl/BeanAsArrayDeserializer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Object deserializeFromObject(JsonParser p, DeserializationContext ctxt)",
+                "distance": 1.0,
+                "title": null,
+                "name": "deserializeFromObject",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeFromObject"
+                    }
+                ],
+                "similarity": 0.06495395392728769,
+                "end_line": 206,
+                "signature": "com.fasterxml.jackson.databind.deser.impl.BeanAsArrayDeserializer.deserializeFromObject(JsonParser p, DeserializationContext ctxt): Object"
+            },
+            {
+                "start_line": 640,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/BuilderBasedDeserializer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected Object deserializeUsingPropertyBasedWithUnwrapped(JsonParser p,",
+                "distance": 1.5,
+                "title": null,
+                "name": "deserializeUsingPropertyBasedWithUnwrapped",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeFromObject"
+                    },
+                    {
+                        "start_node": "deserializeFromObject",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "BuilderBasedDeserializer"
+                    },
+                    {
+                        "start_node": "BuilderBasedDeserializer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "deserializeUsingPropertyBasedWithUnwrapped"
+                    }
+                ],
+                "similarity": 0.06464554872413149,
+                "end_line": 640,
+                "signature": "com.fasterxml.jackson.databind.deser.BuilderBasedDeserializer.deserializeUsingPropertyBasedWithUnwrapped(JsonParser p, DeserializationContext ctxt): Object"
+            },
+            {
+                "start_line": 408,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/SettableAnyProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "        protected void _set(Object instance, Object propName, Object value) throws Exception {\n            setProperty(instance, (String) propName, (JsonNode) value);\n        }",
+                "distance": 1.0,
+                "title": null,
+                "name": "_set",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "_set"
+                    }
+                ],
+                "similarity": 0.06453931900946488,
+                "end_line": 410,
+                "signature": "com.fasterxml.jackson.databind.deser.SettableAnyProperty.JsonNodeFieldAnyProperty._set(Object instance, Object propName, Object value): void"
+            },
+            {
+                "start_line": 383,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/SettableAnyProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "        public JsonNodeFieldAnyProperty(BeanProperty property,",
+                "distance": 1.5,
+                "title": null,
+                "name": "JsonNodeFieldAnyProperty",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeAndSet"
+                    },
+                    {
+                        "start_node": "deserializeAndSet",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "JsonNodeFieldAnyProperty"
+                    },
+                    {
+                        "start_node": "JsonNodeFieldAnyProperty",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "JsonNodeFieldAnyProperty"
+                    }
+                ],
+                "similarity": 0.06444075711448487,
+                "end_line": 383,
+                "signature": "com.fasterxml.jackson.databind.deser.SettableAnyProperty.JsonNodeFieldAnyProperty(BeanProperty property, AnnotatedMember field, JavaType valueType, JsonDeserializer valueDeser, JsonNodeFactory nodeFactory)"
+            },
+            {
+                "start_line": 414,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/SettableBeanProperty.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonDeserializer<Object> getValueDeserializer() {\n        JsonDeserializer<Object> deser = _valueDeserializer;\n        if (deser == MISSING_VALUE_DESERIALIZER) {\n            return null;\n        }\n        return deser;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getValueDeserializer",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeAndSet"
+                    },
+                    {
+                        "start_node": "deserializeAndSet",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "SettableBeanProperty"
+                    },
+                    {
+                        "start_node": "SettableBeanProperty",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getValueDeserializer"
+                    }
+                ],
+                "similarity": 0.06431506642442977,
+                "end_line": 420,
+                "signature": "com.fasterxml.jackson.databind.deser.SettableBeanProperty.getValueDeserializer(): JsonDeserializer"
+            },
+            {
+                "start_line": 347,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/DefaultDeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected Object _unwrapAndDeserialize(JsonParser p,",
+                "distance": 1.25,
+                "title": null,
+                "name": "_unwrapAndDeserialize",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "DefaultDeserializationContext"
+                    },
+                    {
+                        "start_node": "DefaultDeserializationContext",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "_unwrapAndDeserialize"
+                    }
+                ],
+                "similarity": 0.06430268358551133,
+                "end_line": 347,
+                "signature": "com.fasterxml.jackson.databind.deser.DefaultDeserializationContext._unwrapAndDeserialize(JsonParser p, JavaType rootType, JsonDeserializer deser, Object valueToUpdate): Object"
+            },
+            {
+                "start_line": 1986,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonMappingException weirdNativeValueException(Object value, Class<?> instClass)",
+                "distance": 1.5,
+                "title": null,
+                "name": "weirdNativeValueException",
+                "documentation": "/**\n     * Helper method for constructing exception to indicate that input JSON\n     * token of type \"native value\" (see {@link JsonToken#VALUE_EMBEDDED_OBJECT})\n     * is of incompatible type (and there is no delegating creator or such to use)\n     * and can not be used to construct value of specified type (usually POJO).\n     * Note that most of the time this method should NOT be called; instead,\n     * {@link #handleWeirdNativeValue} should be called which will call this method\n     *\n     * @since 2.9\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "weirdNativeValueException"
+                    }
+                ],
+                "similarity": 0.06365389043402017,
+                "end_line": 1986,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.weirdNativeValueException(Object value, Class instClass): JsonMappingException"
+            },
+            {
+                "start_line": 39,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static ThrowableDeserializer construct(DeserializationContext ctxt,",
+                "distance": 1.5,
+                "title": null,
+                "name": "construct",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeFromObject"
+                    },
+                    {
+                        "start_node": "deserializeFromObject",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ThrowableDeserializer"
+                    },
+                    {
+                        "start_node": "ThrowableDeserializer",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "construct"
+                    }
+                ],
+                "similarity": 0.06363254590542053,
+                "end_line": 39,
+                "signature": "com.fasterxml.jackson.databind.deser.std.ThrowableDeserializer.construct(DeserializationContext ctxt, BeanDeserializer baseDeserializer): ThrowableDeserializer"
+            },
+            {
+                "start_line": 1875,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public <T> T reportBadPropertyDefinition(BeanDescription bean, BeanPropertyDefinition prop,",
+                "distance": 1.5,
+                "title": null,
+                "name": "reportBadPropertyDefinition",
+                "documentation": "/**\n     * Helper method called to indicate problem in POJO (serialization) definitions or settings\n     * regarding specific property (of a type), unrelated to actual JSON content to map.\n     * Default behavior is to construct and throw a {@link JsonMappingException}.\n     *\n     * @since 2.9\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "readValue"
+                    },
+                    {
+                        "start_node": "readValue",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "DeserializationContext"
+                    },
+                    {
+                        "start_node": "DeserializationContext",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "reportBadPropertyDefinition"
+                    }
+                ],
+                "similarity": 0.06357878595784293,
+                "end_line": 1875,
+                "signature": "com.fasterxml.jackson.databind.DeserializationContext.reportBadPropertyDefinition(BeanDescription bean, BeanPropertyDefinition prop, String msg, Object msgArgs): T"
+            },
+            {
+                "start_line": 284,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/impl/BeanAsArrayDeserializer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected final Object _deserializeUsingPropertyBased(final JsonParser p, final DeserializationContext ctxt)",
+                "distance": 1.5,
+                "title": null,
+                "name": "_deserializeUsingPropertyBased",
+                "documentation": "/**\n     * Method called to deserialize bean using \"property-based creator\":\n     * this means that a non-default constructor or factory method is\n     * called, and then possibly other setters. The trick is that\n     * values for creator method need to be buffered, first; and\n     * due to non-guaranteed ordering possibly some other properties\n     * as well.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeFromObject"
+                    },
+                    {
+                        "start_node": "deserializeFromObject",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "BeanAsArrayDeserializer"
+                    },
+                    {
+                        "start_node": "BeanAsArrayDeserializer",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "_deserializeUsingPropertyBased"
+                    }
+                ],
+                "similarity": 0.0634433507250932,
+                "end_line": 284,
+                "signature": "com.fasterxml.jackson.databind.deser.impl.BeanAsArrayDeserializer._deserializeUsingPropertyBased(JsonParser p, DeserializationContext ctxt): Object"
+            },
+            {
+                "start_line": 326,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Object deserializeFromObject(JsonParser p, DeserializationContext ctxt) throws IOException",
+                "distance": 1.0,
+                "title": null,
+                "name": "deserializeFromObject",
+                "documentation": "/**\n     * General version used when handling needs more advanced features.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeFromObject"
+                    }
+                ],
+                "similarity": 0.06342788206861205,
+                "end_line": 326,
+                "signature": "com.fasterxml.jackson.databind.deser.BeanDeserializer.deserializeFromObject(JsonParser p, DeserializationContext ctxt): Object"
+            },
+            {
+                "start_line": 414,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected Object _deserializeUsingPropertyBased(final JsonParser p, final DeserializationContext ctxt)",
+                "distance": 1.5,
+                "title": null,
+                "name": "_deserializeUsingPropertyBased",
+                "documentation": "/**\n     * Method called to deserialize bean using \"property-based creator\":\n     * this means that a non-default constructor or factory method is\n     * called, and then possibly other setters. The trick is that\n     * values for creator method need to be buffered, first; and\n     * due to non-guaranteed ordering possibly some other properties\n     * as well.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "deserializeFromObject"
+                    },
+                    {
+                        "start_node": "deserializeFromObject",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "BeanDeserializer"
+                    },
+                    {
+                        "start_node": "BeanDeserializer",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_deserializeUsingPropertyBased"
+                    }
+                ],
+                "similarity": 0.0631565906472533,
+                "end_line": 414,
+                "signature": "com.fasterxml.jackson.databind.deser.BeanDeserializer._deserializeUsingPropertyBased(JsonParser p, DeserializationContext ctxt): Object"
+            }
+        ],
+        "classes": [],
+        "issues": [
+            {
+                "content": "### Search before asking\r\n\r\n- [X] I searched in the [issues](https://github.com/FasterXML/jackson-databind/issues) and found nothing similar.\r\n\r\n### Describe the bug\r\n\r\nWhen using JsonAnyGetter+JsonAnySetter on an exception class, a NPE is thrown when deserializing.\r\n\r\n### Version Information\r\n\r\n2.16.1\r\n\r\n### Reproduction\r\n\r\n```java\r\npublic class Main {\r\n\r\n    static class Problem extends Exception {\r\n        @JsonAnySetter\r\n        @JsonAnyGetter\r\n        Map<String, Object> additionalProperties = new HashMap<>();\r\n    }\r\n\r\n    public static void main(String[] args) throws JsonProcessingException {\r\n        Problem problem = new Problem();\r\n        problem.additionalProperties.put(\"additional\", \"additional\");\r\n        String json = new ObjectMapper().writeValueAsString(problem);\r\n        System.out.println(json);\r\n        Problem result = new ObjectMapper().readValue(json, Problem.class); // throws NPE\r\n        System.out.println(result.additionalProperties);\r\n    }\r\n    \r\n}\r\n``` \r\n\r\n\r\n### Expected behavior\r\n\r\n_No response_\r\n\r\n### Additional context\r\n\r\nStacktrace:\r\n\r\n```\r\nException in thread \"main\" java.lang.NullPointerException\r\n\tat java.base/java.util.Objects.requireNonNull(Objects.java:233)\r\n\tat java.base/java.lang.invoke.DirectMethodHandle.checkBase(DirectMethodHandle.java:547)\r\n\tat java.base/jdk.internal.reflect.MethodHandleObjectFieldAccessorImpl.get(MethodHandleObjectFieldAccessorImpl.java:57)\r\n\tat java.base/java.lang.reflect.Field.get(Field.java:442)\r\n\tat com.fasterxml.jackson.databind.introspect.AnnotatedField.getValue(AnnotatedField.java:111)\r\n\tat com.fasterxml.jackson.databind.deser.SettableAnyProperty$MapFieldAnyProperty._set(SettableAnyProperty.java:347)\r\n\tat com.fasterxml.jackson.databind.deser.SettableAnyProperty.set(SettableAnyProperty.java:205)\r\n\tat com.fasterxml.jackson.databind.deser.SettableAnyProperty.deserializeAndSet(SettableAnyProperty.java:179)\r\n\tat com.fasterxml.jackson.databind.deser.std.ThrowableDeserializer.deserializeFromObject(ThrowableDeserializer.java:153)\r\n\tat com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:185)\r\n\tat com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:342)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:4899)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3846)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3814)\r\n\tat be.fgov.kszbcss.jackson.Main.main(Main.java:25)\r\n```\r\n\r\nhttps://github.com/FasterXML/jackson-databind/blob/\nCommit: 28efa9ba66baf53fd33ba0c0971dbffd7221502c\nAuthor: Tatu Saloranta\nDate: 2023-12-24 04:29:30+00:00\n\nMessage:\n[maven-release-plugin] prepare release jackson-databind-2.16.1\n\nModified files:\n- Modified: pom.xml\n   Added: 3 lines\n   Removed: 3 lines\n/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java#L153\r\n\r\nNote: It's specifically related to it being a Throwable. When I remove \"extends Exception\" it works.\r\n\r\n\n",
+                "distance": 0,
+                "title": "NPE when deserializing `JsonAnySetter` in `Throwable`",
+                "name": "root",
+                "path": [],
+                "issue_id": "root",
+                "similarity": 2.0,
+                "type": "issue"
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "4316",
+                "type": "issue",
+                "content": "### Search before asking\r\n\r\n- [X] I searched in the [issues](https://github.com/FasterXML/jackson-databind/issues) and found nothing similar.\r\n\r\n### Describe the bug\r\n\r\nWhen using JsonAnyGetter+JsonAnySetter on an exception class, a NPE is thrown when deserializing.\r\n\r\n### Version Information\r\n\r\n2.16.1\r\n\r\n### Reproduction\r\n\r\n```java\r\npublic class Main {\r\n\r\n    static class Problem extends Exception {\r\n        @JsonAnySetter\r\n        @JsonAnyGetter\r\n        Map<String, Object> additionalProperties = new HashMap<>();\r\n    }\r\n\r\n    public static void main(String[] args) throws JsonProcessingException {\r\n        Problem problem = new Problem();\r\n        problem.additionalProperties.put(\"additional\", \"additional\");\r\n        String json = new ObjectMapper().writeValueAsString(problem);\r\n        System.out.println(json);\r\n        Problem result = new ObjectMapper().readValue(json, Problem.class); // throws NPE\r\n        System.out.println(result.additionalProperties);\r\n    }\r\n    \r\n}\r\n``` \r\n\r\n\r\n### Expected behavior\r\n\r\n_No response_\r\n\r\n### Additional context\r\n\r\nStacktrace:\r\n\r\n```\r\nException in thread \"main\" java.lang.NullPointerException\r\n\tat java.base/java.util.Objects.requireNonNull(Objects.java:233)\r\n\tat java.base/java.lang.invoke.DirectMethodHandle.checkBase(DirectMethodHandle.java:547)\r\n\tat java.base/jdk.internal.reflect.MethodHandleObjectFieldAccessorImpl.get(MethodHandleObjectFieldAccessorImpl.java:57)\r\n\tat java.base/java.lang.reflect.Field.get(Field.java:442)\r\n\tat com.fasterxml.jackson.databind.introspect.AnnotatedField.getValue(AnnotatedField.java:111)\r\n\tat com.fasterxml.jackson.databind.deser.SettableAnyProperty$MapFieldAnyProperty._set(SettableAnyProperty.java:347)\r\n\tat com.fasterxml.jackson.databind.deser.SettableAnyProperty.set(SettableAnyProperty.java:205)\r\n\tat com.fasterxml.jackson.databind.deser.SettableAnyProperty.deserializeAndSet(SettableAnyProperty.java:179)\r\n\tat com.fasterxml.jackson.databind.deser.std.ThrowableDeserializer.deserializeFromObject(ThrowableDeserializer.java:153)\r\n\tat com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:185)\r\n\tat com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:342)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:4899)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3846)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3814)\r\n\tat be.fgov.kszbcss.jackson.Main.main(Main.java:25)\r\n```\r\n\r\nhttps://github.com/FasterXML/jackson-databind/blob/28efa9ba66baf53fd33ba0c0971dbffd7221502c/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java#L153\r\n\r\nNote: It's specifically related to it being a Throwable. When I remove \"extends Exception\" it works.\r\n\r\n\n\n\nComment by cowtowncoder:\nThank you for reporting this: looks like a bug in `ThrowableDeserializer`: I can reproduce (and added a failing test).",
+                "source_code": null,
+                "distance": 0.25,
+                "title": "NPE when deserializing `JsonAnySetter` in `Throwable`",
+                "name": "issue#4316",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#4316"
+                    }
+                ],
+                "similarity": 0.8627533656963133,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "4325",
+                "type": "issue",
+                "content": "fixes #4316 \n\n",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "Fix `NPE` when deserializing `@JsonAnySetter` field in `Throwable`",
+                "name": "pr#4325",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#4316"
+                    },
+                    {
+                        "start_node": "issue#4316",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "pr#4325"
+                    }
+                ],
+                "similarity": 0.5790832406958013,
+                "end_line": null,
+                "signature": null
+            }
+        ]
+    },
+    "artifact_stats": {
+        "skipped_due_to_time": 10,
+        "valid_related_items": 14
+    }
+}

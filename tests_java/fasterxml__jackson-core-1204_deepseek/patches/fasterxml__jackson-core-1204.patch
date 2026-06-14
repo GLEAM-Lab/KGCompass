@@ -1,0 +1,54 @@
+Based on the issue description, we need to add a `clear()` method to the `RecyclerPool` interface to allow dropping all pooled objects. Since no code snippets were provided, I'll assume we need to create this interface or add the method to an existing one.
+
+Here's the proposed edit to add the `clear()` method to the `RecyclerPool` interface:
+
+```java
+### com/fasterxml/jackson/core/util/RecyclerPool.java
+<<<<<<< SEARCH
+public interface RecyclerPool<T> {
+    /**
+     * Method called to obtain a pooled instance if available, or create a new
+     * one if not available.
+     */
+    T acquire();
+
+    /**
+     * Method called to release an instance back to pool for reuse.
+     */
+    void release(T value);
+}
+=======
+public interface RecyclerPool<T> {
+    /**
+     * Method called to obtain a pooled instance if available, or create a new
+     * one if not available.
+     */
+    T acquire();
+
+    /**
+     * Method called to release an instance back to pool for reuse.
+     */
+    void release(T value);
+
+    /**
+     * Method called to clear all pooled instances (no-op for non-recycling pools
+     * or pools that cannot be cleared like ThreadLocal-based ones).
+     */
+    default void clear() {
+        // Default implementation: no-op
+    }
+}
+>>>>>>> REPLACE
+```
+
+This change:
+1. Adds the new `clear()` method to the interface
+2. Makes it a default method with no-op implementation since:
+   - Non-recycling pools can ignore it
+   - ThreadLocal-based pools can't clear their contents
+3. Provides documentation explaining the behavior
+4. Maintains backward compatibility since it's a default method
+
+Implementations that can and should support clearing (like unbounded pools) can override this method with their own implementation that actually clears the pool.
+
+Note: If the `RecyclerPool` interface already exists with different content, please provide the actual content so I can adjust the edit accordingly.

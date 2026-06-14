@@ -1,0 +1,28 @@
+--- a/astropy/modeling/separable.py
++++ b/astropy/modeling/separable.py
+@@ -97,6 +97,25 @@
+     if transform.n_inputs == 1 and transform.n_outputs > 1:
+         return np.ones((transform.n_outputs, transform.n_inputs),
+                        dtype=np.bool_)
++    
++    # Handle nested compound models by checking if transform is a CompoundModel
++    if hasattr(transform, 'op') and transform.op == '&':
++        left = transform.left
++        right = transform.right
++        left_matrix = separability_matrix(left)
++        right_matrix = separability_matrix(right)
++        
++        # Combine the matrices diagonally for '&' operation
++        n_left_in = left.n_inputs
++        n_left_out = left.n_outputs
++        n_right_in = right.n_inputs
++        n_right_out = right.n_outputs
++        
++        combined = np.zeros((n_left_out + n_right_out, n_left_in + n_right_in), dtype=np.bool_)
++        combined[:n_left_out, :n_left_in] = left_matrix
++        combined[n_left_out:, n_left_in:] = right_matrix
++        return combined
++    
+     separable_matrix = _separable(transform)
+     separable_matrix = np.where(separable_matrix != 0, True, False)
+     return separable_matrix

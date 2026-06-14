@@ -1,0 +1,37 @@
+Based on the issue, the problem is that `StreamReadConstraints` cannot be directly set on `JsonFactory` - it can only be set through the Builder pattern. The issue requests adding a way to modify `StreamReadConstraints` directly on `JsonFactory` instances.
+
+Looking at the code, we can see that `_streamReadConstraints` is a private field in `JsonFactory` that's only set during construction. We need to add a setter method to allow modifying it after construction.
+
+Here's the edit to fix this:
+
+```java
+### playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java
+- start_line : 777
+- end_line : 779
+<<<<<<< SEARCH
+    public StreamReadConstraints streamReadConstraints() {
+        return _streamReadConstraints;
+    }
+=======
+    public StreamReadConstraints streamReadConstraints() {
+        return _streamReadConstraints;
+    }
+
+    public JsonFactory setStreamReadConstraints(StreamReadConstraints src) {
+        _streamReadConstraints = src == null ? StreamReadConstraints.defaults() : src;
+        return this;
+    }
+>>>>>>> REPLACE
+```
+
+This change:
+1. Keeps the existing getter method `streamReadConstraints()`
+2. Adds a new setter method `setStreamReadConstraints()` that:
+   - Takes a `StreamReadConstraints` parameter
+   - Handles null by falling back to defaults
+   - Returns the factory instance for method chaining
+   - Maintains the same pattern as other configuration methods in the class
+
+The setter follows the same pattern as other configuration methods in `JsonFactory` (like `configure()`, `enable()`, etc) by returning the factory instance to allow method chaining.
+
+This provides the direct mutable configuration capability requested in the issue while maintaining consistency with the existing API style.

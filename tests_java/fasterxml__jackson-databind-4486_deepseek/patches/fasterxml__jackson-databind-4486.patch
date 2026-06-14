@@ -1,0 +1,31 @@
+Based on the issue, the bug is in the `EnumDeserializer.java` file where the `useNullForUnknownEnum()` method doesn't properly respect the precedence of annotation configuration over global configuration. The current implementation uses a logical OR (`||`) which means if either the global setting OR the annotation setting is true, it will return true. Instead, it should check the annotation setting first and only fall back to the global setting if the annotation setting is null.
+
+Here's the fix:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/std/EnumDeserializer.java
+- start_line : 488
+- end_line : 491
+<<<<<<< SEARCH
+    protected boolean useNullForUnknownEnum(DeserializationContext ctxt) {
+        return Boolean.TRUE.equals(_useNullForUnknownEnum)
+          || ctxt.isEnabled(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL);
+    }
+=======
+    protected boolean useNullForUnknownEnum(DeserializationContext ctxt) {
+        if (_useNullForUnknownEnum != null) {
+            return Boolean.TRUE.equals(_useNullForUnknownEnum);
+        }
+        return ctxt.isEnabled(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL);
+    }
+>>>>>>> REPLACE
+```
+
+This change:
+1. First checks if there's an explicit annotation setting (`_useNullForUnknownEnum` is not null)
+2. If there is, returns its value (true/false) - this gives precedence to the annotation
+3. Only if there's no annotation setting, falls back to checking the global configuration
+
+The fix ensures that when `@JsonFormat(without = JsonFormat.Feature.READ_UNKNOWN_ENUM_VALUES_AS_NULL)` is used, it will override the global `READ_UNKNOWN_ENUM_VALUES_AS_NULL` setting on the ObjectMapper.
+
+The change matches the expected behavior described in the issue where annotation configurations should take precedence over global configurations.

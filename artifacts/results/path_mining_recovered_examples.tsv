@@ -1,0 +1,170 @@
+instance_id	new_rank	path_len	signature	file_path	gt_files	kg_rank	path_mined_rank
+astropy__astropy-13579	2	3	astropy.wcs.wcsapi.wrappers.sliced_wcs.SlicedLowLevelWCS.world_to_pixel_values(self)	astropy/wcs/wcsapi/wrappers/sliced_wcs.py	astropy/wcs/wcsapi/wrappers/sliced_wcs.py	23	1
+django__django-10554	12	3	django.db.models.sql.compiler.SQLCompiler.get_order_by(self)	django/db/models/sql/compiler.py	django/db/models/sql/compiler.py;django/db/models/sql/query.py		6
+django__django-10914	2	2	django.conf.global_settings.FILE_UPLOAD_PERMISSIONS = None	django/conf/global_settings.py	django/conf/global_settings.py		1
+django__django-10999	3	2	"django.utils.dateparse.standard_duration_re = re.compile(
+    r'^'
+    r'(?:(?P<days>-?\d+) (days?, )?)?'
+    r'((?:(?P<hours>-?\d+):)(?=\d+:\d+))?'
+    r'(?:(?P<minutes>-?\d+):)?'
+    r'(?P<seconds>-?\d+)'
+    r'(?:\.(?P<microseconds>\d{1,6})\d{0,6})?'
+    r'$'
+)"	django/utils/dateparse.py	django/utils/dateparse.py		2
+django__django-11099	6	3	django.contrib.auth.validators.UnicodeUsernameValidator.regex = ^[\w.@+-]+$	django/contrib/auth/validators.py	django/contrib/auth/validators.py		3
+django__django-11133	6	3	django.http.response.HttpResponseBase.make_bytes(self, value)	django/http/response.py	django/http/response.py	26	3
+django__django-11149	2	3	django.contrib.admin.options.InlineModelAdmin.has_view_permission(self, request, obj)	django/contrib/admin/options.py	django/contrib/admin/options.py	26	1
+django__django-11532	4	2	django.core.mail.message.sanitize_address(addr, encoding)	django/core/mail/message.py	django/core/mail/message.py;django/core/mail/utils.py;django/core/validators.py;django/utils/encoding.py;django/utils/html.py		2
+django__django-11885	2	3	django.db.models.deletion.Collector.can_fast_delete(self, objs, from_field)	django/db/models/deletion.py	django/contrib/admin/utils.py;django/db/models/deletion.py	48	1
+django__django-12419	2	2	django.conf.global_settings.SECURE_REFERRER_POLICY = None	django/conf/global_settings.py	django/conf/global_settings.py		1
+django__django-13109	2	3	django.db.models.fields.related.ForeignKey.validate(self, value, model_instance)	django/db/models/fields/related.py	django/db/models/fields/related.py	21	1
+django__django-13128	19	3	django.db.models.expressions.CombinedExpression.as_sql(self, compiler, connection)	django/db/models/expressions.py	django/db/models/expressions.py		10
+django__django-13933	10	3	django.forms.models.ModelChoiceField.to_python(self, value)	django/forms/models.py	django/forms/models.py	22	5
+django__django-14373	12	3	django.utils.dateformat.DateFormat.Y(self)	django/utils/dateformat.py	django/utils/dateformat.py	23	7
+django__django-14672	7	3	django.db.models.fields.reverse_related.ManyToManyRel.identity(self)	django/db/models/fields/reverse_related.py	django/db/models/fields/reverse_related.py	35	4
+django__django-14787	4	2	django.utils.decorators._multi_decorate(decorators, method)	django/utils/decorators.py	django/utils/decorators.py		2
+django__django-15380	12	3	django.db.migrations.autodetector.MigrationAutodetector.generate_renamed_fields(self)	django/db/migrations/autodetector.py	django/db/migrations/autodetector.py	23	6
+django__django-15382	9	3	django.db.models.expressions.Exists.as_sql(self, compiler, connection, template)	django/db/models/expressions.py	django/db/models/expressions.py		5
+django__django-15499	19	3	django.db.migrations.operations.models.CreateModel.reduce(self, operation, app_label)	django/db/migrations/operations/models.py	django/db/migrations/operations/models.py	23	12
+django__django-15503	4	3	django.db.models.fields.json.HasKeyLookup.as_sqlite(self, compiler, connection)	django/db/models/fields/json.py	django/db/models/fields/json.py		2
+django__django-16082	2	2	"django.db.models.expressions._connector_combinations = [
+    # Numeric operations - operands of same type.
+    {
+        connector: [
+            (fields.IntegerField, fields.IntegerField, fields.IntegerField),
+            (fields.FloatField, fields.FloatField, fields.FloatField),
+            (fields.DecimalField, fields.DecimalField, fields.DecimalField),
+        ]
+        for connector in (
+            Combinable.ADD,
+            Combinable.SUB,
+            Combinable.MUL,
+            # Behavior for DIV with integer arguments follows Postgres/SQLite,
+            # not MySQL/Oracle.
+            Combinable.DIV,
+            Combinable.MOD,
+            Combinable.POW,
+        )
+    },
+    # Numeric operations - operands of different type.
+    {
+        connector: [
+            (fields.IntegerField, fields.DecimalField, fields.DecimalField),
+            (fields.DecimalField, fields.IntegerField, fields.DecimalField),
+            (fields.IntegerField, fields.FloatField, fields.FloatField),
+            (fields.FloatField, fields.IntegerField, fields.FloatField),
+        ]
+        for connector in (
+            Combinable.ADD,
+            Combinable.SUB,
+            Combinable.MUL,
+            Combinable.DIV,
+        )
+    },
+    # Bitwise operators.
+    {
+        connector: [
+            (fields.IntegerField, fields.IntegerField, fields.IntegerField),
+        ]
+        for connector in (
+            Combinable.BITAND,
+            Combinable.BITOR,
+            Combinable.BITLEFTSHIFT,
+            Combinable.BITRIGHTSHIFT,
+            Combinable.BITXOR,
+        )
+    },
+    # Numeric with NULL.
+    {
+        connector: [
+            (field_type, NoneType, field_type),
+            (NoneType, field_type, field_type),
+        ]
+        for connector in (
+            Combinable.ADD,
+            Combinable.SUB,
+            Combinable.MUL,
+            Combinable.DIV,
+            Combinable.MOD,
+            Combinable.POW,
+        )
+        for field_type in (fields.IntegerField, fields.DecimalField, fields.FloatField)
+    },
+    # Date/DateTimeField/DurationField/TimeField.
+    {
+        Combinable.ADD: [
+            # Date/DateTimeField.
+            (fields.DateField, fields.DurationField, fields.DateTimeField),
+            (fields.DateTimeField, fields.DurationField, fields.DateTimeField),
+            (fields.DurationField, fields.DateField, fields.DateTimeField),
+            (fields.DurationField, fields.DateTimeField, fields.DateTimeField),
+            # DurationField.
+            (fields.DurationField, fields.DurationField, fields.DurationField),
+            # TimeField.
+            (fields.TimeField, fields.DurationField, fields.TimeField),
+            (fields.DurationField, fields.TimeField, fields.TimeField),
+        ],
+    },
+    {
+        Combinable.SUB: [
+            # Date/DateTimeField.
+            (fields.DateField, fields.DurationField, fields.DateTimeField),
+            (fields.DateTimeField, fields.DurationField, fields.DateTimeField),
+            (fields.DateField, fields.DateField, fields.DurationField),
+            (fields.DateField, fields.DateTimeField, fields.DurationField),
+            (fields.DateTimeField, fields.DateField, fields.DurationField),
+            (fields.DateTimeField, fields.DateTimeField, fields.DurationField),
+            # DurationField.
+            (fields.DurationField, fields.DurationField, fields.DurationField),
+            # TimeField.
+            (fields.TimeField, fields.DurationField, fields.TimeField),
+            (fields.TimeField, fields.TimeField, fields.DurationField),
+        ],
+    },
+]"	django/db/models/expressions.py	django/db/models/expressions.py		1
+django__django-16136	10	3	django.views.generic.base.View.http_method_not_allowed(self, request)	django/views/generic/base.py	django/views/generic/base.py	29	6
+django__django-16255	10	3	django.contrib.sitemaps.__init__.Sitemap.get_latest_lastmod(self)	django/contrib/sitemaps/__init__.py	django/contrib/sitemaps/__init__.py		5
+django__django-16493	4	3	django.db.models.fields.files.FileField.deconstruct(self)	django/db/models/fields/files.py	django/db/models/fields/files.py	21	2
+matplotlib__matplotlib-13989	2	3	matplotlib.axes._axes.Axes.hist(self, x, bins, range, density, weights, cumulative, bottom, histtype, align, orientation, rwidth, log, color, label, stacked, normed)	lib/matplotlib/axes/_axes.py	lib/matplotlib/axes/_axes.py		1
+matplotlib__matplotlib-20488	12	3	matplotlib.image._ImageBase._make_image(self, A, in_bbox, out_bbox, clip_bbox, magnification, unsampled, round_to_pixel_border)	lib/matplotlib/image.py	lib/matplotlib/image.py		6
+matplotlib__matplotlib-22871	8	3	matplotlib.dates.ConciseDateFormatter.format_ticks(self, values)	lib/matplotlib/dates.py	lib/matplotlib/dates.py		4
+matplotlib__matplotlib-23412	16	3	matplotlib.patches.Patch.draw(self, renderer)	lib/matplotlib/patches.py	lib/matplotlib/patches.py		8
+matplotlib__matplotlib-24570	8	2	lib.matplotlib.offsetbox._get_aligned_offsets(hd_list, height, align)	lib/matplotlib/offsetbox.py	lib/matplotlib/offsetbox.py	36	4
+matplotlib__matplotlib-24637	2	3	matplotlib.offsetbox.AnnotationBbox.get_window_extent(self, renderer)	lib/matplotlib/offsetbox.py	lib/matplotlib/offsetbox.py		1
+matplotlib__matplotlib-25775	14	3	matplotlib.backends.backend_cairo.GraphicsContextCairo.set_antialiased(self, b)	lib/matplotlib/backends/backend_cairo.py	lib/matplotlib/backends/backend_agg.py;lib/matplotlib/backends/backend_cairo.py;lib/matplotlib/text.py		7
+matplotlib__matplotlib-25960	2	3	matplotlib.figure.FigureBase.subfigures(self, nrows, ncols, squeeze, wspace, hspace, width_ratios, height_ratios)	lib/matplotlib/figure.py	lib/matplotlib/figure.py		1
+matplotlib__matplotlib-26113	2	3	matplotlib.axes._axes.Axes.hexbin(self, x, y, C, gridsize, bins, xscale, yscale, extent, cmap, norm, vmin, vmax, alpha, linewidths, edgecolors, reduce_C_function, mincnt, marginals)	lib/matplotlib/axes/_axes.py	lib/matplotlib/axes/_axes.py		1
+matplotlib__matplotlib-26291	11	3	matplotlib.lib.mpl_toolkits.axes_grid1.inset_locator.AnchoredLocatorBase.__call__(self, ax, renderer)	lib/mpl_toolkits/axes_grid1/inset_locator.py	lib/mpl_toolkits/axes_grid1/inset_locator.py		6
+matplotlib__matplotlib-26342	10	3	matplotlib.collections.Collection.set_paths(self, paths)	lib/matplotlib/collections.py	lib/matplotlib/collections.py		5
+mwaskom__seaborn-3187	7	2	seaborn.utils.locator_to_legend_entries(locator, limits, dtype)	seaborn/utils.py	seaborn/_core/scales.py;seaborn/utils.py	22	4
+pydata__xarray-6938	2	3	xarray.core.dataset.Dataset.swap_dims(self, dims_dict)	xarray/core/dataset.py	xarray/core/dataset.py;xarray/core/variable.py	21	1
+pydata__xarray-7229	20	2	xarray.core.computation.where(cond, x, y, keep_attrs)	xarray/core/computation.py	xarray/core/computation.py		11
+pytest-dev__pytest-10051	9	3	pytest.src._pytest.logging.LogCaptureFixture.clear(self)	src/_pytest/logging.py	src/_pytest/logging.py		5
+pytest-dev__pytest-5262	8	3	pytest.src._pytest.capture.EncodedFile.write(self, obj)	src/_pytest/capture.py	src/_pytest/capture.py		4
+pytest-dev__pytest-7571	2	3	pytest.src._pytest.logging.LogCaptureFixture.set_level(self, level, logger)	src/_pytest/logging.py	src/_pytest/logging.py		1
+scikit-learn__scikit-learn-10297	14	3	scikit-learn.sklearn.linear_model.ridge.RidgeClassifierCV.fit(self, X, y, sample_weight)	sklearn/linear_model/ridge.py	sklearn/linear_model/ridge.py		7
+scikit-learn__scikit-learn-10908	20	3	scikit-learn.sklearn.feature_extraction.text.CountVectorizer.inverse_transform(self, X)	sklearn/feature_extraction/text.py	sklearn/feature_extraction/text.py		10
+scikit-learn__scikit-learn-11310	6	3	scikit-learn.sklearn.model_selection._search.GridSearchCV.__init__(self, estimator, param_grid, scoring, fit_params, n_jobs, iid, refit, cv, verbose, pre_dispatch, error_score, return_train_score)	sklearn/model_selection/_search.py	sklearn/model_selection/_search.py		3
+scikit-learn__scikit-learn-12973	2	3	scikit-learn.sklearn.linear_model.least_angle.LassoLarsIC.fit(self, X, y, copy_X)	sklearn/linear_model/least_angle.py	sklearn/linear_model/least_angle.py		1
+scikit-learn__scikit-learn-13124	6	3	scikit-learn.sklearn.model_selection._split.StratifiedKFold._make_test_folds(self, X, y)	sklearn/model_selection/_split.py	sklearn/model_selection/_split.py		3
+scikit-learn__scikit-learn-13135	2	3	scikit-learn.sklearn.preprocessing._discretization.KBinsDiscretizer.fit(self, X, y)	sklearn/preprocessing/_discretization.py	sklearn/preprocessing/_discretization.py		1
+scikit-learn__scikit-learn-13142	2	3	scikit-learn.sklearn.mixture.base.BaseMixture.fit_predict(self, X, y)	sklearn/mixture/base.py	sklearn/mixture/base.py		1
+scikit-learn__scikit-learn-13328	2	3	scikit-learn.sklearn.linear_model.huber.HuberRegressor.fit(self, X, y, sample_weight)	sklearn/linear_model/huber.py	sklearn/linear_model/huber.py		1
+scikit-learn__scikit-learn-13439	2	3	scikit-learn.sklearn.pipeline.Pipeline.fit_predict(self, X, y)	sklearn/pipeline.py	sklearn/pipeline.py		1
+scikit-learn__scikit-learn-13779	10	3	scikit-learn.sklearn.ensemble.voting._BaseVoting.fit(self, X, y, sample_weight)	sklearn/ensemble/voting.py	sklearn/ensemble/voting.py		5
+scikit-learn__scikit-learn-14087	4	3	scikit-learn.sklearn.linear_model.logistic.LogisticRegressionCV.fit(self, X, y, sample_weight)	sklearn/linear_model/logistic.py	sklearn/linear_model/logistic.py		2
+scikit-learn__scikit-learn-14629	7	3	scikit-learn.sklearn.multioutput.MultiOutputClassifier.predict_proba(self, X)	sklearn/multioutput.py	sklearn/multioutput.py		4
+scikit-learn__scikit-learn-14710	2	3	scikit-learn.sklearn.ensemble._hist_gradient_boosting.gradient_boosting.BaseHistGradientBoosting._check_early_stopping_scorer(self, X_binned_small_train, y_small_train, X_binned_val, y_val)	sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py	sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py		1
+scikit-learn__scikit-learn-14894	4	3	scikit-learn.sklearn.svm.base.BaseLibSVM._sparse_fit(self, X, y, sample_weight, solver_type, kernel, random_seed)	sklearn/svm/base.py	sklearn/svm/base.py		2
+scikit-learn__scikit-learn-14983	18	2	sklearn.model_selection._split._build_repr(self)	sklearn/model_selection/_split.py	sklearn/model_selection/_split.py	32	9
+scikit-learn__scikit-learn-25232	6	3	scikit-learn.sklearn.impute._iterative.IterativeImputer._impute_one_feature(self, X_filled, mask_missing_values, feat_idx, neighbor_feat_idx, estimator, fit_mode)	sklearn/impute/_iterative.py	sklearn/impute/_iterative.py		3
+scikit-learn__scikit-learn-25931	4	3	scikit-learn.sklearn.ensemble._iforest.IsolationForest.score_samples(self, X)	sklearn/ensemble/_iforest.py	sklearn/ensemble/_iforest.py		2
+scikit-learn__scikit-learn-25973	2	3	scikit-learn.sklearn.feature_selection._sequential.SequentialFeatureSelector.fit(self, X, y)	sklearn/feature_selection/_sequential.py	sklearn/feature_selection/_sequential.py		1
+scikit-learn__scikit-learn-26323	2	3	scikit-learn.sklearn.compose._column_transformer.ColumnTransformer.set_output(self)	sklearn/compose/_column_transformer.py	sklearn/compose/_column_transformer.py		1
+sphinx-doc__sphinx-8593	16	3	sphinx.ext.autodoc.__init__.ModuleDocumenter.get_object_members(self, want_all)	sphinx/ext/autodoc/__init__.py	sphinx/ext/autodoc/__init__.py;sphinx/ext/autodoc/importer.py	22	9
+sphinx-doc__sphinx-9229	16	3	sphinx.ext.autodoc.__init__.ClassDocumenter.get_object_members(self, want_all)	sphinx/ext/autodoc/__init__.py	sphinx/ext/autodoc/__init__.py		8
+sympy__sympy-12096	2	3	sympy.core.function.Function._eval_evalf(self, prec)	sympy/core/function.py	sympy/core/function.py	27	1
+sympy__sympy-13372	3	2	sympy.core.evalf.evalf(x, prec, options)	sympy/core/evalf.py	sympy/core/evalf.py	23	2
+sympy__sympy-13615	4	3	sympy.sets.sets.Set._complement(self, other)	sympy/sets/sets.py	sympy/sets/sets.py	50	3
+sympy__sympy-16886	4	2	"sympy.crypto.crypto.morse_char = {'.-': 'A', '-...': 'B', '-.-.': 'C', '-..': 'D', '.': 'E', '..-.': 'F', '--.': 'G', '....': 'H', '..': 'I', '.---': 'J', '-.-': 'K', '.-..': 'L', '--': 'M', '-.': 'N', '---': 'O', '.--.': 'P', '--.-': 'Q', '.-.': 'R', '...': 'S', '-': 'T', '..-': 'U', '...-': 'V', '.--': 'W', '-..-': 'X', '-.--': 'Y', '--..': 'Z', '-----': '0', '----': '1', '..---': '2', '...--': '3', '....-': '4', '.....': '5', '-....': '6', '--...': '7', '---..': '8', '----.': '9', '.-.-.-': '.', '--..--': ',', '---...': ':', '-.-.-.': ';', '..--..': '?', '-....-': '-', '..--.-': '_', '-.--.': '(', '-.--.-': ')', '.----.': ""'"", '-...-': '=', '.-.-.': '+', '-..-.': '/', '.--.-.': '@', '...-..-': '$', '-.-.--': '!'}"	sympy/crypto/crypto.py	sympy/crypto/crypto.py		3
+sympy__sympy-23950	20	3	sympy.sets.contains.Contains.as_set(self)	sympy/sets/contains.py	sympy/sets/contains.py	39	10

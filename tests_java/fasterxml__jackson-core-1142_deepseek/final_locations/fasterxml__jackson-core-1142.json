@@ -1,0 +1,1748 @@
+{
+  "related_entities": {
+    "methods": [
+      {
+        "start_line": 581,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    @Override public boolean equals(Object o) {\n        if (o == this) return true;\n        if (o == null) return false;\n        if (!(o instanceof JsonPointer)) return false;\n        JsonPointer other = (JsonPointer) o;\n        // 07-Oct-2022, tatu: Ugh.... this gets way more complicated as we MUST\n        //   compare logical representation so cannot simply compare offset\n        //   and String\n        return _compare(_asString, _asStringOffset,\n                other._asString, other._asStringOffset);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "equals",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          }
+        ],
+        "similarity": 0.15212106338958947,
+        "end_line": 591,
+        "signature": "com.fasterxml.jackson.core.JsonPointer.equals(Object o): boolean"
+      },
+      {
+        "start_line": 801,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean equals(Object o) {\n        // identity comparison should be fine\n        // 26-Oct-2020, tatu: ... not any more with 2.12\n        if (o == this) return true;\n        if (o == null || o.getClass() != getClass()) return false;\n\n        Base64Variant other = (Base64Variant) o;\n        return (other._paddingChar == _paddingChar)\n                && (other._maxLineLength == _maxLineLength)\n                && (other._writePadding == _writePadding)\n                && (other._paddingReadBehaviour == _paddingReadBehaviour)\n                && (_name.equals(other._name))\n                ;\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "equals",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          }
+        ],
+        "similarity": 0.14512444065275487,
+        "end_line": 814,
+        "signature": "com.fasterxml.jackson.core.Base64Variant.equals(Object o): boolean"
+      },
+      {
+        "start_line": 104,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonPointer() {\n        _nextSegment = null;\n        // [core#788]: must be `null` to distinguish from Property with \"\" as key\n        _matchingPropertyName = null;\n        _matchingElementIndex = -1;\n        _asString = \"\";\n        _asStringOffset = 0;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "JsonPointer",
+        "documentation": "/**\n     * Constructor used for creating \"empty\" instance, used to represent\n     * state that matches current node.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          }
+        ],
+        "similarity": 0.10209466179932575,
+        "end_line": 111,
+        "signature": "com.fasterxml.jackson.core.JsonPointer()"
+      },
+      {
+        "start_line": 453,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean matchesProperty(String name) {\n        return (_nextSegment != null) && _matchingPropertyName.equals(name);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "matchesProperty",
+        "documentation": "/**\n     * Method that may be called to see if the pointer head (first segment)\n     * would match property (of a JSON Object) with given name.\n     *\n     * @param name Name of Object property to match\n     *\n     * @return {@code True} if the pointer head matches specified property name\n     *\n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "matchesProperty"
+          }
+        ],
+        "similarity": 0.10040777371397323,
+        "end_line": 455,
+        "signature": "com.fasterxml.jackson.core.JsonPointer.matchesProperty(String name): boolean"
+      },
+      {
+        "start_line": 468,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonPointer matchProperty(String name) {\n        if ((_nextSegment != null) && _matchingPropertyName.equals(name)) {\n            return _nextSegment;\n        }\n        return null;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "matchProperty",
+        "documentation": "/**\n     * Method that may be called to check whether the pointer head (first segment)\n     * matches specified Object property (by name) and if so, return\n     * {@link JsonPointer} that represents rest of the path after match.\n     * If there is no match, {@code null} is returned.\n     *\n     * @param name Name of Object property to match\n     *\n     * @return Remaining path after matching specified property, if there is match;\n     *    {@code null} otherwise\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "matchProperty"
+          }
+        ],
+        "similarity": 0.09525144671889908,
+        "end_line": 473,
+        "signature": "com.fasterxml.jackson.core.JsonPointer.matchProperty(String name): JsonPointer"
+      },
+      {
+        "start_line": 90,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonLocation.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonLocation(Object srcRef, long totalChars, int lineNr, int columnNr) {\n        this(_wrap(srcRef), totalChars, lineNr, columnNr);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "JsonLocation",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonLocation"
+          },
+          {
+            "start_node": "JsonLocation",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "JsonLocation"
+          }
+        ],
+        "similarity": 0.09309775785325443,
+        "end_line": 92,
+        "signature": "com.fasterxml.jackson.core.JsonLocation(Object srcRef, long totalChars, int lineNr, int columnNr)"
+      },
+      {
+        "start_line": 325,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean mayMatchProperty() { return _matchingPropertyName != null; }",
+        "distance": 1.5,
+        "title": null,
+        "name": "mayMatchProperty",
+        "documentation": "/**\n     * @return True if the root selector matches property name (that is, could\n     * match field value of JSON Object node)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "mayMatchProperty"
+          }
+        ],
+        "similarity": 0.09281136330116845,
+        "end_line": 325,
+        "signature": "com.fasterxml.jackson.core.JsonPointer.mayMatchProperty(): boolean"
+      },
+      {
+        "start_line": 272,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonLocation.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean equals(Object other)",
+        "distance": 1.0,
+        "title": null,
+        "name": "equals",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          }
+        ],
+        "similarity": 0.09227576818255052,
+        "end_line": 272,
+        "signature": "com.fasterxml.jackson.core.JsonLocation.equals(Object other): boolean"
+      },
+      {
+        "start_line": 447,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/ContentReference.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean equals(Object other)",
+        "distance": 1.0,
+        "title": null,
+        "name": "equals",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          }
+        ],
+        "similarity": 0.09227576818255052,
+        "end_line": 447,
+        "signature": "com.fasterxml.jackson.core.io.ContentReference.equals(Object other): boolean"
+      },
+      {
+        "start_line": 485,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean matchesElement(int index) {\n        return (index == _matchingElementIndex) && (index >= 0);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "matchesElement",
+        "documentation": "/**\n     * Method that may be called to see if the pointer would match\n     * Array element (of a JSON Array) with given index.\n     *\n     * @param index Index of Array element to match\n     *\n     * @return {@code True} if the pointer head matches specified Array index\n     *\n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "matchesElement"
+          }
+        ],
+        "similarity": 0.09044146730893256,
+        "end_line": 487,
+        "signature": "com.fasterxml.jackson.core.JsonPointer.matchesElement(int index): boolean"
+      },
+      {
+        "start_line": 502,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonPointer matchElement(int index) {\n        if ((index != _matchingElementIndex) || (index < 0)) {\n            return null;\n        }\n        return _nextSegment;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "matchElement",
+        "documentation": "/**\n     * Method that may be called to check whether the pointer head (first segment)\n     * matches specified Array index and if so, return\n     * {@link JsonPointer} that represents rest of the path after match.\n     * If there is no match, {@code null} is returned.\n     *\n     * @param index Index of Array element to match\n     *\n     * @return Remaining path after matching specified index, if there is match;\n     *    {@code null} otherwise\n     *\n     * @since 2.6\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "matchElement"
+          }
+        ],
+        "similarity": 0.08964243520933395,
+        "end_line": 507,
+        "signature": "com.fasterxml.jackson.core.JsonPointer.matchElement(int index): JsonPointer"
+      },
+      {
+        "start_line": 234,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private Base64Variant(Base64Variant base, PaddingReadBehaviour paddingReadBehaviour) {\n        this(base, base._name, base._writePadding, base._paddingChar, paddingReadBehaviour, base._maxLineLength);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "Base64Variant",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "Base64Variant"
+          },
+          {
+            "start_node": "Base64Variant",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "Base64Variant"
+          }
+        ],
+        "similarity": 0.08921244102912532,
+        "end_line": 236,
+        "signature": "com.fasterxml.jackson.core.Base64Variant(Base64Variant base, PaddingReadBehaviour paddingReadBehaviour)"
+      },
+      {
+        "start_line": 832,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private Object writeReplace() {\n        // 11-Oct-2022, tatu: very important, must serialize just contents!\n        return new Serialization(toString());\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "writeReplace",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "writeReplace"
+          }
+        ],
+        "similarity": 0.0883993328950822,
+        "end_line": 835,
+        "signature": "com.fasterxml.jackson.core.JsonPointer.writeReplace(): Object"
+      },
+      {
+        "start_line": 95,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonLocation.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonLocation(Object srcRef, long totalBytes, long totalChars,",
+        "distance": 1.5,
+        "title": null,
+        "name": "JsonLocation",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonLocation"
+          },
+          {
+            "start_node": "JsonLocation",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "JsonLocation"
+          }
+        ],
+        "similarity": 0.08661847516571457,
+        "end_line": 95,
+        "signature": "com.fasterxml.jackson.core.JsonLocation(Object srcRef, long totalBytes, long totalChars, int lineNr, int columnNr)"
+      },
+      {
+        "start_line": 75,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonLocation.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonLocation(ContentReference contentRef, long totalBytes, long totalChars,",
+        "distance": 1.5,
+        "title": null,
+        "name": "JsonLocation",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonLocation"
+          },
+          {
+            "start_node": "JsonLocation",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "JsonLocation"
+          }
+        ],
+        "similarity": 0.08616019506059813,
+        "end_line": 75,
+        "signature": "com.fasterxml.jackson.core.JsonLocation(ContentReference contentRef, long totalBytes, long totalChars, int lineNr, int columnNr)"
+      },
+      {
+        "start_line": 559,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    @Override public String toString() {\n        if (_asStringOffset <= 0) {\n            return _asString;\n        }\n        return _asString.substring(_asStringOffset);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "toString",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "toString"
+          }
+        ],
+        "similarity": 0.08612368883963077,
+        "end_line": 564,
+        "signature": "com.fasterxml.jackson.core.JsonPointer.toString(): String"
+      },
+      {
+        "start_line": 857,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _reportBase64UnexpectedPadding() throws IllegalArgumentException {\n        throw new IllegalArgumentException(unexpectedPaddingMessage());\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_reportBase64UnexpectedPadding",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "Base64Variant"
+          },
+          {
+            "start_node": "Base64Variant",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_reportBase64UnexpectedPadding"
+          }
+        ],
+        "similarity": 0.08593160759618691,
+        "end_line": 859,
+        "signature": "com.fasterxml.jackson.core.Base64Variant._reportBase64UnexpectedPadding(): void"
+      },
+      {
+        "start_line": 869,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected String unexpectedPaddingMessage() {\n        return String.format(\"Unexpected end of base64-encoded String: base64 variant '%s' expects no padding at the end while decoding. This Base64Variant might have been incorrectly configured\",\n                getName());\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "unexpectedPaddingMessage",
+        "documentation": "/**\n     * Helper method that will construct a message to use in exceptions for cases where input ends\n     * prematurely in place where padding is not expected.\n     *\n     * @return Exception message for indicating \"unexpected padding\" case\n     *\n     * @since 2.12\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "Base64Variant"
+          },
+          {
+            "start_node": "Base64Variant",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "unexpectedPaddingMessage"
+          }
+        ],
+        "similarity": 0.08582518754895456,
+        "end_line": 872,
+        "signature": "com.fasterxml.jackson.core.Base64Variant.unexpectedPaddingMessage(): String"
+      },
+      {
+        "start_line": 298,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected Object readResolve() {\n        Base64Variant base = Base64Variants.valueOf(_name);\n        if ((_writePadding != base._writePadding)\n                || (_paddingChar != base._paddingChar)\n                || (_paddingReadBehaviour != base._paddingReadBehaviour)\n                || (_maxLineLength != base._maxLineLength)\n                || (_writePadding != base._writePadding)\n                ) {\n            return new Base64Variant(base,\n                    _name, _writePadding, _paddingChar, _paddingReadBehaviour, _maxLineLength);\n        }\n        return base;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "readResolve",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "Base64Variant"
+          },
+          {
+            "start_node": "Base64Variant",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readResolve"
+          }
+        ],
+        "similarity": 0.08516974775346026,
+        "end_line": 310,
+        "signature": "com.fasterxml.jackson.core.Base64Variant.readResolve(): Object"
+      },
+      {
+        "start_line": 233,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/ContentReference.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private void readObject(ObjectInputStream in) throws IOException {\n        // nop: but must override the method\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "readObject",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ContentReference"
+          },
+          {
+            "start_node": "ContentReference",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readObject"
+          }
+        ],
+        "similarity": 0.08441953880611279,
+        "end_line": 235,
+        "signature": "com.fasterxml.jackson.core.io.ContentReference.readObject(ObjectInputStream in): void"
+      },
+      {
+        "start_line": 283,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Base64Variant withWritePadding(boolean writePadding) {\n        return (writePadding == _writePadding) ? this\n                : new Base64Variant(this, _name, writePadding, _paddingChar, _maxLineLength);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "withWritePadding",
+        "documentation": "/**\n     * @param writePadding Determines if padding is output on write or not\n     *\n     * @return Base64Variant which writes padding or not depending on writePadding\n     *\n     * @since 2.12\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "Base64Variant"
+          },
+          {
+            "start_node": "Base64Variant",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withWritePadding"
+          }
+        ],
+        "similarity": 0.08408949674849674,
+        "end_line": 286,
+        "signature": "com.fasterxml.jackson.core.Base64Variant.withWritePadding(boolean writePadding): Base64Variant"
+      },
+      {
+        "start_line": 251,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Base64Variant withPaddingRequired() {\n        return withReadPadding(PaddingReadBehaviour.PADDING_REQUIRED);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "withPaddingRequired",
+        "documentation": "/**\n     * @return Base64Variant which requires padding on read\n     * @since 2.12\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "Base64Variant"
+          },
+          {
+            "start_node": "Base64Variant",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withPaddingRequired"
+          }
+        ],
+        "similarity": 0.0835889643467382,
+        "end_line": 253,
+        "signature": "com.fasterxml.jackson.core.Base64Variant.withPaddingRequired(): Base64Variant"
+      },
+      {
+        "start_line": 100,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonLocation.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected static ContentReference _wrap(Object srcRef) {\n        if (srcRef instanceof ContentReference) {\n            return (ContentReference) srcRef;\n        }\n        return ContentReference.construct(false, srcRef, ErrorReportConfiguration.defaults());\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_wrap",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonLocation"
+          },
+          {
+            "start_node": "JsonLocation",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_wrap"
+          }
+        ],
+        "similarity": 0.08236584916258743,
+        "end_line": 105,
+        "signature": "com.fasterxml.jackson.core.JsonLocation._wrap(Object srcRef): ContentReference"
+      },
+      {
+        "start_line": 115,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Version.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    @Override public int hashCode() {\n        return _artifactId.hashCode() ^ _groupId.hashCode() ^ _snapshotInfo.hashCode()\n            + _majorVersion - _minorVersion + _patchLevel;\n    }",
+        "distance": 2.5,
+        "title": null,
+        "name": "hashCode",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "hashCode"
+          }
+        ],
+        "similarity": 0.0821822140461906,
+        "end_line": 118,
+        "signature": "com.fasterxml.jackson.core.Version.hashCode(): int"
+      },
+      {
+        "start_line": 764,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonPointer _constructHead(int suffixLength, JsonPointer last)",
+        "distance": 1.5,
+        "title": null,
+        "name": "_constructHead",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_constructHead"
+          }
+        ],
+        "similarity": 0.08173082924810915,
+        "end_line": 764,
+        "signature": "com.fasterxml.jackson.core.JsonPointer._constructHead(int suffixLength, JsonPointer last): JsonPointer"
+      },
+      {
+        "start_line": 271,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Base64Variant withReadPadding(PaddingReadBehaviour readPadding) {\n        return (readPadding == _paddingReadBehaviour) ? this\n                : new Base64Variant(this, readPadding);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "withReadPadding",
+        "documentation": "/**\n     * @param readPadding Padding read behavior desired\n     *\n     * @return Instance with desired padding read behavior setting (this\n     *   if already has setting; new instance otherwise)\n     *\n     * @since 2.12\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "Base64Variant"
+          },
+          {
+            "start_node": "Base64Variant",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withReadPadding"
+          }
+        ],
+        "similarity": 0.08120440286439325,
+        "end_line": 274,
+        "signature": "com.fasterxml.jackson.core.Base64Variant.withReadPadding(PaddingReadBehaviour readPadding): Base64Variant"
+      },
+      {
+        "start_line": 687,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private static JsonPointer _buildPath(final String fullPath, int fullPathOffset,",
+        "distance": 1.5,
+        "title": null,
+        "name": "_buildPath",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_buildPath"
+          }
+        ],
+        "similarity": 0.08117382848262993,
+        "end_line": 687,
+        "signature": "com.fasterxml.jackson.core.JsonPointer._buildPath(String fullPath, int fullPathOffset, String segment, PointerParent parent): JsonPointer"
+      },
+      {
+        "start_line": 237,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/ContentReference.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private void writeObject(ObjectOutputStream out) throws IOException {\n        // nop: but must override the method\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "writeObject",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ContentReference"
+          },
+          {
+            "start_node": "ContentReference",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "writeObject"
+          }
+        ],
+        "similarity": 0.08102378621394628,
+        "end_line": 239,
+        "signature": "com.fasterxml.jackson.core.io.ContentReference.writeObject(ObjectOutputStream out): void"
+      },
+      {
+        "start_line": 566,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    @Override public int hashCode() {\n        int h = _hashCode;\n        if (h == 0) {\n            // Alas, this is bit wasteful, creating temporary String, but\n            // without JDK exposing hash code calculation for a sub-string\n            // can't do much\n            h = toString().hashCode();\n            if (h == 0) {\n                h = -1;\n            }\n            _hashCode = h;\n        }\n        return h;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "hashCode",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "hashCode"
+          }
+        ],
+        "similarity": 0.07946833835494901,
+        "end_line": 579,
+        "signature": "com.fasterxml.jackson.core.JsonPointer.hashCode(): int"
+      },
+      {
+        "start_line": 367,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonPointer append(JsonPointer tail) {\n        if (this == EMPTY) {\n            return tail;\n        }\n        if (tail == EMPTY) {\n            return this;\n        }\n        // 21-Mar-2017, tatu: Not superbly efficient; could probably improve by not concatenating,\n        //    re-decoding -- by stitching together segments -- but for now should be fine.\n\n        String currentJsonPointer = _asString;\n        if (currentJsonPointer.endsWith(\"/\")) {\n            //removes final slash\n            currentJsonPointer = currentJsonPointer.substring(0, currentJsonPointer.length()-1);\n        }\n        return compile(currentJsonPointer + tail._asString);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "append",
+        "documentation": "/**\n     * Mutant factory method that will return\n     *<ul>\n     * <li>`tail` if `this` instance is \"empty\" pointer, OR\n     *  </li>\n     * <li>`this` instance if `tail` is \"empty\" pointer, OR\n     *  </li>\n     * <li>Newly constructed {@link JsonPointer} instance that starts with all segments\n     *    of `this`, followed by all segments of `tail`.\n     *  </li>\n     *</ul>\n     *\n     * @param tail {@link JsonPointer} instance to append to this one, to create a new pointer instance\n     *\n     * @return Either `this` instance, `tail`, or a newly created combination, as per description above.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "append"
+          }
+        ],
+        "similarity": 0.07925740582989335,
+        "end_line": 383,
+        "signature": "com.fasterxml.jackson.core.JsonPointer.append(JsonPointer tail): JsonPointer"
+      },
+      {
+        "start_line": 167,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/ContentReference.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static ContentReference construct(boolean isContentTextual, Object rawContent) {\n        return new ContentReference(isContentTextual, rawContent, ErrorReportConfiguration.defaults());\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "construct",
+        "documentation": "/**\n     * @deprecated Since 2.16. Use {@link #construct(boolean, Object, ErrorReportConfiguration)} instead.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ContentReference"
+          },
+          {
+            "start_node": "ContentReference",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "construct"
+          }
+        ],
+        "similarity": 0.07884029691808646,
+        "end_line": 169,
+        "signature": "com.fasterxml.jackson.core.io.ContentReference.construct(boolean isContentTextual, Object rawContent): ContentReference"
+      },
+      {
+        "start_line": 331,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean mayMatchElement() { return _matchingElementIndex >= 0; }",
+        "distance": 1.5,
+        "title": null,
+        "name": "mayMatchElement",
+        "documentation": "/**\n     * @return True if the root selector matches element index (that is, could\n     * match an element of JSON Array node)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "mayMatchElement"
+          }
+        ],
+        "similarity": 0.07876528920767883,
+        "end_line": 331,
+        "signature": "com.fasterxml.jackson.core.JsonPointer.mayMatchElement(): boolean"
+      },
+      {
+        "start_line": 125,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonLocation.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ContentReference contentReference() {\n        return _contentReference;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "contentReference",
+        "documentation": "/**\n     * Accessor for information about the original input source content is being\n     * read from. Returned reference is never {@code null} but may not contain\n     * useful information.\n     *<p>\n     * NOTE: not getter, on purpose, to avoid inlusion if serialized using\n     * default Jackson serializer.\n     *\n     * @return Object with information about input source.\n     *\n     * @since 2.13 (to replace {@code getSourceRef})\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonLocation"
+          },
+          {
+            "start_node": "JsonLocation",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "contentReference"
+          }
+        ],
+        "similarity": 0.07806220662902175,
+        "end_line": 127,
+        "signature": "com.fasterxml.jackson.core.JsonLocation.contentReference(): ContentReference"
+      },
+      {
+        "start_line": 243,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Base64Variant withPaddingAllowed() {\n        return withReadPadding(PaddingReadBehaviour.PADDING_ALLOWED);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "withPaddingAllowed",
+        "documentation": "/**\n     * @return Base64Variant which does not require padding on read\n     *\n     * @since 2.12\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "Base64Variant"
+          },
+          {
+            "start_node": "Base64Variant",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withPaddingAllowed"
+          }
+        ],
+        "similarity": 0.07775923364831738,
+        "end_line": 245,
+        "signature": "com.fasterxml.jackson.core.Base64Variant.withPaddingAllowed(): Base64Variant"
+      },
+      {
+        "start_line": 220,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/ContentReference.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static ContentReference rawReference(Object rawContent) {\n        return rawReference(false, rawContent);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "rawReference",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ContentReference"
+          },
+          {
+            "start_node": "ContentReference",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "rawReference"
+          }
+        ],
+        "similarity": 0.07729446446561684,
+        "end_line": 222,
+        "signature": "com.fasterxml.jackson.core.io.ContentReference.rawReference(Object rawContent): ContentReference"
+      },
+      {
+        "start_line": 431,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonPointer appendIndex(int index) {\n        if (index < 0) {\n            throw new IllegalArgumentException(\"Negative index cannot be appended\");\n        }\n        String currentJsonPointer = _asString;\n        if (currentJsonPointer.endsWith(\"/\")) {\n            //removes final slash\n            currentJsonPointer = currentJsonPointer.substring(0, currentJsonPointer.length()-1);\n        }\n        return compile(currentJsonPointer + SEPARATOR + index);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "appendIndex",
+        "documentation": "/**\n     * ATTENTION! {@link JsonPointer} is head centric, tail appending is much costlier than head appending.\n     * It is not recommended to overuse the method.\n     *\n     * Mutant factory method that will return newly constructed {@link JsonPointer} instance that starts with all\n     * segments of `this`, followed by new segment of element 'index'. Element 'index' should be non-negative.\n     *\n     * @param index new segment element index\n     *\n     * @return Newly created combination, as per description above.\n     * @throws IllegalArgumentException if element index is negative\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "appendIndex"
+          }
+        ],
+        "similarity": 0.0772028397495448,
+        "end_line": 441,
+        "signature": "com.fasterxml.jackson.core.JsonPointer.appendIndex(int index): JsonPointer"
+      },
+      {
+        "start_line": 318,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public String getMatchingProperty() { return _matchingPropertyName; }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getMatchingProperty",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getMatchingProperty"
+          }
+        ],
+        "similarity": 0.07692643651471599,
+        "end_line": 318,
+        "signature": "com.fasterxml.jackson.core.JsonPointer.getMatchingProperty(): String"
+      },
+      {
+        "start_line": 259,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Base64Variant withPaddingForbidden() {\n        return withReadPadding(PaddingReadBehaviour.PADDING_FORBIDDEN);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "withPaddingForbidden",
+        "documentation": "/**\n     * @return Base64Variant which does not accept padding on read\n     * @since 2.12\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "Base64Variant"
+          },
+          {
+            "start_node": "Base64Variant",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "withPaddingForbidden"
+          }
+        ],
+        "similarity": 0.0761966488151252,
+        "end_line": 261,
+        "signature": "com.fasterxml.jackson.core.Base64Variant.withPaddingForbidden(): Base64Variant"
+      },
+      {
+        "start_line": 188,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonLocation.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public String sourceDescription() {\n        // 04-Apr-2021, tatu: Construct lazily but retain\n        if (_sourceDescription == null) {\n            _sourceDescription = _contentReference.buildSourceDescription();\n        }\n        return _sourceDescription;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "sourceDescription",
+        "documentation": "/**\n     * Accessor for getting a textual description of source reference\n     * (Object returned by {@link #getSourceRef()}), as included in\n     * description returned by {@link #toString()}.\n     *<p>\n     * Note: implementation will simply call\n     * {@link ContentReference#buildSourceDescription()})\n     *<p>\n     * NOTE: not added as a \"getter\" to prevent it from getting serialized.\n     *\n     * @return Description of the source reference (see {@link #getSourceRef()}\n     *\n     * @since 2.9\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonLocation"
+          },
+          {
+            "start_node": "JsonLocation",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "sourceDescription"
+          }
+        ],
+        "similarity": 0.07584357514707978,
+        "end_line": 194,
+        "signature": "com.fasterxml.jackson.core.JsonLocation.sourceDescription(): String"
+      },
+      {
+        "start_line": 192,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/ContentReference.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static ContentReference construct(boolean isContentTextual, Object rawContent, ",
+        "distance": 1.5,
+        "title": null,
+        "name": "construct",
+        "documentation": "/**\n     * @since 2.16\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ContentReference"
+          },
+          {
+            "start_node": "ContentReference",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "construct"
+          }
+        ],
+        "similarity": 0.07583552593791511,
+        "end_line": 192,
+        "signature": "com.fasterxml.jackson.core.io.ContentReference.construct(boolean isContentTextual, Object rawContent, ErrorReportConfiguration errorReportConfiguration): ContentReference"
+      },
+      {
+        "start_line": 69,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonLocation.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonLocation(ContentReference contentRef, long totalChars,",
+        "distance": 1.5,
+        "title": null,
+        "name": "JsonLocation",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonLocation"
+          },
+          {
+            "start_node": "JsonLocation",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "JsonLocation"
+          }
+        ],
+        "similarity": 0.07573028320504728,
+        "end_line": 69,
+        "signature": "com.fasterxml.jackson.core.JsonLocation(ContentReference contentRef, long totalChars, int lineNr, int colNr)"
+      },
+      {
+        "start_line": 119,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/ContentReference.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected ContentReference(boolean isContentTextual, Object rawContent, ErrorReportConfiguration errorReportConfiguration)",
+        "distance": 1.5,
+        "title": null,
+        "name": "ContentReference",
+        "documentation": "/**\n     * @since 2.16\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ContentReference"
+          },
+          {
+            "start_node": "ContentReference",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "ContentReference"
+          }
+        ],
+        "similarity": 0.07550606031653675,
+        "end_line": 119,
+        "signature": "com.fasterxml.jackson.core.io.ContentReference(boolean isContentTextual, Object rawContent, ErrorReportConfiguration errorReportConfiguration)"
+      },
+      {
+        "start_line": 404,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonPointer appendProperty(String property) {\n        if (property == null || property.isEmpty()) {\n            return this;\n        }\n        if (property.charAt(0) != SEPARATOR) {\n            property = SEPARATOR + property;\n        }\n        String currentJsonPointer = _asString;\n        if (currentJsonPointer.endsWith(\"/\")) {\n            //removes final slash\n            currentJsonPointer = currentJsonPointer.substring(0, currentJsonPointer.length()-1);\n        }\n        return compile(currentJsonPointer + property);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "appendProperty",
+        "documentation": "/**\n     * ATTENTION! {@link JsonPointer} is head centric, tail appending is much costlier than head appending.\n     * It is not recommended to overuse the method.\n     *\n     * Mutant factory method that will return\n     *<ul>\n     * <li>`this` instance if `property` is null or empty String, OR\n     *  </li>\n     * <li>Newly constructed {@link JsonPointer} instance that starts with all segments\n     *    of `this`, followed by new segment of 'property' name.\n     *  </li>\n     *</ul>\n     *\n     * 'property' format is starting separator (optional, added automatically if not provided) and new segment name.\n     *\n     * @param property new segment property name\n     *\n     * @return Either `this` instance, or a newly created combination, as per description above.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "appendProperty"
+          }
+        ],
+        "similarity": 0.07542201251399608,
+        "end_line": 417,
+        "signature": "com.fasterxml.jackson.core.JsonPointer.appendProperty(String property): JsonPointer"
+      },
+      {
+        "start_line": 853,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _reportBase64EOF() throws IllegalArgumentException {\n        throw new IllegalArgumentException(missingPaddingMessage());\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_reportBase64EOF",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "Base64Variant"
+          },
+          {
+            "start_node": "Base64Variant",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_reportBase64EOF"
+          }
+        ],
+        "similarity": 0.07502295091365122,
+        "end_line": 855,
+        "signature": "com.fasterxml.jackson.core.Base64Variant._reportBase64EOF(): void"
+      },
+      {
+        "start_line": 183,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/ContentReference.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static ContentReference construct(boolean isContentTextual, Object rawContent,",
+        "distance": 1.5,
+        "title": null,
+        "name": "construct",
+        "documentation": "/**\n     * @since 2.16\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ContentReference"
+          },
+          {
+            "start_node": "ContentReference",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "construct"
+          }
+        ],
+        "similarity": 0.07444269964027286,
+        "end_line": 183,
+        "signature": "com.fasterxml.jackson.core.io.ContentReference.construct(boolean isContentTextual, Object rawContent, int offset, int length, ErrorReportConfiguration errorReportConfiguration): ContentReference"
+      },
+      {
+        "start_line": 407,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/ContentReference.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected int _append(StringBuilder sb, String content) {\n        sb.append('\"');\n        // [core#658]: make sure to escape non-printable\n        for (int i = 0, end = content.length(); i < end; ++i) {\n            // 06-Apr-2021, tatu: Gee... there is no \"Character.isPrintable()\",\n            //   and from what I can see things get rather complicated trying\n            //   to figure out proper way. Hence, we'll do this\n            char ch = content.charAt(i);\n            if (!Character.isISOControl(ch) || !_appendEscaped(sb, ch)) {\n                sb.append(ch);\n            }\n        }\n        sb.append('\"');\n        return content.length();\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_append",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ContentReference"
+          },
+          {
+            "start_node": "ContentReference",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_append"
+          }
+        ],
+        "similarity": 0.07444064890722524,
+        "end_line": 421,
+        "signature": "com.fasterxml.jackson.core.io.ContentReference._append(StringBuilder sb, String content): int"
+      },
+      {
+        "start_line": 331,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean requiresPaddingOnRead() {\n        return _paddingReadBehaviour == PaddingReadBehaviour.PADDING_REQUIRED;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "requiresPaddingOnRead",
+        "documentation": "/**\n     * @return {@code True} if this variant requires padding on content decoded; {@code false} if not.\n     *\n     * @since 2.12\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "Base64Variant"
+          },
+          {
+            "start_node": "Base64Variant",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "requiresPaddingOnRead"
+          }
+        ],
+        "similarity": 0.07361452614963322,
+        "end_line": 333,
+        "signature": "com.fasterxml.jackson.core.Base64Variant.requiresPaddingOnRead(): boolean"
+      },
+      {
+        "start_line": 542,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonPointer head() {\n        JsonPointer h = _head;\n        if (h == null) {\n            if (this != EMPTY) {\n                h = _constructHead();\n            }\n            _head = h;\n        }\n        return h;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "head",
+        "documentation": "/**\n     * Accessor for getting a pointer instance that is identical to this\n     * instance except that the last segment has been dropped.\n     * For example, for JSON Pointer \"/root/branch/leaf\", this method would\n     * return pointer \"/root/branch\" (compared to {@link #tail()} that\n     * would return \"/branch/leaf\").\n     *<p>\n     * Note that whereas {@link #tail} is a very cheap operation to call (as \"tail\" already\n     * exists for single-linked forward direction), this method has to fully\n     * construct a new instance by traversing the chain of segments.\n     *\n     * @return Pointer expression that contains same segments as this one, except for\n     *    the last segment.\n     *\n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "head"
+          }
+        ],
+        "similarity": 0.07348439806911183,
+        "end_line": 551,
+        "signature": "com.fasterxml.jackson.core.JsonPointer.head(): JsonPointer"
+      },
+      {
+        "start_line": 147,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/Base64Variant.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Base64Variant(String name, String base64Alphabet, boolean writePadding, char paddingChar, int maxLineLength)",
+        "distance": 1.5,
+        "title": null,
+        "name": "Base64Variant",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "Base64Variant"
+          },
+          {
+            "start_node": "Base64Variant",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "Base64Variant"
+          }
+        ],
+        "similarity": 0.07333886161851448,
+        "end_line": 147,
+        "signature": "com.fasterxml.jackson.core.Base64Variant(String name, String base64Alphabet, boolean writePadding, char paddingChar, int maxLineLength)"
+      },
+      {
+        "start_line": 747,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonPointer _constructHead()",
+        "distance": 1.5,
+        "title": null,
+        "name": "_constructHead",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "equals"
+          },
+          {
+            "start_node": "equals",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_constructHead"
+          }
+        ],
+        "similarity": 0.072919740147303,
+        "end_line": 747,
+        "signature": "com.fasterxml.jackson.core.JsonPointer._constructHead(): JsonPointer"
+      }
+    ],
+    "classes": [],
+    "issues": [
+      {
+        "content": "Hi!\r\n\r\nThe `Version.equals` implementation updated with 2.16.0 for [comparing snapshots](https://github.com/FasterXML/jackson-core/issues/1050) raises an NPE if snapshotInfo is null.\r\nI recommend to sanitize the snapshoptInfo within constructor as done for groupId and artifactId.\r\n\n",
+        "distance": 0,
+        "title": "NPE in `Version.equals()` if snapshot-info `null`",
+        "name": "root",
+        "path": [],
+        "issue_id": "root",
+        "similarity": 2.0,
+        "type": "issue"
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1141",
+        "type": "issue",
+        "content": "Hi!\r\n\r\nThe `Version.equals` implementation updated with 2.16.0 for [comparing snapshots](https://github.com/FasterXML/jackson-core/issues/1050) raises an NPE if snapshotInfo is null.\r\nI recommend to sanitize the snapshoptInfo within constructor as done for groupId and artifactId.\r\n\n\n\nComment by cowtowncoder:\nThank you for reporting this @TimSchweers . Yes, that sounds like a good idea to handle (regardless of whether to sanitize or null-check in `equals()`), avoid NPE.\r\n",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "NPE in `Version.equals()` if snapshot-info `null`",
+        "name": "issue#1141",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1141"
+          }
+        ],
+        "similarity": 0.8616590816195832,
+        "end_line": null,
+        "signature": null
+      }
+    ]
+  },
+  "artifact_stats": {
+    "skipped_due_to_time": 1,
+    "valid_related_items": 7
+  }
+}

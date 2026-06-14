@@ -1,0 +1,1567 @@
+{
+  "related_entities": {
+    "methods": [
+      {
+        "start_line": 1196,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static Type[] getReturnTypes(Method method) {\n        Class<?> returnType = method.getReturnType();\n        Type genericReturnType = method.getGenericReturnType();\n        if (Future.class.isAssignableFrom(returnType)) {\n            if (genericReturnType instanceof ParameterizedType) {\n                Type actualArgType = ((ParameterizedType) genericReturnType).getActualTypeArguments()[0];\n                if (actualArgType instanceof ParameterizedType) {\n                    returnType = (Class<?>) ((ParameterizedType) actualArgType).getRawType();\n                    genericReturnType = actualArgType;\n                } else {\n                    returnType = (Class<?>) actualArgType;\n                    genericReturnType = returnType;\n                }\n            } else {\n                returnType = null;\n                genericReturnType = null;\n            }\n        }\n        return new Type[]{returnType, genericReturnType};\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "getReturnTypes",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getReturnTypes"
+          }
+        ],
+        "similarity": 0.1485243270064133,
+        "end_line": 1215,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.getReturnTypes(Method method): Type[]"
+      },
+      {
+        "start_line": 73,
+        "file_path": "playground/apache__dubbo/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/support/RpcUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static Type[] getReturnTypes(Invocation invocation) {\n        try {\n            if (invocation != null && invocation.getInvoker() != null\n                    && invocation.getInvoker().getUrl() != null\n                    && invocation.getInvoker().getInterface() != GenericService.class\n                    && !invocation.getMethodName().startsWith(\"$\")) {\n                String service = invocation.getInvoker().getUrl().getServiceInterface();\n                if (StringUtils.isNotEmpty(service)) {\n                    Method method = getMethodByService(invocation, service);\n                    return ReflectUtils.getReturnTypes(method);\n                }\n            }\n        } catch (Throwable t) {\n            logger.warn(t.getMessage(), t);\n        }\n        return null;\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "getReturnTypes",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getReturnTypes"
+          }
+        ],
+        "similarity": 0.14844150638457487,
+        "end_line": 89,
+        "signature": "org.apache.dubbo.rpc.support.RpcUtils.getReturnTypes(Invocation invocation): Type[]"
+      },
+      {
+        "start_line": 176,
+        "file_path": "playground/apache__dubbo/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/support/RpcUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static boolean isReturnTypeFuture(Invocation inv) {\n        Class<?> clazz;\n        if (inv instanceof RpcInvocation) {\n            clazz = ((RpcInvocation) inv).getReturnType();\n        } else {\n            clazz = getReturnType(inv);\n        }\n        return (clazz != null && CompletableFuture.class.isAssignableFrom(clazz)) || isGenericAsync(inv);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "isReturnTypeFuture",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getReturnTypes"
+          },
+          {
+            "start_node": "getReturnTypes",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "RpcUtils"
+          },
+          {
+            "start_node": "RpcUtils",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "isReturnTypeFuture"
+          }
+        ],
+        "similarity": 0.11939246046831845,
+        "end_line": 184,
+        "signature": "org.apache.dubbo.rpc.support.RpcUtils.isReturnTypeFuture(Invocation inv): boolean"
+      },
+      {
+        "start_line": 55,
+        "file_path": "playground/apache__dubbo/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/support/RpcUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static Class<?> getReturnType(Invocation invocation) {\n        try {\n            if (invocation != null && invocation.getInvoker() != null\n                    && invocation.getInvoker().getUrl() != null\n                    && invocation.getInvoker().getInterface() != GenericService.class\n                    && !invocation.getMethodName().startsWith(\"$\")) {\n                String service = invocation.getInvoker().getUrl().getServiceInterface();\n                if (StringUtils.isNotEmpty(service)) {\n                    Method method = getMethodByService(invocation, service);\n                    return method.getReturnType();\n                }\n            }\n        } catch (Throwable t) {\n            logger.warn(t.getMessage(), t);\n        }\n        return null;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getReturnType",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getReturnTypes"
+          },
+          {
+            "start_node": "getReturnTypes",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "RpcUtils"
+          },
+          {
+            "start_node": "RpcUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getReturnType"
+          }
+        ],
+        "similarity": 0.11340866968031714,
+        "end_line": 71,
+        "signature": "org.apache.dubbo.rpc.support.RpcUtils.getReturnType(Invocation invocation): Class"
+      },
+      {
+        "start_line": 822,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private static Class<?> desc2class(ClassLoader cl, String desc) throws ClassNotFoundException {\n        switch (desc.charAt(0)) {\n            case JVM_VOID:\n                return void.class;\n            case JVM_BOOLEAN:\n                return boolean.class;\n            case JVM_BYTE:\n                return byte.class;\n            case JVM_CHAR:\n                return char.class;\n            case JVM_DOUBLE:\n                return double.class;\n            case JVM_FLOAT:\n                return float.class;\n            case JVM_INT:\n                return int.class;\n            case JVM_LONG:\n                return long.class;\n            case JVM_SHORT:\n                return short.class;\n            case 'L':\n                // \"Ljava/lang/Object;\" ==> \"java.lang.Object\"\n                desc = desc.substring(1, desc.length() - 1).replace('/', '.');\n                break;\n            case '[':\n                // \"[[Ljava/lang/Object;\" ==> \"[[Ljava.lang.Object;\"\n                desc = desc.replace('/', '.');\n                break;\n            default:\n                throw new ClassNotFoundException(\"Class not found: \" + desc);\n        }\n\n        if (cl == null) {\n            cl = ClassUtils.getClassLoader();\n        }\n        Class<?> clazz = DESC_CLASS_CACHE.get(desc);\n        if (clazz == null) {\n            clazz = Class.forName(desc, true, cl);\n            DESC_CLASS_CACHE.put(desc, clazz);\n        }\n        return clazz;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "desc2class",
+        "documentation": "/**\n     * desc to class.\n     * \"[Z\" => boolean[].class\n     * \"[[Ljava/util/Map;\" => java.util.Map[][].class\n     *\n     * @param cl   ClassLoader instance.\n     * @param desc desc.\n     * @return Class instance.\n     * @throws ClassNotFoundException\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "desc2class"
+          }
+        ],
+        "similarity": 0.11225710641403894,
+        "end_line": 863,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.desc2class(ClassLoader cl, String desc): Class"
+      },
+      {
+        "start_line": 36,
+        "file_path": "playground/apache__dubbo/dubbo-compatible/src/main/java/com/alibaba/dubbo/rpc/support/RpcUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static Type[] getReturnTypes(Invocation invocation) {\n        return org.apache.dubbo.rpc.support.RpcUtils.getReturnTypes(invocation);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "getReturnTypes",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getReturnTypes"
+          }
+        ],
+        "similarity": 0.11200656437558203,
+        "end_line": 38,
+        "signature": "com.alibaba.dubbo.rpc.support.RpcUtils.getReturnTypes(Invocation invocation): Type[]"
+      },
+      {
+        "start_line": 168,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static Class<?> getBoxedClass(Class<?> c) {\n        if (c == int.class) {\n            c = Integer.class;\n        } else if (c == boolean.class) {\n            c = Boolean.class;\n        } else if (c == long.class) {\n            c = Long.class;\n        } else if (c == float.class) {\n            c = Float.class;\n        } else if (c == double.class) {\n            c = Double.class;\n        } else if (c == char.class) {\n            c = Character.class;\n        } else if (c == byte.class) {\n            c = Byte.class;\n        } else if (c == short.class) {\n            c = Short.class;\n        }\n        return c;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getBoxedClass",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getBoxedClass"
+          }
+        ],
+        "similarity": 0.10857724463999899,
+        "end_line": 187,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.getBoxedClass(Class c): Class"
+      },
+      {
+        "start_line": 227,
+        "file_path": "playground/apache__dubbo/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/support/RpcUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private static Method getMethodByService(Invocation invocation, String service) throws NoSuchMethodException {\n        Class<?> invokerInterface = invocation.getInvoker().getInterface();\n        Class<?> cls = invokerInterface != null ? ReflectUtils.forName(invokerInterface.getClassLoader(), service)\n                : ReflectUtils.forName(service);\n        Method method = cls.getMethod(invocation.getMethodName(), invocation.getParameterTypes());\n        if (method.getReturnType() == void.class) {\n            return null;\n        }\n        return method;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getMethodByService",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getReturnTypes"
+          },
+          {
+            "start_node": "getReturnTypes",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "RpcUtils"
+          },
+          {
+            "start_node": "RpcUtils",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "getMethodByService"
+          }
+        ],
+        "similarity": 0.10814908547112512,
+        "end_line": 236,
+        "signature": "org.apache.dubbo.rpc.support.RpcUtils.getMethodByService(Invocation invocation, String service): Method"
+      },
+      {
+        "start_line": 276,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static Class<?> getGenericClass(Class<?> cls, int i) {\n        try {\n            ParameterizedType parameterizedType = ((ParameterizedType) cls.getGenericInterfaces()[0]);\n            Object genericClass = parameterizedType.getActualTypeArguments()[i];\n\n            // handle nested generic type\n            if (genericClass instanceof ParameterizedType) {\n                return (Class<?>) ((ParameterizedType) genericClass).getRawType();\n            }\n\n            // handle array generic type\n            if (genericClass instanceof GenericArrayType) {\n                return (Class<?>) ((GenericArrayType) genericClass).getGenericComponentType();\n            }\n\n            // Requires JDK 7 or higher, Foo<int[]> is no longer GenericArrayType\n            if (((Class) genericClass).isArray()) {\n                return ((Class) genericClass).getComponentType();\n            }\n            return (Class<?>) genericClass;\n        } catch (Throwable e) {\n            throw new IllegalArgumentException(cls.getName() + \" generic type undefined!\", e);\n        }\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getGenericClass",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getGenericClass"
+          }
+        ],
+        "similarity": 0.10781502533515408,
+        "end_line": 299,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.getGenericClass(Class cls, int i): Class"
+      },
+      {
+        "start_line": 1257,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static <T> Set<Class<T>> findHierarchicalTypes(Class<?> sourceClass, Class<T> matchType) {\n        if (sourceClass == null) {\n            return Collections.emptySet();\n        }\n\n        Set<Class<T>> hierarchicalTypes = new LinkedHashSet<>();\n\n        if (matchType.isAssignableFrom(sourceClass)) {\n            hierarchicalTypes.add((Class<T>) sourceClass);\n        }\n\n        // Find all super classes\n        hierarchicalTypes.addAll(findHierarchicalTypes(sourceClass.getSuperclass(), matchType));\n\n        return unmodifiableSet(hierarchicalTypes);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "findHierarchicalTypes",
+        "documentation": "/**\n     * Find the hierarchical types from the source {@link Class class} by specified {@link Class type}.\n     *\n     * @param sourceClass the source {@link Class class}\n     * @param matchType   the type to match\n     * @param <T>         the type to match\n     * @return non-null read-only {@link Set}\n     * @since 2.7.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "findHierarchicalTypes"
+          }
+        ],
+        "similarity": 0.1043819682929681,
+        "end_line": 1272,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.findHierarchicalTypes(Class sourceClass, Class matchType): Set"
+      },
+      {
+        "start_line": 723,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private static Class<?> name2class(ClassLoader cl, String name) throws ClassNotFoundException {\n        int c = 0, index = name.indexOf('[');\n        if (index > 0) {\n            c = (name.length() - index) / 2;\n            name = name.substring(0, index);\n        }\n        if (c > 0) {\n            StringBuilder sb = new StringBuilder();\n            while (c-- > 0) {\n                sb.append(\"[\");\n            }\n\n            if (\"void\".equals(name)) {\n                sb.append(JVM_VOID);\n            } else if (\"boolean\".equals(name)) {\n                sb.append(JVM_BOOLEAN);\n            } else if (\"byte\".equals(name)) {\n                sb.append(JVM_BYTE);\n            } else if (\"char\".equals(name)) {\n                sb.append(JVM_CHAR);\n            } else if (\"double\".equals(name)) {\n                sb.append(JVM_DOUBLE);\n            } else if (\"float\".equals(name)) {\n                sb.append(JVM_FLOAT);\n            } else if (\"int\".equals(name)) {\n                sb.append(JVM_INT);\n            } else if (\"long\".equals(name)) {\n                sb.append(JVM_LONG);\n            } else if (\"short\".equals(name)) {\n                sb.append(JVM_SHORT);\n            } else {\n                // \"java.lang.Object\" ==> \"Ljava.lang.Object;\"\n                sb.append('L').append(name).append(';');\n            }\n            name = sb.toString();\n        } else {\n            if (\"void\".equals(name)) {\n                return void.class;\n            }\n            if (\"boolean\".equals(name)) {\n                return boolean.class;\n            }\n            if (\"byte\".equals(name)) {\n                return byte.class;\n            }\n            if (\"char\".equals(name)) {\n                return char.class;\n            }\n            if (\"double\".equals(name)) {\n                return double.class;\n            }\n            if (\"float\".equals(name)) {\n                return float.class;\n            }\n            if (\"int\".equals(name)) {\n                return int.class;\n            }\n            if (\"long\".equals(name)) {\n                return long.class;\n            }\n            if (\"short\".equals(name)) {\n                return short.class;\n            }\n        }\n\n        if (cl == null) {\n            cl = ClassUtils.getClassLoader();\n        }\n        Class<?> clazz = NAME_CLASS_CACHE.get(name);\n        if (clazz == null) {\n            clazz = Class.forName(name, true, cl);\n            NAME_CLASS_CACHE.put(name, clazz);\n        }\n        return clazz;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "name2class",
+        "documentation": "/**\n     * name to class.\n     * \"boolean\" => boolean.class\n     * \"java.util.Map[][]\" => java.util.Map[][].class\n     *\n     * @param cl   ClassLoader instance.\n     * @param name name.\n     * @return Class instance.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "name2class"
+          }
+        ],
+        "similarity": 0.10378797021987451,
+        "end_line": 797,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.name2class(ClassLoader cl, String name): Class"
+      },
+      {
+        "start_line": 540,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static String getDesc(final CtMethod m) throws NotFoundException {\n        StringBuilder ret = new StringBuilder(m.getName()).append('(');\n        CtClass[] parameterTypes = m.getParameterTypes();\n        for (CtClass parameterType : parameterTypes) {\n            ret.append(getDesc(parameterType));\n        }\n        ret.append(')').append(getDesc(m.getReturnType()));\n        return ret.toString();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getDesc",
+        "documentation": "/**\n     * get method desc.\n     * \"do(I)I\", \"do()V\", \"do(Ljava/lang/String;Z)V\"\n     *\n     * @param m method.\n     * @return desc.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getDesc"
+          }
+        ],
+        "similarity": 0.09949447994131967,
+        "end_line": 548,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.getDesc(CtMethod m): String"
+      },
+      {
+        "start_line": 1314,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static Class[] resolveTypes(Object... values) {\n\n        if (isEmpty(values)) {\n            return EMPTY_CLASS_ARRAY;\n        }\n\n        int size = values.length;\n\n        Class[] types = new Class[size];\n\n        for (int i = 0; i < size; i++) {\n            Object value = values[i];\n            types[i] = value == null ? null : value.getClass();\n        }\n\n        return types;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "resolveTypes",
+        "documentation": "/**\n     * Resolve the types of the specified values\n     *\n     * @param values the values\n     * @return If can't be resolved, return {@link ReflectUtils#EMPTY_CLASS_ARRAY empty class array}\n     * @since 2.7.6\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "resolveTypes"
+          }
+        ],
+        "similarity": 0.09742210041130002,
+        "end_line": 1330,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.resolveTypes(Object values): Class[]"
+      },
+      {
+        "start_line": 963,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static Constructor<?> findConstructor(Class<?> clazz, Class<?> paramType) throws NoSuchMethodException {\n        Constructor<?> targetConstructor;\n        try {\n            targetConstructor = clazz.getConstructor(new Class<?>[]{paramType});\n        } catch (NoSuchMethodException e) {\n            targetConstructor = null;\n            Constructor<?>[] constructors = clazz.getConstructors();\n            for (Constructor<?> constructor : constructors) {\n                if (Modifier.isPublic(constructor.getModifiers())\n                        && constructor.getParameterTypes().length == 1\n                        && constructor.getParameterTypes()[0].isAssignableFrom(paramType)) {\n                    targetConstructor = constructor;\n                    break;\n                }\n            }\n            if (targetConstructor == null) {\n                throw e;\n            }\n        }\n        return targetConstructor;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "findConstructor",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "findConstructor"
+          }
+        ],
+        "similarity": 0.09706105806154236,
+        "end_line": 983,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.findConstructor(Class clazz, Class paramType): Constructor"
+      },
+      {
+        "start_line": 885,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private static Class<?>[] desc2classArray(ClassLoader cl, String desc) throws ClassNotFoundException {\n        if (desc.length() == 0) {\n            return EMPTY_CLASS_ARRAY;\n        }\n\n        List<Class<?>> cs = new ArrayList<Class<?>>();\n        Matcher m = DESC_PATTERN.matcher(desc);\n        while (m.find()) {\n            cs.add(desc2class(cl, m.group()));\n        }\n        return cs.toArray(EMPTY_CLASS_ARRAY);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "desc2classArray",
+        "documentation": "/**\n     * get class array instance.\n     *\n     * @param cl   ClassLoader instance.\n     * @param desc desc.\n     * @return Class[] class array.\n     * @throws ClassNotFoundException\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "desc2classArray"
+          }
+        ],
+        "similarity": 0.09674804920342521,
+        "end_line": 896,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.desc2classArray(ClassLoader cl, String desc): Class[]"
+      },
+      {
+        "start_line": 557,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static String getDesc(final CtConstructor c) throws NotFoundException {\n        StringBuilder ret = new StringBuilder(\"(\");\n        CtClass[] parameterTypes = c.getParameterTypes();\n        for (int i = 0; i < parameterTypes.length; i++) {\n            ret.append(getDesc(parameterTypes[i]));\n        }\n        ret.append(')').append('V');\n        return ret.toString();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getDesc",
+        "documentation": "/**\n     * get constructor desc.\n     * \"()V\", \"(Ljava/lang/String;I)V\"\n     *\n     * @param c constructor.\n     * @return desc\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getDesc"
+          }
+        ],
+        "similarity": 0.09507909458149268,
+        "end_line": 565,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.getDesc(CtConstructor c): String"
+      },
+      {
+        "start_line": 499,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static String getDesc(final CtClass c) throws NotFoundException {\n        StringBuilder ret = new StringBuilder();\n        if (c.isArray()) {\n            ret.append('[');\n            ret.append(getDesc(c.getComponentType()));\n        } else if (c.isPrimitive()) {\n            String t = c.getName();\n            if (\"void\".equals(t)) {\n                ret.append(JVM_VOID);\n            } else if (\"boolean\".equals(t)) {\n                ret.append(JVM_BOOLEAN);\n            } else if (\"byte\".equals(t)) {\n                ret.append(JVM_BYTE);\n            } else if (\"char\".equals(t)) {\n                ret.append(JVM_CHAR);\n            } else if (\"double\".equals(t)) {\n                ret.append(JVM_DOUBLE);\n            } else if (\"float\".equals(t)) {\n                ret.append(JVM_FLOAT);\n            } else if (\"int\".equals(t)) {\n                ret.append(JVM_INT);\n            } else if (\"long\".equals(t)) {\n                ret.append(JVM_LONG);\n            } else if (\"short\".equals(t)) {\n                ret.append(JVM_SHORT);\n            }\n        } else {\n            ret.append('L');\n            ret.append(c.getName().replace('.', '/'));\n            ret.append(';');\n        }\n        return ret.toString();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getDesc",
+        "documentation": "/**\n     * get class desc.\n     * Object.class => \"Ljava/lang/Object;\"\n     * boolean[].class => \"[Z\"\n     *\n     * @param c class.\n     * @return desc.\n     * @throws NotFoundException\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getDesc"
+          }
+        ],
+        "similarity": 0.09452178615893334,
+        "end_line": 531,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.getDesc(CtClass c): String"
+      },
+      {
+        "start_line": 370,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static String getDesc(Class<?> c) {\n        StringBuilder ret = new StringBuilder();\n\n        while (c.isArray()) {\n            ret.append('[');\n            c = c.getComponentType();\n        }\n\n        if (c.isPrimitive()) {\n            String t = c.getName();\n            if (\"void\".equals(t)) {\n                ret.append(JVM_VOID);\n            } else if (\"boolean\".equals(t)) {\n                ret.append(JVM_BOOLEAN);\n            } else if (\"byte\".equals(t)) {\n                ret.append(JVM_BYTE);\n            } else if (\"char\".equals(t)) {\n                ret.append(JVM_CHAR);\n            } else if (\"double\".equals(t)) {\n                ret.append(JVM_DOUBLE);\n            } else if (\"float\".equals(t)) {\n                ret.append(JVM_FLOAT);\n            } else if (\"int\".equals(t)) {\n                ret.append(JVM_INT);\n            } else if (\"long\".equals(t)) {\n                ret.append(JVM_LONG);\n            } else if (\"short\".equals(t)) {\n                ret.append(JVM_SHORT);\n            }\n        } else {\n            ret.append('L');\n            ret.append(c.getName().replace('.', '/'));\n            ret.append(';');\n        }\n        return ret.toString();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getDesc",
+        "documentation": "/**\n     * get class desc.\n     * boolean[].class => \"[Z\"\n     * Object.class => \"Ljava/lang/Object;\"\n     *\n     * @param c class.\n     * @return desc.\n     * @throws NotFoundException\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getDesc"
+          }
+        ],
+        "similarity": 0.09039483405215668,
+        "end_line": 405,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.getDesc(Class c): String"
+      },
+      {
+        "start_line": 574,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static String getDescWithoutMethodName(final CtMethod m) throws NotFoundException {\n        StringBuilder ret = new StringBuilder();\n        ret.append('(');\n        CtClass[] parameterTypes = m.getParameterTypes();\n        for (int i = 0; i < parameterTypes.length; i++) {\n            ret.append(getDesc(parameterTypes[i]));\n        }\n        ret.append(')').append(getDesc(m.getReturnType()));\n        return ret.toString();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getDescWithoutMethodName",
+        "documentation": "/**\n     * get method desc.\n     * \"(I)I\", \"()V\", \"(Ljava/lang/String;Z)V\".\n     *\n     * @param m method.\n     * @return desc.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getDescWithoutMethodName"
+          }
+        ],
+        "similarity": 0.09015992532898184,
+        "end_line": 583,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.getDescWithoutMethodName(CtMethod m): String"
+      },
+      {
+        "start_line": 71,
+        "file_path": "playground/apache__dubbo/dubbo-compatible/src/main/java/com/alibaba/dubbo/rpc/support/RpcUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static boolean isReturnTypeFuture(Invocation inv) {\n        return org.apache.dubbo.rpc.support.RpcUtils.isReturnTypeFuture(inv);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "isReturnTypeFuture",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getReturnTypes"
+          },
+          {
+            "start_node": "getReturnTypes",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "RpcUtils"
+          },
+          {
+            "start_node": "RpcUtils",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "isReturnTypeFuture"
+          }
+        ],
+        "similarity": 0.0899226366451804,
+        "end_line": 73,
+        "signature": "com.alibaba.dubbo.rpc.support.RpcUtils.isReturnTypeFuture(Invocation inv): boolean"
+      },
+      {
+        "start_line": 31,
+        "file_path": "playground/apache__dubbo/dubbo-compatible/src/main/java/com/alibaba/dubbo/rpc/support/RpcUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static Class<?> getReturnType(Invocation invocation) {\n        return org.apache.dubbo.rpc.support.RpcUtils.getReturnType(invocation);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getReturnType",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getReturnTypes"
+          },
+          {
+            "start_node": "getReturnTypes",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "RpcUtils"
+          },
+          {
+            "start_node": "RpcUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getReturnType"
+          }
+        ],
+        "similarity": 0.0896416695804807,
+        "end_line": 33,
+        "signature": "com.alibaba.dubbo.rpc.support.RpcUtils.getReturnType(Invocation invocation): Class"
+      },
+      {
+        "start_line": 1224,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static Set<ParameterizedType> findParameterizedTypes(Class<?> sourceClass) {\n        // Add Generic Interfaces\n        List<Type> genericTypes = new LinkedList<>(asList(sourceClass.getGenericInterfaces()));\n        // Add Generic Super Class\n        genericTypes.add(sourceClass.getGenericSuperclass());\n\n        Set<ParameterizedType> parameterizedTypes = genericTypes.stream()\n                .filter(type -> type instanceof ParameterizedType)// filter ParameterizedType\n                .map(type -> ParameterizedType.class.cast(type))  // cast to ParameterizedType\n                .collect(Collectors.toSet());\n\n        if (parameterizedTypes.isEmpty()) { // If not found, try to search super types recursively\n            genericTypes.stream()\n                    .filter(type -> type instanceof Class)\n                    .map(type -> Class.class.cast(type))\n                    .forEach(superClass -> {\n                        parameterizedTypes.addAll(findParameterizedTypes(superClass));\n                    });\n        }\n\n        return unmodifiableSet(parameterizedTypes);                     // build as a Set\n\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "findParameterizedTypes",
+        "documentation": "/**\n     * Find the {@link Set} of {@link ParameterizedType}\n     *\n     * @param sourceClass the source {@link Class class}\n     * @return non-null read-only {@link Set}\n     * @since 2.7.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "findParameterizedTypes"
+          }
+        ],
+        "similarity": 0.08949670024740512,
+        "end_line": 1246,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.findParameterizedTypes(Class sourceClass): Set"
+      },
+      {
+        "start_line": 995,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static boolean isInstance(Object obj, String interfaceClazzName) {\n        for (Class<?> clazz = obj.getClass();\n             clazz != null && !clazz.equals(Object.class);\n             clazz = clazz.getSuperclass()) {\n            Class<?>[] interfaces = clazz.getInterfaces();\n            for (Class<?> itf : interfaces) {\n                if (itf.getName().equals(interfaceClazzName)) {\n                    return true;\n                }\n            }\n        }\n        return false;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "isInstance",
+        "documentation": "/**\n     * Check if one object is the implementation for a given interface.\n     * <p>\n     * This method will not trigger classloading for the given interface, therefore it will not lead to error when\n     * the given interface is not visible by the classloader\n     *\n     * @param obj                Object to examine\n     * @param interfaceClazzName The given interface\n     * @return true if the object implements the given interface, otherwise return false\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isInstance"
+          }
+        ],
+        "similarity": 0.0875652243713119,
+        "end_line": 1007,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.isInstance(Object obj, String interfaceClazzName): boolean"
+      },
+      {
+        "start_line": 140,
+        "file_path": "playground/apache__dubbo/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/support/RpcUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static Class<?>[] getParameterTypes(Invocation invocation) {\n        if ($INVOKE.equals(invocation.getMethodName())\n                && invocation.getArguments() != null\n                && invocation.getArguments().length > 1\n                && invocation.getArguments()[1] instanceof String[]) {\n            String[] types = (String[]) invocation.getArguments()[1];\n            if (types == null) {\n                return new Class<?>[0];\n            }\n            Class<?>[] parameterTypes = new Class<?>[types.length];\n            for (int i = 0; i < types.length; i++) {\n                parameterTypes[i] = ReflectUtils.forName(types[0]);\n            }\n            return parameterTypes;\n        }\n        return invocation.getParameterTypes();\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getParameterTypes",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getReturnTypes"
+          },
+          {
+            "start_node": "getReturnTypes",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "RpcUtils"
+          },
+          {
+            "start_node": "RpcUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getParameterTypes"
+          }
+        ],
+        "similarity": 0.0867239858289573,
+        "end_line": 156,
+        "signature": "org.apache.dubbo.rpc.support.RpcUtils.getParameterTypes(Invocation invocation): Class[]"
+      },
+      {
+        "start_line": 872,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static Class<?>[] desc2classArray(String desc) throws ClassNotFoundException {\n        Class<?>[] ret = desc2classArray(ClassUtils.getClassLoader(), desc);\n        return ret;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "desc2classArray",
+        "documentation": "/**\n     * get class array instance.\n     *\n     * @param desc desc.\n     * @return Class class array.\n     * @throws ClassNotFoundException\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "desc2classArray"
+          }
+        ],
+        "similarity": 0.08602848257732755,
+        "end_line": 875,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.desc2classArray(String desc): Class[]"
+      },
+      {
+        "start_line": 435,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static String getDesc(final Method m) {\n        StringBuilder ret = new StringBuilder(m.getName()).append('(');\n        Class<?>[] parameterTypes = m.getParameterTypes();\n        for (int i = 0; i < parameterTypes.length; i++) {\n            ret.append(getDesc(parameterTypes[i]));\n        }\n        ret.append(')').append(getDesc(m.getReturnType()));\n        return ret.toString();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getDesc",
+        "documentation": "/**\n     * get method desc.\n     * int do(int arg1) => \"do(I)I\"\n     * void do(String arg1,boolean arg2) => \"do(Ljava/lang/String;Z)V\"\n     *\n     * @param m method.\n     * @return desc.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getDesc"
+          }
+        ],
+        "similarity": 0.08557838587096109,
+        "end_line": 443,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.getDesc(Method m): String"
+      },
+      {
+        "start_line": 462,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static String getDesc(final Constructor<?> c) {\n        StringBuilder ret = new StringBuilder(\"(\");\n        Class<?>[] parameterTypes = c.getParameterTypes();\n        for (int i = 0; i < parameterTypes.length; i++) {\n            ret.append(getDesc(parameterTypes[i]));\n        }\n        ret.append(')').append('V');\n        return ret.toString();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getDesc",
+        "documentation": "/**\n     * get constructor desc.\n     * \"()V\", \"(Ljava/lang/String;I)V\"\n     *\n     * @param c constructor.\n     * @return desc\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getDesc"
+          }
+        ],
+        "similarity": 0.08551595599738543,
+        "end_line": 470,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.getDesc(Constructor c): String"
+      },
+      {
+        "start_line": 158,
+        "file_path": "playground/apache__dubbo/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/support/RpcUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static boolean isAsync(URL url, Invocation inv) {\n        boolean isAsync;\n\n        if (inv instanceof RpcInvocation) {\n            RpcInvocation rpcInvocation = (RpcInvocation) inv;\n            if (rpcInvocation.getInvokeMode() != null) {\n                return rpcInvocation.getInvokeMode() == InvokeMode.ASYNC;\n            }\n        }\n\n        if (Boolean.TRUE.toString().equals(inv.getAttachment(ASYNC_KEY))) {\n            isAsync = true;\n        } else {\n            isAsync = url.getMethodParameter(getMethodName(inv), ASYNC_KEY, false);\n        }\n        return isAsync;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "isAsync",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getReturnTypes"
+          },
+          {
+            "start_node": "getReturnTypes",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "RpcUtils"
+          },
+          {
+            "start_node": "RpcUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isAsync"
+          }
+        ],
+        "similarity": 0.08533791222631501,
+        "end_line": 174,
+        "signature": "org.apache.dubbo.rpc.support.RpcUtils.isAsync(URL url, Invocation inv): boolean"
+      },
+      {
+        "start_line": 808,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static Class<?> desc2class(String desc) throws ClassNotFoundException {\n        return desc2class(ClassUtils.getClassLoader(), desc);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "desc2class",
+        "documentation": "/**\n     * desc to class.\n     * \"[Z\" => boolean[].class\n     * \"[[Ljava/util/Map;\" => java.util.Map[][].class\n     *\n     * @param desc desc.\n     * @return Class instance.\n     * @throws ClassNotFoundException\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "desc2class"
+          }
+        ],
+        "similarity": 0.08518839975804994,
+        "end_line": 810,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.desc2class(String desc): Class"
+      },
+      {
+        "start_line": 232,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static String getCodeBase(Class<?> cls) {\n        if (cls == null) {\n            return null;\n        }\n        ProtectionDomain domain = cls.getProtectionDomain();\n        if (domain == null) {\n            return null;\n        }\n        CodeSource source = domain.getCodeSource();\n        if (source == null) {\n            return null;\n        }\n        URL location = source.getLocation();\n        if (location == null) {\n            return null;\n        }\n        return location.getFile();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getCodeBase",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getCodeBase"
+          }
+        ],
+        "similarity": 0.08468332600176096,
+        "end_line": 249,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.getCodeBase(Class cls): String"
+      },
+      {
+        "start_line": 272,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static Class<?> getGenericClass(Class<?> cls) {\n        return getGenericClass(cls, 0);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getGenericClass",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getGenericClass"
+          }
+        ],
+        "similarity": 0.08358233347354563,
+        "end_line": 274,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.getGenericClass(Class cls): Class"
+      },
+      {
+        "start_line": 308,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static String getName(final Method m) {\n        StringBuilder ret = new StringBuilder();\n        ret.append(getName(m.getReturnType())).append(' ');\n        ret.append(m.getName()).append('(');\n        Class<?>[] parameterTypes = m.getParameterTypes();\n        for (int i = 0; i < parameterTypes.length; i++) {\n            if (i > 0) {\n                ret.append(',');\n            }\n            ret.append(getName(parameterTypes[i]));\n        }\n        ret.append(')');\n        return ret.toString();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getName",
+        "documentation": "/**\n     * get method name.\n     * \"void do(int)\", \"void do()\", \"int do(java.lang.String,boolean)\"\n     *\n     * @param m method.\n     * @return name.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getName"
+          }
+        ],
+        "similarity": 0.08353876724096851,
+        "end_line": 321,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.getName(Method m): String"
+      },
+      {
+        "start_line": 1283,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static <T> T getProperty(Object bean, String methodName) {\n        Class<?> beanClass = bean.getClass();\n        BeanInfo beanInfo = null;\n        T propertyValue = null;\n\n        try {\n            beanInfo = Introspector.getBeanInfo(beanClass);\n            propertyValue = (T) Stream.of(beanInfo.getMethodDescriptors())\n                    .filter(methodDescriptor -> methodName.equals(methodDescriptor.getName()))\n                    .findFirst()\n                    .map(method -> {\n                        try {\n                            return method.getMethod().invoke(bean);\n                        } catch (Exception e) {\n                            //ignore\n                        }\n                        return null;\n                    }).get();\n        } catch (Exception e) {\n\n        }\n        return propertyValue;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getProperty",
+        "documentation": "/**\n     * Get the value from the specified bean and its getter method.\n     *\n     * @param bean       the bean instance\n     * @param methodName the name of getter\n     * @param <T>        the type of property value\n     * @return\n     * @since 2.7.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getProperty"
+          }
+        ],
+        "similarity": 0.08353747378140355,
+        "end_line": 1305,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.getProperty(Object bean, String methodName): T"
+      },
+      {
+        "start_line": 258,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static String getName(Class<?> c) {\n        if (c.isArray()) {\n            StringBuilder sb = new StringBuilder();\n            do {\n                sb.append(\"[]\");\n                c = c.getComponentType();\n            }\n            while (c.isArray());\n\n            return c.getName() + sb.toString();\n        }\n        return c.getName();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getName",
+        "documentation": "/**\n     * get name.\n     * java.lang.Object[][].class => \"java.lang.Object[][]\"\n     *\n     * @param c class.\n     * @return name.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getName"
+          }
+        ],
+        "similarity": 0.08191250489299712,
+        "end_line": 270,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.getName(Class c): String"
+      },
+      {
+        "start_line": 479,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static String getDescWithoutMethodName(Method m) {\n        StringBuilder ret = new StringBuilder();\n        ret.append('(');\n        Class<?>[] parameterTypes = m.getParameterTypes();\n        for (int i = 0; i < parameterTypes.length; i++) {\n            ret.append(getDesc(parameterTypes[i]));\n        }\n        ret.append(')').append(getDesc(m.getReturnType()));\n        return ret.toString();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getDescWithoutMethodName",
+        "documentation": "/**\n     * get method desc.\n     * \"(I)I\", \"()V\", \"(Ljava/lang/String;Z)V\"\n     *\n     * @param m method.\n     * @return desc.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getDescWithoutMethodName"
+          }
+        ],
+        "similarity": 0.0814757165501055,
+        "end_line": 488,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.getDescWithoutMethodName(Method m): String"
+      },
+      {
+        "start_line": 686,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static Class<?> forName(String name) {\n        try {\n            return name2class(name);\n        } catch (ClassNotFoundException e) {\n            throw new IllegalStateException(\"Not found class \" + name + \", cause: \" + e.getMessage(), e);\n        }\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "forName",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "forName"
+          }
+        ],
+        "similarity": 0.0814683240219176,
+        "end_line": 692,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.forName(String name): Class"
+      },
+      {
+        "start_line": 1013,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private static Object getEmptyObject(Class<?> returnType, Map<Class<?>, Object> emptyInstances, int level) {\n        if (level > 2) {\n            return null;\n        }\n        if (returnType == null) {\n            return null;\n        }\n        if (returnType == boolean.class || returnType == Boolean.class) {\n            return false;\n        }\n        if (returnType == char.class || returnType == Character.class) {\n            return '\\0';\n        }\n        if (returnType == byte.class || returnType == Byte.class) {\n            return (byte) 0;\n        }\n        if (returnType == short.class || returnType == Short.class) {\n            return (short) 0;\n        }\n        if (returnType == int.class || returnType == Integer.class) {\n            return 0;\n        }\n        if (returnType == long.class || returnType == Long.class) {\n            return 0L;\n        }\n        if (returnType == float.class || returnType == Float.class) {\n            return 0F;\n        }\n        if (returnType == double.class || returnType == Double.class) {\n            return 0D;\n        }\n        if (returnType.isArray()) {\n            return Array.newInstance(returnType.getComponentType(), 0);\n        }\n        if (returnType.isAssignableFrom(ArrayList.class)) {\n            return new ArrayList<>(0);\n        }\n        if (returnType.isAssignableFrom(HashSet.class)) {\n            return new HashSet<>(0);\n        }\n        if (returnType.isAssignableFrom(HashMap.class)) {\n            return new HashMap<>(0);\n        }\n        if (String.class.equals(returnType)) {\n            return \"\";\n        }\n        if (returnType.isInterface()) {\n            return null;\n        }\n\n        try {\n            Object value = emptyInstances.get(returnType);\n            if (value == null) {\n                value = returnType.newInstance();\n                emptyInstances.put(returnType, value);\n            }\n            Class<?> cls = value.getClass();\n            while (cls != null && cls != Object.class) {\n                Field[] fields = cls.getDeclaredFields();\n                for (Field field : fields) {\n                    if (field.isSynthetic()) {\n                        continue;\n                    }\n                    Object property = getEmptyObject(field.getType(), emptyInstances, level + 1);\n                    if (property != null) {\n                        try {\n                            if (!field.isAccessible()) {\n                                field.setAccessible(true);\n                            }\n                            field.set(value, property);\n                        } catch (Throwable ignored) {\n                        }\n                    }\n                }\n                cls = cls.getSuperclass();\n            }\n            return value;\n        } catch (Throwable e) {\n            return null;\n        }\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getEmptyObject",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getEmptyObject"
+          }
+        ],
+        "similarity": 0.08141921599940267,
+        "end_line": 1093,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.getEmptyObject(Class returnType, Map emptyInstances, int level): Object"
+      },
+      {
+        "start_line": 196,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static boolean isCompatible(Class<?> c, Object o) {\n        boolean pt = c.isPrimitive();\n        if (o == null) {\n            return !pt;\n        }\n\n        if (pt) {\n            c = getBoxedClass(c);\n        }\n\n        return c == o.getClass() || c.isInstance(o);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "isCompatible",
+        "documentation": "/**\n     * is compatible.\n     *\n     * @param c class.\n     * @param o instance.\n     * @return compatible or not.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isCompatible"
+          }
+        ],
+        "similarity": 0.08118053830083573,
+        "end_line": 207,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.isCompatible(Class c, Object o): boolean"
+      },
+      {
+        "start_line": 200,
+        "file_path": "playground/apache__dubbo/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/support/RpcUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static InvokeMode getInvokeMode(URL url, Invocation inv) {\n        if (inv instanceof RpcInvocation) {\n            RpcInvocation rpcInvocation = (RpcInvocation) inv;\n            if (rpcInvocation.getInvokeMode() != null) {\n                return rpcInvocation.getInvokeMode();\n            }\n        }\n\n        if (isReturnTypeFuture(inv)) {\n            return InvokeMode.FUTURE;\n        } else if (isAsync(url, inv)) {\n            return InvokeMode.ASYNC;\n        } else {\n            return InvokeMode.SYNC;\n        }\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getInvokeMode",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getReturnTypes"
+          },
+          {
+            "start_node": "getReturnTypes",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "RpcUtils"
+          },
+          {
+            "start_node": "RpcUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getInvokeMode"
+          }
+        ],
+        "similarity": 0.08078614691200842,
+        "end_line": 215,
+        "signature": "org.apache.dubbo.rpc.support.RpcUtils.getInvokeMode(URL url, Invocation inv): InvokeMode"
+      },
+      {
+        "start_line": 247,
+        "file_path": "playground/apache__dubbo/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/support/RpcUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static long getTimeout(URL url, String methodName, RpcContext context, long defaultTimeout) {\n        long timeout = defaultTimeout;\n        Object genericTimeout = context.getObjectAttachment(TIMEOUT_KEY);\n        if (genericTimeout != null) {\n            timeout = convertToNumber(genericTimeout, defaultTimeout);\n        } else if (url != null) {\n            timeout = url.getMethodPositiveParameter(methodName, TIMEOUT_KEY, defaultTimeout);\n        }\n        return timeout;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getTimeout",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getReturnTypes"
+          },
+          {
+            "start_node": "getReturnTypes",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "RpcUtils"
+          },
+          {
+            "start_node": "RpcUtils",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "getTimeout"
+          }
+        ],
+        "similarity": 0.07810219304854628,
+        "end_line": 256,
+        "signature": "org.apache.dubbo.rpc.support.RpcUtils.getTimeout(URL url, String methodName, RpcContext context, long defaultTimeout): long"
+      },
+      {
+        "start_line": 84,
+        "file_path": "playground/apache__dubbo/dubbo-filter/dubbo-filter-validation/src/main/java/org/apache/dubbo/validation/filter/ValidationFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {\n        if (validation != null && !invocation.getMethodName().startsWith(\"$\")\n                && ConfigUtils.isNotEmpty(invoker.getUrl().getMethodParameter(invocation.getMethodName(), VALIDATION_KEY))) {\n            try {\n                Validator validator = validation.getValidator(invoker.getUrl());\n                if (validator != null) {\n                    validator.validate(invocation.getMethodName(), invocation.getParameterTypes(), invocation.getArguments());\n                }\n            } catch (RpcException e) {\n                throw e;\n            } catch (ValidationException e) {\n                // only use exception's message to avoid potential serialization issue\n                return AsyncRpcResult.newDefaultAsyncResult(new ValidationException(e.getMessage()), invocation);\n            } catch (Throwable t) {\n                return AsyncRpcResult.newDefaultAsyncResult(t, invocation);\n            }\n        }\n        return invoker.invoke(invocation);\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "invoke",
+        "documentation": "/**\n     * Perform the validation of before invoking the actual method based on <b>validation</b> attribute value.\n     * @param invoker    service\n     * @param invocation invocation.\n     * @return Method invocation result\n     * @throws RpcException Throws RpcException if  validation failed or any other runtime exception occurred.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "invoke"
+          }
+        ],
+        "similarity": 0.07767571160659033,
+        "end_line": 102,
+        "signature": "org.apache.dubbo.validation.filter.ValidationFilter.invoke(Invoker invoker, Invocation invocation): Result"
+      },
+      {
+        "start_line": 186,
+        "file_path": "playground/apache__dubbo/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/support/RpcUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static boolean isGenericAsync(Invocation inv) {\n        return $INVOKE_ASYNC.equals(inv.getMethodName());\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "isGenericAsync",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "getReturnTypes"
+          },
+          {
+            "start_node": "getReturnTypes",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "RpcUtils"
+          },
+          {
+            "start_node": "RpcUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isGenericAsync"
+          }
+        ],
+        "similarity": 0.07757650982707827,
+        "end_line": 188,
+        "signature": "org.apache.dubbo.rpc.support.RpcUtils.isGenericAsync(Invocation inv): boolean"
+      },
+      {
+        "start_line": 694,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static Class<?> forName(ClassLoader cl, String name) {\n        try {\n            return name2class(cl, name);\n        } catch (ClassNotFoundException e) {\n            throw new IllegalStateException(\"Not found class \" + name + \", cause: \" + e.getMessage(), e);\n        }\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "forName",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "forName"
+          }
+        ],
+        "similarity": 0.07638549475672353,
+        "end_line": 700,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.forName(ClassLoader cl, String name): Class"
+      },
+      {
+        "start_line": 445,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static String[] getDescArray(final Method m) {\n        Class<?>[] parameterTypes = m.getParameterTypes();\n        String[] arr = new String[parameterTypes.length];\n\n        for (int i = 0; i < parameterTypes.length; i++) {\n            arr[i] = getDesc(parameterTypes[i]);\n        }\n        return arr;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getDescArray",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getDescArray"
+          }
+        ],
+        "similarity": 0.07627203689924565,
+        "end_line": 453,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.getDescArray(Method m): String[]"
+      },
+      {
+        "start_line": 710,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static Class<?> name2class(String name) throws ClassNotFoundException {\n        return name2class(ClassUtils.getClassLoader(), name);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "name2class",
+        "documentation": "/**\n     * name to class.\n     * \"boolean\" => boolean.class\n     * \"java.util.Map[][]\" => java.util.Map[][].class\n     *\n     * @param name name.\n     * @return Class instance.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "name2class"
+          }
+        ],
+        "similarity": 0.07582465666487176,
+        "end_line": 712,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.name2class(String name): Class"
+      },
+      {
+        "start_line": 415,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static String getDesc(final Class<?>[] cs) {\n        if (cs.length == 0) {\n            return \"\";\n        }\n\n        StringBuilder sb = new StringBuilder(64);\n        for (Class<?> c : cs) {\n            sb.append(getDesc(c));\n        }\n        return sb.toString();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getDesc",
+        "documentation": "/**\n     * get class array desc.\n     * [int.class, boolean[].class, Object.class] => \"I[ZLjava/lang/Object;\"\n     *\n     * @param cs class array.\n     * @return desc.\n     * @throws NotFoundException\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getDesc"
+          }
+        ],
+        "similarity": 0.07493892839312871,
+        "end_line": 425,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.getDesc(Class[] cs): String"
+      },
+      {
+        "start_line": 40,
+        "file_path": "playground/apache__dubbo/dubbo-demo/dubbo-demo-api/dubbo-demo-api-consumer/src/main/java/org/apache/dubbo/demo/consumer/Application.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private static void runWithBootstrap() {\n        ReferenceConfig<DemoService> reference = new ReferenceConfig<>();\n        reference.setInterface(DemoService.class);\n        reference.setGeneric(\"true\");\n\n        DubboBootstrap bootstrap = DubboBootstrap.getInstance();\n        bootstrap.application(new ApplicationConfig(\"dubbo-demo-api-consumer\"))\n                .registry(new RegistryConfig(\"zookeeper://127.0.0.1:2181\"))\n                .reference(reference)\n                .start();\n\n        DemoService demoService = ReferenceConfigCache.getCache().get(reference);\n        String message = demoService.sayHello(\"dubbo\");\n        System.out.println(message);\n\n        // generic invoke\n        GenericService genericService = (GenericService) demoService;\n        Object genericInvokeResult = genericService.$invoke(\"sayHello\", new String[] { String.class.getName() },\n                new Object[] { \"dubbo generic invoke\" });\n        System.out.println(genericInvokeResult);\n    }",
+        "distance": 2.25,
+        "title": null,
+        "name": "runWithBootstrap",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getName"
+          },
+          {
+            "start_node": "getName",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "runWithBootstrap"
+          }
+        ],
+        "similarity": 0.07457503854445792,
+        "end_line": 60,
+        "signature": "org.apache.dubbo.demo.consumer.Application.runWithBootstrap(): void"
+      },
+      {
+        "start_line": 348,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static String getName(final Constructor<?> c) {\n        StringBuilder ret = new StringBuilder(\"(\");\n        Class<?>[] parameterTypes = c.getParameterTypes();\n        for (int i = 0; i < parameterTypes.length; i++) {\n            if (i > 0) {\n                ret.append(',');\n            }\n            ret.append(getName(parameterTypes[i]));\n        }\n        ret.append(')');\n        return ret.toString();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getName",
+        "documentation": "/**\n     * get constructor name.\n     * \"()\", \"(java.lang.String,int)\"\n     *\n     * @param c constructor.\n     * @return name.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getName"
+          }
+        ],
+        "similarity": 0.07421790171342713,
+        "end_line": 359,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.getName(Constructor c): String"
+      },
+      {
+        "start_line": 216,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static boolean isCompatible(Class<?>[] cs, Object[] os) {\n        int len = cs.length;\n        if (len != os.length) {\n            return false;\n        }\n        if (len == 0) {\n            return true;\n        }\n        for (int i = 0; i < len; i++) {\n            if (!isCompatible(cs[i], os[i])) {\n                return false;\n            }\n        }\n        return true;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "isCompatible",
+        "documentation": "/**\n     * is compatible.\n     *\n     * @param cs class array.\n     * @param os object array.\n     * @return compatible or not.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isCompatible"
+          }
+        ],
+        "similarity": 0.07407391833642078,
+        "end_line": 230,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.isCompatible(Class[] cs, Object[] os): boolean"
+      },
+      {
+        "start_line": 1103,
+        "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public static Object defaultReturn(Class<?> classType) {\n        if (classType != null && classType.isPrimitive()) {\n            return primitiveDefaults.get(classType);\n        } else {\n            return null;\n        }\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "defaultReturn",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ReflectUtils"
+          },
+          {
+            "start_node": "ReflectUtils",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "defaultReturn"
+          }
+        ],
+        "similarity": 0.07330982141625719,
+        "end_line": 1109,
+        "signature": "org.apache.dubbo.common.utils.ReflectUtils.defaultReturn(Class classType): Object"
+      }
+    ],
+    "classes": [],
+    "issues": [
+      {
+        "content": "### Environment\r\n\r\n* Dubbo version: 2.7.8\r\n* Java version: jdk 11\r\n\r\n### Steps to reproduce this issue\r\n\r\n1. Define a interface like this:\r\n\r\n``` java\r\npublic interface TypeClass<T> {\r\n    CompletableFuture<T> getGenericFuture();\r\n}\r\n```\r\n\r\n2. Refer or export it\r\n3. Detail log\r\n\r\n```\r\njava.lang.ClassCastException: class sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to class java.lang.Class (sun.reflect.generics.reflectiveObjects.TypeVariableImpl and java.lang.Class are in module java.base of loader 'bootstrap')\r\n\r\n\tat org.apache.dubbo.common.utils.ReflectUtils.getReturnTypes(ReflectUtils.java:1207)\r\n\tat org.apache.dubbo.common.utils.ReflectUtilsTest.testGetReturnTypes(ReflectUtilsTest.java:431)\r\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\r\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\r\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\r\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:567)\r\n```\n",
+        "distance": 0,
+        "title": "Unable to refer interface with CompletableFuture<T>",
+        "name": "root",
+        "path": [],
+        "issue_id": "root",
+        "similarity": 2.0,
+        "type": "issue"
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "7040",
+        "type": "issue",
+        "content": "### Environment\r\n\r\n* Dubbo version: 2.7.8\r\n* Java version: jdk 11\r\n\r\n### Steps to reproduce this issue\r\n\r\n1. Define a interface like this:\r\n\r\n``` java\r\npublic interface TypeClass<T> {\r\n    CompletableFuture<T> getGenericFuture();\r\n}\r\n```\r\n\r\n2. Refer or export it\r\n3. Detail log\r\n\r\n```\r\njava.lang.ClassCastException: class sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to class java.lang.Class (sun.reflect.generics.reflectiveObjects.TypeVariableImpl and java.lang.Class are in module java.base of loader 'bootstrap')\r\n\r\n\tat org.apache.dubbo.common.utils.ReflectUtils.getReturnTypes(ReflectUtils.java:1207)\r\n\tat org.apache.dubbo.common.utils.ReflectUtilsTest.testGetReturnTypes(ReflectUtilsTest.java:431)\r\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\r\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\r\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\r\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:567)\r\n```\n\n",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "Unable to refer interface with CompletableFuture<T>",
+        "name": "issue#7040",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#7040"
+          }
+        ],
+        "similarity": 0.8774887176084617,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "7041",
+        "type": "issue",
+        "content": "## What is the purpose of the change\r\n\r\nAdd TypeVariable support for ReflectUtils\r\n\r\nFix #7040\r\n\r\nInterface example:\r\n``` java\r\npublic interface TypeClass<T> {\r\n    CompletableFuture<T> getGenericFuture();\r\n}\r\n```\n\n",
+        "source_code": null,
+        "distance": 0.5,
+        "title": "Fix ReflectUtils not support generic call with Future",
+        "name": "pr#7041",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#7040"
+          },
+          {
+            "start_node": "issue#7040",
+            "description": "referenced by issue",
+            "type": "RELATED",
+            "end_node": "pr#7041"
+          }
+        ],
+        "similarity": 0.5956212416172312,
+        "end_line": null,
+        "signature": null
+      }
+    ]
+  },
+  "artifact_stats": {
+    "skipped_due_to_time": 4,
+    "valid_related_items": 24
+  }
+}

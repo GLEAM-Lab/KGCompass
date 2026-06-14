@@ -1,0 +1,21 @@
+--- a/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java
++++ b/src/main/java/com/fasterxml/jackson/databind/DeserializationContext.java
+@@ -974,6 +974,18 @@
+             return reportBadDefinition(type,
+                     "Could not find JsonDeserializer for type "+ClassUtil.getTypeDescription(type));
+         }
++        if (p.getCurrentToken() == JsonToken.VALUE_STRING && type.isEnumType()) {
++            return (T) deser.deserialize(p, this);
++        }
++        if (isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS) 
++            && p.getCurrentToken() == JsonToken.START_ARRAY) {
++            p.nextToken();
++            T value = (T) deser.deserialize(p, this);
++            if (p.nextToken() != JsonToken.END_ARRAY) {
++                handleUnexpectedToken(type.getRawClass(), p);
++            }
++            return value;
++        }
+         return (T) deser.deserialize(p, this);
+     }
+ 

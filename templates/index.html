@@ -62,53 +62,133 @@
                         </h5>
                     </div>
                     <div class="card-body">
-                        <form id="repairForm">
-                            <!-- 仓库选择 -->
-                            <div class="mb-4">
-                                <label for="repoSelect" class="form-label">
+                        <!-- 模式切换选项卡 -->
+                        <ul class="nav nav-tabs mb-4" id="repoModeTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="predefined-tab" data-bs-toggle="tab" 
+                                        data-bs-target="#predefined-mode" type="button" role="tab">
+                                    <i class="fas fa-database me-1"></i>
+                                    SWE-bench 仓库
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="custom-tab" data-bs-toggle="tab" 
+                                        data-bs-target="#custom-mode" type="button" role="tab">
                                     <i class="fab fa-github me-1"></i>
-                                    选择仓库
-                                </label>
-                                <select class="form-select" id="repoSelect" required>
-                                    <option value="">请选择仓库...</option>
-                                    {% for repo_key, repo_info in repos.items() %}
-                                    <option value="{{ repo_key }}" 
-                                            data-description="{{ repo_info.description }}"
-                                            data-stars="{{ repo_info.stars }}">
-                                        {{ repo_info.name }} 
-                                        <span class="text-muted">({{ repo_info.stars }} ⭐)</span>
-                                    </option>
-                                    {% endfor %}
-                                </select>
-                                <div class="form-text" id="repoDescription"></div>
-                            </div>
+                                    自定义 GitHub 仓库
+                                </button>
+                            </li>
+                        </ul>
 
-                            <!-- 实例ID输入 -->
-                            <div class="mb-4">
-                                <label for="instanceId" class="form-label">
-                                    <i class="fas fa-hashtag me-1"></i>
-                                    Issue 实例ID
-                                </label>
-                                <input type="text" class="form-control" id="instanceId" 
-                                       placeholder="例如: astropy__astropy-12907" required>
-                                <div class="form-text">
-                                    输入 SWE-bench 中的实例ID，格式为 repo__repo-number
+                        <form id="repairForm">
+                            <div class="tab-content" id="repoModeContent">
+                                <!-- 预定义仓库模式 -->
+                                <div class="tab-pane fade show active" id="predefined-mode" role="tabpanel">
+                                    <!-- 仓库选择 -->
+                                    <div class="mb-4">
+                                        <label for="repoSelect" class="form-label">
+                                            <i class="fab fa-github me-1"></i>
+                                            选择仓库
+                                        </label>
+                                        <select class="form-select" id="repoSelect">
+                                            <option value="">请选择仓库...</option>
+                                            {% for repo_key, repo_info in repos.items() %}
+                                            <option value="{{ repo_key }}" 
+                                                    data-description="{{ repo_info.description }}"
+                                                    data-stars="{{ repo_info.stars }}">
+                                                {{ repo_info.name }} 
+                                                <span class="text-muted">({{ repo_info.stars }} ⭐)</span>
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="form-text" id="repoDescription"></div>
+                                    </div>
+
+                                    <!-- Issue ID输入 -->
+                                    <div class="mb-4">
+                                        <label for="issueNumber" class="form-label">
+                                            <i class="fas fa-hashtag me-1"></i>
+                                            Issue ID
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="repoPrefix">选择仓库</span>
+                                            <input type="text" class="form-control" id="issueNumber" 
+                                                   placeholder="例如: 12907" 
+                                                   pattern="[0-9]+" 
+                                                   title="请输入Issue编号">
+                                        </div>
+                                        <div class="form-text">
+                                            输入需要修复的 Issue 编号
+                                        </div>
+                                    </div>
+
+                                    <!-- 示例按钮 -->
+                                    <div class="mb-4">
+                                        <label class="form-label">
+                                            <i class="fas fa-lightbulb me-1"></i>
+                                            快速示例
+                                        </label>
+                                        <div id="exampleButtons" class="d-flex flex-wrap gap-2">
+                                            <!-- 示例按钮将通过 JavaScript 动态生成 -->
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- 示例按钮 -->
-                            <div class="mb-4">
-                                <label class="form-label">
-                                    <i class="fas fa-lightbulb me-1"></i>
-                                    快速示例
-                                </label>
-                                <div id="exampleButtons" class="d-flex flex-wrap gap-2">
-                                    <!-- 示例按钮将通过 JavaScript 动态生成 -->
+                                <!-- 自定义仓库模式 -->
+                                <div class="tab-pane fade" id="custom-mode" role="tabpanel">
+                                    <!-- GitHub 仓库 URL -->
+                                    <div class="mb-4">
+                                        <label for="githubUrl" class="form-label">
+                                            <i class="fab fa-github me-1"></i>
+                                            GitHub 仓库 URL
+                                        </label>
+                                        <input type="text" class="form-control" id="githubUrl" 
+                                               placeholder="例如: https://github.com/owner/repo 或 owner/repo">
+                                        <div class="form-text">
+                                            支持完整 URL 或简写格式 (owner/repo)
+                                        </div>
+                                        <div id="repoValidationStatus" class="mt-2"></div>
+                                    </div>
+
+                                    <!-- Issue 编号 -->
+                                    <div class="mb-4">
+                                        <label for="customIssueNumber" class="form-label">
+                                            <i class="fas fa-hashtag me-1"></i>
+                                            Issue 编号
+                                        </label>
+                                        <input type="text" class="form-control" id="customIssueNumber" 
+                                               placeholder="例如: 123" 
+                                               pattern="[0-9]+" 
+                                               title="请输入Issue编号">
+                                        <div class="form-text">
+                                            输入需要修复的 Issue 编号
+                                        </div>
+                                        <div id="issueValidationStatus" class="mt-2"></div>
+                                    </div>
+
+                                    <!-- 验证按钮 -->
+                                    <div class="mb-4">
+                                        <button type="button" class="btn btn-outline-secondary" id="validateRepoBtn">
+                                            <i class="fas fa-check-circle me-1"></i>
+                                            验证仓库和 Issue
+                                        </button>
+                                    </div>
+
+                                    <!-- 仓库信息展示 -->
+                                    <div id="customRepoInfo" class="d-none">
+                                        <div class="alert alert-info">
+                                            <h6 class="alert-heading">
+                                                <i class="fas fa-info-circle me-1"></i>
+                                                仓库信息
+                                            </h6>
+                                            <div id="customRepoDetails"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
                             <!-- 提交按钮 -->
-                            <div class="d-grid">
+                            <div class="d-grid mt-4">
                                 <button type="submit" class="btn btn-primary btn-lg" id="startRepairBtn">
                                     <i class="fas fa-magic me-2"></i>
                                     开始修复
@@ -133,7 +213,7 @@
                         <div id="defaultStatus" class="text-center py-5">
                             <div class="text-muted">
                                 <i class="fas fa-robot fa-3x mb-3"></i>
-                                <p>请选择仓库和实例ID，点击"开始修复"来启动修复流程</p>
+                                <p>请选择仓库并输入 Issue 编号，点击"开始修复"来启动修复流程</p>
                             </div>
                         </div>
 

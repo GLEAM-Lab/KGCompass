@@ -1,0 +1,65 @@
+Based on the issue, the problem occurs when trying to handle generic return types with `CompletableFuture<T>`. The error shows a `ClassCastException` when trying to cast a `TypeVariableImpl` to `Class`, which happens in `ReflectUtils.getReturnTypes()` when processing the generic type parameter of `CompletableFuture`.
+
+The bug is in the `getReturnTypes` method where it doesn't properly handle cases where the actual type argument is a type variable (T) rather than a concrete class. We need to modify the method to handle this case.
+
+Here's the fix:
+
+```java
+### playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/ReflectUtils.java
+- start_line : 1196
+- end_line : 1215
+<<<<<<< SEARCH
+    public static Type[] getReturnTypes(Method method) {
+        Class<?> returnType = method.getReturnType();
+        Type genericReturnType = method.getGenericReturnType();
+        if (Future.class.isAssignableFrom(returnType)) {
+            if (genericReturnType instanceof ParameterizedType) {
+                Type actualArgType = ((ParameterizedType) genericReturnType).getActualTypeArguments()[0];
+                if (actualArgType instanceof ParameterizedType) {
+                    returnType = (Class<?>) ((ParameterizedType) actualArgType).getRawType();
+                    genericReturnType = actualArgType;
+                } else {
+                    returnType = (Class<?>) actualArgType;
+                    genericReturnType = returnType;
+                }
+            } else {
+                returnType = null;
+                genericReturnType = null;
+            }
+        }
+        return new Type[]{returnType, genericReturnType};
+    }
+=======
+    public static Type[] getReturnTypes(Method method) {
+        Class<?> returnType = method.getReturnType();
+        Type genericReturnType = method.getGenericReturnType();
+        if (Future.class.isAssignableFrom(returnType)) {
+            if (genericReturnType instanceof ParameterizedType) {
+                Type actualArgType = ((ParameterizedType) genericReturnType).getActualTypeArguments()[0];
+                if (actualArgType instanceof ParameterizedType) {
+                    returnType = (Class<?>) ((ParameterizedType) actualArgType).getRawType();
+                    genericReturnType = actualArgType;
+                } else if (actualArgType instanceof Class) {
+                    returnType = (Class<?>) actualArgType;
+                    genericReturnType = returnType;
+                } else {
+                    // Handle TypeVariable case by keeping the original return type
+                    returnType = Object.class;
+                    genericReturnType = actualArgType;
+                }
+            } else {
+                returnType = null;
+                genericReturnType = null;
+            }
+        }
+        return new Type[]{returnType, genericReturnType};
+    }
+>>>>>>> REPLACE
+```
+
+The key changes are:
+1. Added an explicit check for `actualArgType instanceof Class` before attempting to cast
+2. Added an else clause to handle TypeVariable cases by defaulting to `Object.class` while preserving the generic type information
+3. Maintained all other existing behavior
+
+This change prevents the `ClassCastException` when dealing with generic type parameters while still providing reasonable defaults for runtime behavior. The generic type information is preserved in `genericReturnType` which can be useful for reflection purposes, while `returnType` defaults to `Object.class` when the actual type isn't known at runtime.

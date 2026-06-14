@@ -1,0 +1,103 @@
+{
+    "related_entities": {
+        "methods": [],
+        "classes": [],
+        "issues": [
+            {
+                "content": "According to [semver](https://semver.org/), 1.0.0-alpha < 1.0.0-beta.\r\n\r\nHowever, `Version.compareTo` does not account for `_snapshotInfo` in its comparison: https://github.com/FasterXML/jackson-core/blob/2.16/src/main/java/com/fasterxml/jackson/core/Version.java#L135\r\n\r\nDoes it make sense to compare `_snapshotInfo` as well?\n",
+                "distance": 0,
+                "title": "Compare `_snapshotInfo` in `Version`",
+                "name": "root",
+                "path": [],
+                "issue_id": "root",
+                "similarity": 2.0,
+                "type": "issue"
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "1050",
+                "type": "issue",
+                "content": "According to [semver](https://semver.org/), 1.0.0-alpha < 1.0.0-beta.\r\n\r\nHowever, `Version.compareTo` does not account for `_snapshotInfo` in its comparison: https://github.com/FasterXML/jackson-core/blob/2.16/src/main/java/com/fasterxml/jackson/core/Version.java#L135\r\n\r\nDoes it make sense to compare `_snapshotInfo` as well?\n\n\nComment by HEdingfield:\nAn easy way to get the desired behavior here would probably be to sort the stuff after the hyphen alphabetically, and whichever is earlier in the list would be considered \"older\".\n\nComment by cowtowncoder:\nTo be honest, comparability is not used by anything in Jackson itself so it's not a big deal in that sense.\r\n\r\nBut if anyone wants to fix this, feel free to send a PR; ideally because it solves an actual problem (code outside of Jackson relying on ordering of snaphot info).\r\n",
+                "source_code": null,
+                "distance": 0.25,
+                "title": "Compare `_snapshotInfo` in `Version`",
+                "name": "issue#1050",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#1050"
+                    }
+                ],
+                "similarity": 0.8007432899115766,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "1053",
+                "type": "issue",
+                "content": "This could change default behavior for clients, so I expect it should be merged into master instead of here.\r\n\r\nI have proposed two PRs, one for the current version, and one for master assuming this is unacceptable.\r\n\r\nI expect and recommend that this PR be closed without merging because it is a non-backwards-compatible change, but wanted to offer it nonetheless.\r\n\r\nCloses #1050 \r\nSame as #1054 but rebased onto `2.16`\n\n",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "support snapshot versioning",
+                "name": "pr#1053",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#1050"
+                    },
+                    {
+                        "start_node": "issue#1050",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "pr#1053"
+                    }
+                ],
+                "similarity": 0.4502719464658165,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "701",
+                "type": "issue",
+                "content": "**mvn dependency:tree**\r\n\r\ncom.fasterxml.jackson.core:jackson-core:bundle:2.10.5\r\n\\- junit:junit:jar:4.12:test\r\n   \\- org.hamcrest:hamcrest-core:jar:1.3:test\r\n\r\nbut when we try a build it's fetching jackson-core-2.3.1 ,jackson-annotations-2.3.1,jackson-databind-2.3.1 as a dependency\r\nin local repository (.m2/repositories).\r\n\r\nHow a framework depend on it's own subversion?\n\n\nComment by cowtowncoder:\nJackson components do not depend on different versions of other Jackson components: dependencies are for the same minor version, at least, always.\r\n\r\nSo the problem is probably with your Maven project definition: try to see where old dependencies come from.\r\n\r\nBut note that `jackson-core` does NOT depend on either `jackson-annotations` or `jackson-databind` (jackson-databind does depend on jackson-core and jackson-annotations).\r\n\r\nYou may consider using Maven import of `jackson-bom` to get a consistent set of versions.\r\n\r\n\r\n\n\nComment by stevenschlansker:\nWe have observed this as well, our large dependency tree has many transitive dependencies (through libraries) on different versions of jackson. So Maven will download at least the `pom` for all versions referred to, even though only a single version is ever selected (via `jackson-bom` in our case) to be included in any classpath.\n\nComment by GedMarc:\nshould import the jackson bom using dependency-management for the version that will be used / but keep in mind osgi and/or classloader encapsulations, some libraries may be using old version for that reason - and are configured as such in some EE containers\n\nComment by cowtowncoder:\nBack to the original question: Maven dependency management system must download various versions of all transitive dependencies to resolve actual versions used. This does not mean that Jackson itself depends on different versions; nor that multiple versions would be used. They just need to be resolved, specifically metadata from `pom.xml`s involved.\r\n\r\nWith that, I'll close this non-issue issue.\r\n",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "jackson-core-2.10.5 dependency tree doesn't contains jackson-core-2.3.1 as a dependency and how it's possible to depend on the same source?",
+                "name": "issue#701",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#1050"
+                    },
+                    {
+                        "start_node": "issue#1050",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#701"
+                    }
+                ],
+                "similarity": 0.2728430413993911,
+                "end_line": null,
+                "signature": null
+            }
+        ]
+    },
+    "artifact_stats": {
+        "skipped_due_to_time": 12,
+        "valid_related_items": 18
+    }
+}

@@ -1,0 +1,1621 @@
+{
+  "related_entities": {
+    "methods": [
+      {
+        "start_line": 559,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _reportInvalidEOFInValue(JsonToken type) throws JsonParseException {\n        String msg;\n        if (type == JsonToken.VALUE_STRING) {\n            msg = \" in a String value\";\n        } else if ((type == JsonToken.VALUE_NUMBER_INT)\n                || (type == JsonToken.VALUE_NUMBER_FLOAT)) {\n            msg = \" in a Number value\";\n        } else {\n            msg = \" in a value\";\n        }\n        _reportInvalidEOF(msg, type);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "_reportInvalidEOFInValue",
+        "documentation": "/**\n     * @since 2.8\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_reportInvalidEOFInValue"
+          }
+        ],
+        "similarity": 0.11548602127718258,
+        "end_line": 570,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase._reportInvalidEOFInValue(JsonToken type): void"
+      },
+      {
+        "start_line": 203,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonToken nextValue() throws IOException {\n        // Implementation should be as trivial as follows; only needs to change if\n        // we are to skip other tokens (for example, if comments were exposed as tokens)\n        JsonToken t = nextToken();\n        if (t == JsonToken.FIELD_NAME) {\n            t = nextToken();\n        }\n        return t;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "nextValue",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextValue"
+          }
+        ],
+        "similarity": 0.11527238680212905,
+        "end_line": 211,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase.nextValue(): JsonToken"
+      },
+      {
+        "start_line": 619,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected char _handleUnrecognizedCharacterEscape(char ch) throws JsonProcessingException {\n        // as per [JACKSON-300]\n        if (isEnabled(Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER)) {\n            return ch;\n        }\n        // and [JACKSON-548]\n        if (ch == '\\'' && isEnabled(Feature.ALLOW_SINGLE_QUOTES)) {\n            return ch;\n        }\n        _reportError(\"Unrecognized character escape \"+_getCharDesc(ch));\n        return ch;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "_handleUnrecognizedCharacterEscape",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_handleUnrecognizedCharacterEscape"
+          }
+        ],
+        "similarity": 0.11171316613673525,
+        "end_line": 630,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase._handleUnrecognizedCharacterEscape(char ch): char"
+      },
+      {
+        "start_line": 797,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public String nextFieldName() throws IOException {\n        return (nextToken() == JsonToken.FIELD_NAME) ? getCurrentName() : null;\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "nextFieldName",
+        "documentation": "/**\n     * Method that fetches next token (as if calling {@link #nextToken}) and\n     * verifies whether it is {@link JsonToken#FIELD_NAME}; if it is,\n     * returns same as {@link #getCurrentName()}, otherwise null.\n     * \n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          }
+        ],
+        "similarity": 0.10194143148778977,
+        "end_line": 799,
+        "signature": "com.fasterxml.jackson.core.JsonParser.nextFieldName(): String"
+      },
+      {
+        "start_line": 172,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    @Override public abstract JsonToken nextToken() throws IOException;",
+        "distance": 1.25,
+        "title": null,
+        "name": "nextToken",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextToken"
+          }
+        ],
+        "similarity": 0.10027165161617296,
+        "end_line": 172,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase.nextToken(): JsonToken"
+      },
+      {
+        "start_line": 575,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _reportInvalidEOF(String msg, JsonToken currToken) throws JsonParseException {\n        throw new JsonEOFException(this, currToken, \"Unexpected end-of-input\"+msg);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "_reportInvalidEOF",
+        "documentation": "/**\n     * @since 2.8\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_reportInvalidEOF"
+          }
+        ],
+        "similarity": 0.10026182691101669,
+        "end_line": 577,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase._reportInvalidEOF(String msg, JsonToken currToken): void"
+      },
+      {
+        "start_line": 583,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _reportInvalidEOFInValue() throws JsonParseException {\n        _reportInvalidEOF(\" in a value\");\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "_reportInvalidEOFInValue",
+        "documentation": "/**\n     * @deprecated Since 2.8 use {@link #_reportInvalidEOF(String, JsonToken)} instead\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_reportInvalidEOFInValue"
+          }
+        ],
+        "similarity": 0.09738737848695886,
+        "end_line": 585,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase._reportInvalidEOFInValue(): void"
+      },
+      {
+        "start_line": 786,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean nextFieldName(SerializableString str) throws IOException {\n        return (nextToken() == JsonToken.FIELD_NAME) && str.getValue().equals(getCurrentName());\n    }",
+        "distance": 1.0,
+        "title": null,
+        "name": "nextFieldName",
+        "documentation": "/**\n     * Method that fetches next token (as if calling {@link #nextToken}) and\n     * verifies whether it is {@link JsonToken#FIELD_NAME} with specified name\n     * and returns result of that comparison.\n     * It is functionally equivalent to:\n     *<pre>\n     *  return (nextToken() == JsonToken.FIELD_NAME) &amp;&amp; str.getValue().equals(getCurrentName());\n     *</pre>\n     * but may be faster for parser to verify, and can therefore be used if caller\n     * expects to get such a property name from input next.\n     * \n     * @param str Property name to compare next token to (if next token is\n     *   <code>JsonToken.FIELD_NAME</code>)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          }
+        ],
+        "similarity": 0.09642294597141035,
+        "end_line": 788,
+        "signature": "com.fasterxml.jackson.core.JsonParser.nextFieldName(SerializableString str): boolean"
+      },
+      {
+        "start_line": 552,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _reportInvalidEOF() throws JsonParseException {\n        _reportInvalidEOF(\" in \"+_currToken, _currToken);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "_reportInvalidEOF",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_reportInvalidEOF"
+          }
+        ],
+        "similarity": 0.09641192646488099,
+        "end_line": 554,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase._reportInvalidEOF(): void"
+      },
+      {
+        "start_line": 610,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _throwUnquotedSpace(int i, String ctxtDesc) throws JsonParseException {\n        // JACKSON-208; possible to allow unquoted control chars:\n        if (!isEnabled(Feature.ALLOW_UNQUOTED_CONTROL_CHARS) || i > INT_SPACE) {\n            char c = (char) i;\n            String msg = \"Illegal unquoted character (\"+_getCharDesc(c)+\"): has to be escaped using backslash to be included in \"+ctxtDesc;\n            _reportError(msg);\n        }\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "_throwUnquotedSpace",
+        "documentation": "/**\n     * Method called to report a problem with unquoted control character.\n     * Note: starting with version 1.4, it is possible to suppress\n     * exception by enabling {@link Feature#ALLOW_UNQUOTED_CONTROL_CHARS}.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_throwUnquotedSpace"
+          }
+        ],
+        "similarity": 0.096144228317995,
+        "end_line": 617,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase._throwUnquotedSpace(int i, String ctxtDesc): void"
+      },
+      {
+        "start_line": 591,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _reportInvalidEOF(String msg) throws JsonParseException {\n        throw new JsonEOFException(this, null, \"Unexpected end-of-input\"+msg);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "_reportInvalidEOF",
+        "documentation": "/**\n     * @deprecated Since 2.8 use {@link #_reportInvalidEOF(String, JsonToken)} instead\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_reportInvalidEOF"
+          }
+        ],
+        "similarity": 0.0958139471090138,
+        "end_line": 593,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase._reportInvalidEOF(String msg): void"
+      },
+      {
+        "start_line": 200,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    @Override public boolean isExpectedStartObjectToken() { return _currToken == JsonToken.START_OBJECT; }",
+        "distance": 1.25,
+        "title": null,
+        "name": "isExpectedStartObjectToken",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isExpectedStartObjectToken"
+          }
+        ],
+        "similarity": 0.09512776573478032,
+        "end_line": 200,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase.isExpectedStartObjectToken(): boolean"
+      },
+      {
+        "start_line": 540,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _reportUnexpectedChar(int ch, String comment) throws JsonParseException",
+        "distance": 1.0,
+        "title": null,
+        "name": "_reportUnexpectedChar",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "_reportUnexpectedChar"
+          }
+        ],
+        "similarity": 0.09428531146707035,
+        "end_line": 540,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase._reportUnexpectedChar(int ch, String comment): void"
+      },
+      {
+        "start_line": 199,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    @Override public boolean isExpectedStartArrayToken() { return _currToken == JsonToken.START_ARRAY; }",
+        "distance": 1.25,
+        "title": null,
+        "name": "isExpectedStartArrayToken",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isExpectedStartArrayToken"
+          }
+        ],
+        "similarity": 0.09160538921129187,
+        "end_line": 199,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase.isExpectedStartArrayToken(): boolean"
+      },
+      {
+        "start_line": 465,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public String getValueAsString(String defaultValue) throws IOException {\n        if (_currToken == JsonToken.VALUE_STRING) {\n            return getText();\n        }\n        if (_currToken == JsonToken.FIELD_NAME) {\n            return getCurrentName();\n        }\n        if (_currToken == null || _currToken == JsonToken.VALUE_NULL || !_currToken.isScalarValue()) {\n            return defaultValue;\n        }\n        return getText();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getValueAsString",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          },
+          {
+            "start_node": "nextFieldName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getValueAsString"
+          }
+        ],
+        "similarity": 0.09155751772369967,
+        "end_line": 476,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase.getValueAsString(String defaultValue): String"
+      },
+      {
+        "start_line": 454,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public String getValueAsString() throws IOException {\n        if (_currToken == JsonToken.VALUE_STRING) {\n            return getText();\n        }\n        if (_currToken == JsonToken.FIELD_NAME) {\n            return getCurrentName();\n        }\n        return getValueAsString(null);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getValueAsString",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          },
+          {
+            "start_node": "nextFieldName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getValueAsString"
+          }
+        ],
+        "similarity": 0.09089247609732701,
+        "end_line": 462,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase.getValueAsString(): String"
+      },
+      {
+        "start_line": 183,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _closeInput() throws IOException {\n        /* 25-Nov-2008, tatus: As per [JACKSON-16] we are not to call close()\n         *   on the underlying Reader, unless we \"own\" it, or auto-closing\n         *   feature is enabled.\n         *   One downside is that when using our optimized\n         *   Reader (granted, we only do that for UTF-32...) this\n         *   means that buffer recycling won't work correctly.\n         */\n        if (_reader != null) {\n            if (_ioContext.isResourceManaged() || isEnabled(Feature.AUTO_CLOSE_SOURCE)) {\n                _reader.close();\n            }\n            _reader = null;\n        }\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_closeInput",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          },
+          {
+            "start_node": "nextFieldName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_closeInput"
+          }
+        ],
+        "similarity": 0.09046841056090675,
+        "end_line": 197,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._closeInput(): void"
+      },
+      {
+        "start_line": 518,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void reportUnexpectedNumberChar(int ch, String comment) throws JsonParseException {\n        String msg = String.format(\"Unexpected character (%s) in numeric value\", _getCharDesc(ch));\n        if (comment != null) {\n            msg += \": \"+comment;\n        }\n        _reportError(msg);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "reportUnexpectedNumberChar",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "reportUnexpectedNumberChar"
+          }
+        ],
+        "similarity": 0.08984995035485556,
+        "end_line": 524,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase.reportUnexpectedNumberChar(int ch, String comment): void"
+      },
+      {
+        "start_line": 333,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public final String getValueAsString(String defValue) throws IOException {\n        if (_currToken == JsonToken.VALUE_STRING) {\n            if (_tokenIncomplete) {\n                _tokenIncomplete = false;\n                _finishString(); // only strings can be incomplete\n            }\n            return _textBuffer.contentsAsString();\n        }\n        if (_currToken == JsonToken.FIELD_NAME) {\n            return getCurrentName();\n        }\n        return super.getValueAsString(defValue);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getValueAsString",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          },
+          {
+            "start_node": "nextFieldName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getValueAsString"
+          }
+        ],
+        "similarity": 0.08905883840387818,
+        "end_line": 345,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser.getValueAsString(String defValue): String"
+      },
+      {
+        "start_line": 599,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _throwInvalidSpace(int i) throws JsonParseException {\n        char c = (char) i;\n        String msg = \"Illegal character (\"+_getCharDesc(c)+\"): only regular white space (\\\\r, \\\\n, \\\\t) is allowed between tokens\";\n        _reportError(msg);\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "_throwInvalidSpace",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_throwInvalidSpace"
+          }
+        ],
+        "similarity": 0.08812241508583017,
+        "end_line": 603,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase._throwInvalidSpace(int i): void"
+      },
+      {
+        "start_line": 910,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean nextFieldName(SerializableString str) throws IOException",
+        "distance": 1.0,
+        "title": null,
+        "name": "nextFieldName",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          }
+        ],
+        "similarity": 0.08716031876773833,
+        "end_line": 910,
+        "signature": "com.fasterxml.jackson.core.json.UTF8StreamJsonParser.nextFieldName(SerializableString str): boolean"
+      },
+      {
+        "start_line": 547,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonGenerator.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonGenerator setRootValueSeparator(SerializableString sep) {\n        throw new UnsupportedOperationException();\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "setRootValueSeparator",
+        "documentation": "/**\n     * Method that allows overriding String used for separating root-level\n     * JSON values (default is single space character)\n     *<p>\n     * Default implementation throws {@link UnsupportedOperationException}.\n     * \n     * @param sep Separator to use, if any; null means that no separator is\n     *   automatically added\n     * \n     * @since 2.1\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "_reportError"
+          },
+          {
+            "start_node": "_reportError",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonGenerator"
+          },
+          {
+            "start_node": "JsonGenerator",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setRootValueSeparator"
+          }
+        ],
+        "similarity": 0.08669614065019686,
+        "end_line": 549,
+        "signature": "com.fasterxml.jackson.core.JsonGenerator.setRootValueSeparator(SerializableString sep): JsonGenerator"
+      },
+      {
+        "start_line": 673,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/UTF8DataInputJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private final JsonToken _nextTokenNotInObject(int i) throws IOException",
+        "distance": 1.5,
+        "title": null,
+        "name": "_nextTokenNotInObject",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          },
+          {
+            "start_node": "nextFieldName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_nextTokenNotInObject"
+          }
+        ],
+        "similarity": 0.08572184751064772,
+        "end_line": 673,
+        "signature": "com.fasterxml.jackson.core.json.UTF8DataInputJsonParser._nextTokenNotInObject(int i): JsonToken"
+      },
+      {
+        "start_line": 835,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private final JsonToken _nextTokenNotInObject(int i) throws IOException",
+        "distance": 1.5,
+        "title": null,
+        "name": "_nextTokenNotInObject",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          },
+          {
+            "start_node": "nextFieldName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_nextTokenNotInObject"
+          }
+        ],
+        "similarity": 0.08572184751064772,
+        "end_line": 835,
+        "signature": "com.fasterxml.jackson.core.json.UTF8StreamJsonParser._nextTokenNotInObject(int i): JsonToken"
+      },
+      {
+        "start_line": 1077,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private final JsonToken _nextTokenNotInObject(int i) throws IOException",
+        "distance": 1.5,
+        "title": null,
+        "name": "_nextTokenNotInObject",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          },
+          {
+            "start_node": "nextFieldName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_nextTokenNotInObject"
+          }
+        ],
+        "similarity": 0.08572184751064772,
+        "end_line": 1077,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._nextTokenNotInObject(int i): JsonToken"
+      },
+      {
+        "start_line": 206,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _releaseBuffers() throws IOException {\n        super._releaseBuffers();\n        // merge new symbols, if any\n        _symbols.release();\n        // and release buffers, if they are recyclable ones\n        if (_bufferRecyclable) {\n            char[] buf = _inputBuffer;\n            if (buf != null) {\n                _inputBuffer = null;\n                _ioContext.releaseTokenBuffer(buf);\n            }\n        }\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_releaseBuffers",
+        "documentation": "/**\n     * Method called to release internal buffers owned by the base\n     * reader. This may be called along with {@link #_closeInput} (for\n     * example, when explicitly closing this reader instance), or\n     * separately (if need be).\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          },
+          {
+            "start_node": "nextFieldName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_releaseBuffers"
+          }
+        ],
+        "similarity": 0.08560094494705216,
+        "end_line": 218,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._releaseBuffers(): void"
+      },
+      {
+        "start_line": 275,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    @Override public JsonToken getLastClearedToken() { return _lastClearedToken; }",
+        "distance": 1.25,
+        "title": null,
+        "name": "getLastClearedToken",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getLastClearedToken"
+          }
+        ],
+        "similarity": 0.08523980609169754,
+        "end_line": 275,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase.getLastClearedToken(): JsonToken"
+      },
+      {
+        "start_line": 716,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/UTF8DataInputJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private final JsonToken _nextAfterName()",
+        "distance": 1.5,
+        "title": null,
+        "name": "_nextAfterName",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "_handleOddName"
+          },
+          {
+            "start_node": "_handleOddName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "UTF8StreamJsonParser"
+          },
+          {
+            "start_node": "UTF8StreamJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_nextAfterName"
+          }
+        ],
+        "similarity": 0.08511139137491426,
+        "end_line": 716,
+        "signature": "com.fasterxml.jackson.core.json.UTF8DataInputJsonParser._nextAfterName(): JsonToken"
+      },
+      {
+        "start_line": 759,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private final JsonToken _nextAfterName()",
+        "distance": 1.5,
+        "title": null,
+        "name": "_nextAfterName",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "_handleOddName"
+          },
+          {
+            "start_node": "_handleOddName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "UTF8StreamJsonParser"
+          },
+          {
+            "start_node": "UTF8StreamJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_nextAfterName"
+          }
+        ],
+        "similarity": 0.08511139137491426,
+        "end_line": 759,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._nextAfterName(): JsonToken"
+      },
+      {
+        "start_line": 878,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private final JsonToken _nextAfterName()",
+        "distance": 1.5,
+        "title": null,
+        "name": "_nextAfterName",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "_handleOddName"
+          },
+          {
+            "start_node": "_handleOddName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "UTF8StreamJsonParser"
+          },
+          {
+            "start_node": "UTF8StreamJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_nextAfterName"
+          }
+        ],
+        "similarity": 0.08511139137491426,
+        "end_line": 878,
+        "signature": "com.fasterxml.jackson.core.json.UTF8StreamJsonParser._nextAfterName(): JsonToken"
+      },
+      {
+        "start_line": 2583,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private final void _matchNull() throws IOException {\n        int ptr = _inputPtr;\n        if ((ptr + 3) < _inputEnd) {\n            final char[] b = _inputBuffer;\n            if (b[ptr] == 'u' && b[++ptr] == 'l' && b[++ptr] == 'l') {\n                char c = b[++ptr];\n                if (c < '0' || c == ']' || c == '}') { // expected/allowed chars\n                    _inputPtr = ptr;\n                    return;\n                }\n            }\n        }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_matchNull",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          },
+          {
+            "start_node": "nextFieldName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_matchNull"
+          }
+        ],
+        "similarity": 0.0850224404580673,
+        "end_line": 2594,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._matchNull(): void"
+      },
+      {
+        "start_line": 1994,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/UTF8DataInputJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonToken _handleUnexpectedValue(int c)",
+        "distance": 1.5,
+        "title": null,
+        "name": "_handleUnexpectedValue",
+        "documentation": "/**\n     * Method for handling cases where first non-space character\n     * of an expected value token is not legal for standard JSON content.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "_handleOddName"
+          },
+          {
+            "start_node": "_handleOddName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "UTF8StreamJsonParser"
+          },
+          {
+            "start_node": "UTF8StreamJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_handleUnexpectedValue"
+          }
+        ],
+        "similarity": 0.084248847068054,
+        "end_line": 1994,
+        "signature": "com.fasterxml.jackson.core.json.UTF8DataInputJsonParser._handleUnexpectedValue(int c): JsonToken"
+      },
+      {
+        "start_line": 2621,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonToken _handleUnexpectedValue(int c)",
+        "distance": 1.5,
+        "title": null,
+        "name": "_handleUnexpectedValue",
+        "documentation": "/**\n     * Method for handling cases where first non-space character\n     * of an expected value token is not legal for standard JSON content.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "_handleOddName"
+          },
+          {
+            "start_node": "_handleOddName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "UTF8StreamJsonParser"
+          },
+          {
+            "start_node": "UTF8StreamJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_handleUnexpectedValue"
+          }
+        ],
+        "similarity": 0.084248847068054,
+        "end_line": 2621,
+        "signature": "com.fasterxml.jackson.core.json.UTF8StreamJsonParser._handleUnexpectedValue(int c): JsonToken"
+      },
+      {
+        "start_line": 792,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean nextFieldName(SerializableString sstr) throws IOException",
+        "distance": 1.0,
+        "title": null,
+        "name": "nextFieldName",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          }
+        ],
+        "similarity": 0.08305051246057042,
+        "end_line": 792,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser.nextFieldName(SerializableString sstr): boolean"
+      },
+      {
+        "start_line": 2567,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private final void _matchFalse() throws IOException {\n        int ptr = _inputPtr;\n        if ((ptr + 4) < _inputEnd) {\n            final char[] b = _inputBuffer;\n            if (b[ptr] == 'a' && b[++ptr] == 'l' && b[++ptr] == 's' && b[++ptr] == 'e') {\n                char c = b[++ptr];\n                if (c < '0' || c == ']' || c == '}') { // expected/allowed chars\n                    _inputPtr = ptr;\n                    return;\n                }\n            }\n        }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_matchFalse",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          },
+          {
+            "start_node": "nextFieldName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_matchFalse"
+          }
+        ],
+        "similarity": 0.08302459787928429,
+        "end_line": 2578,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._matchFalse(): void"
+      },
+      {
+        "start_line": 346,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonParser(int features) { _features = features; }",
+        "distance": 1.5,
+        "title": null,
+        "name": "JsonParser",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          },
+          {
+            "start_node": "nextFieldName",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          }
+        ],
+        "similarity": 0.08274821685699052,
+        "end_line": 346,
+        "signature": "com.fasterxml.jackson.core.JsonParser(int features)"
+      },
+      {
+        "start_line": 174,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    @Override public JsonToken currentToken() { return _currToken; }",
+        "distance": 1.25,
+        "title": null,
+        "name": "currentToken",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "currentToken"
+          }
+        ],
+        "similarity": 0.08239039454392773,
+        "end_line": 174,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase.currentToken(): JsonToken"
+      },
+      {
+        "start_line": 1844,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonToken _handleOddValue(int i) throws IOException",
+        "distance": 1.5,
+        "title": null,
+        "name": "_handleOddValue",
+        "documentation": "/**\n     * Method for handling cases where first non-space character\n     * of an expected value token is not legal for standard JSON content.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          },
+          {
+            "start_node": "nextFieldName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_handleOddValue"
+          }
+        ],
+        "similarity": 0.08227661479785127,
+        "end_line": 1844,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._handleOddValue(int i): JsonToken"
+      },
+      {
+        "start_line": 2836,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private void _closeScope(int i) throws JsonParseException {\n        if (i == INT_RBRACKET) {\n            _updateLocation();\n            if (!_parsingContext.inArray()) {\n                _reportMismatchedEndMarker(i, '}');\n            }\n            _parsingContext = _parsingContext.clearAndGetParent();\n            _currToken = JsonToken.END_ARRAY;\n        }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_closeScope",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "_handleOddName"
+          },
+          {
+            "start_node": "_handleOddName",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "UTF8DataInputJsonParser"
+          },
+          {
+            "start_node": "UTF8DataInputJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_closeScope"
+          }
+        ],
+        "similarity": 0.0817921716703292,
+        "end_line": 2844,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._closeScope(int i): void"
+      },
+      {
+        "start_line": 3744,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private final void _closeObjectScope() throws JsonParseException {\n        _updateLocation();\n        if (!_parsingContext.inObject()) {\n            _reportMismatchedEndMarker('}', ']');\n        }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_closeObjectScope",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "_handleOddName"
+          },
+          {
+            "start_node": "_handleOddName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "UTF8StreamJsonParser"
+          },
+          {
+            "start_node": "UTF8StreamJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_closeObjectScope"
+          }
+        ],
+        "similarity": 0.0815669854549151,
+        "end_line": 3748,
+        "signature": "com.fasterxml.jackson.core.json.UTF8StreamJsonParser._closeObjectScope(): void"
+      },
+      {
+        "start_line": 2829,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/UTF8DataInputJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private void _closeScope(int i) throws JsonParseException {\n        if (i == INT_RBRACKET) {\n            if (!_parsingContext.inArray()) {\n                _reportMismatchedEndMarker(i, '}');\n            }\n            _parsingContext = _parsingContext.clearAndGetParent();\n            _currToken = JsonToken.END_ARRAY;\n        }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_closeScope",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "_handleOddName"
+          },
+          {
+            "start_node": "_handleOddName",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "UTF8DataInputJsonParser"
+          },
+          {
+            "start_node": "UTF8DataInputJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_closeScope"
+          }
+        ],
+        "similarity": 0.0811381239560193,
+        "end_line": 2836,
+        "signature": "com.fasterxml.jackson.core.json.UTF8DataInputJsonParser._closeScope(int i): void"
+      },
+      {
+        "start_line": 1757,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected String _handleOddName(int i) throws IOException",
+        "distance": 1.0,
+        "title": null,
+        "name": "_handleOddName",
+        "documentation": "/**\n     * Method called when we see non-white space character other\n     * than double quote, when expecting a field name.\n     * In standard mode will just throw an expection; but\n     * in non-standard modes may be able to parse name.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "_handleOddName"
+          }
+        ],
+        "similarity": 0.0810503308301776,
+        "end_line": 1757,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._handleOddName(int i): String"
+      },
+      {
+        "start_line": 595,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _reportMissingRootWS(int ch) throws JsonParseException {\n        _reportUnexpectedChar(ch, \"Expected space separating root-level values\");\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "_reportMissingRootWS",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "ParserMinimalBase"
+          },
+          {
+            "start_node": "ParserMinimalBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_reportMissingRootWS"
+          }
+        ],
+        "similarity": 0.08100651383669587,
+        "end_line": 597,
+        "signature": "com.fasterxml.jackson.core.base.ParserMinimalBase._reportMissingRootWS(int ch): void"
+      },
+      {
+        "start_line": 749,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/UTF8DataInputJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public String nextFieldName() throws IOException",
+        "distance": 1.0,
+        "title": null,
+        "name": "nextFieldName",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          }
+        ],
+        "similarity": 0.08069164057120477,
+        "end_line": 749,
+        "signature": "com.fasterxml.jackson.core.json.UTF8DataInputJsonParser.nextFieldName(): String"
+      },
+      {
+        "start_line": 868,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public String nextFieldName() throws IOException",
+        "distance": 1.0,
+        "title": null,
+        "name": "nextFieldName",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          }
+        ],
+        "similarity": 0.08069164057120477,
+        "end_line": 868,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser.nextFieldName(): String"
+      },
+      {
+        "start_line": 996,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public String nextFieldName() throws IOException",
+        "distance": 1.0,
+        "title": null,
+        "name": "nextFieldName",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          }
+        ],
+        "similarity": 0.08069164057120477,
+        "end_line": 996,
+        "signature": "com.fasterxml.jackson.core.json.UTF8StreamJsonParser.nextFieldName(): String"
+      },
+      {
+        "start_line": 2124,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected final void _skipCR() throws IOException {\n        if (_inputPtr < _inputEnd || _loadMore()) {\n            if (_inputBuffer[_inputPtr] == '\\n') {\n                ++_inputPtr;\n            }\n        }\n        ++_currInputRow;\n        _currInputRowStart = _inputPtr;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_skipCR",
+        "documentation": "/**\n     * We actually need to check the character value here\n     * (to see if we have \\n following \\r).\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          },
+          {
+            "start_node": "nextFieldName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_skipCR"
+          }
+        ],
+        "similarity": 0.08036611147472396,
+        "end_line": 2132,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._skipCR(): void"
+      },
+      {
+        "start_line": 133,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public ReaderBasedJsonParser(IOContext ctxt, int features, Reader r,",
+        "distance": 1.5,
+        "title": null,
+        "name": "ReaderBasedJsonParser",
+        "documentation": "/**\n     * Method called when input comes as a {@link java.io.Reader}, and buffer allocation\n     * can be done using default mechanism.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          },
+          {
+            "start_node": "nextFieldName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          }
+        ],
+        "similarity": 0.08029175175872862,
+        "end_line": 133,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser(IOContext ctxt, int features, Reader r, ObjectCodec codec, CharsToNameCanonicalizer st)"
+      },
+      {
+        "start_line": 1610,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected JsonToken _handleInvalidNumberStart(int ch, boolean negative) throws IOException",
+        "distance": 1.5,
+        "title": null,
+        "name": "_handleInvalidNumberStart",
+        "documentation": "/**\n     * Method called if expected numeric value (due to leading sign) does not\n     * look like a number\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "nextFieldName"
+          },
+          {
+            "start_node": "nextFieldName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ReaderBasedJsonParser"
+          },
+          {
+            "start_node": "ReaderBasedJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_handleInvalidNumberStart"
+          }
+        ],
+        "similarity": 0.08000731229104656,
+        "end_line": 1610,
+        "signature": "com.fasterxml.jackson.core.json.ReaderBasedJsonParser._handleInvalidNumberStart(int ch, boolean negative): JsonToken"
+      },
+      {
+        "start_line": 3736,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    private final void _closeArrayScope() throws JsonParseException {\n        _updateLocation();\n        if (!_parsingContext.inArray()) {\n            _reportMismatchedEndMarker(']', '}');\n        }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_closeArrayScope",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "_handleOddName"
+          },
+          {
+            "start_node": "_handleOddName",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "UTF8StreamJsonParser"
+          },
+          {
+            "start_node": "UTF8StreamJsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_closeArrayScope"
+          }
+        ],
+        "similarity": 0.07997935322108439,
+        "end_line": 3740,
+        "signature": "com.fasterxml.jackson.core.json.UTF8StreamJsonParser._closeArrayScope(): void"
+      }
+    ],
+    "classes": [],
+    "issues": [
+      {
+        "content": "I was testing this feature in tandem with some polymorphic deserialization. I've written my own StdDeserializer based on these examples:\r\n\r\nhttps://gist.github.com/robinhowlett/ce45e575197060b8392d\r\nhttp://programmerbruce.blogspot.com/2011/05/deserialize-json-with-jackson-into.html\r\n\r\nWhen the Feature.ALLOW_TRAILING_COMMA is used with a module containing this deserializer, I still get trailing comma errors. Perusing the code a bit, it looks like it fails in the ReaderBasedJsonParser.nextFieldName() method. Looking at a commit for the support for trailing commas and some of the comments in the file, it looks like this method wasn't updated when other methods were? I can't be positive and didn't dig further due to time limitations.\r\n\r\nHere's the stack trace that triggered.\r\n\r\nCaused by: com.fasterxml.jackson.core.JsonParseException: Unexpected character ('}' (code 125)): was expecting double-quote to start field name\r\n at [Source: (String)\"{\r\n  \"enabled\" : true,\r\n  \"sceneName\": \"Map_R1_Jungle\",\r\n  \"name\" : \"Region_1_Name\",\r\n  \"topScreens\" : [\"Generic_Jungle\", \"ClearBehindBoard_Jungle\", \"Collection_Jungle\", \"DemonMonkeySet_Jungle\", \"FindBehindBoard_Jungle\"],\r\n  \"downloadUIBundle\":false,\r\n  \"downloadFTUEBundle\":false,\r\n  \"minClientVersion\": \"1000000\",\r\n\r\n  \"markers\": {\r\n    \"1\": {\r\n      \"levelId\": 101,\r\n      \"displayNumber\": 1,\r\n      \"oneTimeMapSequence\": \"SEQUENCE_FIRST_TIME_3DMAP_101\",\r\n      \"oneTimeLevelSequence\": \"SEQUENCE_101_01\"\r\n    },\r\n\"[truncated 6488 chars]; line: 87, column: 6]\r\n\tat com.fasterxml.jackson.core.JsonParser._constructError(JsonParser.java:1771)\r\n\tat com.fasterxml.jackson.core.base.ParserMinimalBase._reportError(ParserMinimalBase.java:577)\r\n\tat com.fasterxml.jackson.core.base.ParserMinimalBase._reportUnexpectedChar(ParserMinimalBase.java:475)\r\n\tat com.fasterxml.jackson.core.json.ReaderBasedJsonParser._handleOddName(ReaderBasedJsonParser.java:1765)\r\n\tat com.fasterxml.jackson.core.json.ReaderBasedJsonParser.nextFieldName(ReaderBasedJsonParser.java:915)\r\n\tat com.fasterxml.jackson.databind.deser.std.BaseNodeDeserializer.deserializeObject(JsonNodeDeserializer.java:247)\r\n\tat com.fasterxml.jackson.databind.deser.std.JsonNodeDeserializer.deserialize(JsonNodeDeserializer.java:68)\r\n\tat com.fasterxml.jackson.databind.deser.std.JsonNodeDeserializer.deserialize(JsonNodeDeserializer.java:15)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper._readValue(ObjectMapper.java:3916)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper.readTree(ObjectMapper.java:2305)\r\n\r\n\n",
+        "distance": 0,
+        "title": "Bug in jackson-core-2.9.0.pr2 with Feature.ALLOW_TRAILING_COMMA",
+        "name": "root",
+        "path": [],
+        "issue_id": "root",
+        "similarity": 2.0,
+        "type": "issue"
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "367",
+        "type": "issue",
+        "content": "I was testing this feature in tandem with some polymorphic deserialization. I've written my own StdDeserializer based on these examples:\r\n\r\nhttps://gist.github.com/robinhowlett/ce45e575197060b8392d\r\nhttp://programmerbruce.blogspot.com/2011/05/deserialize-json-with-jackson-into.html\r\n\r\nWhen the Feature.ALLOW_TRAILING_COMMA is used with a module containing this deserializer, I still get trailing comma errors. Perusing the code a bit, it looks like it fails in the ReaderBasedJsonParser.nextFieldName() method. Looking at a commit for the support for trailing commas and some of the comments in the file, it looks like this method wasn't updated when other methods were? I can't be positive and didn't dig further due to time limitations.\r\n\r\nHere's the stack trace that triggered.\r\n\r\nCaused by: com.fasterxml.jackson.core.JsonParseException: Unexpected character ('}' (code 125)): was expecting double-quote to start field name\r\n at [Source: (String)\"{\r\n  \"enabled\" : true,\r\n  \"sceneName\": \"Map_R1_Jungle\",\r\n  \"name\" : \"Region_1_Name\",\r\n  \"topScreens\" : [\"Generic_Jungle\", \"ClearBehindBoard_Jungle\", \"Collection_Jungle\", \"DemonMonkeySet_Jungle\", \"FindBehindBoard_Jungle\"],\r\n  \"downloadUIBundle\":false,\r\n  \"downloadFTUEBundle\":false,\r\n  \"minClientVersion\": \"1000000\",\r\n\r\n  \"markers\": {\r\n    \"1\": {\r\n      \"levelId\": 101,\r\n      \"displayNumber\": 1,\r\n      \"oneTimeMapSequence\": \"SEQUENCE_FIRST_TIME_3DMAP_101\",\r\n      \"oneTimeLevelSequence\": \"SEQUENCE_101_01\"\r\n    },\r\n\"[truncated 6488 chars]; line: 87, column: 6]\r\n\tat com.fasterxml.jackson.core.JsonParser._constructError(JsonParser.java:1771)\r\n\tat com.fasterxml.jackson.core.base.ParserMinimalBase._reportError(ParserMinimalBase.java:577)\r\n\tat com.fasterxml.jackson.core.base.ParserMinimalBase._reportUnexpectedChar(ParserMinimalBase.java:475)\r\n\tat com.fasterxml.jackson.core.json.ReaderBasedJsonParser._handleOddName(ReaderBasedJsonParser.java:1765)\r\n\tat com.fasterxml.jackson.core.json.ReaderBasedJsonParser.nextFieldName(ReaderBasedJsonParser.java:915)\r\n\tat com.fasterxml.jackson.databind.deser.std.BaseNodeDeserializer.deserializeObject(JsonNodeDeserializer.java:247)\r\n\tat com.fasterxml.jackson.databind.deser.std.JsonNodeDeserializer.deserialize(JsonNodeDeserializer.java:68)\r\n\tat com.fasterxml.jackson.databind.deser.std.JsonNodeDeserializer.deserialize(JsonNodeDeserializer.java:15)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper._readValue(ObjectMapper.java:3916)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper.readTree(ObjectMapper.java:2305)\r\n\r\n\n\n\nComment by cowtowncoder:\n@tfeak Thank you for reporting this and doing as much research as you could. This should help figuring out what is going on -- your suggestion about one code path being missed sounds plausible.\n\nComment by bdhess:\nYup, the original code missed `nextFieldName()`.  PR forthcoming.",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "Bug in jackson-core-2.9.0.pr2 with Feature.ALLOW_TRAILING_COMMA",
+        "name": "issue#367",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#370"
+          },
+          {
+            "start_node": "pr#370",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#367"
+          }
+        ],
+        "similarity": 0.6759878973151529,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "370",
+        "type": "issue",
+        "content": "\n\n",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "Fix #367 (missing code paths for ALLOW_TRAILING_COMMA)",
+        "name": "pr#370",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#370"
+          }
+        ],
+        "similarity": 0.38920102130072154,
+        "end_line": null,
+        "signature": null
+      }
+    ]
+  },
+  "artifact_stats": {
+    "skipped_due_to_time": 2,
+    "valid_related_items": 6
+  }
+}

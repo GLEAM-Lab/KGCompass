@@ -1,0 +1,82 @@
+Based on the issue description, the problem occurs when Dubbo incorrectly parses empty URL parameters (username=&password=&namespace=) as literal strings "username", "password", "namespace" instead of empty values.
+
+Looking at the code, this parsing behavior likely happens in URL parameter handling. The issue mentions this is related to `org/apache/dubbo/common/URLStrParser.java:294`. However, this file wasn't included in the provided code segments.
+
+Since we don't have access to the URLStrParser.java file, we can't provide the exact fix for that file. However, based on the issue, we can suggest a fix that would handle empty parameters properly when constructing the registry URL in DefaultApplicationDeployer.java.
+
+Here's the proposed fix that would skip adding empty parameters to the registry URL:
+
+```java
+### playground/apache__dubbo/dubbo-config/dubbo-config-api/src/main/java/org/apache/dubbo/config/deploy/DefaultApplicationDeployer.java
+- start_line : 518
+- end_line : 538
+<<<<<<< SEARCH
+    private String getRegistryCompatibleAddress(RegistryConfig registryConfig) {
+        String registryAddress = registryConfig.getAddress();
+        String[] addresses = REGISTRY_SPLIT_PATTERN.split(registryAddress);
+        if (ArrayUtils.isEmpty(addresses)) {
+            throw new IllegalStateException("Invalid registry address found.");
+        }
+        String address = addresses[0];
+        // since 2.7.8
+        // Issue : https://github.com/apache/dubbo/issues/6476
+        StringBuilder metadataAddressBuilder = new StringBuilder();
+        URL url = URL.valueOf(address, registryConfig.getScopeModel());
+        String protocolFromAddress = url.getProtocol();
+        if (isEmpty(protocolFromAddress)) {
+            // If the protocol from address is missing, is like :
+            // "dubbo.registry.address = 127.0.0.1:2181"
+            String protocolFromConfig = registryConfig.getProtocol();
+            metadataAddressBuilder.append(protocolFromConfig).append("://");
+        }
+        metadataAddressBuilder.append(address);
+        return metadataAddressBuilder.toString();
+    }
+=======
+    private String getRegistryCompatibleAddress(RegistryConfig registryConfig) {
+        String registryAddress = registryConfig.getAddress();
+        String[] addresses = REGISTRY_SPLIT_PATTERN.split(registryAddress);
+        if (ArrayUtils.isEmpty(addresses)) {
+            throw new IllegalStateException("Invalid registry address found.");
+        }
+        String address = addresses[0];
+        // since 2.7.8
+        // Issue : https://github.com/apache/dubbo/issues/6476
+        StringBuilder metadataAddressBuilder = new StringBuilder();
+        URL url = URL.valueOf(address, registryConfig.getScopeModel());
+        String protocolFromAddress = url.getProtocol();
+        if (isEmpty(protocolFromAddress)) {
+            // If the protocol from address is missing, is like :
+            // "dubbo.registry.address = 127.0.0.1:2181"
+            String protocolFromConfig = registryConfig.getProtocol();
+            metadataAddressBuilder.append(protocolFromConfig).append("://");
+        }
+        metadataAddressBuilder.append(address);
+        
+        // Only append non-empty parameters
+        if (StringUtils.isNotEmpty(registryConfig.getUsername())) {
+            metadataAddressBuilder.append("?username=").append(registryConfig.getUsername());
+        }
+        if (StringUtils.isNotEmpty(registryConfig.getPassword())) {
+            metadataAddressBuilder.append(StringUtils.isNotEmpty(registryConfig.getUsername()) ? "&" : "?")
+                                .append("password=").append(registryConfig.getPassword());
+        }
+        if (StringUtils.isNotEmpty(registryConfig.getGroup())) {
+            metadataAddressBuilder.append(StringUtils.isNotEmpty(registryConfig.getUsername()) || 
+                                        StringUtils.isNotEmpty(registryConfig.getPassword()) ? "&" : "?")
+                                .append("namespace=").append(registryConfig.getGroup());
+        }
+        
+        return metadataAddressBuilder.toString();
+    }
+>>>>>>> REPLACE
+```
+
+This change modifies the `getRegistryCompatibleAddress` method to:
+1. Only append username parameter if it's not empty
+2. Only append password parameter if it's not empty, with proper ? or & prefix
+3. Only append namespace (group) parameter if it's not empty, with proper ? or & prefix
+
+This prevents empty parameters from being included in the URL, which should prevent the incorrect parsing behavior described in the issue.
+
+Note: The ideal fix would be in URLStrParser.java to properly handle empty parameters, but since that file wasn't provided, this is a reasonable workaround at the configuration level.

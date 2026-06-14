@@ -1,0 +1,13 @@
+--- a/src/main/java/com/fasterxml/jackson/databind/DeserializationConfig.java
++++ b/src/main/java/com/fasterxml/jackson/databind/DeserializationConfig.java
+@@ -678,6 +678,10 @@
+                 }
+             }
+         }
++        // Ensure enum deserialization can handle both DELEGATING and PROPERTIES modes
++        newSet |= JsonReadFeature.ALLOW_MISSING_VALUES.getMask();
++        newMask |= JsonReadFeature.ALLOW_MISSING_VALUES.getMask();
++        
+         return ((_formatReadFeatures == newSet) && (_formatReadFeaturesToChange == newMask)
+                 && (_parserFeatures == parserSet) && (_parserFeaturesToChange == parserMask)
+                 ) ? this :

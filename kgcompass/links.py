@@ -2,14 +2,18 @@ import os
 import re
 import hashlib
 import traceback
-from github import Github
 import requests
 import tempfile
-from utils import get_classes_from_file, get_global_methods_from_file
+from utils import (
+    get_classes_from_file,
+    get_global_methods_from_file,
+    get_commit_file,
+    create_github_client,
+)
 
 class PatchLinkExpander:
     def __init__(self, github_token, repo_name):
-        self.github = Github(github_token)
+        self.github = create_github_client(github_token)
         self.repo = self.github.get_repo(repo_name)
 
     def fetch_commit_diff(self, match):
@@ -64,8 +68,8 @@ class PatchLinkExpander:
                     
                     if target_old_line in old_line_map or target_new_line in new_line_map:
                         try:
-                            old_content = repo.get_contents(file.filename, ref=commit.parents[0].sha).decoded_content.decode('utf-8')
-                            new_content = repo.get_contents(file.filename, ref=commit.sha).decoded_content.decode('utf-8')
+                            old_content = get_commit_file(repo, commit.parents[0], file.filename)
+                            new_content = get_commit_file(repo, commit, file.filename)
                             
                             module_path = file.filename.replace('/', '.').replace('.py', '')
                             

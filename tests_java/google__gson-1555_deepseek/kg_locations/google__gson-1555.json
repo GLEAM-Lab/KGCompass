@@ -1,0 +1,1878 @@
+{
+    "related_entities": {
+        "methods": [
+            {
+                "start_line": 185,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/TypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public final TypeAdapter<T> nullSafe() {\n    return new TypeAdapter<T>() {\n      @Override public void write(JsonWriter out, T value) throws IOException {\n        if (value == null) {\n          out.nullValue();\n        } else {\n          TypeAdapter.this.write(out, value);\n        }\n      }\n      @Override public T read(JsonReader reader) throws IOException {\n        if (reader.peek() == JsonToken.NULL) {\n          reader.nextNull();\n          return null;\n        }\n        return TypeAdapter.this.read(reader);\n      }\n    };\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "nullSafe",
+                "documentation": "/**\n   * This wrapper method is used to make a type adapter null tolerant. In general, a\n   * type adapter is required to handle nulls in write and read methods. Here is how this\n   * is typically done:<br>\n   * <pre>   {@code\n   *\n   * Gson gson = new GsonBuilder().registerTypeAdapter(Foo.class,\n   *   new TypeAdapter<Foo>() {\n   *     public Foo read(JsonReader in) throws IOException {\n   *       if (in.peek() == JsonToken.NULL) {\n   *         in.nextNull();\n   *         return null;\n   *       }\n   *       // read a Foo from in and return it\n   *     }\n   *     public void write(JsonWriter out, Foo src) throws IOException {\n   *       if (src == null) {\n   *         out.nullValue();\n   *         return;\n   *       }\n   *       // write src as JSON to out\n   *     }\n   *   }).create();\n   * }</pre>\n   * You can avoid this boilerplate handling of nulls by wrapping your type adapter with\n   * this method. Here is how we will rewrite the above example:\n   * <pre>   {@code\n   *\n   * Gson gson = new GsonBuilder().registerTypeAdapter(Foo.class,\n   *   new TypeAdapter<Foo>() {\n   *     public Foo read(JsonReader in) throws IOException {\n   *       // read a Foo from in and return it\n   *     }\n   *     public void write(JsonWriter out, Foo src) throws IOException {\n   *       // write src as JSON to out\n   *     }\n   *   }.nullSafe()).create();\n   * }</pre>\n   * Note that we didn't need to check for nulls in our type adapter after we used nullSafe.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    }
+                ],
+                "similarity": 0.2252764985317894,
+                "end_line": 202,
+                "signature": "com.google.gson.TypeAdapter.nullSafe(): TypeAdapter"
+            },
+            {
+                "start_line": 52,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TreeTypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public TreeTypeAdapter(JsonSerializer<T> serializer, JsonDeserializer<T> deserializer,",
+                "distance": 1.0,
+                "title": null,
+                "name": "TreeTypeAdapter",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "TreeTypeAdapter"
+                    }
+                ],
+                "similarity": 0.18767021051828464,
+                "end_line": 52,
+                "signature": "com.google.gson.internal.bind.TreeTypeAdapter(JsonSerializer serializer, JsonDeserializer deserializer, Gson gson, TypeToken typeToken, TypeAdapterFactory skipPast)"
+            },
+            {
+                "start_line": 85,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TreeTypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private TypeAdapter<T> delegate() {\n    TypeAdapter<T> d = delegate;\n    return d != null\n        ? d\n        : (delegate = gson.getDelegateAdapter(skipPast, typeToken));\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "delegate",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "TreeTypeAdapter"
+                    },
+                    {
+                        "start_node": "TreeTypeAdapter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "delegate"
+                    }
+                ],
+                "similarity": 0.15563024219081223,
+                "end_line": 90,
+                "signature": "com.google.gson.internal.bind.TreeTypeAdapter.delegate(): TypeAdapter"
+            },
+            {
+                "start_line": 72,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TreeTypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  @Override public void write(JsonWriter out, T value) throws IOException {\n    if (serializer == null) {\n      delegate().write(out, value);\n      return;\n    }\n    if (value == null) {\n      out.nullValue();\n      return;\n    }\n    JsonElement tree = serializer.serialize(value, typeToken.getType(), context);\n    Streams.write(tree, out);\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "write",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "TreeTypeAdapter"
+                    },
+                    {
+                        "start_node": "TreeTypeAdapter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    }
+                ],
+                "similarity": 0.15402696918051526,
+                "end_line": 83,
+                "signature": "com.google.gson.internal.bind.TreeTypeAdapter.write(JsonWriter out, T value): void"
+            },
+            {
+                "start_line": 282,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/TypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public final T fromJsonTree(JsonElement jsonTree) {\n    try {\n      JsonReader jsonReader = new JsonTreeReader(jsonTree);\n      return read(jsonReader);\n    } catch (IOException e) {\n      throw new JsonIOException(e);\n    }\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "fromJsonTree",
+                "documentation": "/**\n   * Converts {@code jsonTree} to a Java object.\n   *\n   * @param jsonTree the Java object to convert. May be {@link JsonNull}.\n   * @since 2.2\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TypeAdapter"
+                    },
+                    {
+                        "start_node": "TypeAdapter",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "fromJsonTree"
+                    }
+                ],
+                "similarity": 0.14394869340691693,
+                "end_line": 289,
+                "signature": "com.google.gson.TypeAdapter.fromJsonTree(JsonElement jsonTree): T"
+            },
+            {
+                "start_line": 61,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TreeTypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  @Override public T read(JsonReader in) throws IOException {\n    if (deserializer == null) {\n      return delegate().read(in);\n    }\n    JsonElement value = Streams.parse(in);\n    if (value.isJsonNull()) {\n      return null;\n    }\n    return deserializer.deserialize(value, typeToken.getType(), context);\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "read",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "TreeTypeAdapter"
+                    },
+                    {
+                        "start_node": "TreeTypeAdapter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "read"
+                    }
+                ],
+                "similarity": 0.14089694811285638,
+                "end_line": 70,
+                "signature": "com.google.gson.internal.bind.TreeTypeAdapter.read(JsonReader in): T"
+            },
+            {
+                "start_line": 231,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/TypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public final JsonElement toJsonTree(T value) {\n    try {\n      JsonTreeWriter jsonWriter = new JsonTreeWriter();\n      write(jsonWriter, value);\n      return jsonWriter.get();\n    } catch (IOException e) {\n      throw new JsonIOException(e);\n    }\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "toJsonTree",
+                "documentation": "/**\n   * Converts {@code value} to a JSON tree.\n   *\n   * @param value the Java object to convert. May be null.\n   * @return the converted JSON tree. May be {@link JsonNull}.\n   * @since 2.2\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TypeAdapter"
+                    },
+                    {
+                        "start_node": "TypeAdapter",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "toJsonTree"
+                    }
+                ],
+                "similarity": 0.13641913426577504,
+                "end_line": 239,
+                "signature": "com.google.gson.TypeAdapter.toJsonTree(T value): JsonElement"
+            },
+            {
+                "start_line": 95,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TreeTypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static TypeAdapterFactory newFactory(TypeToken<?> exactType, Object typeAdapter) {\n    return new SingleTypeFactory(typeAdapter, exactType, false, null);\n  }",
+                "distance": 1.25,
+                "title": null,
+                "name": "newFactory",
+                "documentation": "/**\n   * Returns a new factory that will match each type against {@code exactType}.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "TreeTypeAdapter"
+                    },
+                    {
+                        "start_node": "TreeTypeAdapter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "newFactory"
+                    }
+                ],
+                "similarity": 0.12662391732241624,
+                "end_line": 97,
+                "signature": "com.google.gson.internal.bind.TreeTypeAdapter.newFactory(TypeToken exactType, Object typeAdapter): TypeAdapterFactory"
+            },
+            {
+                "start_line": 214,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/TypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public final String toJson(T value) {\n    StringWriter stringWriter = new StringWriter();\n    try {\n      toJson(stringWriter, value);\n    } catch (IOException e) {\n      throw new AssertionError(e); // No I/O writing to a StringWriter.\n    }\n    return stringWriter.toString();\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "toJson",
+                "documentation": "/**\n   * Converts {@code value} to a JSON document. Unlike Gson's similar {@link\n   * Gson#toJson(Object) toJson} method, this write is strict. Create a {@link\n   * JsonWriter#setLenient(boolean) lenient} {@code JsonWriter} and call\n   * {@link #write(com.google.gson.stream.JsonWriter, Object)} for lenient\n   * writing.\n   *\n   * @param value the Java object to convert. May be null.\n   * @since 2.2\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TypeAdapter"
+                    },
+                    {
+                        "start_node": "TypeAdapter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "toJson"
+                    }
+                ],
+                "similarity": 0.1223908585707269,
+                "end_line": 222,
+                "signature": "com.google.gson.TypeAdapter.toJson(T value): String"
+            },
+            {
+                "start_line": 94,
+                "file_path": "playground/google__gson/codegen/src/main/java/com/google/gson/codegen/JavaWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private void type(String type) throws IOException {\n    if (this.packagePrefix == null) {\n      throw new IllegalStateException();\n    }\n\n    Matcher m = TYPE_PATTERN.matcher(type);\n    int pos = 0;\n    while (true) {\n      boolean found = m.find(pos);\n\n      // copy non-matching characters like \"<\"\n      int typeStart = found ? m.start() : type.length();\n      out.write(type, pos, typeStart - pos);\n\n      if (!found) {\n        break;\n      }\n\n      // copy a single class name, shortening it if possible\n      String name = m.group(0);\n      String imported;\n      if ((imported = importedTypes.get(name)) != null) {\n        out.write(imported);\n      } else if (name.startsWith(packagePrefix)\n          && name.indexOf('.', packagePrefix.length()) == -1) {\n        out.write(name.substring(packagePrefix.length()));\n      } else if (name.startsWith(\"java.lang.\")) {\n        out.write(name.substring(\"java.lang.\".length()));\n      } else {\n        out.write(name);\n      }\n      pos = m.end();\n    }\n  }",
+                "distance": 1.0,
+                "title": null,
+                "name": "type",
+                "documentation": "/**\n   * Emits a name like {@code java.lang.String} or {@code\n   * java.util.List<java.lang.String>}, shorting it with imports if\n   * possible.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "type"
+                    }
+                ],
+                "similarity": 0.11056741678870644,
+                "end_line": 127,
+                "signature": "com.google.gson.codegen.JavaWriter.type(String type): void"
+            },
+            {
+                "start_line": 142,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TreeTypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {\n      boolean matches = exactType != null\n          ? exactType.equals(type) || matchRawType && exactType.getType() == type.getRawType()\n          : hierarchyType.isAssignableFrom(type.getRawType());\n      return matches\n          ? new TreeTypeAdapter<T>((JsonSerializer<T>) serializer,\n              (JsonDeserializer<T>) deserializer, gson, type, this)\n          : null;\n    }",
+                "distance": 2.0,
+                "title": null,
+                "name": "create",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "TreeTypeAdapter"
+                    },
+                    {
+                        "start_node": "TreeTypeAdapter",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "create"
+                    }
+                ],
+                "similarity": 0.10182274404944248,
+                "end_line": 150,
+                "signature": "com.google.gson.internal.bind.TreeTypeAdapter.SingleTypeFactory.create(Gson gson, TypeToken type): TypeAdapter"
+            },
+            {
+                "start_line": 140,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/TypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public final void toJson(Writer out, T value) throws IOException {\n    JsonWriter writer = new JsonWriter(out);\n    write(writer, value);\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "toJson",
+                "documentation": "/**\n   * Converts {@code value} to a JSON document and writes it to {@code out}.\n   * Unlike Gson's similar {@link Gson#toJson(JsonElement, Appendable) toJson}\n   * method, this write is strict. Create a {@link\n   * JsonWriter#setLenient(boolean) lenient} {@code JsonWriter} and call\n   * {@link #write(com.google.gson.stream.JsonWriter, Object)} for lenient\n   * writing.\n   *\n   * @param value the Java object to convert. May be null.\n   * @since 2.2\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TypeAdapter"
+                    },
+                    {
+                        "start_node": "TypeAdapter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "toJson"
+                    }
+                ],
+                "similarity": 0.10154895295009057,
+                "end_line": 143,
+                "signature": "com.google.gson.TypeAdapter.toJson(Writer out, T value): void"
+            },
+            {
+                "start_line": 258,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/TypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public final T fromJson(Reader in) throws IOException {\n    JsonReader reader = new JsonReader(in);\n    return read(reader);\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "fromJson",
+                "documentation": "/**\n   * Converts the JSON document in {@code in} to a Java object. Unlike Gson's\n   * similar {@link Gson#fromJson(java.io.Reader, Class) fromJson} method, this\n   * read is strict. Create a {@link JsonReader#setLenient(boolean) lenient}\n   * {@code JsonReader} and call {@link #read(JsonReader)} for lenient reading.\n   *\n   * @return the converted Java object. May be null.\n   * @since 2.2\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TypeAdapter"
+                    },
+                    {
+                        "start_node": "TypeAdapter",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "fromJson"
+                    }
+                ],
+                "similarity": 0.09799879097131427,
+                "end_line": 261,
+                "signature": "com.google.gson.TypeAdapter.fromJson(Reader in): T"
+            },
+            {
+                "start_line": 114,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TreeTypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static TypeAdapterFactory newTypeHierarchyFactory(",
+                "distance": 1.25,
+                "title": null,
+                "name": "newTypeHierarchyFactory",
+                "documentation": "/**\n   * Returns a new factory that will match each type's raw type for assignability\n   * to {@code hierarchyType}.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "TreeTypeAdapter"
+                    },
+                    {
+                        "start_node": "TreeTypeAdapter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "newTypeHierarchyFactory"
+                    }
+                ],
+                "similarity": 0.09692587786628454,
+                "end_line": 114,
+                "signature": "com.google.gson.internal.bind.TreeTypeAdapter.newTypeHierarchyFactory(Class hierarchyType, Object typeAdapter): TypeAdapterFactory"
+            },
+            {
+                "start_line": 43,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/JsonAdapterAnnotationTypeAdapterFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> targetType) {\n    Class<? super T> rawType = targetType.getRawType();\n    JsonAdapter annotation = rawType.getAnnotation(JsonAdapter.class);\n    if (annotation == null) {\n      return null;\n    }\n    return (TypeAdapter<T>) getTypeAdapter(constructorConstructor, gson, targetType, annotation);\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "create",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "TreeTypeAdapter"
+                    },
+                    {
+                        "start_node": "TreeTypeAdapter",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "getTypeAdapter"
+                    },
+                    {
+                        "start_node": "getTypeAdapter",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonAdapterAnnotationTypeAdapterFactory"
+                    },
+                    {
+                        "start_node": "JsonAdapterAnnotationTypeAdapterFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "create"
+                    }
+                ],
+                "similarity": 0.09358295584095522,
+                "end_line": 50,
+                "signature": "com.google.gson.internal.bind.JsonAdapterAnnotationTypeAdapterFactory.create(Gson gson, TypeToken targetType): TypeAdapter"
+            },
+            {
+                "start_line": 399,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private static TypeAdapter<AtomicLongArray> atomicLongArrayAdapter(final TypeAdapter<Number> longAdapter) {\n    return new TypeAdapter<AtomicLongArray>() {\n      @Override public void write(JsonWriter out, AtomicLongArray value) throws IOException {\n        out.beginArray();\n        for (int i = 0, length = value.length(); i < length; i++) {\n          longAdapter.write(out, value.get(i));\n        }\n        out.endArray();\n      }\n      @Override public AtomicLongArray read(JsonReader in) throws IOException {\n        List<Long> list = new ArrayList<Long>();\n        in.beginArray();\n        while (in.hasNext()) {\n            long value = longAdapter.read(in).longValue();\n            list.add(value);\n        }\n        in.endArray();\n        int length = list.size();\n        AtomicLongArray array = new AtomicLongArray(length);\n        for (int i = 0; i < length; ++i) {\n          array.set(i, list.get(i));\n        }\n        return array;\n      }\n    }.nullSafe();\n  }",
+                "distance": 2.0,
+                "title": null,
+                "name": "atomicLongArrayAdapter",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "atomicLongArrayAdapter"
+                    }
+                ],
+                "similarity": 0.09339854111028802,
+                "end_line": 424,
+                "signature": "com.google.gson.Gson.atomicLongArrayAdapter(TypeAdapter longAdapter): TypeAdapter"
+            },
+            {
+                "start_line": 272,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/TypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public final T fromJson(String json) throws IOException {\n    return fromJson(new StringReader(json));\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "fromJson",
+                "documentation": "/**\n   * Converts the JSON document in {@code json} to a Java object. Unlike Gson's\n   * similar {@link Gson#fromJson(String, Class) fromJson} method, this read is\n   * strict. Create a {@link JsonReader#setLenient(boolean) lenient} {@code\n   * JsonReader} and call {@link #read(JsonReader)} for lenient reading.\n   *\n   * @return the converted Java object. May be null.\n   * @since 2.2\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TypeAdapter"
+                    },
+                    {
+                        "start_node": "TypeAdapter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "fromJson"
+                    }
+                ],
+                "similarity": 0.09299514591382392,
+                "end_line": 274,
+                "signature": "com.google.gson.TypeAdapter.fromJson(String json): T"
+            },
+            {
+                "start_line": 127,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/TypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public abstract void write(JsonWriter out, T value) throws IOException;",
+                "distance": 1.5,
+                "title": null,
+                "name": "write",
+                "documentation": "/**\n   * Writes one JSON value (an array, object, string, number, boolean or null)\n   * for {@code value}.\n   *\n   * @param value the Java object to write. May be null.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TypeAdapter"
+                    },
+                    {
+                        "start_node": "TypeAdapter",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "write"
+                    }
+                ],
+                "similarity": 0.09248961318995493,
+                "end_line": 127,
+                "signature": "com.google.gson.TypeAdapter.write(JsonWriter out, T value): void"
+            },
+            {
+                "start_line": 387,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private static TypeAdapter<AtomicLong> atomicLongAdapter(final TypeAdapter<Number> longAdapter) {\n    return new TypeAdapter<AtomicLong>() {\n      @Override public void write(JsonWriter out, AtomicLong value) throws IOException {\n        longAdapter.write(out, value.get());\n      }\n      @Override public AtomicLong read(JsonReader in) throws IOException {\n        Number value = longAdapter.read(in);\n        return new AtomicLong(value.longValue());\n      }\n    }.nullSafe();\n  }",
+                "distance": 2.0,
+                "title": null,
+                "name": "atomicLongAdapter",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "atomicLongAdapter"
+                    }
+                ],
+                "similarity": 0.09230265291572798,
+                "end_line": 397,
+                "signature": "com.google.gson.Gson.atomicLongAdapter(TypeAdapter longAdapter): TypeAdapter"
+            },
+            {
+                "start_line": 247,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/TypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public abstract T read(JsonReader in) throws IOException;",
+                "distance": 1.5,
+                "title": null,
+                "name": "read",
+                "documentation": "/**\n   * Reads one JSON value (an array, object, string, number, boolean or null)\n   * and converts it to a Java object. Returns the converted object.\n   *\n   * @return the converted Java object. May be null.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TypeAdapter"
+                    },
+                    {
+                        "start_node": "TypeAdapter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "read"
+                    }
+                ],
+                "similarity": 0.09110533461750944,
+                "end_line": 247,
+                "signature": "com.google.gson.TypeAdapter.read(JsonReader in): T"
+            },
+            {
+                "start_line": 309,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private TypeAdapter<Number> doubleAdapter(boolean serializeSpecialFloatingPointValues) {\n    if (serializeSpecialFloatingPointValues) {\n      return TypeAdapters.DOUBLE;\n    }\n    return new TypeAdapter<Number>() {\n      @Override public Double read(JsonReader in) throws IOException {\n        if (in.peek() == JsonToken.NULL) {\n          in.nextNull();\n          return null;\n        }\n        return in.nextDouble();\n      }\n      @Override public void write(JsonWriter out, Number value) throws IOException {\n        if (value == null) {\n          out.nullValue();\n          return;\n        }\n        double doubleValue = value.doubleValue();\n        checkValidFloatingPoint(doubleValue);\n        out.value(value);\n      }\n    };\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "doubleAdapter",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "atomicLongAdapter"
+                    },
+                    {
+                        "start_node": "atomicLongAdapter",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Gson"
+                    },
+                    {
+                        "start_node": "Gson",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "doubleAdapter"
+                    }
+                ],
+                "similarity": 0.08948826001656807,
+                "end_line": 331,
+                "signature": "com.google.gson.Gson.doubleAdapter(boolean serializeSpecialFloatingPointValues): TypeAdapter"
+            },
+            {
+                "start_line": 53,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/JsonAdapterAnnotationTypeAdapterFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  TypeAdapter<?> getTypeAdapter(ConstructorConstructor constructorConstructor, Gson gson,",
+                "distance": 2.0,
+                "title": null,
+                "name": "getTypeAdapter",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "TreeTypeAdapter"
+                    },
+                    {
+                        "start_node": "TreeTypeAdapter",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "getTypeAdapter"
+                    }
+                ],
+                "similarity": 0.0893511035819162,
+                "end_line": 53,
+                "signature": "com.google.gson.internal.bind.JsonAdapterAnnotationTypeAdapterFactory.getTypeAdapter(ConstructorConstructor constructorConstructor, Gson gson, TypeToken type, JsonAdapter annotation): TypeAdapter"
+            },
+            {
+                "start_line": 333,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private TypeAdapter<Number> floatAdapter(boolean serializeSpecialFloatingPointValues) {\n    if (serializeSpecialFloatingPointValues) {\n      return TypeAdapters.FLOAT;\n    }\n    return new TypeAdapter<Number>() {\n      @Override public Float read(JsonReader in) throws IOException {\n        if (in.peek() == JsonToken.NULL) {\n          in.nextNull();\n          return null;\n        }\n        return (float) in.nextDouble();\n      }\n      @Override public void write(JsonWriter out, Number value) throws IOException {\n        if (value == null) {\n          out.nullValue();\n          return;\n        }\n        float floatValue = value.floatValue();\n        checkValidFloatingPoint(floatValue);\n        out.value(value);\n      }\n    };\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "floatAdapter",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "atomicLongAdapter"
+                    },
+                    {
+                        "start_node": "atomicLongAdapter",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Gson"
+                    },
+                    {
+                        "start_node": "Gson",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "floatAdapter"
+                    }
+                ],
+                "similarity": 0.08904600247706844,
+                "end_line": 355,
+                "signature": "com.google.gson.Gson.floatAdapter(boolean serializeSpecialFloatingPointValues): TypeAdapter"
+            },
+            {
+                "start_line": 525,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public <T> TypeAdapter<T> getDelegateAdapter(TypeAdapterFactory skipPast, TypeToken<T> type) {\n    // Hack. If the skipPast factory isn't registered, assume the factory is being requested via\n    // our @JsonAdapter annotation.\n    if (!factories.contains(skipPast)) {\n      skipPast = jsonAdapterFactory;\n    }\n\n    boolean skipPastFound = false;\n    for (TypeAdapterFactory factory : factories) {\n      if (!skipPastFound) {\n        if (factory == skipPast) {\n          skipPastFound = true;\n        }\n        continue;\n      }\n\n      TypeAdapter<T> candidate = factory.create(this, type);\n      if (candidate != null) {\n        return candidate;\n      }\n    }\n    throw new IllegalArgumentException(\"GSON cannot serialize \" + type);\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "getDelegateAdapter",
+                "documentation": "/**\n   * This method is used to get an alternate type adapter for the specified type. This is used\n   * to access a type adapter that is overridden by a {@link TypeAdapterFactory} that you\n   * may have registered. This features is typically used when you want to register a type\n   * adapter that does a little bit of work but then delegates further processing to the Gson\n   * default type adapter. Here is an example:\n   * <p>Let's say we want to write a type adapter that counts the number of objects being read\n   *  from or written to JSON. We can achieve this by writing a type adapter factory that uses\n   *  the <code>getDelegateAdapter</code> method:\n   *  <pre> {@code\n   *  class StatsTypeAdapterFactory implements TypeAdapterFactory {\n   *    public int numReads = 0;\n   *    public int numWrites = 0;\n   *    public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {\n   *      final TypeAdapter<T> delegate = gson.getDelegateAdapter(this, type);\n   *      return new TypeAdapter<T>() {\n   *        public void write(JsonWriter out, T value) throws IOException {\n   *          ++numWrites;\n   *          delegate.write(out, value);\n   *        }\n   *        public T read(JsonReader in) throws IOException {\n   *          ++numReads;\n   *          return delegate.read(in);\n   *        }\n   *      };\n   *    }\n   *  }\n   *  } </pre>\n   *  This factory can now be used like this:\n   *  <pre> {@code\n   *  StatsTypeAdapterFactory stats = new StatsTypeAdapterFactory();\n   *  Gson gson = new GsonBuilder().registerTypeAdapterFactory(stats).create();\n   *  // Call gson.toJson() and fromJson methods on objects\n   *  System.out.println(\"Num JSON reads\" + stats.numReads);\n   *  System.out.println(\"Num JSON writes\" + stats.numWrites);\n   *  }</pre>\n   *  Note that this call will skip all factories registered before {@code skipPast}. In case of\n   *  multiple TypeAdapterFactories registered it is up to the caller of this function to insure\n   *  that the order of registration does not prevent this method from reaching a factory they\n   *  would expect to reply from this call.\n   *  Note that since you can not override type adapter factories for String and Java primitive\n   *  types, our stats factory will not count the number of String or primitives that will be\n   *  read or written.\n   * @param skipPast The type adapter factory that needs to be skipped while searching for\n   *   a matching type adapter. In most cases, you should just pass <i>this</i> (the type adapter\n   *   factory from where {@link #getDelegateAdapter} method is being invoked).\n   * @param type Type for which the delegate adapter is being searched for.\n   *\n   * @since 2.2\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "atomicLongAdapter"
+                    },
+                    {
+                        "start_node": "atomicLongAdapter",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Gson"
+                    },
+                    {
+                        "start_node": "Gson",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getDelegateAdapter"
+                    }
+                ],
+                "similarity": 0.08871768069710553,
+                "end_line": 547,
+                "signature": "com.google.gson.Gson.getDelegateAdapter(TypeAdapterFactory skipPast, TypeToken type): TypeAdapter"
+            },
+            {
+                "start_line": 103,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TreeTypeAdapter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static TypeAdapterFactory newFactoryWithMatchRawType(",
+                "distance": 1.25,
+                "title": null,
+                "name": "newFactoryWithMatchRawType",
+                "documentation": "/**\n   * Returns a new factory that will match each type and its raw type against\n   * {@code exactType}.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "TreeTypeAdapter"
+                    },
+                    {
+                        "start_node": "TreeTypeAdapter",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "newFactoryWithMatchRawType"
+                    }
+                ],
+                "similarity": 0.08713882575638118,
+                "end_line": 103,
+                "signature": "com.google.gson.internal.bind.TreeTypeAdapter.newFactoryWithMatchRawType(TypeToken exactType, Object typeAdapter): TypeAdapterFactory"
+            },
+            {
+                "start_line": 195,
+                "file_path": "playground/google__gson/extras/src/main/java/com/google/gson/typeadapters/RuntimeTypeAdapterFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public <R> TypeAdapter<R> create(Gson gson, TypeToken<R> type) {\n    if (type.getRawType() != baseType) {\n      return null;\n    }\n\n    final Map<String, TypeAdapter<?>> labelToDelegate\n        = new LinkedHashMap<String, TypeAdapter<?>>();\n    final Map<Class<?>, TypeAdapter<?>> subtypeToDelegate\n        = new LinkedHashMap<Class<?>, TypeAdapter<?>>();\n    for (Map.Entry<String, Class<?>> entry : labelToSubtype.entrySet()) {\n      TypeAdapter<?> delegate = gson.getDelegateAdapter(this, TypeToken.get(entry.getValue()));\n      labelToDelegate.put(entry.getKey(), delegate);\n      subtypeToDelegate.put(entry.getValue(), delegate);\n    }\n\n    return new TypeAdapter<R>() {\n      @Override public R read(JsonReader in) throws IOException {\n        JsonElement jsonElement = Streams.parse(in);\n        JsonElement labelJsonElement;\n        if (maintainType) {\n            labelJsonElement = jsonElement.getAsJsonObject().get(typeFieldName);\n        } else {\n            labelJsonElement = jsonElement.getAsJsonObject().remove(typeFieldName);\n        }\n        \n        if (labelJsonElement == null) {\n          throw new JsonParseException(\"cannot deserialize \" + baseType\n              + \" because it does not define a field named \" + typeFieldName);\n        }\n        String label = labelJsonElement.getAsString();\n        @SuppressWarnings(\"unchecked\") // registration requires that subtype extends T\n        TypeAdapter<R> delegate = (TypeAdapter<R>) labelToDelegate.get(label);\n        if (delegate == null) {\n          throw new JsonParseException(\"cannot deserialize \" + baseType + \" subtype named \"\n              + label + \"; did you forget to register a subtype?\");\n        }\n        return delegate.fromJsonTree(jsonElement);\n      }\n\n      @Override public void write(JsonWriter out, R value) throws IOException {\n        Class<?> srcType = value.getClass();\n        String label = subtypeToLabel.get(srcType);\n        @SuppressWarnings(\"unchecked\") // registration requires that subtype extends T\n        TypeAdapter<R> delegate = (TypeAdapter<R>) subtypeToDelegate.get(srcType);\n        if (delegate == null) {\n          throw new JsonParseException(\"cannot serialize \" + srcType.getName()\n              + \"; did you forget to register a subtype?\");\n        }\n        JsonObject jsonObject = delegate.toJsonTree(value).getAsJsonObject();\n\n        if (maintainType) {\n          Streams.write(jsonObject, out);\n          return;\n        }\n\n        JsonObject clone = new JsonObject();\n\n        if (jsonObject.has(typeFieldName)) {\n          throw new JsonParseException(\"cannot serialize \" + srcType.getName()\n              + \" because it already defines a field named \" + typeFieldName);\n        }\n        clone.add(typeFieldName, new JsonPrimitive(label));\n        \n        for (Map.Entry<String, JsonElement> e : jsonObject.entrySet()) {\n          clone.add(e.getKey(), e.getValue());\n        }\n        Streams.write(clone, out);\n      }\n    }.nullSafe();\n  }",
+                "distance": 2.0,
+                "title": null,
+                "name": "create",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "create"
+                    }
+                ],
+                "similarity": 0.08388701221686203,
+                "end_line": 264,
+                "signature": "com.google.gson.typeadapters.RuntimeTypeAdapterFactory.create(Gson gson, TypeToken type): TypeAdapter"
+            },
+            {
+                "start_line": 247,
+                "file_path": "playground/google__gson/codegen/src/main/java/com/google/gson/codegen/JavaWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void annotation(String annotation) throws IOException {\n    indent();\n    out.write(\"@\");\n    type(annotation);\n    out.write(\"\\n\");\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "annotation",
+                "documentation": "/**\n   * Annotates the next element with {@code annotation}. The annotation has no\n   * attributes.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "type"
+                    },
+                    {
+                        "start_node": "type",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JavaWriter"
+                    },
+                    {
+                        "start_node": "JavaWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "annotation"
+                    }
+                ],
+                "similarity": 0.08340203253061167,
+                "end_line": 252,
+                "signature": "com.google.gson.codegen.JavaWriter.annotation(String annotation): void"
+            },
+            {
+                "start_line": 365,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private static TypeAdapter<Number> longAdapter(LongSerializationPolicy longSerializationPolicy) {\n    if (longSerializationPolicy == LongSerializationPolicy.DEFAULT) {\n      return TypeAdapters.LONG;\n    }\n    return new TypeAdapter<Number>() {\n      @Override public Number read(JsonReader in) throws IOException {\n        if (in.peek() == JsonToken.NULL) {\n          in.nextNull();\n          return null;\n        }\n        return in.nextLong();\n      }\n      @Override public void write(JsonWriter out, Number value) throws IOException {\n        if (value == null) {\n          out.nullValue();\n          return;\n        }\n        out.value(value.toString());\n      }\n    };\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "longAdapter",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "atomicLongAdapter"
+                    },
+                    {
+                        "start_node": "atomicLongAdapter",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Gson"
+                    },
+                    {
+                        "start_node": "Gson",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "longAdapter"
+                    }
+                ],
+                "similarity": 0.08094319813367763,
+                "end_line": 385,
+                "signature": "com.google.gson.Gson.longAdapter(LongSerializationPolicy longSerializationPolicy): TypeAdapter"
+            },
+            {
+                "start_line": 257,
+                "file_path": "playground/google__gson/codegen/src/main/java/com/google/gson/codegen/JavaWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void annotation(Class<? extends Annotation> annotationType) throws IOException {\n    annotation(annotationType.getName());\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "annotation",
+                "documentation": "/**\n   * Equivalent to {@code annotation(annotationType.getName())}.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "type"
+                    },
+                    {
+                        "start_node": "type",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JavaWriter"
+                    },
+                    {
+                        "start_node": "JavaWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "annotation"
+                    }
+                ],
+                "similarity": 0.0799246773625777,
+                "end_line": 259,
+                "signature": "com.google.gson.codegen.JavaWriter.annotation(Class annotationType): void"
+            },
+            {
+                "start_line": 751,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JsonWriter newJsonWriter(Writer writer) throws IOException {\n    if (generateNonExecutableJson) {\n      writer.write(JSON_NON_EXECUTABLE_PREFIX);\n    }\n    JsonWriter jsonWriter = new JsonWriter(writer);\n    if (prettyPrinting) {\n      jsonWriter.setIndent(\"  \");\n    }\n    jsonWriter.setSerializeNulls(serializeNulls);\n    return jsonWriter;\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "newJsonWriter",
+                "documentation": "/**\n   * Returns a new JSON writer configured for the settings on this Gson instance.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "atomicLongAdapter"
+                    },
+                    {
+                        "start_node": "atomicLongAdapter",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Gson"
+                    },
+                    {
+                        "start_node": "Gson",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "newJsonWriter"
+                    }
+                ],
+                "similarity": 0.07962637400337433,
+                "end_line": 761,
+                "signature": "com.google.gson.Gson.newJsonWriter(Writer writer): JsonWriter"
+            },
+            {
+                "start_line": 340,
+                "file_path": "playground/google__gson/codegen/src/main/java/com/google/gson/codegen/JavaWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public static String stringLiteral(String data) {\n    StringBuilder result = new StringBuilder();\n    result.append('\"');\n    for (int i = 0; i < data.length(); i++) {\n      char c = data.charAt(i);\n      switch (c) {\n        case '\"':\n          result.append(\"\\\\\\\"\");\n          break;\n        case '\\\\':\n          result.append(\"\\\\\\\\\");\n          break;\n        case '\\t':\n          result.append(\"\\\\\\t\");\n          break;\n        case '\\b':\n          result.append(\"\\\\\\b\");\n          break;\n        case '\\n':\n          result.append(\"\\\\\\n\");\n          break;\n        case '\\r':\n          result.append(\"\\\\\\r\");\n          break;\n        case '\\f':\n          result.append(\"\\\\\\f\");\n          break;\n        default:\n          result.append(c);\n      }\n    }\n    result.append('\"');\n    return result.toString();\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "stringLiteral",
+                "documentation": "/**\n   * Returns the string literal representing {@code data}, including wrapping\n   * quotes.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "type"
+                    },
+                    {
+                        "start_node": "type",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JavaWriter"
+                    },
+                    {
+                        "start_node": "JavaWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "stringLiteral"
+                    }
+                ],
+                "similarity": 0.07915816186331656,
+                "end_line": 373,
+                "signature": "com.google.gson.codegen.JavaWriter.stringLiteral(String data): String"
+            },
+            {
+                "start_line": 776,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void toJson(JsonElement jsonElement, JsonWriter writer) throws JsonIOException {\n    boolean oldLenient = writer.isLenient();\n    writer.setLenient(true);\n    boolean oldHtmlSafe = writer.isHtmlSafe();\n    writer.setHtmlSafe(htmlSafe);\n    boolean oldSerializeNulls = writer.getSerializeNulls();\n    writer.setSerializeNulls(serializeNulls);\n    try {\n      Streams.write(jsonElement, writer);\n    } catch (IOException e) {\n      throw new JsonIOException(e);\n    } catch (AssertionError e) {\n      AssertionError error = new AssertionError(\"AssertionError (GSON \" + GsonBuildConfig.VERSION + \"): \" + e.getMessage());\n      error.initCause(e);\n      throw error;\n    } finally {\n      writer.setLenient(oldLenient);\n      writer.setHtmlSafe(oldHtmlSafe);\n      writer.setSerializeNulls(oldSerializeNulls);\n    }\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "toJson",
+                "documentation": "/**\n   * Writes the JSON for {@code jsonElement} to {@code writer}.\n   * @throws JsonIOException if there was a problem writing to the writer\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TypeAdapter"
+                    },
+                    {
+                        "start_node": "TypeAdapter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "toJson"
+                    },
+                    {
+                        "start_node": "toJson",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "toJson"
+                    }
+                ],
+                "similarity": 0.07890185436623391,
+                "end_line": 796,
+                "signature": "com.google.gson.Gson.toJson(JsonElement jsonElement, JsonWriter writer): void"
+            },
+            {
+                "start_line": 739,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void toJson(JsonElement jsonElement, Appendable writer) throws JsonIOException {\n    try {\n      JsonWriter jsonWriter = newJsonWriter(Streams.writerForAppendable(writer));\n      toJson(jsonElement, jsonWriter);\n    } catch (IOException e) {\n      throw new JsonIOException(e);\n    }\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "toJson",
+                "documentation": "/**\n   * Writes out the equivalent JSON for a tree of {@link JsonElement}s.\n   *\n   * @param jsonElement root of a tree of {@link JsonElement}s\n   * @param writer Writer to which the Json representation needs to be written\n   * @throws JsonIOException if there was a problem writing to the writer\n   * @since 1.4\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "atomicLongAdapter"
+                    },
+                    {
+                        "start_node": "atomicLongAdapter",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Gson"
+                    },
+                    {
+                        "start_node": "Gson",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "toJson"
+                    }
+                ],
+                "similarity": 0.07797867595600519,
+                "end_line": 746,
+                "signature": "com.google.gson.Gson.toJson(JsonElement jsonElement, Appendable writer): void"
+            },
+            {
+                "start_line": 55,
+                "file_path": "playground/google__gson/codegen/src/main/java/com/google/gson/codegen/JavaWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void addPackage(String packageName) throws IOException {\n    if (this.packagePrefix != null) {\n      throw new IllegalStateException();\n    }\n    out.write(\"package \");\n    out.write(packageName);\n    out.write(\";\\n\");\n    this.packagePrefix = packageName + \".\";\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "addPackage",
+                "documentation": "/**\n   * Emit a package declaration.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "type"
+                    },
+                    {
+                        "start_node": "type",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JavaWriter"
+                    },
+                    {
+                        "start_node": "JavaWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "addPackage"
+                    }
+                ],
+                "similarity": 0.07717358696986736,
+                "end_line": 63,
+                "signature": "com.google.gson.codegen.JavaWriter.addPackage(String packageName): void"
+            },
+            {
+                "start_line": 656,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void toJson(Object src, Appendable writer) throws JsonIOException {\n    if (src != null) {\n      toJson(src, src.getClass(), writer);\n    } else {\n      toJson(JsonNull.INSTANCE, writer);\n    }\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "toJson",
+                "documentation": "/**\n   * This method serializes the specified object into its equivalent Json representation.\n   * This method should be used when the specified object is not a generic type. This method uses\n   * {@link Class#getClass()} to get the type for the specified object, but the\n   * {@code getClass()} loses the generic type information because of the Type Erasure feature\n   * of Java. Note that this method works fine if the any of the object fields are of generic type,\n   * just the object itself should not be of a generic type. If the object is of generic type, use\n   * {@link #toJson(Object, Type, Appendable)} instead.\n   *\n   * @param src the object for which Json representation is to be created setting for Gson\n   * @param writer Writer to which the Json representation needs to be written\n   * @throws JsonIOException if there was a problem writing to the writer\n   * @since 1.2\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "atomicLongAdapter"
+                    },
+                    {
+                        "start_node": "atomicLongAdapter",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Gson"
+                    },
+                    {
+                        "start_node": "Gson",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "toJson"
+                    }
+                ],
+                "similarity": 0.07683161139348156,
+                "end_line": 662,
+                "signature": "com.google.gson.Gson.toJson(Object src, Appendable writer): void"
+            },
+            {
+                "start_line": 175,
+                "file_path": "playground/google__gson/codegen/src/main/java/com/google/gson/codegen/JavaWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void endType() throws IOException {\n    if (popScope() != Scope.TYPE_DECLARATION) {\n      throw new IllegalStateException();\n    }\n    indent();\n    out.write(\"}\\n\");",
+                "distance": 1.5,
+                "title": null,
+                "name": "endType",
+                "documentation": "/**\n   * Completes the current type declaration.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "type"
+                    },
+                    {
+                        "start_node": "type",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JavaWriter"
+                    },
+                    {
+                        "start_node": "JavaWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "endType"
+                    }
+                ],
+                "similarity": 0.0768074383462633,
+                "end_line": 180,
+                "signature": "com.google.gson.codegen.JavaWriter.endType(): void"
+            },
+            {
+                "start_line": 185,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public Gson() {\n    this(Excluder.DEFAULT, FieldNamingPolicy.IDENTITY,\n        Collections.<Type, InstanceCreator<?>>emptyMap(), DEFAULT_SERIALIZE_NULLS,\n        DEFAULT_COMPLEX_MAP_KEYS, DEFAULT_JSON_NON_EXECUTABLE, DEFAULT_ESCAPE_HTML,\n        DEFAULT_PRETTY_PRINT, DEFAULT_LENIENT, DEFAULT_SPECIALIZE_FLOAT_VALUES,\n        LongSerializationPolicy.DEFAULT, null, DateFormat.DEFAULT, DateFormat.DEFAULT,\n        Collections.<TypeAdapterFactory>emptyList(), Collections.<TypeAdapterFactory>emptyList(),\n        Collections.<TypeAdapterFactory>emptyList());\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "Gson",
+                "documentation": "/**\n   * Constructs a Gson object with default configuration. The default configuration has the\n   * following settings:\n   * <ul>\n   *   <li>The JSON generated by <code>toJson</code> methods is in compact representation. This\n   *   means that all the unneeded white-space is removed. You can change this behavior with\n   *   {@link GsonBuilder#setPrettyPrinting()}. </li>\n   *   <li>The generated JSON omits all the fields that are null. Note that nulls in arrays are\n   *   kept as is since an array is an ordered list. Moreover, if a field is not null, but its\n   *   generated JSON is empty, the field is kept. You can configure Gson to serialize null values\n   *   by setting {@link GsonBuilder#serializeNulls()}.</li>\n   *   <li>Gson provides default serialization and deserialization for Enums, {@link Map},\n   *   {@link java.net.URL}, {@link java.net.URI}, {@link java.util.Locale}, {@link java.util.Date},\n   *   {@link java.math.BigDecimal}, and {@link java.math.BigInteger} classes. If you would prefer\n   *   to change the default representation, you can do so by registering a type adapter through\n   *   {@link GsonBuilder#registerTypeAdapter(Type, Object)}. </li>\n   *   <li>The default Date format is same as {@link java.text.DateFormat#DEFAULT}. This format\n   *   ignores the millisecond portion of the date during serialization. You can change\n   *   this by invoking {@link GsonBuilder#setDateFormat(int)} or\n   *   {@link GsonBuilder#setDateFormat(String)}. </li>\n   *   <li>By default, Gson ignores the {@link com.google.gson.annotations.Expose} annotation.\n   *   You can enable Gson to serialize/deserialize only those fields marked with this annotation\n   *   through {@link GsonBuilder#excludeFieldsWithoutExposeAnnotation()}. </li>\n   *   <li>By default, Gson ignores the {@link com.google.gson.annotations.Since} annotation. You\n   *   can enable Gson to use this annotation through {@link GsonBuilder#setVersion(double)}.</li>\n   *   <li>The default field naming policy for the output Json is same as in Java. So, a Java class\n   *   field <code>versionNumber</code> will be output as <code>&quot;versionNumber&quot;</code> in\n   *   Json. The same rules are applied for mapping incoming Json to the Java classes. You can\n   *   change this policy through {@link GsonBuilder#setFieldNamingPolicy(FieldNamingPolicy)}.</li>\n   *   <li>By default, Gson excludes <code>transient</code> or <code>static</code> fields from\n   *   consideration for serialization and deserialization. You can change this behavior through\n   *   {@link GsonBuilder#excludeFieldsWithModifiers(int...)}.</li>\n   * </ul>\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "atomicLongAdapter"
+                    },
+                    {
+                        "start_node": "atomicLongAdapter",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Gson"
+                    },
+                    {
+                        "start_node": "Gson",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "Gson"
+                    }
+                ],
+                "similarity": 0.07610828153253532,
+                "end_line": 193,
+                "signature": "com.google.gson.Gson()"
+            },
+            {
+                "start_line": 418,
+                "file_path": "playground/google__gson/codegen/src/main/java/com/google/gson/codegen/JavaWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private void checkInMethod() {\n    Scope scope = peekScope();\n    if (scope != Scope.NON_ABSTRACT_METHOD && scope != Scope.CONTROL_FLOW) {\n      throw new IllegalArgumentException();\n    }\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "checkInMethod",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "type"
+                    },
+                    {
+                        "start_node": "type",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JavaWriter"
+                    },
+                    {
+                        "start_node": "JavaWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "checkInMethod"
+                    }
+                ],
+                "similarity": 0.07528857351398259,
+                "end_line": 423,
+                "signature": "com.google.gson.codegen.JavaWriter.checkInMethod(): void"
+            },
+            {
+                "start_line": 433,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public <T> TypeAdapter<T> getAdapter(TypeToken<T> type) {\n    TypeAdapter<?> cached = typeTokenCache.get(type == null ? NULL_KEY_SURROGATE : type);\n    if (cached != null) {\n      return (TypeAdapter<T>) cached;\n    }\n\n    Map<TypeToken<?>, FutureTypeAdapter<?>> threadCalls = calls.get();\n    boolean requiresThreadLocalCleanup = false;\n    if (threadCalls == null) {\n      threadCalls = new HashMap<TypeToken<?>, FutureTypeAdapter<?>>();\n      calls.set(threadCalls);\n      requiresThreadLocalCleanup = true;\n    }\n\n    // the key and value type parameters always agree\n    FutureTypeAdapter<T> ongoingCall = (FutureTypeAdapter<T>) threadCalls.get(type);\n    if (ongoingCall != null) {\n      return ongoingCall;\n    }\n\n    try {\n      FutureTypeAdapter<T> call = new FutureTypeAdapter<T>();\n      threadCalls.put(type, call);\n\n      for (TypeAdapterFactory factory : factories) {\n        TypeAdapter<T> candidate = factory.create(this, type);\n        if (candidate != null) {\n          call.setDelegate(candidate);\n          typeTokenCache.put(type, candidate);\n          return candidate;\n        }\n      }\n      throw new IllegalArgumentException(\"GSON (\" + GsonBuildConfig.VERSION + \") cannot handle \" + type);\n    } finally {\n      threadCalls.remove(type);\n\n      if (requiresThreadLocalCleanup) {\n        calls.remove();\n      }\n    }\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "getAdapter",
+                "documentation": "/**\n   * Returns the type adapter for {@code} type.\n   *\n   * @throws IllegalArgumentException if this GSON cannot serialize and\n   *     deserialize {@code type}.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "atomicLongAdapter"
+                    },
+                    {
+                        "start_node": "atomicLongAdapter",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Gson"
+                    },
+                    {
+                        "start_node": "Gson",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getAdapter"
+                    }
+                ],
+                "similarity": 0.07517425834511389,
+                "end_line": 473,
+                "signature": "com.google.gson.Gson.getAdapter(TypeToken type): TypeAdapter"
+            },
+            {
+                "start_line": 695,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void toJson(Object src, Type typeOfSrc, JsonWriter writer) throws JsonIOException {\n    TypeAdapter<?> adapter = getAdapter(TypeToken.get(typeOfSrc));\n    boolean oldLenient = writer.isLenient();\n    writer.setLenient(true);\n    boolean oldHtmlSafe = writer.isHtmlSafe();\n    writer.setHtmlSafe(htmlSafe);\n    boolean oldSerializeNulls = writer.getSerializeNulls();\n    writer.setSerializeNulls(serializeNulls);\n    try {\n      ((TypeAdapter<Object>) adapter).write(writer, src);\n    } catch (IOException e) {\n      throw new JsonIOException(e);\n    } catch (AssertionError e) {\n      AssertionError error = new AssertionError(\"AssertionError (GSON \" + GsonBuildConfig.VERSION + \"): \" + e.getMessage());\n      error.initCause(e);\n      throw error;\n    } finally {\n      writer.setLenient(oldLenient);\n      writer.setHtmlSafe(oldHtmlSafe);\n      writer.setSerializeNulls(oldSerializeNulls);\n    }\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "toJson",
+                "documentation": "/**\n   * Writes the JSON representation of {@code src} of type {@code typeOfSrc} to\n   * {@code writer}.\n   * @throws JsonIOException if there was a problem writing to the writer\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "atomicLongAdapter"
+                    },
+                    {
+                        "start_node": "atomicLongAdapter",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Gson"
+                    },
+                    {
+                        "start_node": "Gson",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "toJson"
+                    }
+                ],
+                "similarity": 0.07453250323234227,
+                "end_line": 716,
+                "signature": "com.google.gson.Gson.toJson(Object src, Type typeOfSrc, JsonWriter writer): void"
+            },
+            {
+                "start_line": 895,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public <T> T fromJson(Reader json, Type typeOfT) throws JsonIOException, JsonSyntaxException {\n    JsonReader jsonReader = newJsonReader(json);\n    T object = (T) fromJson(jsonReader, typeOfT);\n    assertFullConsumption(object, jsonReader);\n    return object;\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "fromJson",
+                "documentation": "/**\n   * This method deserializes the Json read from the specified reader into an object of the\n   * specified type. This method is useful if the specified object is a generic type. For\n   * non-generic objects, use {@link #fromJson(Reader, Class)} instead. If you have the Json in a\n   * String form instead of a {@link Reader}, use {@link #fromJson(String, Type)} instead.\n   *\n   * @param <T> the type of the desired object\n   * @param json the reader producing Json from which the object is to be deserialized\n   * @param typeOfT The specific genericized type of src. You can obtain this type by using the\n   * {@link com.google.gson.reflect.TypeToken} class. For example, to get the type for\n   * {@code Collection<Foo>}, you should use:\n   * <pre>\n   * Type typeOfT = new TypeToken&lt;Collection&lt;Foo&gt;&gt;(){}.getType();\n   * </pre>\n   * @return an object of type T from the json. Returns {@code null} if {@code json} is at EOF.\n   * @throws JsonIOException if there was a problem reading from the Reader\n   * @throws JsonSyntaxException if json is not a valid representation for an object of type\n   * @since 1.2\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "TypeAdapter"
+                    },
+                    {
+                        "start_node": "TypeAdapter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "fromJson"
+                    },
+                    {
+                        "start_node": "fromJson",
+                        "description": "calls method",
+                        "type": "RELATED",
+                        "end_node": "fromJson"
+                    }
+                ],
+                "similarity": 0.07439166415919501,
+                "end_line": 900,
+                "signature": "com.google.gson.Gson.fromJson(Reader json, Type typeOfT): T"
+            },
+            {
+                "start_line": 868,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public <T> T fromJson(Reader json, Class<T> classOfT) throws JsonSyntaxException, JsonIOException {\n    JsonReader jsonReader = newJsonReader(json);\n    Object object = fromJson(jsonReader, classOfT);\n    assertFullConsumption(object, jsonReader);\n    return Primitives.wrap(classOfT).cast(object);\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "fromJson",
+                "documentation": "/**\n   * This method deserializes the Json read from the specified reader into an object of the\n   * specified class. It is not suitable to use if the specified class is a generic type since it\n   * will not have the generic type information because of the Type Erasure feature of Java.\n   * Therefore, this method should not be used if the desired type is a generic type. Note that\n   * this method works fine if the any of the fields of the specified object are generics, just the\n   * object itself should not be a generic type. For the cases when the object is of generic type,\n   * invoke {@link #fromJson(Reader, Type)}. If you have the Json in a String form instead of a\n   * {@link Reader}, use {@link #fromJson(String, Class)} instead.\n   *\n   * @param <T> the type of the desired object\n   * @param json the reader producing the Json from which the object is to be deserialized.\n   * @param classOfT the class of T\n   * @return an object of type T from the string. Returns {@code null} if {@code json} is at EOF.\n   * @throws JsonIOException if there was a problem reading from the Reader\n   * @throws JsonSyntaxException if json is not a valid representation for an object of type\n   * @since 1.2\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "atomicLongAdapter"
+                    },
+                    {
+                        "start_node": "atomicLongAdapter",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Gson"
+                    },
+                    {
+                        "start_node": "Gson",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "fromJson"
+                    }
+                ],
+                "similarity": 0.07429300506729647,
+                "end_line": 873,
+                "signature": "com.google.gson.Gson.fromJson(Reader json, Class classOfT): T"
+            },
+            {
+                "start_line": 841,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public <T> T fromJson(String json, Type typeOfT) throws JsonSyntaxException {\n    if (json == null) {\n      return null;\n    }\n    StringReader reader = new StringReader(json);\n    T target = (T) fromJson(reader, typeOfT);\n    return target;\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "fromJson",
+                "documentation": "/**\n   * This method deserializes the specified Json into an object of the specified type. This method\n   * is useful if the specified object is a generic type. For non-generic objects, use\n   * {@link #fromJson(String, Class)} instead. If you have the Json in a {@link Reader} instead of\n   * a String, use {@link #fromJson(Reader, Type)} instead.\n   *\n   * @param <T> the type of the desired object\n   * @param json the string from which the object is to be deserialized\n   * @param typeOfT The specific genericized type of src. You can obtain this type by using the\n   * {@link com.google.gson.reflect.TypeToken} class. For example, to get the type for\n   * {@code Collection<Foo>}, you should use:\n   * <pre>\n   * Type typeOfT = new TypeToken&lt;Collection&lt;Foo&gt;&gt;(){}.getType();\n   * </pre>\n   * @return an object of type T from the string. Returns {@code null} if {@code json} is {@code null}\n   * or if {@code json} is empty.\n   * @throws JsonParseException if json is not a valid representation for an object of type typeOfT\n   * @throws JsonSyntaxException if json is not a valid representation for an object of type\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "atomicLongAdapter"
+                    },
+                    {
+                        "start_node": "atomicLongAdapter",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Gson"
+                    },
+                    {
+                        "start_node": "Gson",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "fromJson"
+                    }
+                ],
+                "similarity": 0.07382906342060051,
+                "end_line": 848,
+                "signature": "com.google.gson.Gson.fromJson(String json, Type typeOfT): T"
+            },
+            {
+                "start_line": 680,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void toJson(Object src, Type typeOfSrc, Appendable writer) throws JsonIOException {\n    try {\n      JsonWriter jsonWriter = newJsonWriter(Streams.writerForAppendable(writer));\n      toJson(src, typeOfSrc, jsonWriter);\n    } catch (IOException e) {\n      throw new JsonIOException(e);\n    }\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "toJson",
+                "documentation": "/**\n   * This method serializes the specified object, including those of generic types, into its\n   * equivalent Json representation. This method must be used if the specified object is a generic\n   * type. For non-generic objects, use {@link #toJson(Object, Appendable)} instead.\n   *\n   * @param src the object for which JSON representation is to be created\n   * @param typeOfSrc The specific genericized type of src. You can obtain\n   * this type by using the {@link com.google.gson.reflect.TypeToken} class. For example,\n   * to get the type for {@code Collection<Foo>}, you should use:\n   * <pre>\n   * Type typeOfSrc = new TypeToken&lt;Collection&lt;Foo&gt;&gt;(){}.getType();\n   * </pre>\n   * @param writer Writer to which the Json representation of src needs to be written.\n   * @throws JsonIOException if there was a problem writing to the writer\n   * @since 1.2\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "atomicLongAdapter"
+                    },
+                    {
+                        "start_node": "atomicLongAdapter",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Gson"
+                    },
+                    {
+                        "start_node": "Gson",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "toJson"
+                    }
+                ],
+                "similarity": 0.07375738200495804,
+                "end_line": 687,
+                "signature": "com.google.gson.Gson.toJson(Object src, Type typeOfSrc, Appendable writer): void"
+            },
+            {
+                "start_line": 923,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public <T> T fromJson(JsonReader reader, Type typeOfT) throws JsonIOException, JsonSyntaxException {\n    boolean isEmpty = true;\n    boolean oldLenient = reader.isLenient();\n    reader.setLenient(true);\n    try {\n      reader.peek();\n      isEmpty = false;\n      TypeToken<T> typeToken = (TypeToken<T>) TypeToken.get(typeOfT);\n      TypeAdapter<T> typeAdapter = getAdapter(typeToken);\n      T object = typeAdapter.read(reader);\n      return object;\n    } catch (EOFException e) {\n      /*\n       * For compatibility with JSON 1.5 and earlier, we return null for empty\n       * documents instead of throwing.\n       */\n      if (isEmpty) {\n        return null;\n      }\n      throw new JsonSyntaxException(e);\n    } catch (IllegalStateException e) {\n      throw new JsonSyntaxException(e);\n    } catch (IOException e) {\n      // TODO(inder): Figure out whether it is indeed right to rethrow this as JsonSyntaxException\n      throw new JsonSyntaxException(e);\n    } catch (AssertionError e) {\n      AssertionError error = new AssertionError(\"AssertionError (GSON \" + GsonBuildConfig.VERSION + \"): \" + e.getMessage());\n      error.initCause(e);\n      throw error;\n    } finally {\n      reader.setLenient(oldLenient);\n    }\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "fromJson",
+                "documentation": "/**\n   * Reads the next JSON value from {@code reader} and convert it to an object\n   * of type {@code typeOfT}. Returns {@code null}, if the {@code reader} is at EOF.\n   * Since Type is not parameterized by T, this method is type unsafe and should be used carefully\n   *\n   * @throws JsonIOException if there was a problem writing to the Reader\n   * @throws JsonSyntaxException if json is not a valid representation for an object of type\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "atomicLongAdapter"
+                    },
+                    {
+                        "start_node": "atomicLongAdapter",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Gson"
+                    },
+                    {
+                        "start_node": "Gson",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "fromJson"
+                    }
+                ],
+                "similarity": 0.0737544518667302,
+                "end_line": 955,
+                "signature": "com.google.gson.Gson.fromJson(JsonReader reader, Type typeOfT): T"
+            },
+            {
+                "start_line": 766,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JsonReader newJsonReader(Reader reader) {\n    JsonReader jsonReader = new JsonReader(reader);\n    jsonReader.setLenient(lenient);\n    return jsonReader;\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "newJsonReader",
+                "documentation": "/**\n   * Returns a new JSON reader configured for the settings on this Gson instance.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "atomicLongAdapter"
+                    },
+                    {
+                        "start_node": "atomicLongAdapter",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "Gson"
+                    },
+                    {
+                        "start_node": "Gson",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "newJsonReader"
+                    }
+                ],
+                "similarity": 0.07338049405766972,
+                "end_line": 770,
+                "signature": "com.google.gson.Gson.newJsonReader(Reader reader): JsonReader"
+            },
+            {
+                "start_line": 37,
+                "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/JsonAdapterAnnotationTypeAdapterFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public JsonAdapterAnnotationTypeAdapterFactory(ConstructorConstructor constructorConstructor) {\n    this.constructorConstructor = constructorConstructor;\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "JsonAdapterAnnotationTypeAdapterFactory",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "TreeTypeAdapter"
+                    },
+                    {
+                        "start_node": "TreeTypeAdapter",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "getTypeAdapter"
+                    },
+                    {
+                        "start_node": "getTypeAdapter",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JsonAdapterAnnotationTypeAdapterFactory"
+                    },
+                    {
+                        "start_node": "JsonAdapterAnnotationTypeAdapterFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "JsonAdapterAnnotationTypeAdapterFactory"
+                    }
+                ],
+                "similarity": 0.0733595754851606,
+                "end_line": 39,
+                "signature": "com.google.gson.internal.bind.JsonAdapterAnnotationTypeAdapterFactory(ConstructorConstructor constructorConstructor)"
+            },
+            {
+                "start_line": 186,
+                "file_path": "playground/google__gson/codegen/src/main/java/com/google/gson/codegen/JavaWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void field(String type, String name, int modifiers) throws IOException {\n    field(type, name, modifiers, null);\n  }",
+                "distance": 1.5,
+                "title": null,
+                "name": "field",
+                "documentation": "/**\n   * Emits a field declaration.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "type"
+                    },
+                    {
+                        "start_node": "type",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JavaWriter"
+                    },
+                    {
+                        "start_node": "JavaWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "field"
+                    }
+                ],
+                "similarity": 0.07210561795553289,
+                "end_line": 188,
+                "signature": "com.google.gson.codegen.JavaWriter.field(String type, String name, int modifiers): void"
+            },
+            {
+                "start_line": 326,
+                "file_path": "playground/google__gson/codegen/src/main/java/com/google/gson/codegen/JavaWriter.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  public void endMethod() throws IOException {\n    Scope popped = popScope();\n    if (popped == Scope.NON_ABSTRACT_METHOD) {\n      indent();\n      out.write(\"}\\n\");\n    } else if (popped != Scope.ABSTRACT_METHOD) {\n      throw new IllegalStateException();\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "endMethod",
+                "documentation": "/**\n   * Completes the current method declaration.\n   */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "type"
+                    },
+                    {
+                        "start_node": "type",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "JavaWriter"
+                    },
+                    {
+                        "start_node": "JavaWriter",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "endMethod"
+                    }
+                ],
+                "similarity": 0.07195415566342274,
+                "end_line": 333,
+                "signature": "com.google.gson.codegen.JavaWriter.endMethod(): void"
+            },
+            {
+                "start_line": 131,
+                "file_path": "playground/google__gson/extras/src/main/java/com/google/gson/typeadapters/RuntimeTypeAdapterFactory.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "  private RuntimeTypeAdapterFactory(Class<?> baseType, String typeFieldName, boolean maintainType) {\n    if (typeFieldName == null || baseType == null) {\n      throw new NullPointerException();\n    }\n    this.baseType = baseType;\n    this.typeFieldName = typeFieldName;\n    this.maintainType = maintainType;\n  }",
+                "distance": 2.5,
+                "title": null,
+                "name": "RuntimeTypeAdapterFactory",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "nullSafe"
+                    },
+                    {
+                        "start_node": "nullSafe",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "create"
+                    },
+                    {
+                        "start_node": "create",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "RuntimeTypeAdapterFactory"
+                    },
+                    {
+                        "start_node": "RuntimeTypeAdapterFactory",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "RuntimeTypeAdapterFactory"
+                    }
+                ],
+                "similarity": 0.0713466603016524,
+                "end_line": 138,
+                "signature": "com.google.gson.typeadapters.RuntimeTypeAdapterFactory(Class baseType, String typeFieldName, boolean maintainType)"
+            }
+        ],
+        "classes": [],
+        "issues": [
+            {
+                "content": "Hi there,\r\n\r\nIt looks like gson uses TreeTypeAdapter for JsonSerializer/JsonDeserializer type adapters.\r\nTreeTypeAdapter is always nullSafe, so nullSafe value of JsonAdapter annotation is ignored in this case which is at least confusing.\r\n\r\nI fixed this locally by adding nullSafe parameter to the TreeTypeAdapter and would love to submit a PR if it need be. Shall I go ahead?\r\n\r\nThanks!\n",
+                "distance": 0,
+                "title": "JsonAdapter nullSafe parameter is ignored by JsonSerializer/JsonDeserializer type adapters",
+                "name": "root",
+                "path": [],
+                "issue_id": "root",
+                "similarity": 2.0,
+                "type": "issue"
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "1553",
+                "type": "issue",
+                "content": "Hi there,\r\n\r\nIt looks like gson uses TreeTypeAdapter for JsonSerializer/JsonDeserializer type adapters.\r\nTreeTypeAdapter is always nullSafe, so nullSafe value of JsonAdapter annotation is ignored in this case which is at least confusing.\r\n\r\nI fixed this locally by adding nullSafe parameter to the TreeTypeAdapter and would love to submit a PR if it need be. Shall I go ahead?\r\n\r\nThanks!\n\n",
+                "source_code": null,
+                "distance": 0.25,
+                "title": "JsonAdapter nullSafe parameter is ignored by JsonSerializer/JsonDeserializer type adapters",
+                "name": "issue#1553",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#1553"
+                    }
+                ],
+                "similarity": 0.8739666897806087,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "1555",
+                "type": "issue",
+                "content": "It is impossible to create a JsonDeserializer that transforms JSON null values. This PR makes it so that a serializer/deserializer for annotated field does get called on nulls when `nullSafe` property of JsonAdapter annotation is false.\r\n\r\nnullSafe is still ignored if adapter is registered via GsonBuilder.\r\n\r\nFixes #1553\r\n\r\nSigned-off-by: Dmitry Bufistov <dmitry@midokura.com>\n\n",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "Fixed nullSafe usage.",
+                "name": "pr#1555",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#1553"
+                    },
+                    {
+                        "start_node": "issue#1553",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "pr#1555"
+                    }
+                ],
+                "similarity": 0.6283083751200117,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "980",
+                "type": "issue",
+                "content": "TreeTypeAdapter.java\r\n/**\r\n @Override public T read(JsonReader in) throws IOException {\r\n    if (deserializer == null) {\r\n      return delegate().read(in);\r\n    }\r\n    JsonElement value = Streams.parse(in);\r\n    if (value.isJsonNull()) {\r\n      return null;\r\n    }\r\n    return deserializer.deserialize(value, typeToken.getType(), context);\r\n  }\r\n**/\n\n",
+                "source_code": null,
+                "distance": 0.75,
+                "title": "delete \"return null\",delivery deserializer to handle",
+                "name": "issue#980",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#1553"
+                    },
+                    {
+                        "start_node": "issue#1553",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "pr#1555"
+                    },
+                    {
+                        "start_node": "pr#1555",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#980"
+                    }
+                ],
+                "similarity": 0.48599924988223814,
+                "end_line": null,
+                "signature": null
+            }
+        ]
+    },
+    "artifact_stats": {
+        "skipped_due_to_time": 8,
+        "valid_related_items": 8
+    }
+}

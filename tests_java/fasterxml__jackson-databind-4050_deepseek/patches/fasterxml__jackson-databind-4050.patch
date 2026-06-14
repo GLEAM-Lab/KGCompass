@@ -1,0 +1,51 @@
+Based on the issue, the bug is that `ObjectMapper.valueToTree()` ignores the `SerializationFeature.WRAP_ROOT_VALUE` configuration, which was intentionally disabled in commit 2e986dfe5937b28ba39b4d28e0f993802c7c9f68.
+
+The issue requests reverting this behavior to make `valueToTree()` respect `WRAP_ROOT_VALUE` like other serialization methods do. Looking at the code, we need to modify the `valueToTree()` method to use the full serialization config including root wrapping.
+
+Here's the proposed fix:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java
+- start_line : 3514
+- end_line : 3514
+<<<<<<< SEARCH
+    public <T extends JsonNode> T valueToTree(Object fromValue)
+=======
+    public <T extends JsonNode> T valueToTree(Object fromValue) throws IllegalArgumentException
+>>>>>>> REPLACE
+```
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java
+- start_line : 3514
+- end_line : 3519
+<<<<<<< SEARCH
+    public <T extends JsonNode> T valueToTree(Object fromValue)
+=======
+    public <T extends JsonNode> T valueToTree(Object fromValue) throws IllegalArgumentException {
+        if (fromValue == null) {
+            return null;
+        }
+        TokenBuffer buf = new TokenBuffer(this, false);
+        try {
+            _serializerProvider(getSerializationConfig()).serializeValue(buf, fromValue);
+            JsonParser p = buf.asParser();
+            T result = (T) readTree(p);
+            p.close();
+            return result;
+        } catch (IOException e) { // should never occur
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
+    }
+>>>>>>> REPLACE
+```
+
+This change:
+1. Makes the method explicitly declare it throws IllegalArgumentException
+2. Implements the full serialization path that respects all serialization features including WRAP_ROOT_VALUE
+3. Uses the same approach as other serialization methods by going through TokenBuffer
+4. Maintains backward compatibility with the signature while fixing the behavior
+
+The fix ensures `valueToTree()` will now properly respect `WRAP_ROOT_VALUE` configuration like `writeValueAsString()` does, matching the expected behavior shown in the issue.
+
+Note that this is essentially reverting the behavior to how it was before commit 2e986dfe5937b28ba39b4d28e0f993802c7c9f68, while maintaining proper error handling and resource cleanup.

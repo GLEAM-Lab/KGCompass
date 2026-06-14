@@ -1,0 +1,44 @@
+Based on the issue description, the bug occurs when `@JsonAnySetter` is annotated on both a field and constructor parameter, causing neither to receive the values. The issue suggests this is particularly problematic with Records where the annotation gets propagated to both places.
+
+Looking at the code snippets provided, the key problem appears to be in how Jackson handles `@JsonAnySetter` when it appears in both places. The issue comments mention that currently the field annotation "wins" but then neither gets populated, which suggests the logic in `BeanDeserializerFactory` needs to be modified to properly handle this case.
+
+Since the actual `BeanDeserializerFactory` code isn't shown in the snippets, I'll make an educated guess about where the fix needs to be based on the issue comments. The fix should ensure that when `@JsonAnySetter` appears in both places, we consistently use one of them (constructor parameter seems more appropriate since it has higher precedence generally in Jackson).
+
+Here's the proposed fix:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java
+<<<<<<< SEARCH
+            // 26-Mar-2016, tatu: At this point, all timezone configuration
+            //    should have occurred, with respect to default dateformat
+            //    and timezone configuration. But we still better clone
+            //    an instance as formatters may be stateful.
+            DateFormat df = _config.getDateFormat();
+            _dateFormat = df = (DateFormat) df.clone();
+            return df;
+=======
+            // First check constructor parameters, then fields
+            SettableAnyProperty anySetter = collectAnySetter(ctorParams);
+            if (anySetter == null) {
+                anySetter = collectAnySetter(fields);
+            }
+            if (anySetter != null) {
+                builder.setAnySetter(anySetter);
+            }
+>>>>>>> REPLACE
+```
+
+However, since the actual `BeanDeserializerFactory` code isn't shown in the snippets, I can't provide the exact line numbers or surrounding context. The key change needed is to modify the logic that collects `@JsonAnySetter` annotations to:
+
+1. First check constructor parameters
+2. Only if none found there, check fields
+3. Set whichever one is found (constructor param taking precedence)
+
+This would align with Jackson's general precedence rules where constructor parameters have higher precedence than fields.
+
+The fix should ensure that:
+1. When only one annotation exists (field OR constructor param), it works as before
+2. When both exist, the constructor parameter version is used
+3. The values are properly collected into the target field/map
+
+Would you be able to provide the actual `BeanDeserializerFactory` code that handles the `@JsonAnySetter` collection logic? That would allow me to provide a more precise fix with proper line numbers and context.

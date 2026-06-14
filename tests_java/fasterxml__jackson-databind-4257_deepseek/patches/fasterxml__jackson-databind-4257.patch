@@ -1,0 +1,57 @@
+Based on the issue description, the bug is related to `MapperFeature.REQUIRE_SETTERS_FOR_GETTERS` not properly respecting visibility settings when checking for matching fields. The issue occurs because the feature considers private fields as valid mutators even when visibility is set to NONE for fields.
+
+Looking at the code, this behavior needs to be fixed in the configuration handling of the ObjectMapper. The key is to ensure that when `REQUIRE_SETTERS_FOR_GETTERS` is enabled, it properly respects the visibility settings for fields.
+
+Here's the proposed fix:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java
+- start_line : 1672
+- end_line : 1672
+<<<<<<< SEARCH
+     *    of configuration calls
+=======
+     *    of configuration calls
+     *    
+     * @see #setVisibility(PropertyAccessor, Visibility)
+     * @see #enable(MapperFeature)
+     * @see #disable(MapperFeature)
+>>>>>>> REPLACE
+```
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java
+- start_line : 2581
+- end_line : 2585
+<<<<<<< SEARCH
+     */
+    @Deprecated
+    public ObjectMapper enable(MapperFeature... f) {
+        _deserializationConfig = _deserializationConfig.with(f);
+        _serializationConfig = _serializationConfig.with(f);
+=======
+     */
+    @Deprecated
+    public ObjectMapper enable(MapperFeature... f) {
+        // When enabling REQUIRE_SETTERS_FOR_GETTERS, ensure FIELD visibility is properly considered
+        for (MapperFeature feature : f) {
+            if (feature == MapperFeature.REQUIRE_SETTERS_FOR_GETTERS) {
+                _deserializationConfig = _deserializationConfig.with(feature);
+                _serializationConfig = _serializationConfig.with(feature)
+                    .withVisibility(PropertyAccessor.FIELD, Visibility.NONE);
+                continue;
+            }
+            _deserializationConfig = _deserializationConfig.with(feature);
+            _serializationConfig = _serializationConfig.with(feature);
+        }
+>>>>>>> REPLACE
+```
+
+This change ensures that when `REQUIRE_SETTERS_FOR_GETTERS` is enabled, it explicitly sets field visibility to NONE in the serialization config, which will prevent private fields from being considered as valid mutators. This matches the expected behavior where only properties with both getters and setters should be included in serialization when this feature is enabled.
+
+The fix:
+1. Adds documentation about related methods
+2. Modifies the `enable(MapperFeature...)` method to handle `REQUIRE_SETTERS_FOR_GETTERS` specially by ensuring field visibility is properly set to NONE
+3. Maintains all other existing behavior for other features
+
+This should resolve the issue where private fields were incorrectly being considered as mutators even when visibility was set to NONE.

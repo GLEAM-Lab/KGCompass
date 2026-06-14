@@ -1,11 +1,15 @@
-from dotenv import load_dotenv
 import os
+
+from dotenv import load_dotenv
 from github import Github
 
-load_dotenv()
+if os.getenv("KGCOMPASS_LOAD_DOTENV", "1") != "0":
+    load_dotenv()
 
 # GitHub Configuration
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+GITHUB_TOKEN = None if os.getenv("KGCOMPASS_DISABLE_GITHUB_TOKEN") == "1" else (
+    os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
+)
 
 # Bailian
 BAILIAN_API_KEY = os.getenv("BAILIAN_API_KEY")
@@ -26,7 +30,7 @@ NORMAL_CONNECTION = WEAK_CONNECTION * CONNECTION_FACTOR
 STRONG_CONNECTION = NORMAL_CONNECTION * CONNECTION_FACTOR
 
 # Dataset Configuration
-DATASET_NAME = "princeton-nlp/SWE-bench_Lite"
+DATASET_NAME = "princeton-nlp/SWE-bench_Verified"
 
 # Graph Configuration
 DECAY_FACTOR = 0.6
@@ -38,7 +42,7 @@ MODEL_NAME = "deepseek-v3"
 
 # LLM Request Configuration
 MAX_TOKENS = 4096
-TEMPERATURE = 0.3
+TEMPERATURE = 0.8
 TOP_P = 0.95
 
 MAX_INPUT_LENGTH = 65536 / 3

@@ -1,0 +1,1776 @@
+{
+    "related_entities": {
+        "methods": [
+            {
+                "start_line": 124,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static Object generalize(Object pojo, Map<Object, Object> history) {\n        if (pojo == null) {\n            return null;\n        }\n\n        if (pojo instanceof Enum<?>) {\n            return ((Enum<?>) pojo).name();\n        }\n        if (pojo.getClass().isArray() && Enum.class.isAssignableFrom(pojo.getClass().getComponentType())) {\n            int len = Array.getLength(pojo);\n            String[] values = new String[len];\n            for (int i = 0; i < len; i++) {\n                values[i] = ((Enum<?>) Array.get(pojo, i)).name();\n            }\n            return values;\n        }\n\n        if (ReflectUtils.isPrimitives(pojo.getClass())) {\n            return pojo;\n        }\n\n        if (pojo instanceof Class) {\n            return ((Class) pojo).getName();\n        }\n\n        Object o = history.get(pojo);\n        if (o != null) {\n            return o;\n        }\n        history.put(pojo, pojo);\n\n        if (pojo.getClass().isArray()) {\n            int len = Array.getLength(pojo);\n            Object[] dest = new Object[len];\n            history.put(pojo, dest);\n            for (int i = 0; i < len; i++) {\n                Object obj = Array.get(pojo, i);\n                dest[i] = generalize(obj, history);\n            }\n            return dest;\n        }\n        if (pojo instanceof Collection<?>) {\n            Collection<Object> src = (Collection<Object>) pojo;\n            int len = src.size();\n            Collection<Object> dest = (pojo instanceof List<?>) ? new ArrayList<Object>(len) : new HashSet<Object>(len);\n            history.put(pojo, dest);\n            for (Object obj : src) {\n                dest.add(generalize(obj, history));\n            }\n            return dest;\n        }\n        if (pojo instanceof Map<?, ?>) {\n            Map<Object, Object> src = (Map<Object, Object>) pojo;\n            Map<Object, Object> dest = createMap(src);\n            history.put(pojo, dest);\n            for (Map.Entry<Object, Object> obj : src.entrySet()) {\n                dest.put(generalize(obj.getKey(), history), generalize(obj.getValue(), history));\n            }\n            return dest;\n        }\n        Map<String, Object> map = new HashMap<String, Object>();\n        history.put(pojo, map);\n        if (GENERIC_WITH_CLZ) {\n            map.put(\"class\", pojo.getClass().getName());\n        }\n        for (Method method : pojo.getClass().getMethods()) {\n            if (ReflectUtils.isBeanPropertyReadMethod(method)) {\n                ReflectUtils.makeAccessible(method);\n                try {\n                    map.put(ReflectUtils.getPropertyNameFromBeanReadMethod(method), generalize(method.invoke(pojo), history));\n                } catch (Exception e) {\n                    throw new RuntimeException(e.getMessage(), e);\n                }\n            }\n        }\n        // public field\n        for (Field field : pojo.getClass().getFields()) {\n            if (ReflectUtils.isPublicInstanceField(field)) {\n                try {\n                    Object fieldValue = field.get(pojo);\n                    if (history.containsKey(pojo)) {\n                        Object pojoGeneralizedValue = history.get(pojo);\n                        if (pojoGeneralizedValue instanceof Map\n                            && ((Map) pojoGeneralizedValue).containsKey(field.getName())) {\n                            continue;\n                        }\n                    }\n                    if (fieldValue != null) {\n                        map.put(field.getName(), generalize(fieldValue, history));\n                    }\n                } catch (Exception e) {\n                    throw new RuntimeException(e.getMessage(), e);\n                }\n            }\n        }\n        return map;\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "generalize",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "generalize"
+                    }
+                ],
+                "similarity": 0.1487300260113483,
+                "end_line": 220,
+                "signature": "org.apache.dubbo.common.utils.PojoUtils.generalize(Object pojo, Map history): Object"
+            },
+            {
+                "start_line": 766,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static Object convertParameterizedType(Object mapObject, ParameterizedType type) throws ReflectiveOperationException {\n        Type rawType = type.getRawType();\n        if (!isAssignableFrom((Class<?>) rawType, mapObject.getClass())) {\n            return null;\n        }\n\n        Type[] actualTypeArguments = type.getActualTypeArguments();\n        if (isAssignableFrom(Map.class, (Class<?>) rawType)) {\n            Map<Object, Object> map = (Map<Object, Object>) mapObject.getClass().getDeclaredConstructor().newInstance();\n            for (Map.Entry<Object, Object> entry : ((Map<Object, Object>) mapObject).entrySet()) {\n                Object key = getFieldObject(entry.getKey(), actualTypeArguments[0]);\n                Object value = getFieldObject(entry.getValue(), actualTypeArguments[1]);\n                map.put(key, value);\n            }\n\n            return map;\n        } else if (isAssignableFrom(Collection.class, (Class<?>) rawType)) {\n            Collection<Object> collection = (Collection<Object>) mapObject.getClass().getDeclaredConstructor().newInstance();\n            for (Object m : (Iterable<?>) mapObject) {\n                Object ele = getFieldObject(m, actualTypeArguments[0]);\n                collection.add(ele);\n            }\n\n            return collection;\n        } else {\n            // ignore other type currently\n            return null;\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "convertParameterizedType",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "generalize"
+                    },
+                    {
+                        "start_node": "generalize",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "PojoUtils"
+                    },
+                    {
+                        "start_node": "PojoUtils",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "convertParameterizedType"
+                    }
+                ],
+                "similarity": 0.11647139822160289,
+                "end_line": 794,
+                "signature": "org.apache.dubbo.common.utils.PojoUtils.convertParameterizedType(Object mapObject, ParameterizedType type): Object"
+            },
+            {
+                "start_line": 750,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static Object convertClassType(Object mapObject, Class<?> type) throws ReflectiveOperationException {\n        if (type.isPrimitive() || isAssignableFrom(type, mapObject.getClass())) {\n            return mapObject;\n        } else if (Objects.equals(type, String.class) && CLASS_CAN_BE_STRING.contains(mapObject.getClass())) {\n            // auto convert specified type to string\n            return mapObject.toString();\n        } else if (mapObject instanceof Map) {\n            return mapToPojo((Map<String, Object>) mapObject, type);\n        } else {\n            // type didn't match and mapObject is not another Map struct.\n            // we just ignore this situation.\n            return null;\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "convertClassType",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "generalize"
+                    },
+                    {
+                        "start_node": "generalize",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "PojoUtils"
+                    },
+                    {
+                        "start_node": "PojoUtils",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "convertClassType"
+                    }
+                ],
+                "similarity": 0.10484762421881319,
+                "end_line": 763,
+                "signature": "org.apache.dubbo.common.utils.PojoUtils.convertClassType(Object mapObject, Class type): Object"
+            },
+            {
+                "start_line": 736,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static Object getFieldObject(Object mapObject, Type fieldType) throws ReflectiveOperationException {\n        if (fieldType instanceof Class<?>) {\n            return convertClassType(mapObject, (Class<?>) fieldType);\n        } else if (fieldType instanceof ParameterizedType) {\n            return convertParameterizedType(mapObject, (ParameterizedType) fieldType);\n        } else if (fieldType instanceof GenericArrayType || fieldType instanceof TypeVariable<?> || fieldType instanceof WildcardType) {\n            // ignore these type currently\n            return null;\n        } else {\n            throw new IllegalArgumentException(\"Unrecognized Type: \" + fieldType.toString());\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getFieldObject",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "generalize"
+                    },
+                    {
+                        "start_node": "generalize",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "PojoUtils"
+                    },
+                    {
+                        "start_node": "PojoUtils",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "getFieldObject"
+                    }
+                ],
+                "similarity": 0.104235319551148,
+                "end_line": 747,
+                "signature": "org.apache.dubbo.common.utils.PojoUtils.getFieldObject(Object mapObject, Type fieldType): Object"
+            },
+            {
+                "start_line": 168,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/config/AbstractReferenceConfig.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void setGeneric(String generic) {\n        if (StringUtils.isEmpty(generic)) {\n            return;\n        }\n        if (ProtocolUtils.isValidGenericValue(generic)) {\n            this.generic = generic;\n        } else {\n            throw new IllegalArgumentException(\"Unsupported generic type \" + generic);\n        }\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "setGeneric",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setGeneric"
+                    }
+                ],
+                "similarity": 0.10350712431103899,
+                "end_line": 177,
+                "signature": "org.apache.dubbo.config.AbstractReferenceConfig.setGeneric(String generic): void"
+            },
+            {
+                "start_line": 335,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/config/ServiceConfigBase.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void setGeneric(String generic) {\n        if (StringUtils.isEmpty(generic)) {\n            return;\n        }\n        if (ProtocolUtils.isValidGenericValue(generic)) {\n            this.generic = generic;\n        } else {\n            throw new IllegalArgumentException(\"Unsupported generic type \" + generic);\n        }\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "setGeneric",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setGeneric"
+                    }
+                ],
+                "similarity": 0.10350712431103899,
+                "end_line": 344,
+                "signature": "org.apache.dubbo.config.ServiceConfigBase.setGeneric(String generic): void"
+            },
+            {
+                "start_line": 717,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static <T> T mapToPojo(Map<String, Object> map, Class<T> cls) throws ReflectiveOperationException {\n        T instance = cls.getDeclaredConstructor().newInstance();\n        Map<String, Field> beanPropertyFields = ReflectUtils.getBeanPropertyFields(cls);\n        for (Map.Entry<String, Field> entry : beanPropertyFields.entrySet()) {\n            String name = entry.getKey();\n            Field field = entry.getValue();\n            Object mapObject = map.get(name);\n            if (mapObject == null) {\n                continue;\n            }\n\n            Type type = field.getGenericType();\n            Object fieldObject = getFieldObject(mapObject, type);\n            field.set(instance, fieldObject);\n        }\n\n        return instance;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "mapToPojo",
+                "documentation": "/**\n     * convert map to a specific class instance\n     *\n     * @param map map wait for convert\n     * @param cls the specified class\n     * @param <T> the type of {@code cls}\n     * @return class instance declare in param {@code cls}\n     * @throws ReflectiveOperationException if the instance creation is failed\n     * @since 2.7.10\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "generalize"
+                    },
+                    {
+                        "start_node": "generalize",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "PojoUtils"
+                    },
+                    {
+                        "start_node": "PojoUtils",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "mapToPojo"
+                    }
+                ],
+                "similarity": 0.09666087101338566,
+                "end_line": 734,
+                "signature": "org.apache.dubbo.common.utils.PojoUtils.mapToPojo(Map map, Class cls): T"
+            },
+            {
+                "start_line": 320,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static Object realize0(Object pojo, Class<?> type, Type genericType, final Map<Object, Object> history) {\n        if (pojo == null) {\n            return null;\n        }\n\n        if (type != null && type.isEnum() && pojo.getClass() == String.class) {\n            return Enum.valueOf((Class<Enum>) type, (String) pojo);\n        }\n\n        if (ReflectUtils.isPrimitives(pojo.getClass())\n            && !(type != null && type.isArray()\n            && type.getComponentType().isEnum()\n            && pojo.getClass() == String[].class)) {\n            return CompatibleTypeUtils.compatibleTypeConvert(pojo, type);\n        }\n\n        Object o = history.get(pojo);\n\n        if (o != null) {\n            return o;\n        }\n\n        history.put(pojo, pojo);\n\n        if (pojo.getClass().isArray()) {\n            if (Collection.class.isAssignableFrom(type)) {\n                Class<?> ctype = pojo.getClass().getComponentType();\n                int len = Array.getLength(pojo);\n                Collection dest = createCollection(type, len);\n                history.put(pojo, dest);\n                for (int i = 0; i < len; i++) {\n                    Object obj = Array.get(pojo, i);\n                    Object value = realize0(obj, ctype, null, history);\n                    dest.add(value);\n                }\n                return dest;\n            } else {\n                Class<?> ctype = (type != null && type.isArray() ? type.getComponentType() : pojo.getClass().getComponentType());\n                int len = Array.getLength(pojo);\n                Object dest = Array.newInstance(ctype, len);\n                history.put(pojo, dest);\n                for (int i = 0; i < len; i++) {\n                    Object obj = Array.get(pojo, i);\n                    Object value = realize0(obj, ctype, null, history);\n                    Array.set(dest, i, value);\n                }\n                return dest;\n            }\n        }\n\n        if (pojo instanceof Collection<?>) {\n            if (type.isArray()) {\n                Class<?> ctype = type.getComponentType();\n                Collection<Object> src = (Collection<Object>) pojo;\n                int len = src.size();\n                Object dest = Array.newInstance(ctype, len);\n                history.put(pojo, dest);\n                int i = 0;\n                for (Object obj : src) {\n                    Object value = realize0(obj, ctype, null, history);\n                    Array.set(dest, i, value);\n                    i++;\n                }\n                return dest;\n            } else {\n                Collection<Object> src = (Collection<Object>) pojo;\n                int len = src.size();\n                Collection<Object> dest = createCollection(type, len);\n                history.put(pojo, dest);\n                for (Object obj : src) {\n                    Type keyType = getGenericClassByIndex(genericType, 0);\n                    Class<?> keyClazz = obj == null ? null : obj.getClass();\n                    if (keyType instanceof Class) {\n                        keyClazz = (Class<?>) keyType;\n                    }\n                    Object value = realize0(obj, keyClazz, keyType, history);\n                    dest.add(value);\n                }\n                return dest;\n            }\n        }\n\n        if (pojo instanceof Map<?, ?> && type != null) {\n            Object className = ((Map<Object, Object>) pojo).get(\"class\");\n            if (className instanceof String) {\n                SerializeClassChecker.getInstance().validateClass((String) className);\n                if (!CLASS_NOT_FOUND_CACHE.containsKey(className)) {\n                    try {\n                        type = ClassUtils.forName((String) className);\n                    } catch (ClassNotFoundException e) {\n                        CLASS_NOT_FOUND_CACHE.put((String) className, NOT_FOUND_VALUE);\n                    }\n                }\n            }\n\n            // special logic for enum\n            if (type.isEnum()) {\n                Object name = ((Map<Object, Object>) pojo).get(\"name\");\n                if (name != null) {\n                    if (!(name instanceof String)) {\n                        throw new IllegalArgumentException(\"`name` filed should be string!\");\n                    } else {\n                        return Enum.valueOf((Class<Enum>) type, (String) name);\n                    }\n                }\n            }\n            Map<Object, Object> map;\n            // when return type is not the subclass of return type from the signature and not an interface\n            if (!type.isInterface() && !type.isAssignableFrom(pojo.getClass())) {\n                try {\n                    map = (Map<Object, Object>) type.newInstance();\n                    Map<Object, Object> mapPojo = (Map<Object, Object>) pojo;\n                    map.putAll(mapPojo);\n                    if (GENERIC_WITH_CLZ) {\n                        map.remove(\"class\");\n                    }\n                } catch (Exception e) {\n                    //ignore error\n                    map = (Map<Object, Object>) pojo;\n                }\n            } else {\n                map = (Map<Object, Object>) pojo;\n            }\n\n            if (Map.class.isAssignableFrom(type) || type == Object.class) {\n                final Map<Object, Object> result;\n                // fix issue#5939\n                Type mapKeyType = getKeyTypeForMap(map.getClass());\n                Type typeKeyType = getGenericClassByIndex(genericType, 0);\n                boolean typeMismatch = mapKeyType instanceof Class\n                    && typeKeyType instanceof Class\n                    && !typeKeyType.getTypeName().equals(mapKeyType.getTypeName());\n                if (typeMismatch) {\n                    result = createMap(new HashMap(0));\n                } else {\n                    result = createMap(map);\n                }\n\n                history.put(pojo, result);\n                for (Map.Entry<Object, Object> entry : map.entrySet()) {\n                    Type keyType = getGenericClassByIndex(genericType, 0);\n                    Type valueType = getGenericClassByIndex(genericType, 1);\n                    Class<?> keyClazz;\n                    if (keyType instanceof Class) {\n                        keyClazz = (Class<?>) keyType;\n                    } else if (keyType instanceof ParameterizedType) {\n                        keyClazz = (Class<?>) ((ParameterizedType) keyType).getRawType();\n                    } else {\n                        keyClazz = entry.getKey() == null ? null : entry.getKey().getClass();\n                    }\n                    Class<?> valueClazz;\n                    if (valueType instanceof Class) {\n                        valueClazz = (Class<?>) valueType;\n                    } else if (valueType instanceof ParameterizedType) {\n                        valueClazz = (Class<?>) ((ParameterizedType) valueType).getRawType();\n                    } else {\n                        valueClazz = entry.getValue() == null ? null : entry.getValue().getClass();\n                    }\n\n                    Object key = keyClazz == null ? entry.getKey() : realize0(entry.getKey(), keyClazz, keyType, history);\n                    Object value = valueClazz == null ? entry.getValue() : realize0(entry.getValue(), valueClazz, valueType, history);\n                    result.put(key, value);\n                }\n                return result;\n            } else if (type.isInterface()) {\n                Object dest = Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class<?>[]{type}, new PojoInvocationHandler(map));\n                history.put(pojo, dest);\n                return dest;\n            } else {\n                Object dest;\n                if (Throwable.class.isAssignableFrom(type)) {\n                    Object message = map.get(\"message\");\n                    if (message instanceof String) {\n                        dest = newThrowableInstance(type, (String) message);\n                    } else {\n                        dest = newInstance(type);\n                    }\n                } else {\n                    dest = newInstance(type);\n                }\n\n                history.put(pojo, dest);\n                for (Map.Entry<Object, Object> entry : map.entrySet()) {\n                    Object key = entry.getKey();\n                    if (key instanceof String) {\n                        String name = (String) key;\n                        Object value = entry.getValue();\n                        if (value != null) {\n                            Method method = getSetterMethod(dest.getClass(), name, value.getClass());\n                            Field field = getField(dest.getClass(), name);\n                            if (method != null) {\n                                if (!method.isAccessible()) {\n                                    method.setAccessible(true);\n                                }\n                                Type ptype = method.getGenericParameterTypes()[0];\n                                value = realize0(value, method.getParameterTypes()[0], ptype, history);\n                                try {\n                                    method.invoke(dest, value);\n                                } catch (Exception e) {\n                                    String exceptionDescription = \"Failed to set pojo \" + dest.getClass().getSimpleName() + \" property \" + name\n                                        + \" value \" + value.getClass() + \", cause: \" + e.getMessage();\n                                    logger.error(exceptionDescription, e);\n                                    throw new RuntimeException(exceptionDescription, e);\n                                }\n                            } else if (field != null) {\n                                value = realize0(value, field.getType(), field.getGenericType(), history);\n                                try {\n                                    field.set(dest, value);\n                                } catch (IllegalAccessException e) {\n                                    throw new RuntimeException(\"Failed to set field \" + name + \" of pojo \" + dest.getClass().getName() + \" : \" + e.getMessage(), e);\n                                }\n                            }\n                        }\n                    }\n                }\n                return dest;\n            }\n        }\n        return pojo;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "realize0",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "generalize"
+                    },
+                    {
+                        "start_node": "generalize",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "PojoUtils"
+                    },
+                    {
+                        "start_node": "PojoUtils",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "realize0"
+                    }
+                ],
+                "similarity": 0.09264963494713732,
+                "end_line": 539,
+                "signature": "org.apache.dubbo.common.utils.PojoUtils.realize0(Object pojo, Class type, Type genericType, Map history): Object"
+            },
+            {
+                "start_line": 182,
+                "file_path": "playground/apache__dubbo/dubbo-remoting/dubbo-remoting-netty/src/main/java/org/apache/dubbo/remoting/transport/netty/NettyChannel.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public boolean equals(Object obj) {\n        if (this == obj) {\n            return true;\n        }\n        if (obj == null) {\n            return false;\n        }\n\n        // FIXME: a hack to make org.apache.dubbo.remoting.exchange.support.DefaultFuture.closeChannel work\n        if (obj instanceof NettyClient) {\n            NettyClient client = (NettyClient) obj;\n            return channel.equals(client.getNettyChannel());\n        }\n\n        if (getClass() != obj.getClass()) {\n            return false;\n        }\n        NettyChannel other = (NettyChannel) obj;\n        if (channel == null) {\n            if (other.channel != null) {\n                return false;\n            }\n        } else if (!channel.equals(other.channel)) {\n            return false;\n        }\n        return true;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "equals",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "toString"
+                    },
+                    {
+                        "start_node": "toString",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "NettyChannel"
+                    },
+                    {
+                        "start_node": "NettyChannel",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "equals"
+                    }
+                ],
+                "similarity": 0.09133327654510247,
+                "end_line": 208,
+                "signature": "org.apache.dubbo.remoting.transport.netty.NettyChannel.equals(Object obj): boolean"
+            },
+            {
+                "start_line": 243,
+                "file_path": "playground/apache__dubbo/dubbo-remoting/dubbo-remoting-netty4/src/main/java/org/apache/dubbo/remoting/transport/netty4/NettyChannel.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public boolean equals(Object obj) {\n        if (this == obj) {\n            return true;\n        }\n        if (obj == null) {\n            return false;\n        }\n\n        // FIXME: a hack to make org.apache.dubbo.remoting.exchange.support.DefaultFuture.closeChannel work\n        if (obj instanceof NettyClient) {\n            NettyClient client = (NettyClient) obj;\n            return channel.equals(client.getNettyChannel());\n        }\n\n        if (getClass() != obj.getClass()) {\n            return false;\n        }\n        NettyChannel other = (NettyChannel) obj;\n        if (channel == null) {\n            if (other.channel != null) {\n                return false;\n            }\n        } else if (!channel.equals(other.channel)) {\n            return false;\n        }\n        return true;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "equals",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "toString"
+                    },
+                    {
+                        "start_node": "toString",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "NettyChannel"
+                    },
+                    {
+                        "start_node": "NettyChannel",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "equals"
+                    }
+                ],
+                "similarity": 0.09133327654510247,
+                "end_line": 269,
+                "signature": "org.apache.dubbo.remoting.transport.netty4.NettyChannel.equals(Object obj): boolean"
+            },
+            {
+                "start_line": 95,
+                "file_path": "playground/apache__dubbo/dubbo-remoting/dubbo-remoting-api/src/main/java/org/apache/dubbo/remoting/telnet/codec/TelnetCodec.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static String toString(byte[] message, Charset charset) throws UnsupportedEncodingException {\n        byte[] copy = new byte[message.length];\n        int index = 0;\n        for (int i = 0; i < message.length; i++) {\n            byte b = message[i];\n            if (b == '\\b') { // backspace\n                if (index > 0) {\n                    index--;\n                }\n                if (i > 2 && message[i - 2] < 0) { // double byte char\n                    if (index > 0) {\n                        index--;\n                    }\n                }\n            } else if (b == 27) { // escape\n                if (i < message.length - 4 && message[i + 4] == 126) {\n                    i = i + 4;\n                } else if (i < message.length - 3 && message[i + 3] == 126) {\n                    i = i + 3;\n                } else if (i < message.length - 2) {\n                    i = i + 2;\n                }\n            } else if (b == -1 && i < message.length - 2\n                    && (message[i + 1] == -3 || message[i + 1] == -5)) { // handshake\n                i = i + 2;\n            } else {\n                copy[index++] = message[i];\n            }\n        }\n        if (index == 0) {\n            return \"\";\n        }\n        return new String(copy, 0, index, charset.name()).trim();\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "toString",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "toString"
+                    }
+                ],
+                "similarity": 0.08965487948402524,
+                "end_line": 128,
+                "signature": "org.apache.dubbo.remoting.telnet.codec.TelnetCodec.toString(byte[] message, Charset charset): String"
+            },
+            {
+                "start_line": 171,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/config/ReferenceConfigBase.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Class<?> getServiceInterfaceClass() {\n        Class<?> actualInterface = interfaceClass;\n        if (interfaceClass == GenericService.class) {\n            try {\n                if (getInterfaceClassLoader() != null) {\n                    actualInterface = Class.forName(interfaceName, false, getInterfaceClassLoader());\n                } else {\n                    actualInterface = Class.forName(interfaceName);\n                }\n            } catch (ClassNotFoundException e) {\n                return null;\n            }\n        }\n        return actualInterface;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getServiceInterfaceClass",
+                "documentation": "/**\n     * Get service interface class of this reference.\n     * The actual service type of remote provider.\n     * @return\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setInterface"
+                    },
+                    {
+                        "start_node": "setInterface",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "ReferenceConfigBase"
+                    },
+                    {
+                        "start_node": "ReferenceConfigBase",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getServiceInterfaceClass"
+                    }
+                ],
+                "similarity": 0.08816531938724616,
+                "end_line": 185,
+                "signature": "org.apache.dubbo.config.ReferenceConfigBase.getServiceInterfaceClass(): Class"
+            },
+            {
+                "start_line": 279,
+                "file_path": "playground/apache__dubbo/dubbo-remoting/dubbo-remoting-api/src/main/java/org/apache/dubbo/remoting/transport/AbstractClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void close() {\n        if (isClosed()) {\n            logger.warn(\"No need to close connection to server \" + getRemoteAddress() + \" from \" + getClass().getSimpleName() + \" \" + NetUtils.getLocalHost() + \" using dubbo version \" + Version.getVersion() + \", cause: the client status is closed.\");\n            return;\n        }\n\n        connectLock.lock();\n        try {\n            if (isClosed()) {\n                logger.warn(\"No need to close connection to server \" + getRemoteAddress() + \" from \" + getClass().getSimpleName() + \" \" + NetUtils.getLocalHost() + \" using dubbo version \" + Version.getVersion() + \", cause: the client status is closed.\");\n                return;\n            }\n\n            try {\n                super.close();\n            } catch (Throwable e) {\n                logger.warn(e.getMessage(), e);\n            }\n\n            try {\n                disconnect();\n            } catch (Throwable e) {\n                logger.warn(e.getMessage(), e);\n            }\n\n            try {\n                doClose();\n            } catch (Throwable e) {\n                logger.warn(e.getMessage(), e);\n            }\n\n        } finally {\n            connectLock.unlock();\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "close",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "toString"
+                    },
+                    {
+                        "start_node": "toString",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "AbstractClient"
+                    },
+                    {
+                        "start_node": "AbstractClient",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "close"
+                    }
+                ],
+                "similarity": 0.08771191866749163,
+                "end_line": 313,
+                "signature": "org.apache.dubbo.remoting.transport.AbstractClient.close(): void"
+            },
+            {
+                "start_line": 231,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/config/ServiceConfigBase.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void convertProtocolIdsToProtocols() {\n        if (StringUtils.isEmpty(protocolIds)) {\n            if (CollectionUtils.isEmpty(protocols)) {\n                List<ProtocolConfig> protocolConfigs = getConfigManager().getDefaultProtocols();\n                if (protocolConfigs.isEmpty()) {\n                    throw new IllegalStateException(\"The default protocol has not been initialized.\");\n                }\n                setProtocols(protocolConfigs);\n            }\n        } else {\n            String[] idsArray = COMMA_SPLIT_PATTERN.split(protocolIds);\n            Set<String> idsSet = new LinkedHashSet<>(Arrays.asList(idsArray));\n            List<ProtocolConfig> tmpProtocols = new ArrayList<>();\n            for (String id : idsSet) {\n                Optional<ProtocolConfig> globalProtocol = getConfigManager().getProtocol(id);\n                if (globalProtocol.isPresent()) {\n                    tmpProtocols.add(globalProtocol.get());\n                } else {\n                    throw new IllegalStateException(\"Protocol not found: \"+id);\n                }\n            }\n            setProtocols(tmpProtocols);\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "convertProtocolIdsToProtocols",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setInterface"
+                    },
+                    {
+                        "start_node": "setInterface",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ServiceConfigBase"
+                    },
+                    {
+                        "start_node": "ServiceConfigBase",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "convertProtocolIdsToProtocols"
+                    }
+                ],
+                "similarity": 0.0871997694464494,
+                "end_line": 254,
+                "signature": "org.apache.dubbo.config.ServiceConfigBase.convertProtocolIdsToProtocols(): void"
+            },
+            {
+                "start_line": 673,
+                "file_path": "playground/apache__dubbo/dubbo-config/dubbo-config-api/src/main/java/org/apache/dubbo/config/ReferenceConfig.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void checkAndUpdateSubConfigs() {\n        if (StringUtils.isEmpty(interfaceName)) {\n            throw new IllegalStateException(\"<dubbo:reference interface=\\\"\\\" /> interface not allow null!\");\n        }\n\n        // get consumer's global configuration\n        completeCompoundConfigs();\n\n        // init some null configuration.\n        List<ConfigInitializer> configInitializers = this.getExtensionLoader(ConfigInitializer.class)\n                .getActivateExtension(URL.valueOf(\"configInitializer://\"), (String[]) null);\n        configInitializers.forEach(e -> e.initReferConfig(this));\n\n        if (getGeneric() == null && getConsumer() != null) {\n            setGeneric(getConsumer().getGeneric());\n        }\n        if (ProtocolUtils.isGeneric(generic)) {\n            if (interfaceClass != null && !interfaceClass.equals(GenericService.class)) {\n                logger.warn(CONFIG_PROPERTY_CONFLICT, \"\", \"\", String.format(\"Found conflicting attributes for interface type: [interfaceClass=%s] and [generic=%s], \" +\n                        \"because the 'generic' attribute has higher priority than 'interfaceClass', so change 'interfaceClass' to '%s'. \" +\n                        \"Note: it will make this reference bean as a candidate bean of type '%s' instead of '%s' when resolving dependency in Spring.\",\n                    interfaceClass.getName(), generic, GenericService.class.getName(), GenericService.class.getName(), interfaceClass.getName()));\n            }\n            interfaceClass = GenericService.class;\n        } else {\n            try {\n                if (getInterfaceClassLoader() != null && (interfaceClass == null || interfaceClass.getClassLoader() != getInterfaceClassLoader())) {\n                    interfaceClass = Class.forName(interfaceName, true, getInterfaceClassLoader());\n                } else if (interfaceClass == null) {\n                    interfaceClass = Class.forName(interfaceName, true, Thread.currentThread()\n                            .getContextClassLoader());\n                }\n            } catch (ClassNotFoundException e) {\n                throw new IllegalStateException(e.getMessage(), e);\n            }\n        }\n\n        checkStubAndLocal(interfaceClass);\n        ConfigValidationUtils.checkMock(interfaceClass, this);\n\n        resolveFile();\n        ConfigValidationUtils.validateReferenceConfig(this);\n        postProcessConfig();\n    }",
+                "distance": 2.0,
+                "title": null,
+                "name": "checkAndUpdateSubConfigs",
+                "documentation": "/**\n     * This method should be called right after the creation of this class's instance, before any property in other config modules is used.\n     * Check each config modules are created properly and override their properties if necessary.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setGeneric"
+                    },
+                    {
+                        "start_node": "setGeneric",
+                        "description": "called by method",
+                        "type": "RELATED",
+                        "end_node": "checkAndUpdateSubConfigs"
+                    }
+                ],
+                "similarity": 0.08669727309559225,
+                "end_line": 716,
+                "signature": "org.apache.dubbo.config.ReferenceConfig.checkAndUpdateSubConfigs(): void"
+            },
+            {
+                "start_line": 663,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static Field getField(Class<?> cls, String fieldName) {\n        Field result = null;\n        if (CLASS_FIELD_CACHE.containsKey(cls) && CLASS_FIELD_CACHE.get(cls).containsKey(fieldName)) {\n            return CLASS_FIELD_CACHE.get(cls).get(fieldName);\n        }\n        try {\n            result = cls.getDeclaredField(fieldName);\n            result.setAccessible(true);\n        } catch (NoSuchFieldException e) {\n            for (Field field : cls.getFields()) {\n                if (fieldName.equals(field.getName()) && ReflectUtils.isPublicInstanceField(field)) {\n                    result = field;\n                    break;\n                }\n            }\n        }\n        if (result != null) {\n            ConcurrentMap<String, Field> fields = CLASS_FIELD_CACHE.computeIfAbsent(cls, k -> new ConcurrentHashMap<>());\n            fields.putIfAbsent(fieldName, result);\n        }\n        return result;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getField",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "generalize"
+                    },
+                    {
+                        "start_node": "generalize",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "PojoUtils"
+                    },
+                    {
+                        "start_node": "PojoUtils",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "getField"
+                    }
+                ],
+                "similarity": 0.08569722255607364,
+                "end_line": 684,
+                "signature": "org.apache.dubbo.common.utils.PojoUtils.getField(Class cls, String fieldName): Field"
+            },
+            {
+                "start_line": 158,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/config/AbstractReferenceConfig.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void setGeneric(Boolean generic) {\n        if (generic != null) {\n            this.generic = generic.toString();\n        }\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "setGeneric",
+                "documentation": "/**\n     * @deprecated Replace to {@link AbstractReferenceConfig#setGeneric(String)}\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setGeneric"
+                    }
+                ],
+                "similarity": 0.08406755468634715,
+                "end_line": 162,
+                "signature": "org.apache.dubbo.config.AbstractReferenceConfig.setGeneric(Boolean generic): void"
+            },
+            {
+                "start_line": 280,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/config/ReferenceConfigBase.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void resolveFile() {\n        String resolve = System.getProperty(interfaceName);\n        String resolveFile = null;\n        if (StringUtils.isEmpty(resolve)) {\n            resolveFile = System.getProperty(\"dubbo.resolve.file\");\n            if (StringUtils.isEmpty(resolveFile)) {\n                File userResolveFile = new File(new File(System.getProperty(\"user.home\")), \"dubbo-resolve.properties\");\n                if (userResolveFile.exists()) {\n                    resolveFile = userResolveFile.getAbsolutePath();\n                }\n            }\n            if (resolveFile != null && resolveFile.length() > 0) {\n                Properties properties = new RegexProperties();\n                try (FileInputStream fis = new FileInputStream(resolveFile)) {\n                    properties.load(fis);\n                } catch (IOException e) {\n                    throw new IllegalStateException(\"Failed to load \" + resolveFile + \", cause: \" + e.getMessage(), e);\n                }\n\n                resolve = properties.getProperty(interfaceName);\n            }\n        }\n        if (StringUtils.isNotEmpty(resolve)) {\n            url = resolve;\n            if (logger.isWarnEnabled()) {\n                if (resolveFile != null) {\n                    logger.warn(\"Using default dubbo resolve file \" + resolveFile + \" replace \" + interfaceName + \"\" + resolve + \" to p2p invoke remote service.\");\n                } else {\n                    logger.warn(\"Using -D\" + interfaceName + \"=\" + resolve + \" to p2p invoke remote service.\");\n                }\n            }\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "resolveFile",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setInterface"
+                    },
+                    {
+                        "start_node": "setInterface",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "ReferenceConfigBase"
+                    },
+                    {
+                        "start_node": "ReferenceConfigBase",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "resolveFile"
+                    }
+                ],
+                "similarity": 0.08284699918589422,
+                "end_line": 312,
+                "signature": "org.apache.dubbo.config.ReferenceConfigBase.resolveFile(): void"
+            },
+            {
+                "start_line": 278,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static Map createMap(Map src) {\n        Class<? extends Map> cl = src.getClass();\n        Map result = null;\n        if (HashMap.class == cl) {\n            result = new HashMap();\n        } else if (Hashtable.class == cl) {\n            result = new Hashtable();\n        } else if (IdentityHashMap.class == cl) {\n            result = new IdentityHashMap();\n        } else if (LinkedHashMap.class == cl) {\n            result = new LinkedHashMap();\n        } else if (Properties.class == cl) {\n            result = new Properties();\n        } else if (TreeMap.class == cl) {\n            result = new TreeMap();\n        } else if (WeakHashMap.class == cl) {\n            return new WeakHashMap();\n        } else if (ConcurrentHashMap.class == cl) {\n            result = new ConcurrentHashMap();\n        } else if (ConcurrentSkipListMap.class == cl) {\n            result = new ConcurrentSkipListMap();\n        } else {\n            try {\n                result = cl.newInstance();\n            } catch (Exception e) { /* ignore */ }\n\n            if (result == null) {\n                try {\n                    Constructor<?> constructor = cl.getConstructor(Map.class);\n                    result = (Map) constructor.newInstance(Collections.EMPTY_MAP);\n                } catch (Exception e) { /* ignore */ }\n            }\n        }\n\n        if (result == null) {\n            result = new HashMap<Object, Object>();\n        }\n\n        return result;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "createMap",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "generalize"
+                    },
+                    {
+                        "start_node": "generalize",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "PojoUtils"
+                    },
+                    {
+                        "start_node": "PojoUtils",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "createMap"
+                    }
+                ],
+                "similarity": 0.08271516211384264,
+                "end_line": 317,
+                "signature": "org.apache.dubbo.common.utils.PojoUtils.createMap(Map src): Map"
+            },
+            {
+                "start_line": 185,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/config/ServiceConfigBase.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Map<String, String> getMetaData(String prefix) {\n        Map<String, String> metaData = new HashMap<>();\n        ProviderConfig provider = this.getProvider();\n        // provider should be initialized at preProcessRefresh()\n        if (isRefreshed() && provider == null) {\n            throw new IllegalStateException(\"Provider is not initialized\");\n        }\n        // use provider attributes as default value\n        appendAttributes(metaData, provider, prefix);\n        // Finally, put the service's attributes, overriding previous attributes\n        appendAttributes(metaData, this, prefix);\n        return metaData;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getMetaData",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setInterface"
+                    },
+                    {
+                        "start_node": "setInterface",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ServiceConfigBase"
+                    },
+                    {
+                        "start_node": "ServiceConfigBase",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getMetaData"
+                    }
+                ],
+                "similarity": 0.08267193549788854,
+                "end_line": 197,
+                "signature": "org.apache.dubbo.config.ServiceConfigBase.getMetaData(String prefix): Map"
+            },
+            {
+                "start_line": 155,
+                "file_path": "playground/apache__dubbo/dubbo-remoting/dubbo-remoting-netty4/src/main/java/org/apache/dubbo/remoting/transport/netty4/NettyChannel.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void send(Object message, boolean sent) throws RemotingException {\n        // whether the channel is closed\n        super.send(message, sent);\n\n        boolean success = true;\n        int timeout = 0;\n        try {\n            ChannelFuture future = channel.writeAndFlush(message);\n            if (sent) {\n                // wait timeout ms\n                timeout = getUrl().getPositiveParameter(TIMEOUT_KEY, DEFAULT_TIMEOUT);\n                success = future.await(timeout);\n            }\n            Throwable cause = future.cause();\n            if (cause != null) {\n                throw cause;\n            }\n        } catch (Throwable e) {\n            removeChannelIfDisconnected(channel);\n            throw new RemotingException(this, \"Failed to send message \" + PayloadDropper.getRequestWithoutData(message) + \" to \" + getRemoteAddress() + \", cause: \" + e.getMessage(), e);\n        }\n        if (!success) {\n            throw new RemotingException(this, \"Failed to send message \" + PayloadDropper.getRequestWithoutData(message) + \" to \" + getRemoteAddress()\n                    + \"in timeout(\" + timeout + \"ms) limit\");\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "send",
+                "documentation": "/**\n     * Send message by netty and whether to wait the completion of the send.\n     *\n     * @param message message that need send.\n     * @param sent    whether to ack async-sent\n     * @throws RemotingException throw RemotingException if wait until timeout or any exception thrown by method body that surrounded by try-catch.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "toString"
+                    },
+                    {
+                        "start_node": "toString",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "NettyChannel"
+                    },
+                    {
+                        "start_node": "NettyChannel",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "send"
+                    }
+                ],
+                "similarity": 0.08183912529420213,
+                "end_line": 180,
+                "signature": "org.apache.dubbo.remoting.transport.netty4.NettyChannel.send(Object message, boolean sent): void"
+            },
+            {
+                "start_line": 94,
+                "file_path": "playground/apache__dubbo/dubbo-remoting/dubbo-remoting-api/src/main/java/org/apache/dubbo/remoting/api/Connection.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private Bootstrap create() {\n        final Bootstrap bootstrap = new Bootstrap();\n        bootstrap.group(NettyEventLoopFactory.NIO_EVENT_LOOP_GROUP.get())\n            .option(ChannelOption.SO_KEEPALIVE, true)\n            .option(ChannelOption.TCP_NODELAY, true)\n            .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)\n            .remoteAddress(remote)\n            .channel(socketChannelClass());\n\n        final ConnectionHandler connectionHandler = new ConnectionHandler(this);\n        bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeout);\n        bootstrap.handler(new ChannelInitializer<SocketChannel>() {\n\n            @Override\n            protected void initChannel(SocketChannel ch) {\n                final ChannelPipeline pipeline = ch.pipeline();\n                SslContext sslContext = null;\n                if (getUrl().getParameter(SSL_ENABLED_KEY, false)) {\n                    pipeline.addLast(\"negotiation\", new SslClientTlsHandler(url));\n                }\n\n                //.addLast(\"logging\",new LoggingHandler(LogLevel.INFO))//for debug\n                // TODO support IDLE\n//                int heartbeatInterval = UrlUtils.getHeartbeat(getUrl());\n                pipeline.addLast(connectionHandler);\n                protocol.configClientPipeline(url, pipeline, sslContext);\n                // TODO support Socks5\n            }\n        });\n        return bootstrap;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "create",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "toString"
+                    },
+                    {
+                        "start_node": "toString",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Connection"
+                    },
+                    {
+                        "start_node": "Connection",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "create"
+                    }
+                ],
+                "similarity": 0.08165865406777603,
+                "end_line": 124,
+                "signature": "org.apache.dubbo.remoting.api.Connection.create(): Bootstrap"
+            },
+            {
+                "start_line": 219,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/config/ReferenceConfigBase.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static Class<?> determineInterfaceClass(String generic, String interfaceName, ClassLoader classLoader) {\n        if (ProtocolUtils.isGeneric(generic)) {\n            return GenericService.class;\n        }\n        try {\n            if (StringUtils.isNotEmpty(interfaceName)) {\n                return Class.forName(interfaceName, true, classLoader);\n            }\n        } catch (ClassNotFoundException t) {\n            throw new IllegalStateException(t.getMessage(), t);\n        }\n        return null;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "determineInterfaceClass",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setInterface"
+                    },
+                    {
+                        "start_node": "setInterface",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "ReferenceConfigBase"
+                    },
+                    {
+                        "start_node": "ReferenceConfigBase",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "determineInterfaceClass"
+                    }
+                ],
+                "similarity": 0.08010786940785257,
+                "end_line": 231,
+                "signature": "org.apache.dubbo.config.ReferenceConfigBase.determineInterfaceClass(String generic, String interfaceName, ClassLoader classLoader): Class"
+            },
+            {
+                "start_line": 626,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static Object getDefaultValue(Class<?> parameterType) {\n        if (\"char\".equals(parameterType.getName())) {\n            return Character.MIN_VALUE;\n        }\n        if (\"boolean\".equals(parameterType.getName())) {\n            return false;\n        }\n        if (\"byte\".equals(parameterType.getName())) {\n            return (byte) 0;\n        }\n        if (\"short\".equals(parameterType.getName())) {\n            return (short) 0;\n        }\n        return parameterType.isPrimitive() ? 0 : null;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getDefaultValue",
+                "documentation": "/**\n     * return init value\n     *\n     * @param parameterType\n     * @return\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "generalize"
+                    },
+                    {
+                        "start_node": "generalize",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "PojoUtils"
+                    },
+                    {
+                        "start_node": "PojoUtils",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getDefaultValue"
+                    }
+                ],
+                "similarity": 0.07992779611010398,
+                "end_line": 640,
+                "signature": "org.apache.dubbo.common.utils.PojoUtils.getDefaultValue(Class parameterType): Object"
+            },
+            {
+                "start_line": 256,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/config/ServiceConfigBase.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Class<?> getInterfaceClass() {\n        if (interfaceClass != null) {\n            return interfaceClass;\n        }\n        if (ref instanceof GenericService) {\n            return GenericService.class;\n        }\n        try {\n            if (StringUtils.isNotEmpty(interfaceName)) {\n                this.interfaceClass = Class.forName(interfaceName, true, Thread.currentThread()\n                        .getContextClassLoader());\n            }\n        } catch (ClassNotFoundException t) {\n            throw new IllegalStateException(t.getMessage(), t);\n        }\n        return interfaceClass;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getInterfaceClass",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setInterface"
+                    },
+                    {
+                        "start_node": "setInterface",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ServiceConfigBase"
+                    },
+                    {
+                        "start_node": "ServiceConfigBase",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getInterfaceClass"
+                    }
+                ],
+                "similarity": 0.07977922238768041,
+                "end_line": 272,
+                "signature": "org.apache.dubbo.config.ServiceConfigBase.getInterfaceClass(): Class"
+            },
+            {
+                "start_line": 192,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/config/ReferenceConfigBase.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Class<?> getInterfaceClass() {\n        if (interfaceClass != null) {\n            return interfaceClass;\n        }\n\n        String generic = getGeneric();\n        if (StringUtils.isBlank(generic) && getConsumer() != null) {\n            generic = getConsumer().getGeneric();\n        }\n        if (getInterfaceClassLoader() != null) {\n            interfaceClass = determineInterfaceClass(generic, interfaceName, getInterfaceClassLoader());\n        } else {\n            interfaceClass = determineInterfaceClass(generic, interfaceName);\n        }\n        return interfaceClass;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getInterfaceClass",
+                "documentation": "/**\n     * Get proxy interface class of this reference.\n     * The proxy interface class is used to create proxy instance.\n     * @return\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setInterface"
+                    },
+                    {
+                        "start_node": "setInterface",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "ReferenceConfigBase"
+                    },
+                    {
+                        "start_node": "ReferenceConfigBase",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getInterfaceClass"
+                    }
+                ],
+                "similarity": 0.07958898908837173,
+                "end_line": 207,
+                "signature": "org.apache.dubbo.config.ReferenceConfigBase.getInterfaceClass(): Class"
+            },
+            {
+                "start_line": 570,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static Type getGenericClassByIndex(Type genericType, int index) {\n        Type clazz = null;\n        // find parameterized type\n        if (genericType instanceof ParameterizedType) {\n            ParameterizedType t = (ParameterizedType) genericType;\n            Type[] types = t.getActualTypeArguments();\n            clazz = types[index];\n        }\n        return clazz;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getGenericClassByIndex",
+                "documentation": "/**\n     * Get parameterized type\n     *\n     * @param genericType generic type\n     * @param index       index of the target parameterized type\n     * @return Return Person.class for List<Person>, return Person.class for Map<String, Person> when index=0\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "generalize"
+                    },
+                    {
+                        "start_node": "generalize",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "PojoUtils"
+                    },
+                    {
+                        "start_node": "PojoUtils",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getGenericClassByIndex"
+                    }
+                ],
+                "similarity": 0.07930174569219514,
+                "end_line": 579,
+                "signature": "org.apache.dubbo.common.utils.PojoUtils.getGenericClassByIndex(Type genericType, int index): Type"
+            },
+            {
+                "start_line": 84,
+                "file_path": "playground/apache__dubbo/dubbo-filter/dubbo-filter-cache/src/main/java/org/apache/dubbo/cache/support/expiring/ExpiringMap.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public V get(Object key) {\n        ExpiryObject object = delegateMap.get(key);\n        if (object != null) {\n            long timeIdle = System.currentTimeMillis() - object.getLastAccessTime();\n            int timeToLive = expireThread.getTimeToLive();\n            if (timeToLive > 0 && timeIdle >= timeToLive * 1000) {\n                delegateMap.remove(object.getKey());\n                return null;\n            }\n            object.setLastAccessTime(System.currentTimeMillis());\n            return object.getValue();\n        }\n        return null;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "get",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "toString"
+                    },
+                    {
+                        "start_node": "toString",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "ExpiringMap"
+                    },
+                    {
+                        "start_node": "ExpiringMap",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "get"
+                    }
+                ],
+                "similarity": 0.07909998651893696,
+                "end_line": 97,
+                "signature": "org.apache.dubbo.cache.support.expiring.ExpiringMap.get(Object key): V"
+            },
+            {
+                "start_line": 97,
+                "file_path": "playground/apache__dubbo/dubbo-remoting/dubbo-remoting-netty/src/main/java/org/apache/dubbo/remoting/transport/netty/NettyChannel.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public void send(Object message, boolean sent) throws RemotingException {\n        super.send(message, sent);\n\n        boolean success = true;\n        int timeout = 0;\n        try {\n            ChannelFuture future = channel.write(message);\n            if (sent) {\n                timeout = getUrl().getPositiveParameter(TIMEOUT_KEY, DEFAULT_TIMEOUT);\n                success = future.await(timeout);\n            }\n            Throwable cause = future.getCause();\n            if (cause != null) {\n                throw cause;\n            }\n        } catch (Throwable e) {\n            throw new RemotingException(this, \"Failed to send message \" + PayloadDropper.getRequestWithoutData(message) + \" to \" + getRemoteAddress() + \", cause: \" + e.getMessage(), e);\n        }\n\n        if (!success) {\n            throw new RemotingException(this, \"Failed to send message \" + PayloadDropper.getRequestWithoutData(message) + \" to \" + getRemoteAddress()\n                    + \"in timeout(\" + timeout + \"ms) limit\");\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "send",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "toString"
+                    },
+                    {
+                        "start_node": "toString",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "NettyChannel"
+                    },
+                    {
+                        "start_node": "NettyChannel",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "send"
+                    }
+                ],
+                "similarity": 0.07909641584650179,
+                "end_line": 120,
+                "signature": "org.apache.dubbo.remoting.transport.netty.NettyChannel.send(Object message, boolean sent): void"
+            },
+            {
+                "start_line": 302,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/NetUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static String filterLocalHost(String host) {\n        if (host == null || host.length() == 0) {\n            return host;\n        }\n        if (host.contains(\"://\")) {\n            URL u = URL.valueOf(host);\n            if (NetUtils.isInvalidLocalHost(u.getHost())) {\n                return u.setHost(NetUtils.getLocalHost()).toFullString();\n            }\n        } else if (host.contains(\":\")) {\n            int i = host.lastIndexOf(':');\n            if (NetUtils.isInvalidLocalHost(host.substring(0, i))) {\n                return NetUtils.getLocalHost() + host.substring(i);\n            }\n        } else {\n            if (NetUtils.isInvalidLocalHost(host)) {\n                return NetUtils.getLocalHost();\n            }\n        }\n        return host;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "filterLocalHost",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setInterface"
+                    },
+                    {
+                        "start_node": "setInterface",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "NetUtils"
+                    },
+                    {
+                        "start_node": "NetUtils",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "filterLocalHost"
+                    }
+                ],
+                "similarity": 0.07870360561549856,
+                "end_line": 322,
+                "signature": "org.apache.dubbo.common.utils.NetUtils.filterLocalHost(String host): String"
+            },
+            {
+                "start_line": 642,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static Method getSetterMethod(Class<?> cls, String property, Class<?> valueCls) {\n        String name = \"set\" + property.substring(0, 1).toUpperCase() + property.substring(1);\n        Method method = NAME_METHODS_CACHE.get(cls.getName() + \".\" + name + \"(\" + valueCls.getName() + \")\");\n        if (method == null) {\n            try {\n                method = cls.getMethod(name, valueCls);\n            } catch (NoSuchMethodException e) {\n                for (Method m : cls.getMethods()) {\n                    if (ReflectUtils.isBeanPropertyWriteMethod(m) && m.getName().equals(name)) {\n                        method = m;\n                        break;\n                    }\n                }\n            }\n            if (method != null) {\n                NAME_METHODS_CACHE.put(cls.getName() + \".\" + name + \"(\" + valueCls.getName() + \")\", method);\n            }\n        }\n        return method;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getSetterMethod",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "generalize"
+                    },
+                    {
+                        "start_node": "generalize",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "PojoUtils"
+                    },
+                    {
+                        "start_node": "PojoUtils",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "getSetterMethod"
+                    }
+                ],
+                "similarity": 0.07696954031520191,
+                "end_line": 661,
+                "signature": "org.apache.dubbo.common.utils.PojoUtils.getSetterMethod(Class cls, String property, Class valueCls): Method"
+            },
+            {
+                "start_line": 261,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static Collection<Object> createCollection(Class<?> type, int len) {\n        if (type.isAssignableFrom(ArrayList.class)) {\n            return new ArrayList<Object>(len);\n        }\n        if (type.isAssignableFrom(HashSet.class)) {\n            return new HashSet<Object>(len);\n        }\n        if (!type.isInterface() && !Modifier.isAbstract(type.getModifiers())) {\n            try {\n                return (Collection<Object>) type.newInstance();\n            } catch (Exception e) {\n                // ignore\n            }\n        }\n        return new ArrayList<Object>();\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "createCollection",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "generalize"
+                    },
+                    {
+                        "start_node": "generalize",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "PojoUtils"
+                    },
+                    {
+                        "start_node": "PojoUtils",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "createCollection"
+                    }
+                ],
+                "similarity": 0.0769200920871861,
+                "end_line": 276,
+                "signature": "org.apache.dubbo.common.utils.PojoUtils.createCollection(Class type, int len): Collection"
+            },
+            {
+                "start_line": 153,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/config/ReferenceConfigBase.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Map<String, String> getMetaData(String prefix) {\n        Map<String, String> metaData = new HashMap<>();\n        ConsumerConfig consumer = this.getConsumer();\n        // consumer should be initialized at preProcessRefresh()\n        if (isRefreshed() && consumer == null) {\n            throw new IllegalStateException(\"Consumer is not initialized\");\n        }\n        // use consumer attributes as default value\n        appendAttributes(metaData, consumer, prefix);\n        appendAttributes(metaData, this, prefix);\n        return metaData;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getMetaData",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setInterface"
+                    },
+                    {
+                        "start_node": "setInterface",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "ReferenceConfigBase"
+                    },
+                    {
+                        "start_node": "ReferenceConfigBase",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getMetaData"
+                    }
+                ],
+                "similarity": 0.07676707680226688,
+                "end_line": 164,
+                "signature": "org.apache.dubbo.config.ReferenceConfigBase.getMetaData(String prefix): Map"
+            },
+            {
+                "start_line": 57,
+                "file_path": "playground/apache__dubbo/dubbo-remoting/dubbo-remoting-api/src/main/java/org/apache/dubbo/remoting/transport/AbstractClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public AbstractClient(URL url, ChannelHandler handler) throws RemotingException {\n        super(url, handler);\n        // set default needReconnect true when channel is not connected\n        needReconnect = url.getParameter(Constants.SEND_RECONNECT_KEY, true);\n\n        initExecutor(url);\n\n        try {\n            doOpen();\n        } catch (Throwable t) {\n            close();\n            throw new RemotingException(url.toInetSocketAddress(), null,\n                \"Failed to start \" + getClass().getSimpleName() + \" \" + NetUtils.getLocalAddress()\n                    + \" connect to the server \" + getRemoteAddress() + \", cause: \" + t.getMessage(), t);\n        }\n\n        try {\n            // connect.\n            connect();\n            if (logger.isInfoEnabled()) {\n                logger.info(\"Start \" + getClass().getSimpleName() + \" \" + NetUtils.getLocalAddress() + \" connect to the server \" + getRemoteAddress());\n            }\n        } catch (RemotingException t) {\n            // If lazy connect client fails to establish a connection, the client instance will still be created,\n            // and the reconnection will be initiated by ReconnectTask, so there is no need to throw an exception\n            if (url.getParameter(LAZY_CONNECT_KEY, false)) {\n                logger.warn(\"Failed to start \" + getClass().getSimpleName() + \" \" + NetUtils.getLocalAddress() +\n                    \" connect to the server \" + getRemoteAddress() +\n                    \" (the connection request is initiated by lazy connect client, ignore and retry later!), cause: \" +\n                    t.getMessage(), t);\n                return;\n            }\n\n            if (url.getParameter(Constants.CHECK_KEY, true)) {\n                close();\n                throw t;\n            } else {\n                logger.warn(\"Failed to start \" + getClass().getSimpleName() + \" \" + NetUtils.getLocalAddress()\n                    + \" connect to the server \" + getRemoteAddress() + \" (check == false, ignore and retry later!), cause: \" + t.getMessage(), t);\n            }\n        } catch (Throwable t) {\n            close();\n            throw new RemotingException(url.toInetSocketAddress(), null,\n                \"Failed to start \" + getClass().getSimpleName() + \" \" + NetUtils.getLocalAddress()\n                    + \" connect to the server \" + getRemoteAddress() + \", cause: \" + t.getMessage(), t);\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "AbstractClient",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "toString"
+                    },
+                    {
+                        "start_node": "toString",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "AbstractClient"
+                    },
+                    {
+                        "start_node": "AbstractClient",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "AbstractClient"
+                    }
+                ],
+                "similarity": 0.07670496593882817,
+                "end_line": 103,
+                "signature": "org.apache.dubbo.remoting.transport.AbstractClient(URL url, ChannelHandler handler)"
+            },
+            {
+                "start_line": 369,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/NetUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static InetAddress getLocalAddress0() {\n        InetAddress localAddress = null;\n\n        // @since 2.7.6, choose the {@link NetworkInterface} first\n        try {\n            NetworkInterface networkInterface = findNetworkInterface();\n            Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();\n            while (addresses.hasMoreElements()) {\n                Optional<InetAddress> addressOp = toValidAddress(addresses.nextElement());\n                if (addressOp.isPresent()) {\n                    try {\n                        if (addressOp.get().isReachable(100)) {\n                            return addressOp.get();\n                        }\n                    } catch (IOException e) {\n                        // ignore\n                    }\n                }\n            }\n        } catch (Throwable e) {\n            logger.warn(e);\n        }\n\n        try {\n            localAddress = InetAddress.getLocalHost();\n            Optional<InetAddress> addressOp = toValidAddress(localAddress);\n            if (addressOp.isPresent()) {\n                return addressOp.get();\n            }\n        } catch (Throwable e) {\n            logger.warn(e);\n        }\n\n        localAddress = getLocalAddressV6();\n\n        return localAddress;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getLocalAddress0",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setInterface"
+                    },
+                    {
+                        "start_node": "setInterface",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "NetUtils"
+                    },
+                    {
+                        "start_node": "NetUtils",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getLocalAddress0"
+                    }
+                ],
+                "similarity": 0.07667836685438485,
+                "end_line": 405,
+                "signature": "org.apache.dubbo.common.utils.NetUtils.getLocalAddress0(): InetAddress"
+            },
+            {
+                "start_line": 590,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static Object newInstance(Class<?> cls) {\n        try {\n            return cls.newInstance();\n        } catch (Throwable t) {\n            Constructor<?>[] constructors = cls.getDeclaredConstructors();\n            /*\n              From Javadoc java.lang.Class#getDeclaredConstructors\n              This method returns an array of Constructor objects reflecting all the constructors\n              declared by the class represented by this Class object.\n              This method returns an array of length 0,\n              if this Class object represents an interface, a primitive type, an array class, or void.\n             */\n            if (constructors.length == 0) {\n                throw new RuntimeException(\"Illegal constructor: \" + cls.getName());\n            }\n            Throwable lastError = null;\n            Arrays.sort(constructors, Comparator.comparingInt(a -> a.getParameterTypes().length));\n            for (Constructor<?> constructor : constructors) {\n                try {\n                    constructor.setAccessible(true);\n                    Object[] parameters = Arrays.stream(constructor.getParameterTypes()).map(PojoUtils::getDefaultValue).toArray();\n                    return constructor.newInstance(parameters);\n                } catch (Throwable e) {\n                    lastError = e;\n                }\n            }\n            throw new RuntimeException(lastError.getMessage(), lastError);\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "newInstance",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "generalize"
+                    },
+                    {
+                        "start_node": "generalize",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "PojoUtils"
+                    },
+                    {
+                        "start_node": "PojoUtils",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "newInstance"
+                    }
+                ],
+                "similarity": 0.07631249004062796,
+                "end_line": 618,
+                "signature": "org.apache.dubbo.common.utils.PojoUtils.newInstance(Class cls): Object"
+            },
+            {
+                "start_line": 548,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static Type getKeyTypeForMap(Class<?> clazz) {\n        Type[] interfaces = clazz.getGenericInterfaces();\n        if (!ArrayUtils.isEmpty(interfaces)) {\n            for (Type type : interfaces) {\n                if (type instanceof ParameterizedType) {\n                    ParameterizedType t = (ParameterizedType) type;\n                    if (\"java.util.Map\".equals(t.getRawType().getTypeName())) {\n                        return t.getActualTypeArguments()[0];\n                    }\n                }\n            }\n        }\n        return null;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getKeyTypeForMap",
+                "documentation": "/**\n     * Get key type for {@link Map} directly implemented by {@code clazz}.\n     * If {@code clazz} does not implement {@link Map} directly, return {@code null}.\n     *\n     * @param clazz {@link Class}\n     * @return Return String.class for {@link com.alibaba.fastjson.JSONObject}\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "generalize"
+                    },
+                    {
+                        "start_node": "generalize",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "PojoUtils"
+                    },
+                    {
+                        "start_node": "PojoUtils",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getKeyTypeForMap"
+                    }
+                ],
+                "similarity": 0.07568683353555439,
+                "end_line": 561,
+                "signature": "org.apache.dubbo.common.utils.PojoUtils.getKeyTypeForMap(Class clazz): Type"
+            },
+            {
+                "start_line": 108,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static Object[] realize(Object[] objs, Class<?>[] types, Type[] gtypes) {\n        if (objs.length != types.length || objs.length != gtypes.length) {\n            throw new IllegalArgumentException(\"args.length != types.length\");\n        }\n        Object[] dests = new Object[objs.length];\n        for (int i = 0; i < objs.length; i++) {\n            dests[i] = realize(objs[i], types[i], gtypes[i]);\n        }\n        return dests;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "realize",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "generalize"
+                    },
+                    {
+                        "start_node": "generalize",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "PojoUtils"
+                    },
+                    {
+                        "start_node": "PojoUtils",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "realize"
+                    }
+                ],
+                "similarity": 0.07521401256174452,
+                "end_line": 117,
+                "signature": "org.apache.dubbo.common.utils.PojoUtils.realize(Object[] objs, Class[] types, Type[] gtypes): Object[]"
+            },
+            {
+                "start_line": 105,
+                "file_path": "playground/apache__dubbo/dubbo-remoting/dubbo-remoting-api/src/main/java/org/apache/dubbo/remoting/transport/AbstractClient.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private void initExecutor(URL url) {\n        ExecutorRepository executorRepository = url.getOrDefaultApplicationModel()\n            .getExtensionLoader(ExecutorRepository.class).getDefaultExtension();\n\n        /**\n         * Consumer's executor is shared globally, provider ip doesn't need to be part of the thread name.\n         *\n         * Instance of url is InstanceAddressURL, so addParameter actually adds parameters into ServiceInstance,\n         * which means params are shared among different services. Since client is shared among services this is currently not a problem.\n         */\n        url = url.addParameter(THREAD_NAME_KEY, CLIENT_THREAD_POOL_NAME)\n            .addParameterIfAbsent(THREADPOOL_KEY, DEFAULT_CLIENT_THREADPOOL);\n        executor = executorRepository.createExecutorIfAbsent(url);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "initExecutor",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "toString"
+                    },
+                    {
+                        "start_node": "toString",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "AbstractClient"
+                    },
+                    {
+                        "start_node": "AbstractClient",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "initExecutor"
+                    }
+                ],
+                "similarity": 0.07477767484951217,
+                "end_line": 118,
+                "signature": "org.apache.dubbo.remoting.transport.AbstractClient.initExecutor(URL url): void"
+            },
+            {
+                "start_line": 63,
+                "file_path": "playground/apache__dubbo/dubbo-remoting/dubbo-remoting-api/src/main/java/org/apache/dubbo/remoting/telnet/codec/TelnetCodec.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static Charset getCharset(Channel channel) {\n        if (channel != null) {\n            Object attribute = channel.getAttribute(CHARSET_KEY);\n            if (attribute instanceof String) {\n                try {\n                    return Charset.forName((String) attribute);\n                } catch (Throwable t) {\n                    logger.warn(t.getMessage(), t);\n                }\n            } else if (attribute instanceof Charset) {\n                return (Charset) attribute;\n            }\n            URL url = channel.getUrl();\n            if (url != null) {\n                String parameter = url.getParameter(CHARSET_KEY);\n                if (StringUtils.isNotEmpty(parameter)) {\n                    try {\n                        return Charset.forName(parameter);\n                    } catch (Throwable t) {\n                        logger.warn(t.getMessage(), t);\n                    }\n                }\n            }\n        }\n        try {\n            return Charset.forName(DEFAULT_CHARSET);\n        } catch (Throwable t) {\n            logger.warn(t.getMessage(), t);\n        }\n        return Charset.defaultCharset();\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getCharset",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "toString"
+                    },
+                    {
+                        "start_node": "toString",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "TelnetCodec"
+                    },
+                    {
+                        "start_node": "TelnetCodec",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getCharset"
+                    }
+                ],
+                "similarity": 0.07433234148124428,
+                "end_line": 93,
+                "signature": "org.apache.dubbo.remoting.telnet.codec.TelnetCodec.getCharset(Channel channel): Charset"
+            },
+            {
+                "start_line": 688,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/NetUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static boolean matchIpRange(String pattern, String host, int port) throws UnknownHostException {\n        if (pattern == null || host == null) {\n            throw new IllegalArgumentException(\"Illegal Argument pattern or hostName. Pattern:\" + pattern + \", Host:\" + host);\n        }\n        pattern = pattern.trim();\n        if (\"*.*.*.*\".equals(pattern) || \"*\".equals(pattern)) {\n            return true;\n        }\n\n        InetAddress inetAddress = InetAddress.getByName(host);\n        boolean isIpv4 = isValidV4Address(inetAddress);\n        String[] hostAndPort = getPatternHostAndPort(pattern, isIpv4);\n        if (hostAndPort[1] != null && !hostAndPort[1].equals(String.valueOf(port))) {\n            return false;\n        }\n        pattern = hostAndPort[0];\n\n        String splitCharacter = SPLIT_IPV4_CHARACTER;\n        if (!isIpv4) {\n            splitCharacter = SPLIT_IPV6_CHARACTER;\n        }\n        String[] mask = pattern.split(splitCharacter);\n        // check format of pattern\n        checkHostPattern(pattern, mask, isIpv4);\n\n        host = inetAddress.getHostAddress();\n        if (pattern.equals(host)) {\n            return true;\n        }\n\n        // short name condition\n        if (!ipPatternContainExpression(pattern)) {\n            InetAddress patternAddress = InetAddress.getByName(pattern);\n            return patternAddress.getHostAddress().equals(host);\n        }\n\n        String[] ipAddress = host.split(splitCharacter);\n\n        for (int i = 0; i < mask.length; i++) {\n            if (\"*\".equals(mask[i]) || mask[i].equals(ipAddress[i])) {\n                continue;\n            } else if (mask[i].contains(\"-\")) {\n                String[] rangeNumStrs = StringUtils.split(mask[i], '-');\n                if (rangeNumStrs.length != 2) {\n                    throw new IllegalArgumentException(\"There is wrong format of ip Address: \" + mask[i]);\n                }\n                Integer min = getNumOfIpSegment(rangeNumStrs[0], isIpv4);\n                Integer max = getNumOfIpSegment(rangeNumStrs[1], isIpv4);\n                Integer ip = getNumOfIpSegment(ipAddress[i], isIpv4);\n                if (ip < min || ip > max) {\n                    return false;\n                }\n            } else if (\"0\".equals(ipAddress[i]) && (\"0\".equals(mask[i]) || \"00\".equals(mask[i]) || \"000\".equals(mask[i]) || \"0000\".equals(mask[i]))) {\n                continue;\n            } else if (!mask[i].equals(ipAddress[i])) {\n                return false;\n            }\n        }\n        return true;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "matchIpRange",
+                "documentation": "/**\n     * @param pattern\n     * @param host\n     * @param port\n     * @return\n     * @throws UnknownHostException\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setInterface"
+                    },
+                    {
+                        "start_node": "setInterface",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "NetUtils"
+                    },
+                    {
+                        "start_node": "NetUtils",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "matchIpRange"
+                    }
+                ],
+                "similarity": 0.07326624926836199,
+                "end_line": 747,
+                "signature": "org.apache.dubbo.common.utils.NetUtils.matchIpRange(String pattern, String host, int port): boolean"
+            },
+            {
+                "start_line": 634,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/NetUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static void setInterface(MulticastSocket multicastSocket, boolean preferIpv6) throws IOException {\n        boolean interfaceSet = false;\n        for (NetworkInterface networkInterface : getValidNetworkInterfaces()) {\n            Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();\n\n            while (addresses.hasMoreElements()) {\n                InetAddress address = addresses.nextElement();\n                if (preferIpv6 && address instanceof Inet6Address) {\n                    try {\n                        if (address.isReachable(100)) {\n                            multicastSocket.setInterface(address);\n                            interfaceSet = true;\n                            break;\n                        }\n                    } catch (IOException e) {\n                        // ignore\n                    }\n                } else if (!preferIpv6 && address instanceof Inet4Address) {\n                    try {\n                        if (address.isReachable(100)) {\n                            multicastSocket.setInterface(address);\n                            interfaceSet = true;\n                            break;\n                        }\n                    } catch (IOException e) {\n                        // ignore\n                    }\n                }\n            }\n            if (interfaceSet) {\n                break;\n            }\n        }\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "setInterface",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setInterface"
+                    }
+                ],
+                "similarity": 0.07264817433277378,
+                "end_line": 667,
+                "signature": "org.apache.dubbo.common.utils.NetUtils.setInterface(MulticastSocket multicastSocket, boolean preferIpv6): void"
+            },
+            {
+                "start_line": 74,
+                "file_path": "playground/apache__dubbo/dubbo-remoting/dubbo-remoting-api/src/main/java/org/apache/dubbo/remoting/api/Connection.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Connection(URL url) {\n        url = ExecutorUtil.setThreadName(url, \"DubboClientHandler\");\n        url = url.addParameterIfAbsent(THREADPOOL_KEY, DEFAULT_CLIENT_THREADPOOL);\n        this.url = url;\n        this.protocol = ExtensionLoader.getExtensionLoader(WireProtocol.class)\n            .getExtension(url.getProtocol());\n        this.connectTimeout = url.getPositiveParameter(Constants.CONNECT_TIMEOUT_KEY,\n            Constants.DEFAULT_CONNECT_TIMEOUT);\n        this.remote = getConnectAddress();\n        this.bootstrap = create();\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "Connection",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "toString"
+                    },
+                    {
+                        "start_node": "toString",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "Connection"
+                    },
+                    {
+                        "start_node": "Connection",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "Connection"
+                    }
+                ],
+                "similarity": 0.07217973888249209,
+                "end_line": 84,
+                "signature": "org.apache.dubbo.remoting.api.Connection(URL url)"
+            },
+            {
+                "start_line": 94,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/config/ReferenceConfigBase.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ReferenceConfigBase(ModuleModel moduleModel, Reference reference) {\n        super(moduleModel);\n        serviceMetadata = new ServiceMetadata();\n        serviceMetadata.addAttribute(ORIGIN_CONFIG, this);\n        appendAnnotation(Reference.class, reference);\n        setMethods(MethodConfig.constructMethodConfig(reference.methods()));\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "ReferenceConfigBase",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setInterface"
+                    },
+                    {
+                        "start_node": "setInterface",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "ReferenceConfigBase"
+                    },
+                    {
+                        "start_node": "ReferenceConfigBase",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "ReferenceConfigBase"
+                    }
+                ],
+                "similarity": 0.07159223869408224,
+                "end_line": 100,
+                "signature": "org.apache.dubbo.config.ReferenceConfigBase(ModuleModel moduleModel, Reference reference)"
+            },
+            {
+                "start_line": 407,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/NetUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static Inet6Address getLocalAddress0V6() {\n        // @since 2.7.6, choose the {@link NetworkInterface} first\n        try {\n            NetworkInterface networkInterface = findNetworkInterface();\n            Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();\n            while (addresses.hasMoreElements()) {\n                InetAddress address = addresses.nextElement();\n                if (address instanceof Inet6Address) {\n                    if (!address.isLoopbackAddress() //filter 127.x.x.x\n                        && !address.isAnyLocalAddress() // filter 0.0.0.0\n                        && !address.isLinkLocalAddress() //filter 169.254.0.0/16\n                        && address.getHostAddress().contains(\":\")) {//filter IPv6\n                        return (Inet6Address) address;\n                    }\n                }\n            }\n        } catch (Throwable e) {\n            logger.warn(e);\n        }\n\n        return null;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getLocalAddress0V6",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setInterface"
+                    },
+                    {
+                        "start_node": "setInterface",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "NetUtils"
+                    },
+                    {
+                        "start_node": "NetUtils",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getLocalAddress0V6"
+                    }
+                ],
+                "similarity": 0.07152091922764667,
+                "end_line": 428,
+                "signature": "org.apache.dubbo.common.utils.NetUtils.getLocalAddress0V6(): Inet6Address"
+            },
+            {
+                "start_line": 786,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/NetUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static String[] getPatternHostAndPort(String pattern, boolean isIpv4) {\n        String[] result = new String[2];\n        if (pattern.startsWith(\"[\") && pattern.contains(\"]:\")) {\n            int end = pattern.indexOf(\"]:\");\n            result[0] = pattern.substring(1, end);\n            result[1] = pattern.substring(end + 2);\n            return result;\n        } else if (pattern.startsWith(\"[\") && pattern.endsWith(\"]\")) {\n            result[0] = pattern.substring(1, pattern.length() - 1);\n            result[1] = null;\n            return result;\n        } else if (isIpv4 && pattern.contains(\":\")) {\n            int end = pattern.indexOf(\":\");\n            result[0] = pattern.substring(0, end);\n            result[1] = pattern.substring(end + 1);\n            return result;\n        } else {\n            result[0] = pattern;\n            return result;\n        }\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "getPatternHostAndPort",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setInterface"
+                    },
+                    {
+                        "start_node": "setInterface",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "NetUtils"
+                    },
+                    {
+                        "start_node": "NetUtils",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getPatternHostAndPort"
+                    }
+                ],
+                "similarity": 0.07136755177395926,
+                "end_line": 806,
+                "signature": "org.apache.dubbo.common.utils.NetUtils.getPatternHostAndPort(String pattern, boolean isIpv4): String[]"
+            },
+            {
+                "start_line": 508,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/NetUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static NetworkInterface findNetworkInterface() {\n\n        List<NetworkInterface> validNetworkInterfaces = emptyList();\n        try {\n            validNetworkInterfaces = getValidNetworkInterfaces();\n        } catch (Throwable e) {\n            logger.warn(e);\n        }\n\n        NetworkInterface result = null;\n\n        // Try to find the preferred one\n        for (NetworkInterface networkInterface : validNetworkInterfaces) {\n            if (isPreferredNetworkInterface(networkInterface)) {\n                result = networkInterface;\n                break;\n            }\n        }\n\n        if (result == null) { // If not found, try to get the first one\n            for (NetworkInterface networkInterface : validNetworkInterfaces) {\n                Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();\n                while (addresses.hasMoreElements()) {\n                    Optional<InetAddress> addressOp = toValidAddress(addresses.nextElement());\n                    if (addressOp.isPresent()) {\n                        try {\n                            if (addressOp.get().isReachable(100)) {\n                                return networkInterface;\n                            }\n                        } catch (IOException e) {\n                            // ignore\n                        }\n                    }\n                }\n            }\n        }\n\n        if (result == null) {\n            result = first(validNetworkInterfaces);\n        }\n\n        return result;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "findNetworkInterface",
+                "documentation": "/**\n     * Get the suitable {@link NetworkInterface}\n     *\n     * @return If no {@link NetworkInterface} is available , return <code>null</code>\n     * @since 2.7.6\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setInterface"
+                    },
+                    {
+                        "start_node": "setInterface",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "NetUtils"
+                    },
+                    {
+                        "start_node": "NetUtils",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findNetworkInterface"
+                    }
+                ],
+                "similarity": 0.07081211554136621,
+                "end_line": 550,
+                "signature": "org.apache.dubbo.common.utils.NetUtils.findNetworkInterface(): NetworkInterface"
+            },
+            {
+                "start_line": 437,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/NetUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static boolean ignoreNetworkInterface(NetworkInterface networkInterface) throws SocketException {\n        if (networkInterface == null\n            || networkInterface.isLoopback()\n            || networkInterface.isVirtual()\n            || !networkInterface.isUp()) {\n            return true;\n        }\n        String ignoredInterfaces = System.getProperty(DUBBO_NETWORK_IGNORED_INTERFACE);\n        String networkInterfaceDisplayName;\n        if (StringUtils.isNotEmpty(ignoredInterfaces)\n            && StringUtils.isNotEmpty(networkInterfaceDisplayName = networkInterface.getDisplayName())) {\n            for (String ignoredInterface : ignoredInterfaces.split(\",\")) {\n                String trimIgnoredInterface = ignoredInterface.trim();\n                boolean matched = false;\n                try {\n                    matched = networkInterfaceDisplayName.matches(trimIgnoredInterface);\n                } catch (PatternSyntaxException e) {\n                    // if trimIgnoredInterface is an invalid regular expression, a PatternSyntaxException will be thrown out\n                    logger.warn(\"exception occurred: \" + networkInterfaceDisplayName + \" matches \" + trimIgnoredInterface, e);\n                } finally {\n                    if (matched) {\n                        return true;\n                    }\n                    if (networkInterfaceDisplayName.equals(trimIgnoredInterface)) {\n                        return true;\n                    }\n                }\n            }\n        }\n        return false;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "ignoreNetworkInterface",
+                "documentation": "/**\n     * Returns {@code true} if the specified {@link NetworkInterface} should be ignored with the given conditions.\n     *\n     * @param networkInterface the {@link NetworkInterface} to check\n     * @return {@code true} if the specified {@link NetworkInterface} should be ignored, otherwise {@code false}\n     * @throws SocketException SocketException if an I/O error occurs.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setInterface"
+                    },
+                    {
+                        "start_node": "setInterface",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "NetUtils"
+                    },
+                    {
+                        "start_node": "NetUtils",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "ignoreNetworkInterface"
+                    }
+                ],
+                "similarity": 0.07066300799603477,
+                "end_line": 467,
+                "signature": "org.apache.dubbo.common.utils.NetUtils.ignoreNetworkInterface(NetworkInterface networkInterface): boolean"
+            },
+            {
+                "start_line": 102,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/config/ServiceConfigBase.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ServiceConfigBase(ModuleModel moduleModel, Service service) {\n        super(moduleModel);\n        serviceMetadata = new ServiceMetadata();\n        serviceMetadata.addAttribute(\"ORIGIN_CONFIG\", this);\n        appendAnnotation(Service.class, service);\n        setMethods(MethodConfig.constructMethodConfig(service.methods()));\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "ServiceConfigBase",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "setInterface"
+                    },
+                    {
+                        "start_node": "setInterface",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ServiceConfigBase"
+                    },
+                    {
+                        "start_node": "ServiceConfigBase",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "ServiceConfigBase"
+                    }
+                ],
+                "similarity": 0.07055761997747426,
+                "end_line": 108,
+                "signature": "org.apache.dubbo.config.ServiceConfigBase(ModuleModel moduleModel, Service service)"
+            },
+            {
+                "start_line": 95,
+                "file_path": "playground/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/utils/PojoUtils.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static Object[] realize(Object[] objs, Class<?>[] types) {\n        if (objs.length != types.length) {\n            throw new IllegalArgumentException(\"args.length != types.length\");\n        }\n\n        Object[] dests = new Object[objs.length];\n        for (int i = 0; i < objs.length; i++) {\n            dests[i] = realize(objs[i], types[i]);\n        }\n\n        return dests;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "realize",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "generalize"
+                    },
+                    {
+                        "start_node": "generalize",
+                        "description": "contained in class",
+                        "type": "RELATED",
+                        "end_node": "PojoUtils"
+                    },
+                    {
+                        "start_node": "PojoUtils",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "realize"
+                    }
+                ],
+                "similarity": 0.0699021373948301,
+                "end_line": 106,
+                "signature": "org.apache.dubbo.common.utils.PojoUtils.realize(Object[] objs, Class[] types): Object[]"
+            }
+        ],
+        "classes": [],
+        "issues": [
+            {
+                "content": "<!-- If you need to report a security issue please visit https://github.com/apache/dubbo/security/policy -->\r\n\r\n- [x] I have searched the [issues](https://github.com/apache/dubbo/issues) of this repository and believe that this is not a duplicate.\r\n\r\n### Environment\r\n\r\n* Dubbo version: 2.7.x,3.x\r\n* Operating System version: mac os\r\n* Java version: 1.8\r\n\r\n### Steps to reproduce this issue\r\n\r\n```java\r\n\r\n@Bean\r\npublic GenericService testApi() {\r\n    ReferenceConfig<GenericService> config = new ReferenceConfig<>();\r\n    config.setInterface(\"com.xxx.TestApi\");\r\n    config.setGeneric(\"true\");\r\n    //...\r\n    return config.get()\r\n}\r\n\r\n\r\n@Autowired\r\nprivate TestApi testApi;\r\n\r\n@Test\r\nvoid testLocaDateTime() {\r\n    Person obj = testApi.testApiQueryMethod();\r\n}\r\n```\r\n![image](https://user-images.githubusercontent.com/5037807/190542582-6c39ebe5-b1bc-41d6-bf2c-ac2bb5155db0.png)\r\n\r\nUnit testing for reproducible problems\r\n```java\r\n    @Test\r\n    public void testJava8Time() {\r\n        \r\n        Object localDateTimeGen = PojoUtils.generalize(LocalDateTime.now());\r\n        Object localDateTime = PojoUtils.realize(localDateTimeGen, LocalDateTime.class);\r\n        assertEquals(localDateTimeGen, localDateTime.toString());\r\n\r\n        Object localDateGen = PojoUtils.generalize(LocalDate.now());\r\n        Object localDate = PojoUtils.realize(localDateGen, LocalDate.class);\r\n        assertEquals(localDateGen, localDate.toString());\r\n\r\n        Object localTimeGen = PojoUtils.generalize(LocalTime.now());\r\n        Object localTime = PojoUtils.realize(localTimeGen, LocalTime.class);\r\n        assertEquals(localTimeGen, localTime.toString());\r\n    }\r\n```\r\n\r\n\n",
+                "distance": 0,
+                "title": "The generalized call does not support the serialization and deserialization of LocalTime, LocalDate & LocalDateTime",
+                "name": "root",
+                "path": [],
+                "issue_id": "root",
+                "similarity": 2.0,
+                "type": "issue"
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "10631",
+                "type": "issue",
+                "content": "<!-- If you need to report a security issue please visit https://github.com/apache/dubbo/security/policy -->\r\n\r\n- [x] I have searched the [issues](https://github.com/apache/dubbo/issues) of this repository and believe that this is not a duplicate.\r\n\r\n### Environment\r\n\r\n* Dubbo version: 2.7.x,3.x\r\n* Operating System version: mac os\r\n* Java version: 1.8\r\n\r\n### Steps to reproduce this issue\r\n\r\n```java\r\n\r\n@Bean\r\npublic GenericService testApi() {\r\n    ReferenceConfig<GenericService> config = new ReferenceConfig<>();\r\n    config.setInterface(\"com.xxx.TestApi\");\r\n    config.setGeneric(\"true\");\r\n    //...\r\n    return config.get()\r\n}\r\n\r\n\r\n@Autowired\r\nprivate TestApi testApi;\r\n\r\n@Test\r\nvoid testLocaDateTime() {\r\n    Person obj = testApi.testApiQueryMethod();\r\n}\r\n```\r\n![image](https://user-images.githubusercontent.com/5037807/190542582-6c39ebe5-b1bc-41d6-bf2c-ac2bb5155db0.png)\r\n\r\nUnit testing for reproducible problems\r\n```java\r\n    @Test\r\n    public void testJava8Time() {\r\n        \r\n        Object localDateTimeGen = PojoUtils.generalize(LocalDateTime.now());\r\n        Object localDateTime = PojoUtils.realize(localDateTimeGen, LocalDateTime.class);\r\n        assertEquals(localDateTimeGen, localDateTime.toString());\r\n\r\n        Object localDateGen = PojoUtils.generalize(LocalDate.now());\r\n        Object localDate = PojoUtils.realize(localDateGen, LocalDate.class);\r\n        assertEquals(localDateGen, localDate.toString());\r\n\r\n        Object localTimeGen = PojoUtils.generalize(LocalTime.now());\r\n        Object localTime = PojoUtils.realize(localTimeGen, LocalTime.class);\r\n        assertEquals(localTimeGen, localTime.toString());\r\n    }\r\n```\r\n\r\n\n\n",
+                "source_code": null,
+                "distance": 0.25,
+                "title": "The generalized call does not support the serialization and deserialization of LocalTime, LocalDate & LocalDateTime",
+                "name": "issue#10631",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#10631"
+                    }
+                ],
+                "similarity": 0.8751537802279675,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "10638",
+                "type": "issue",
+                "content": "fixed #10631 \r\n\r\n## What is the purpose of the change\r\n\r\n\r\n\r\n## Brief changelog\r\n\r\n\r\n## Verifying this change\r\n\r\n\r\n<!-- Follow this checklist to help us incorporate your contribution quickly and easily: -->\r\n\r\n## Checklist\r\n- [x] Make sure there is a [GitHub_issue](https://github.com/apache/dubbo/issues) field for the change (usually before you start working on it). Trivial changes like typos do not require a GitHub issue. Your pull request should address just this issue, without pulling in other changes - one PR resolves one issue.\r\n- [ ] Each commit in the pull request should have a meaningful subject line and body.\r\n- [ ] Write a pull request description that is detailed enough to understand what the pull request does, how, and why.\r\n- [ ] Check if is necessary to patch to Dubbo 3 if you are work on Dubbo 2.7\r\n- [ ] Write necessary unit-test to verify your logic correction, more mock a little better when cross module dependency exist. If the new feature or significant change is committed, please remember to add sample in [dubbo samples](https://github.com/apache/dubbo-samples) project.\r\n- [ ] Add some description to [dubbo-website](https://github.com/apache/dubbo-website) project if you are requesting to add a feature.\r\n- [ ] GitHub Actions works fine on your own branch.\r\n- [ ] If this contribution is large, please follow the [Software Donation Guide](https://github.com/apache/dubbo/wiki/Software-donation-guide).\r\n\n\n",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "Fix PojoUtils support localdatetime,lcaldate,localtime serializable and deserialize",
+                "name": "pr#10638",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#10631"
+                    },
+                    {
+                        "start_node": "issue#10631",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "pr#10638"
+                    }
+                ],
+                "similarity": 0.5252580712278256,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "10632",
+                "type": "issue",
+                "content": "## What is the purpose of the change\r\n\r\nfixed #10631 \r\n\r\n## Brief changelog\r\n\r\n\r\n## Verifying this change\r\n\r\n\r\n<!-- Follow this checklist to help us incorporate your contribution quickly and easily: -->\r\n\r\n## Checklist\r\n- [x] Make sure there is a [GitHub_issue](https://github.com/apache/dubbo/issues) field for the change (usually before you start working on it). Trivial changes like typos do not require a GitHub issue. Your pull request should address just this issue, without pulling in other changes - one PR resolves one issue.\r\n- [ ] Each commit in the pull request should have a meaningful subject line and body.\r\n- [ ] Write a pull request description that is detailed enough to understand what the pull request does, how, and why.\r\n- [ ] Check if is necessary to patch to Dubbo 3 if you are work on Dubbo 2.7\r\n- [ ] Write necessary unit-test to verify your logic correction, more mock a little better when cross module dependency exist. If the new feature or significant change is committed, please remember to add sample in [dubbo samples](https://github.com/apache/dubbo-samples) project.\r\n- [ ] Add some description to [dubbo-website](https://github.com/apache/dubbo-website) project if you are requesting to add a feature.\r\n- [ ] GitHub Actions works fine on your own branch.\r\n- [ ] If this contribution is large, please follow the [Software Donation Guide](https://github.com/apache/dubbo/wiki/Software-donation-guide).\r\n\n\n\nComment by codecov-commenter:\n# [Codecov](https://codecov.io/gh/apache/dubbo/pull/10632?src=pr&el=h1&utm_medium=referral&utm_source=github&utm_content=comment&utm_campaign=pr+comments&utm_term=The+Apache+Software+Foundation) Report\n> Merging [#10632](https://codecov.io/gh/apache/dubbo/pull/10632?src=pr&el=desc&utm_medium=referral&utm_source=github&utm_content=comment&utm_campaign=pr+comments&utm_term=The+Apache+Software+Foundation) (9923b2c) into [master](https://codecov.io/gh/apache/dubbo/commit/bcf97647ca69775031d356d93f9e0e5f1254ccdd?el=desc&utm_medium=referral&utm_source=github&utm_content=comment&utm_campaign=pr+comments&utm_term=The+Apache+Software+Foundation) (bcf9764) will **increase** coverage by `0.00%`.\n> The diff coverage is `100.00%`.\n\n```diff\n@@            Coverage Diff            @@\n##             master   #10632   +/-   ##\n=========================================\n  Coverage     60.88%   60.88%           \n+ Complexity      449      447    -2     \n=========================================\n  Files          1101     1101           \n  Lines         44538    44542    +4     \n  Branches       6490     6492    +2     \n=========================================\n+ Hits          27118    27121    +3     \n- Misses        14448    14453    +5     \n+ Partials       2972     2968    -4     \n```\n\n\n| [Impacted Files](https://codecov.io/gh/apache/dubbo/pull/10632?src=pr&el=tree&utm_medium=referral&utm_source=github&utm_content=comment&utm_campaign=pr+comments&utm_term=The+Apache+Software+Foundation) | Coverage \u0394 | |\n|---|---|---|\n| [...apache/dubbo/common/utils/CompatibleTypeUtils.java](https://codecov.io/gh/apache/dubbo/pull/10632/diff?src=pr&el=tree&utm_medium=referral&utm_source=github&utm_content=comment&utm_campaign=pr+comments&utm_term=The+Apache+Software+Foundation#diff-ZHViYm8tY29tbW9uL3NyYy9tYWluL2phdmEvb3JnL2FwYWNoZS9kdWJiby9jb21tb24vdXRpbHMvQ29tcGF0aWJsZVR5cGVVdGlscy5qYXZh) | `66.10% <100.00%> (+0.58%)` | :arrow_up: |\n| [.../java/org/apache/dubbo/common/utils/PojoUtils.java](https://codecov.io/gh/apache/dubbo/pull/10632/diff?src=pr&el=tree&utm_medium=referral&utm_source=github&utm_content=comment&utm_campaign=pr+comments&utm_term=The+Apache+Software+Foundation#diff-ZHViYm8tY29tbW9uL3NyYy9tYWluL2phdmEvb3JnL2FwYWNoZS9kdWJiby9jb21tb24vdXRpbHMvUG9qb1V0aWxzLmphdmE=) | `73.31% <100.00%> (+0.12%)` | :arrow_up: |\n| [...che/dubbo/remoting/transport/mina/MinaChannel.java](https://codecov.io/gh/apache/dubbo/pull/10632/diff?src=pr&el=tree&utm_medium=referral&utm_source=github&utm_content=comment&utm_campaign=pr+comments&utm_term=The+Apache+Software+Foundation#diff-ZHViYm8tcmVtb3RpbmcvZHViYm8tcmVtb3RpbmctbWluYS9zcmMvbWFpbi9qYXZhL29yZy9hcGFjaGUvZHViYm8vcmVtb3RpbmcvdHJhbnNwb3J0L21pbmEvTWluYUNoYW5uZWwuamF2YQ==) | `35.52% <0.00%> (-10.53%)` | :arrow_down: |\n| [...ng/transport/dispatcher/all/AllChannelHandler.java](https://codecov.io/gh/apache/dubbo/pull/10632/diff?src=pr&el=tree&utm_medium=referral&utm_source=github&utm_content=comment&utm_campaign=pr+comments&utm_term=The+Apache+Software+Foundation#diff-ZHViYm8tcmVtb3RpbmcvZHViYm8tcmVtb3RpbmctYXBpL3NyYy9tYWluL2phdmEvb3JnL2FwYWNoZS9kdWJiby9yZW1vdGluZy90cmFuc3BvcnQvZGlzcGF0Y2hlci9hbGwvQWxsQ2hhbm5lbEhhbmRsZXIuamF2YQ==) | `82.75% <0.00%> (-6.90%)` | :arrow_down: |\n| [...he/dubbo/remoting/transport/netty/NettyServer.java](https://codecov.io/gh/apache/dubbo/pull/10632/diff?src=pr&el=tree&utm_medium=referral&utm_source=github&utm_content=comment&utm_campaign=pr+comments&utm_term=The+Apache+Software+Foundation#diff-ZHViYm8tcmVtb3RpbmcvZHViYm8tcmVtb3RpbmctbmV0dHkvc3JjL21haW4vamF2YS9vcmcvYXBhY2hlL2R1YmJvL3JlbW90aW5nL3RyYW5zcG9ydC9uZXR0eS9OZXR0eVNlcnZlci5qYXZh) | `70.17% <0.00%> (-3.51%)` | :arrow_down: |\n| [...ng/zookeeper/curator5/Curator5ZookeeperClient.java](https://codecov.io/gh/apache/dubbo/pull/10632/diff?src=pr&el=tree&utm_medium=referral&utm_source=github&utm_content=comment&utm_campaign=pr+comments&utm_term=The+Apache+Software+Foundation#diff-ZHViYm8tcmVtb3RpbmcvZHViYm8tcmVtb3Rpbmctem9va2VlcGVyLWN1cmF0b3I1L3NyYy9tYWluL2phdmEvb3JnL2FwYWNoZS9kdWJiby9yZW1vdGluZy96b29rZWVwZXIvY3VyYXRvcjUvQ3VyYXRvcjVab29rZWVwZXJDbGllbnQuamF2YQ==) | `51.97% <0.00%> (-1.13%)` | :arrow_down: |\n| [...apache/dubbo/common/extension/ExtensionLoader.java](https://codecov.io/gh/apache/dubbo/pull/10632/diff?src=pr&el=tree&utm_medium=referral&utm_source=github&utm_content=comment&utm_campaign=pr+comments&utm_term=The+Apache+Software+Foundation#diff-ZHViYm8tY29tbW9uL3NyYy9tYWluL2phdmEvb3JnL2FwYWNoZS9kdWJiby9jb21tb24vZXh0ZW5zaW9uL0V4dGVuc2lvbkxvYWRlci5qYXZh) | `80.41% <0.00%> (+0.20%)` | :arrow_up: |\n| [...rg/apache/dubbo/common/timer/HashedWheelTimer.java](https://codecov.io/gh/apache/dubbo/pull/10632/diff?src=pr&el=tree&utm_medium=referral&utm_source=github&utm_content=comment&utm_campaign=pr+comments&utm_term=The+Apache+Software+Foundation#diff-ZHViYm8tY29tbW9uL3NyYy9tYWluL2phdmEvb3JnL2FwYWNoZS9kdWJiby9jb21tb24vdGltZXIvSGFzaGVkV2hlZWxUaW1lci5qYXZh) | `80.55% <0.00%> (+0.34%)` | :arrow_up: |\n| [...g/apache/dubbo/registry/consul/ConsulRegistry.java](https://codecov.io/gh/apache/dubbo/pull/10632/diff?src=pr&el=tree&utm_medium=referral&utm_source=github&utm_content=comment&utm_campaign=pr+comments&utm_term=The+Apache+Software+Foundation#diff-ZHViYm8tcmVnaXN0cnkvZHViYm8tcmVnaXN0cnktY29uc3VsL3NyYy9tYWluL2phdmEvb3JnL2FwYWNoZS9kdWJiby9yZWdpc3RyeS9jb25zdWwvQ29uc3VsUmVnaXN0cnkuamF2YQ==) | `60.58% <0.00%> (+0.58%)` | :arrow_up: |\n| [...pache/dubbo/registry/support/AbstractRegistry.java](https://codecov.io/gh/apache/dubbo/pull/10632/diff?src=pr&el=tree&utm_medium=referral&utm_source=github&utm_content=comment&utm_campaign=pr+comments&utm_term=The+Apache+Software+Foundation#diff-ZHViYm8tcmVnaXN0cnkvZHViYm8tcmVnaXN0cnktYXBpL3NyYy9tYWluL2phdmEvb3JnL2FwYWNoZS9kdWJiby9yZWdpc3RyeS9zdXBwb3J0L0Fic3RyYWN0UmVnaXN0cnkuamF2YQ==) | `80.74% <0.00%> (+1.11%)` | :arrow_up: |\n| ... and [2 more](https://codecov.io/gh/apache/dubbo/pull/10632/diff?src=pr&el=tree-more&utm_medium=referral&utm_source=github&utm_content=comment&utm_campaign=pr+comments&utm_term=The+Apache+Software+Foundation) | |\n\n:mega: We\u2019re building smart automated test selection to slash your CI/CD build times. [Learn more](https://about.codecov.io/iterative-testing/?utm_medium=referral&utm_source=github&utm_content=comment&utm_campaign=pr+comments&utm_term=The+Apache+Software+Foundation)\n\n\nComment by AlbumenJ:\nPlease fix to 3.1 branch.",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "Fix #10631 Fix PojoUtils support localdatetime,lcaldate,localtime serializable and deserialize",
+                "name": "pr#10632",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#10631"
+                    },
+                    {
+                        "start_node": "issue#10631",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "pr#10632"
+                    }
+                ],
+                "similarity": 0.4527860102780812,
+                "end_line": null,
+                "signature": null
+            }
+        ]
+    },
+    "artifact_stats": {
+        "skipped_due_to_time": 7,
+        "valid_related_items": 39
+    }
+}

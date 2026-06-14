@@ -1,0 +1,1852 @@
+{
+  "related_entities": {
+    "methods": [
+      {
+        "start_line": 116,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public TokenFilter filterStartArray() {\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "filterStartArray",
+        "documentation": "/**\n     * Method called to check whether Array value at current output\n     * location should be included in output.\n     * Three kinds of return values may be used as follows:\n     *<ul>\n     * <li><code>null</code> to indicate that the Array should be skipped\n     *   </li>\n     * <li>{@link #INCLUDE_ALL} to indicate that the Array should be included\n     * completely in output\n     *   </li>\n     * <li>Any other {@link TokenFilter} implementation (possibly this one) to mean\n     *  that further inclusion calls on return filter object need to be made\n     *  on contained element values, as necessary. {@link #filterFinishArray()} will\n     *  also be called on returned filter object\n     *   </li>\n     * </ul>\n     *<p>\n     * Default implementation returns <code>this</code>, which means that checks\n     * are made recursively for elements of the array to determine possible inclusion.\n     * \n     * @return TokenFilter to use for further calls within Array, unless return value\n     *   is <code>null</code> or {@link #INCLUDE_ALL} (which have simpler semantics)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "filterStartArray"
+          }
+        ],
+        "similarity": 0.13432598435155313,
+        "end_line": 118,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.filterStartArray(): TokenFilter"
+      },
+      {
+        "start_line": 89,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public TokenFilter filterStartObject() {\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "filterStartObject",
+        "documentation": "/**\n     * Method called to check whether Object value at current output\n     * location should be included in output.\n     * Three kinds of return values may be used as follows:\n     *<ul>\n     * <li><code>null</code> to indicate that the Object should be skipped\n     *   </li>\n     * <li>{@link #INCLUDE_ALL} to indicate that the Object should be included\n     * completely in output\n     *   </li>\n     * <li>Any other {@link TokenFilter} implementation (possibly this one) to mean\n     *  that further inclusion calls on return filter object need to be made\n     *  on contained properties, as necessary. {@link #filterFinishObject()} will\n     *  also be called on returned filter object\n     *   </li>\n     * </ul>\n     *<p>\n     * Default implementation returns <code>this</code>, which means that checks\n     * are made recursively for properties of the Object to determine possible inclusion.\n     * \n     * @return TokenFilter to use for further calls within Array, unless return value\n     *   is <code>null</code> or {@link #INCLUDE_ALL} (which have simpler semantics)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "filterStartObject"
+          }
+        ],
+        "similarity": 0.1249971413955178,
+        "end_line": 91,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.filterStartObject(): TokenFilter"
+      },
+      {
+        "start_line": 491,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _handleEOF() throws JsonParseException {\n        if (!_parsingContext.inRoot()) {\n            String marker = _parsingContext.inArray() ? \"Array\" : \"Object\";\n            _reportInvalidEOF(String.format(\n                    \": expected close marker for %s (start marker at %s)\",\n                    marker,\n                    _parsingContext.startLocation(_contentReference())),\n                    null);\n        }\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_handleEOF",
+        "documentation": "/**\n     * Method called when an EOF is encountered between tokens.\n     * If so, it may be a legitimate EOF, but only iff there\n     * is no open non-root context.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_handleEOF"
+          }
+        ],
+        "similarity": 0.12498344522363211,
+        "end_line": 500,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase._handleEOF(): void"
+      },
+      {
+        "start_line": 442,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public String toString() {\n        if (this == INCLUDE_ALL) {\n            return \"TokenFilter.INCLUDE_ALL\";\n        }\n        return super.toString();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "toString",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "toString"
+          }
+        ],
+        "similarity": 0.11585981368468234,
+        "end_line": 447,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.toString(): String"
+      },
+      {
+        "start_line": 222,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public TokenFilter includeRootValue(int index) {\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "includeRootValue",
+        "documentation": "/**\n     * Method called to check whether root-level value,\n     * at current output location, should be included in output.\n     * Three kinds of return values may be used as follows:\n     *<ul>\n     * <li><code>null</code> to indicate that the root value should be skipped\n     *   </li>\n     * <li>{@link #INCLUDE_ALL} to indicate that the root value should be included\n     * completely in output\n     *   </li>\n     * <li>Any other {@link TokenFilter} implementation (possibly this one) to mean\n     *  that further inclusion calls on returned filter object need to be made\n     *  as necessary, to determine inclusion.\n     *   </li>\n     * </ul>\n     *<p>\n     * The default implementation simply returns <code>this</code> to continue calling\n     * methods on this filter object, without full inclusion or exclusion.\n     *\n     * @param index Index (0-based) of the root value to check\n     *\n     * @return TokenFilter to use for further calls within root value, unless return value\n     *   is <code>null</code> or {@link #INCLUDE_ALL} (which have simpler semantics)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "includeRootValue"
+          }
+        ],
+        "similarity": 0.11512692278520904,
+        "end_line": 224,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.includeRootValue(int index): TokenFilter"
+      },
+      {
+        "start_line": 194,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public TokenFilter includeElement(int index) {\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "includeElement",
+        "documentation": "/**\n     * Method called to check whether array element with specified index (zero-based),\n     * at current output location, should be included in output.\n     * Three kinds of return values may be used as follows:\n     *<ul>\n     * <li><code>null</code> to indicate that the Array element should be skipped\n     *   </li>\n     * <li>{@link #INCLUDE_ALL} to indicate that the Array element should be included\n     * completely in output\n     *   </li>\n     * <li>Any other {@link TokenFilter} implementation (possibly this one) to mean\n     *  that further inclusion calls on returned filter object need to be made\n     *  as necessary, to determine inclusion.\n     *   </li>\n     * </ul>\n     *<p>\n     * The default implementation simply returns <code>this</code> to continue calling\n     * methods on this filter object, without full inclusion or exclusion.\n     *\n     * @param index Array element index (0-based) to check\n     *\n     * @return TokenFilter to use for further calls within element value, unless return value\n     *   is <code>null</code> or {@link #INCLUDE_ALL} (which have simpler semantics)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "includeElement"
+          }
+        ],
+        "similarity": 0.1147036404484638,
+        "end_line": 196,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.includeElement(int index): TokenFilter"
+      },
+      {
+        "start_line": 1137,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected String _validJsonValueList() throws IOException {\n        if (isEnabled(Feature.ALLOW_NON_NUMERIC_NUMBERS)) {\n            return \"(JSON String, Number (or 'NaN'/'INF'/'+INF'), Array, Object or token 'null', 'true' or 'false')\";\n        }\n        return \"(JSON String, Number, Array, Object or token 'null', 'true' or 'false')\";\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_validJsonValueList",
+        "documentation": "/**\n     * @return Description to use as \"valid JSON values\" in an exception message about\n     *    invalid (unrecognized) JSON value: called when parser finds something that\n     *    does not look like a value or separator.\n     *\n     * @throws IOException Not thrown by base implementation but allowed by sub-classes\n     *\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_validJsonValueList"
+          }
+        ],
+        "similarity": 0.11443534535019183,
+        "end_line": 1142,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase._validJsonValueList(): String"
+      },
+      {
+        "start_line": 166,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public TokenFilter includeProperty(String name) {\n        return this;\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "includeProperty",
+        "documentation": "/**\n     * Method called to check whether property value with specified name,\n     * at current output location, should be included in output.\n     * Three kinds of return values may be used as follows:\n     *<ul>\n     * <li><code>null</code> to indicate that the property and its value should be skipped\n     *   </li>\n     * <li>{@link #INCLUDE_ALL} to indicate that the property and its value should be included\n     * completely in output\n     *   </li>\n     * <li>Any other {@link TokenFilter} implementation (possibly this one) to mean\n     *  that further inclusion calls on returned filter object need to be made\n     *  as necessary, to determine inclusion.\n     *   </li>\n     * </ul>\n     *<p>\n     * The default implementation simply returns <code>this</code> to continue calling\n     * methods on this filter object, without full inclusion or exclusion.\n     * \n     * @param name Name of Object property to check\n     *\n     * @return TokenFilter to use for further calls within property value, unless return value\n     *   is <code>null</code> or {@link #INCLUDE_ALL} (which have simpler semantics)\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "includeProperty"
+          }
+        ],
+        "similarity": 0.11366151226913411,
+        "end_line": 168,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.includeProperty(String name): TokenFilter"
+      },
+      {
+        "start_line": 297,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonParser overrideStdFeatures(int values, int mask) {\n        int oldState = _features;\n        int newState = (oldState & ~mask) | (values & mask);\n        int changed = oldState ^ newState;\n        if (changed != 0) {\n            _features = newState;\n            _checkStdFeatureChanges(newState, changed);\n        }\n        return this;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "overrideStdFeatures",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "GeneratorBase"
+          },
+          {
+            "start_node": "GeneratorBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "overrideStdFeatures"
+          }
+        ],
+        "similarity": 0.11042761881139572,
+        "end_line": 306,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase.overrideStdFeatures(int values, int mask): JsonParser"
+      },
+      {
+        "start_line": 266,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonParser enable(Feature f) {\n        _features |= f.getMask();\n        if (f == Feature.STRICT_DUPLICATE_DETECTION) { // enabling dup detection?\n            if (_parsingContext.getDupDetector() == null) { // but only if disabled currently\n                _parsingContext = _parsingContext.withDupDetector(DupDetector.rootDetector(this));\n            }\n        }\n        return this;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "enable",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonGeneratorImpl"
+          },
+          {
+            "start_node": "JsonGeneratorImpl",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enable"
+          }
+        ],
+        "similarity": 0.11008845208265877,
+        "end_line": 274,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase.enable(Feature f): JsonParser"
+      },
+      {
+        "start_line": 208,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/GeneratorBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonGenerator overrideStdFeatures(int values, int mask) {\n        int oldState = _features;\n        int newState = (oldState & ~mask) | (values & mask);\n        int changed = oldState ^ newState;\n        if (changed != 0) {\n            _features = newState;\n            _checkStdFeatureChanges(newState, changed);\n        }\n        return this;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "overrideStdFeatures",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "GeneratorBase"
+          },
+          {
+            "start_node": "GeneratorBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "overrideStdFeatures"
+          }
+        ],
+        "similarity": 0.10772333265023738,
+        "end_line": 217,
+        "signature": "com.fasterxml.jackson.core.base.GeneratorBase.overrideStdFeatures(int values, int mask): JsonGenerator"
+      },
+      {
+        "start_line": 134,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void filterFinishArray() { }",
+        "distance": 1.25,
+        "title": null,
+        "name": "filterFinishArray",
+        "documentation": "/**\n     * Method called to indicate that output of non-filtered Array (one that may\n     * have been included either completely, or in part) is completed,\n     * in cases where filter other that {@link #INCLUDE_ALL} was returned.\n     * This occurs when {@link JsonGenerator#writeEndArray()} is called.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "filterFinishArray"
+          }
+        ],
+        "similarity": 0.10763387529124568,
+        "end_line": 134,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.filterFinishArray(): void"
+      },
+      {
+        "start_line": 58,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected TokenFilter() { }",
+        "distance": 1.0,
+        "title": null,
+        "name": "TokenFilter",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          }
+        ],
+        "similarity": 0.10252023380440715,
+        "end_line": 58,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter()"
+      },
+      {
+        "start_line": 253,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/GeneratorBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    @Override public JsonGenerator useDefaultPrettyPrinter() {\n        // Should not override a pretty printer if one already assigned.\n        if (getPrettyPrinter() != null) {\n            return this;\n        }\n        return setPrettyPrinter(_constructDefaultPrettyPrinter());\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "useDefaultPrettyPrinter",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "GeneratorBase"
+          },
+          {
+            "start_node": "GeneratorBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "useDefaultPrettyPrinter"
+          }
+        ],
+        "similarity": 0.10223118120375983,
+        "end_line": 259,
+        "signature": "com.fasterxml.jackson.core.base.GeneratorBase.useDefaultPrettyPrinter(): JsonGenerator"
+      },
+      {
+        "start_line": 181,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/GeneratorBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonGenerator disable(Feature f) {\n        final int mask = f.getMask();\n        _features &= ~mask;\n        if ((mask & DERIVED_FEATURES_MASK) != 0) {\n            if (f == Feature.WRITE_NUMBERS_AS_STRINGS) {\n                _cfgNumbersAsStrings = false;\n            } else if (f == Feature.ESCAPE_NON_ASCII) {\n                setHighestNonEscapedChar(0);\n            } else if (f == Feature.STRICT_DUPLICATE_DETECTION) {\n                _writeContext = _writeContext.withDupDetector(null);\n            }\n        }\n        return this;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "disable",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonGeneratorImpl"
+          },
+          {
+            "start_node": "JsonGeneratorImpl",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "disable"
+          }
+        ],
+        "similarity": 0.10146562879396931,
+        "end_line": 194,
+        "signature": "com.fasterxml.jackson.core.base.GeneratorBase.disable(Feature f): JsonGenerator"
+      },
+      {
+        "start_line": 563,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonGenerator.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonGenerator overrideFormatFeatures(int values, int mask) {\n        // 08-Oct-2018, tatu: For 2.10 we actually do get `JsonWriteFeature`s, although they\n        //    are (for 2.x only, not for 3.x) mapper to legacy settings. So do not freak out:\n//        throw new IllegalArgumentException(\"No FormatFeatures defined for generator of type \"+getClass().getName());\n        return this;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "overrideFormatFeatures",
+        "documentation": "/**\n     * Bulk set method for (re)setting states of {@link FormatFeature}s,\n     * by specifying values (set / clear) along with a mask, to determine\n     * which features to change, if any.\n     *<p>\n     * Default implementation will simply throw an exception to indicate that\n     * the generator implementation does not support any {@link FormatFeature}s.\n     * \n     * @param values Bit mask of set/clear state for features to change\n     * @param mask Bit mask of features to change\n     *\n     * @return This generator, to allow call chaining\n     * \n     * @since 2.6\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "overrideFormatFeatures"
+          }
+        ],
+        "similarity": 0.10137548989882567,
+        "end_line": 568,
+        "signature": "com.fasterxml.jackson.core.JsonGenerator.overrideFormatFeatures(int values, int mask): JsonGenerator"
+      },
+      {
+        "start_line": 105,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/GeneratorBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected GeneratorBase(int features, ObjectCodec codec) {\n        super();\n        _features = features;\n        _objectCodec = codec;\n        DupDetector dups = Feature.STRICT_DUPLICATE_DETECTION.enabledIn(features)\n                ? DupDetector.rootDetector(this) : null;\n        _writeContext = JsonWriteContext.createRootContext(dups);\n        _cfgNumbersAsStrings = Feature.WRITE_NUMBERS_AS_STRINGS.enabledIn(features);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "GeneratorBase",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "GeneratorBase"
+          },
+          {
+            "start_node": "GeneratorBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "GeneratorBase"
+          }
+        ],
+        "similarity": 0.10130488074070555,
+        "end_line": 113,
+        "signature": "com.fasterxml.jackson.core.base.GeneratorBase(int features, ObjectCodec codec)"
+      },
+      {
+        "start_line": 1827,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean getBooleanValue() throws IOException {\n        JsonToken t = currentToken();\n        if (t == JsonToken.VALUE_TRUE) return true;\n        if (t == JsonToken.VALUE_FALSE) return false;\n        throw new JsonParseException(this,\n            String.format(\"Current token (%s) not of boolean type\", t))\n                .withRequestPayload(_requestPayload);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getBooleanValue",
+        "documentation": "/**\n     * Convenience accessor that can be called when the current\n     * token is {@link JsonToken#VALUE_TRUE} or\n     * {@link JsonToken#VALUE_FALSE}, to return matching {@code boolean}\n     * value.\n     * If the current token is of some other type, {@link JsonParseException}\n     * will be thrown\n     *\n     * @return {@code True} if current token is {@code JsonToken.VALUE_TRUE},\n     *   {@code false} if current token is {@code JsonToken.VALUE_FALSE};\n     *   otherwise throws {@link JsonParseException}\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getBooleanValue"
+          }
+        ],
+        "similarity": 0.10102323177122208,
+        "end_line": 1834,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getBooleanValue(): boolean"
+      },
+      {
+        "start_line": 342,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    @Override public String getCurrentName() throws IOException {\n        // [JACKSON-395]: start markers require information from parent\n        if (_currToken == JsonToken.START_OBJECT || _currToken == JsonToken.START_ARRAY) {\n            JsonReadContext parent = _parsingContext.getParent();\n            if (parent != null) {\n                return parent.getCurrentName();\n            }\n        }\n        return _parsingContext.getCurrentName();\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getCurrentName",
+        "documentation": "/**\n     * Method that can be called to get the name associated with\n     * the current event.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getCurrentName"
+          }
+        ],
+        "similarity": 0.10086250598360538,
+        "end_line": 351,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase.getCurrentName(): String"
+      },
+      {
+        "start_line": 238,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected ParserBase(IOContext ctxt, int features) {\n        super(features);\n        _ioContext = ctxt;\n        _textBuffer = ctxt.constructTextBuffer();\n        DupDetector dups = Feature.STRICT_DUPLICATE_DETECTION.enabledIn(features)\n                ? DupDetector.rootDetector(this) : null;\n        _parsingContext = JsonReadContext.createRootContext(dups);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "ParserBase",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          }
+        ],
+        "similarity": 0.10085704039875877,
+        "end_line": 245,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase(IOContext ctxt, int features)"
+      },
+      {
+        "start_line": 353,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    @Override public void overrideCurrentName(String name) {\n        // Simple, but need to look for START_OBJECT/ARRAY's \"off-by-one\" thing:\n        JsonReadContext ctxt = _parsingContext;\n        if (_currToken == JsonToken.START_OBJECT || _currToken == JsonToken.START_ARRAY) {\n            ctxt = ctxt.getParent();\n        }\n        // 24-Sep-2013, tatu: Unfortunate, but since we did not expose exceptions,\n        //   need to wrap this here\n        try {\n            ctxt.setCurrentName(name);\n        } catch (IOException e) {\n            throw new IllegalStateException(e);\n        }\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "overrideCurrentName",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "overrideCurrentName"
+          }
+        ],
+        "similarity": 0.10047477315993236,
+        "end_line": 366,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase.overrideCurrentName(String name): void"
+      },
+      {
+        "start_line": 418,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean hasTextCharacters() {\n        if (_currToken == JsonToken.VALUE_STRING) { return true; } // usually true        \n        if (_currToken == JsonToken.FIELD_NAME) { return _nameCopied; }\n        return false;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "hasTextCharacters",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "hasTextCharacters"
+          }
+        ],
+        "similarity": 0.10000079659189481,
+        "end_line": 422,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase.hasTextCharacters(): boolean"
+      },
+      {
+        "start_line": 951,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonParser overrideFormatFeatures(int values, int mask) {\n        // 08-Oct-2018, tatu: For 2.10 we actually do get `JsonReadFeature`s, although they\n        //    are (for 2.x only, not for 3.x) mapper to legacy settings. So do not freak out:\n//        throw new IllegalArgumentException(\"No FormatFeatures defined for parser of type \"+getClass().getName());\n        return this;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "overrideFormatFeatures",
+        "documentation": "/**\n     * Bulk set method for (re)setting states of {@link FormatFeature}s,\n     * by specifying values (set / clear) along with a mask, to determine\n     * which features to change, if any.\n     *<p>\n     * Default implementation will simply throw an exception to indicate that\n     * the parser implementation does not support any {@link FormatFeature}s.\n     *\n     * @param values Bit mask of set/clear state for features to change\n     * @param mask Bit mask of features to change\n     *\n     * @return This parser, to allow call chaining\n     * \n     * @since 2.6\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "overrideFormatFeatures"
+          }
+        ],
+        "similarity": 0.09921654693543128,
+        "end_line": 956,
+        "signature": "com.fasterxml.jackson.core.JsonParser.overrideFormatFeatures(int values, int mask): JsonParser"
+      },
+      {
+        "start_line": 1648,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public byte getByteValue() throws IOException {\n        int value = getIntValue();\n        // So far so good: but does it fit?\n        // [JACKSON-804]: Let's actually allow range of [-128, 255], as those are uniquely mapped\n        //  (instead of just signed range of [-128, 127])\n        if (value < MIN_BYTE_I || value > MAX_BYTE_I) {\n            throw new InputCoercionException(this,\n                    String.format(\"Numeric value (%s) out of range of Java byte\", getText()),\n                    JsonToken.VALUE_NUMBER_INT, Byte.TYPE);\n        }\n        return (byte) value;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getByteValue",
+        "documentation": "/**\n     * Numeric accessor that can be called when the current\n     * token is of type {@link JsonToken#VALUE_NUMBER_INT} and\n     * it can be expressed as a value of Java byte primitive type.\n     * Note that in addition to \"natural\" input range of {@code [-128, 127]},\n     * this also allows \"unsigned 8-bit byte\" values {@code [128, 255]}:\n     * but for this range value will be translated by truncation, leading\n     * to sign change.\n     *<p>\n     * It can also be called for {@link JsonToken#VALUE_NUMBER_FLOAT};\n     * if so, it is equivalent to calling {@link #getDoubleValue}\n     * and then casting; except for possible overflow/underflow\n     * exception.\n     *<p>\n     * Note: if the resulting integer value falls outside range of\n     * {@code [-128, 255]},\n     * a {@link InputCoercionException}\n     * will be thrown to indicate numeric overflow/underflow.\n     *\n     * @return Current number value as {@code byte} (if numeric token within\n     *   range of {@code [-128, 255]}); otherwise exception thrown\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getByteValue"
+          }
+        ],
+        "similarity": 0.09895338847208451,
+        "end_line": 1659,
+        "signature": "com.fasterxml.jackson.core.JsonParser.getByteValue(): byte"
+      },
+      {
+        "start_line": 378,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/GeneratorBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void writeObject(Object value) throws IOException {\n        if (value == null) {\n            // important: call method that does check value write:\n            writeNull();\n        } else {\n            /* 02-Mar-2009, tatu: we are NOT to call _verifyValueWrite here,\n             *   because that will be done when codec actually serializes\n             *   contained POJO. If we did call it it would advance state\n             *   causing exception later on\n             */\n            if (_objectCodec != null) {\n                _objectCodec.writeValue(this, value);\n                return;\n            }\n            _writeSimpleObject(value);\n        }\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "writeObject",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "GeneratorBase"
+          },
+          {
+            "start_node": "GeneratorBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "writeObject"
+          }
+        ],
+        "similarity": 0.09892689829369497,
+        "end_line": 394,
+        "signature": "com.fasterxml.jackson.core.base.GeneratorBase.writeObject(Object value): void"
+      },
+      {
+        "start_line": 161,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/GeneratorBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonGenerator enable(Feature f) {\n        final int mask = f.getMask();\n        _features |= mask;\n        if ((mask & DERIVED_FEATURES_MASK) != 0) {\n            // why not switch? Requires addition of a generated class, alas\n            if (f == Feature.WRITE_NUMBERS_AS_STRINGS) {\n                _cfgNumbersAsStrings = true;\n            } else if (f == Feature.ESCAPE_NON_ASCII) {\n                setHighestNonEscapedChar(127);\n            } else if (f == Feature.STRICT_DUPLICATE_DETECTION) {\n                if (_writeContext.getDupDetector() == null) { // but only if disabled currently\n                    _writeContext = _writeContext.withDupDetector(DupDetector.rootDetector(this));\n                }\n            }\n        }\n        return this;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "enable",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonGeneratorImpl"
+          },
+          {
+            "start_node": "JsonGeneratorImpl",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enable"
+          }
+        ],
+        "similarity": 0.09805299099091906,
+        "end_line": 177,
+        "signature": "com.fasterxml.jackson.core.base.GeneratorBase.enable(Feature f): JsonGenerator"
+      },
+      {
+        "start_line": 576,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean isNaN() {\n        if (_currToken == JsonToken.VALUE_NUMBER_FLOAT) {\n            if ((_numTypesValid & NR_DOUBLE) != 0) {\n                // 10-Mar-2017, tatu: Alas, `Double.isFinite(d)` only added in JDK 8\n                double d = _numberDouble;\n                return Double.isNaN(d) || Double.isInfinite(d);              \n            }\n        }\n        return false;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "isNaN",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isNaN"
+          }
+        ],
+        "similarity": 0.09803832543306538,
+        "end_line": 585,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase.isNaN(): boolean"
+      },
+      {
+        "start_line": 1806,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonGenerator.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void writeEmbeddedObject(Object object) throws IOException {\n        // 01-Sep-2016, tatu: As per [core#318], handle small number of cases\n        if (object == null) {\n            writeNull();\n            return;\n        }\n        if (object instanceof byte[]) {\n            writeBinary((byte[]) object);\n            return;\n        }\n        throw new JsonGenerationException(\"No native support for writing embedded objects of type \"\n                +object.getClass().getName(),\n                this);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "writeEmbeddedObject",
+        "documentation": "/**\n     * Method that can be called on backends that support passing opaque native\n     * values that some data formats support; not used with JSON backend,\n     * more common with binary formats.\n     *<p>\n     * NOTE: this is NOT the method to call for serializing regular POJOs,\n     * see {@link #writeObject} instead.\n     *\n     * @param object Native format-specific value to write\n     *\n     * @throws IOException if there is either an underlying I/O problem or encoding\n     *    issue at format layer\n     *\n     * @since 2.8\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonGenerator"
+          },
+          {
+            "start_node": "JsonGenerator",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "writeEmbeddedObject"
+          }
+        ],
+        "similarity": 0.09785513710322857,
+        "end_line": 1819,
+        "signature": "com.fasterxml.jackson.core.JsonGenerator.writeEmbeddedObject(Object object): void"
+      },
+      {
+        "start_line": 1080,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected char _handleUnrecognizedCharacterEscape(char ch) throws JsonProcessingException {\n        // as per [JACKSON-300]\n        if (isEnabled(Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER)) {\n            return ch;\n        }\n        // and [JACKSON-548]\n        if (ch == '\\'' && isEnabled(Feature.ALLOW_SINGLE_QUOTES)) {\n            return ch;\n        }\n        _reportError(\"Unrecognized character escape \"+_getCharDesc(ch));\n        return ch;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_handleUnrecognizedCharacterEscape",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_handleUnrecognizedCharacterEscape"
+          }
+        ],
+        "similarity": 0.09782039686731563,
+        "end_line": 1091,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase._handleUnrecognizedCharacterEscape(char ch): char"
+      },
+      {
+        "start_line": 1123,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected String _validJsonTokenList() throws IOException {\n        return _validJsonValueList();\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_validJsonTokenList",
+        "documentation": "/**\n     * @return Description to use as \"valid tokens\" in an exception message about\n     *    invalid (unrecognized) JSON token: called when parser finds something that\n     *    looks like unquoted textual token\n     *\n     * @throws IOException Not thrown by base implementation but allowed by sub-classes\n     *\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_validJsonTokenList"
+          }
+        ],
+        "similarity": 0.09498562070693767,
+        "end_line": 1125,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase._validJsonTokenList(): String"
+      },
+      {
+        "start_line": 397,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/GeneratorBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void writeTree(TreeNode rootNode) throws IOException {\n        // As with 'writeObject()', we are not check if write would work\n        if (rootNode == null) {\n            writeNull();\n        } else {\n            if (_objectCodec == null) {\n                throw new IllegalStateException(\"No ObjectCodec defined\");\n            }\n            _objectCodec.writeValue(this, rootNode);\n        }\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "writeTree",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "GeneratorBase"
+          },
+          {
+            "start_node": "GeneratorBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "writeTree"
+          }
+        ],
+        "similarity": 0.09374755134755541,
+        "end_line": 407,
+        "signature": "com.fasterxml.jackson.core.base.GeneratorBase.writeTree(TreeNode rootNode): void"
+      },
+      {
+        "start_line": 1313,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean isExpectedStartArrayToken() { return currentToken() == JsonToken.START_ARRAY; }",
+        "distance": 1.5,
+        "title": null,
+        "name": "isExpectedStartArrayToken",
+        "documentation": "/**\n     * Specialized accessor that can be used to verify that the current\n     * token indicates start array (usually meaning that current token\n     * is {@link JsonToken#START_ARRAY}) when start array is expected.\n     * For some specialized parsers this can return true for other cases\n     * as well; this is usually done to emulate arrays in cases underlying\n     * format is ambiguous (XML, for example, has no format-level difference\n     * between Objects and Arrays; it just has elements).\n     *<p>\n     * Default implementation is equivalent to:\n     *<pre>\n     *   currentToken() == JsonToken.START_ARRAY\n     *</pre>\n     * but may be overridden by custom parser implementations.\n     *\n     * @return True if the current token can be considered as a\n     *   start-array marker (such {@link JsonToken#START_ARRAY});\n     *   {@code false} if not\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isExpectedStartArrayToken"
+          }
+        ],
+        "similarity": 0.09303223425654178,
+        "end_line": 1313,
+        "signature": "com.fasterxml.jackson.core.JsonParser.isExpectedStartArrayToken(): boolean"
+      },
+      {
+        "start_line": 142,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/JsonGeneratorImpl.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonGenerator enable(Feature f) {\n        super.enable(f);\n        if (f == Feature.QUOTE_FIELD_NAMES) {\n            _cfgUnqNames = false;\n        }\n        return this;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "enable",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonGeneratorImpl"
+          },
+          {
+            "start_node": "JsonGeneratorImpl",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "enable"
+          }
+        ],
+        "similarity": 0.0927694540758858,
+        "end_line": 148,
+        "signature": "com.fasterxml.jackson.core.json.JsonGeneratorImpl.enable(Feature f): JsonGenerator"
+      },
+      {
+        "start_line": 277,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonParser disable(Feature f) {\n        _features &= ~f.getMask();\n        if (f == Feature.STRICT_DUPLICATE_DETECTION) {\n            _parsingContext = _parsingContext.withDupDetector(null);\n        }\n        return this;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "disable",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonGeneratorImpl"
+          },
+          {
+            "start_node": "JsonGeneratorImpl",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "disable"
+          }
+        ],
+        "similarity": 0.0924386215755253,
+        "end_line": 283,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase.disable(Feature f): JsonParser"
+      },
+      {
+        "start_line": 126,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void filterFinishObject() { }",
+        "distance": 1.25,
+        "title": null,
+        "name": "filterFinishObject",
+        "documentation": "/**\n     * Method called to indicate that output of non-filtered Object (one that may\n     * have been included either completely, or in part) is completed,\n     * in cases where filter other that {@link #INCLUDE_ALL} was returned.\n     * This occurs when {@link JsonGenerator#writeEndObject()} is called.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "filterFinishObject"
+          }
+        ],
+        "similarity": 0.09176543417207789,
+        "end_line": 126,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.filterFinishObject(): void"
+      },
+      {
+        "start_line": 117,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/GeneratorBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected GeneratorBase(int features, ObjectCodec codec, JsonWriteContext ctxt) {\n        super();\n        _features = features;\n        _objectCodec = codec;\n        _writeContext = ctxt;\n        _cfgNumbersAsStrings = Feature.WRITE_NUMBERS_AS_STRINGS.enabledIn(features);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "GeneratorBase",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "GeneratorBase"
+          },
+          {
+            "start_node": "GeneratorBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "GeneratorBase"
+          }
+        ],
+        "similarity": 0.0910170642288386,
+        "end_line": 123,
+        "signature": "com.fasterxml.jackson.core.base.GeneratorBase(int features, ObjectCodec codec, JsonWriteContext ctxt)"
+      },
+      {
+        "start_line": 1071,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _reportMismatchedEndMarker(int actCh, char expCh) throws JsonParseException {\n        JsonReadContext ctxt = getParsingContext();\n        _reportError(String.format(\n                \"Unexpected close marker '%s': expected '%c' (for %s starting at %s)\",\n                (char) actCh, expCh, ctxt.typeDesc(),\n                ctxt.startLocation(_contentReference())));\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_reportMismatchedEndMarker",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_reportMismatchedEndMarker"
+          }
+        ],
+        "similarity": 0.09089681723971783,
+        "end_line": 1077,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase._reportMismatchedEndMarker(int actCh, char expCh): void"
+      },
+      {
+        "start_line": 1105,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    protected void _throwUnquotedSpace(int i, String ctxtDesc) throws JsonParseException {\n        // JACKSON-208; possible to allow unquoted control chars:\n        if (!isEnabled(Feature.ALLOW_UNQUOTED_CONTROL_CHARS) || i > INT_SPACE) {\n            char c = (char) i;\n            String msg = \"Illegal unquoted character (\"+_getCharDesc(c)+\"): has to be escaped using backslash to be included in \"+ctxtDesc;\n            _reportError(msg);\n        }\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "_throwUnquotedSpace",
+        "documentation": "/**\n     * Method called to report a problem with unquoted control character.\n     * Note: it is possible to suppress some instances of\n     * exception by enabling\n     * {@link com.fasterxml.jackson.core.json.JsonReadFeature#ALLOW_UNESCAPED_CONTROL_CHARS}.\n     *\n     * @param i Invalid control character\n     * @param ctxtDesc Addition description of context to use in exception message\n     *\n     * @throws JsonParseException explaining the problem\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "_throwUnquotedSpace"
+          }
+        ],
+        "similarity": 0.09037510691359157,
+        "end_line": 1112,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase._throwUnquotedSpace(int i, String ctxtDesc): void"
+      },
+      {
+        "start_line": 289,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonPointer last() {\n        JsonPointer current = this;\n        if (current == EMPTY) {\n            return null;\n        }\n        JsonPointer next;\n        while ((next = current._nextSegment) != JsonPointer.EMPTY) {\n            current = next;\n        }\n        return current;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "last",
+        "documentation": "/**\n     * @return  the leaf of current JSON Pointer expression: leaf is the last\n     *    non-null segment of current JSON Pointer.\n     *\n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "empty"
+          },
+          {
+            "start_node": "empty",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "last"
+          }
+        ],
+        "similarity": 0.09029275981418486,
+        "end_line": 299,
+        "signature": "com.fasterxml.jackson.core.JsonPointer.last(): JsonPointer"
+      },
+      {
+        "start_line": 1325,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean isExpectedStartObjectToken() { return currentToken() == JsonToken.START_OBJECT; }",
+        "distance": 1.5,
+        "title": null,
+        "name": "isExpectedStartObjectToken",
+        "documentation": "/**\n     * Similar to {@link #isExpectedStartArrayToken()}, but checks whether stream\n     * currently points to {@link JsonToken#START_OBJECT}.\n     *\n     * @return True if the current token can be considered as a\n     *   start-array marker (such {@link JsonToken#START_OBJECT});\n     *   {@code false} if not\n     *\n     * @since 2.5\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "isExpectedStartObjectToken"
+          }
+        ],
+        "similarity": 0.09012849423188828,
+        "end_line": 1325,
+        "signature": "com.fasterxml.jackson.core.JsonParser.isExpectedStartObjectToken(): boolean"
+      },
+      {
+        "start_line": 354,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonPointer appendProperty(String property) {\n        if (property == null || property.isEmpty()) {\n            return this;\n        }\n        if (property.charAt(0) != SEPARATOR) {\n            property = SEPARATOR + property;\n        }\n        String currentJsonPointer = _asString;\n        if (currentJsonPointer.endsWith(\"/\")) {\n            //removes final slash\n            currentJsonPointer = currentJsonPointer.substring(0, currentJsonPointer.length()-1);\n        }\n        return compile(currentJsonPointer + property);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "appendProperty",
+        "documentation": "/**\n     * ATTENTION! {@link JsonPointer} is head centric, tail appending is much costlier than head appending.\n     * It is not recommended to overuse the method.\n     *\n     * Mutant factory method that will return\n     *<ul>\n     * <li>`this` instance if `property` is null or empty String, OR\n     *  </li>\n     * <li>Newly constructed {@link JsonPointer} instance that starts with all segments\n     *    of `this`, followed by new segment of 'property' name.\n     *  </li>\n     *</ul>\n     *\n     * 'property' format is starting separator (optional, added automatically if not provided) and new segment name.\n     *\n     * @param property new segment property name\n     *\n     * @return Either `this` instance, or a newly created combination, as per description above.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "empty"
+          },
+          {
+            "start_node": "empty",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "appendProperty"
+          }
+        ],
+        "similarity": 0.0898069052152122,
+        "end_line": 367,
+        "signature": "com.fasterxml.jackson.core.JsonPointer.appendProperty(String property): JsonPointer"
+      },
+      {
+        "start_line": 247,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean includeValue(JsonParser p) throws IOException {\n        return _includeScalar();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "includeValue",
+        "documentation": "/**\n     * Call made when verifying whether a scalar value is being\n     * read from a parser.\n     *<p>\n     * Default action is to call <code>_includeScalar()</code> and return\n     * whatever it indicates.\n     *\n     * @param p Parser that points to the value (typically {@code delegate}\n     *    parser, not filtering parser that wraps it)\n     *\n     * @return True if scalar value is to be included; false if not\n     *\n     * @throws IOException if there are any problems reading content (typically\n     *   via calling passed-in {@code JsonParser})\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "includeValue"
+          }
+        ],
+        "similarity": 0.08895736990536994,
+        "end_line": 249,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.includeValue(JsonParser p): boolean"
+      },
+      {
+        "start_line": 926,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonGenerator.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void writeStartArray(Object forValue) throws IOException {\n        writeStartArray();\n        setCurrentValue(forValue);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "writeStartArray",
+        "documentation": "/**\n     * Method for writing start marker of an Array value, similar\n     * to {@link #writeStartArray()},\n     * but also specifying the \"current value\"\n     * to assign to the new Array context being created.\n     *\n     * @param forValue \"Current value\" to assign for the Array context being created\n     *\n     * @throws IOException if there is either an underlying I/O problem or encoding\n     *    issue at format layer\n     *\n     * @since 2.10\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonGenerator"
+          },
+          {
+            "start_node": "JsonGenerator",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "writeStartArray"
+          }
+        ],
+        "similarity": 0.08867016173033146,
+        "end_line": 929,
+        "signature": "com.fasterxml.jackson.core.JsonGenerator.writeStartArray(Object forValue): void"
+      },
+      {
+        "start_line": 1134,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonParser.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public Boolean nextBooleanValue() throws IOException {\n        JsonToken t = nextToken();\n        if (t == JsonToken.VALUE_TRUE) { return Boolean.TRUE; }\n        if (t == JsonToken.VALUE_FALSE) { return Boolean.FALSE; }\n        return null;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "nextBooleanValue",
+        "documentation": "/**\n     * Method that fetches next token (as if calling {@link #nextToken}) and\n     * if it is {@link JsonToken#VALUE_TRUE} or {@link JsonToken#VALUE_FALSE}\n     * returns matching Boolean value; otherwise return null.\n     * It is functionally equivalent to:\n     *<pre>\n     *  JsonToken t = nextToken();\n     *  if (t == JsonToken.VALUE_TRUE) return Boolean.TRUE;\n     *  if (t == JsonToken.VALUE_FALSE) return Boolean.FALSE;\n     *  return null;\n     *</pre>\n     * but may be faster for parser to process, and can therefore be used if caller\n     * expects to get a Boolean value next from input.\n     *\n     * @return {@code Boolean} value of the {@code JsonToken.VALUE_TRUE} or {@code JsonToken.VALUE_FALSE}\n     *   token parser advanced to; or {@code null} if next token is of some other type\n     *\n     * @throws IOException for low-level read issues, or\n     *   {@link JsonParseException} for decoding problems\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonParser"
+          },
+          {
+            "start_node": "JsonParser",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextBooleanValue"
+          }
+        ],
+        "similarity": 0.08843817783293843,
+        "end_line": 1139,
+        "signature": "com.fasterxml.jackson.core.JsonParser.nextBooleanValue(): Boolean"
+      },
+      {
+        "start_line": 392,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonLocation getTokenLocation() {\n        return new JsonLocation(_contentReference(),\n                -1L, getTokenCharacterOffset(), // bytes, chars\n                getTokenLineNr(),\n                getTokenColumnNr());\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "getTokenLocation",
+        "documentation": "/**\n     * Method that return the <b>starting</b> location of the current\n     * token; that is, position of the first character from input\n     * that starts the current token.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getTokenLocation"
+          }
+        ],
+        "similarity": 0.08785218016808556,
+        "end_line": 397,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase.getTokenLocation(): JsonLocation"
+      },
+      {
+        "start_line": 152,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/json/JsonGeneratorImpl.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonGenerator disable(Feature f) {\n        super.disable(f);\n        if (f == Feature.QUOTE_FIELD_NAMES) {\n            _cfgUnqNames = true;\n        }\n        return this;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "disable",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonGeneratorImpl"
+          },
+          {
+            "start_node": "JsonGeneratorImpl",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "disable"
+          }
+        ],
+        "similarity": 0.08784629515721123,
+        "end_line": 158,
+        "signature": "com.fasterxml.jackson.core.json.JsonGeneratorImpl.disable(Feature f): JsonGenerator"
+      },
+      {
+        "start_line": 2323,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonGenerator.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public void writeArrayFieldStart(String fieldName) throws IOException {\n        writeFieldName(fieldName);\n        writeStartArray();\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "writeArrayFieldStart",
+        "documentation": "/**\n     * Convenience method for outputting a field entry (\"member\")\n     * (that will contain a JSON Array value), and the START_ARRAY marker.\n     * Equivalent to:\n     *<pre>\n     *  writeFieldName(fieldName);\n     *  writeStartArray();\n     *</pre>\n     *<p>\n     * Note: caller still has to take care to close the array\n     * (by calling {#link #writeEndArray}) after writing all values\n     * of the value Array.\n     *\n     * @param fieldName Name of the field to write\n     *\n     * @throws IOException if there is either an underlying I/O problem or encoding\n     *    issue at format layer\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonGenerator"
+          },
+          {
+            "start_node": "JsonGenerator",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "writeArrayFieldStart"
+          }
+        ],
+        "similarity": 0.08747650907412997,
+        "end_line": 2326,
+        "signature": "com.fasterxml.jackson.core.JsonGenerator.writeArrayFieldStart(String fieldName): void"
+      },
+      {
+        "start_line": 317,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonPointer.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonPointer append(JsonPointer tail) {\n        if (this == EMPTY) {\n            return tail;\n        }\n        if (tail == EMPTY) {\n            return this;\n        }\n        // 21-Mar-2017, tatu: Not superbly efficient; could probably improve by not concatenating,\n        //    re-decoding -- by stitching together segments -- but for now should be fine.\n\n        String currentJsonPointer = _asString;\n        if (currentJsonPointer.endsWith(\"/\")) {\n            //removes final slash\n            currentJsonPointer = currentJsonPointer.substring(0, currentJsonPointer.length()-1);\n        }\n        return compile(currentJsonPointer + tail._asString);\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "append",
+        "documentation": "/**\n     * Mutant factory method that will return\n     *<ul>\n     * <li>`tail` if `this` instance is \"empty\" pointer, OR\n     *  </li>\n     * <li>`this` instance if `tail` is \"empty\" pointer, OR\n     *  </li>\n     * <li>Newly constructed {@link JsonPointer} instance that starts with all segments\n     *    of `this`, followed by all segments of `tail`.\n     *  </li>\n     *</ul>\n     * \n     * @param tail {@link JsonPointer} instance to append to this one, to create a new pointer instance\n     *\n     * @return Either `this` instance, `tail`, or a newly created combination, as per description above.\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "empty"
+          },
+          {
+            "start_node": "empty",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "JsonPointer"
+          },
+          {
+            "start_node": "JsonPointer",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "append"
+          }
+        ],
+        "similarity": 0.08730687037338317,
+        "end_line": 333,
+        "signature": "com.fasterxml.jackson.core.JsonPointer.append(JsonPointer tail): JsonPointer"
+      },
+      {
+        "start_line": 277,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public boolean includeNull() {\n        return _includeScalar();\n    }",
+        "distance": 1.25,
+        "title": null,
+        "name": "includeNull",
+        "documentation": "/**\n     * Call made to verify whether leaf-level\n     * null value\n     * should be included in output or not.\n     *\n     * @return True if ({@code null}) value is to be included; false if not\n     */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "TokenFilter"
+          },
+          {
+            "start_node": "TokenFilter",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "includeNull"
+          }
+        ],
+        "similarity": 0.08728499124001587,
+        "end_line": 279,
+        "signature": "com.fasterxml.jackson.core.filter.TokenFilter.includeNull(): boolean"
+      },
+      {
+        "start_line": 287,
+        "file_path": "playground/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    public JsonParser setFeatureMask(int newMask) {\n        int changes = (_features ^ newMask);\n        if (changes != 0) {\n            _features = newMask;\n            _checkStdFeatureChanges(newMask, changes);\n        }\n        return this;\n    }",
+        "distance": 1.5,
+        "title": null,
+        "name": "setFeatureMask",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "version"
+          },
+          {
+            "start_node": "version",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "ParserBase"
+          },
+          {
+            "start_node": "ParserBase",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "setFeatureMask"
+          }
+        ],
+        "similarity": 0.08728138295767991,
+        "end_line": 294,
+        "signature": "com.fasterxml.jackson.core.base.ParserBase.setFeatureMask(int newMask): JsonParser"
+      }
+    ],
+    "classes": [],
+    "issues": [
+      {
+        "content": "Include version information for Jackson version you use: We use 2.10.4 but 2.13 doesn't support this either\r\n\r\nMaybe this is possible in a way I don't know about, but I was hoping I could write a `TokenFilter` that could preserve empty arrays and objects. It looks like now if a `TokenFilter#includeProperty` doesn't return `INCLUDE_ALL` for an empty array then the array is removed. I'd love it if the `TokenFilter` could make that choice- maybe something like adding this to `TokenFilter`:\r\n\r\n```\r\n    public boolean includeEmptyArray(boolean contentsFiltered) throws IOException {\r\n        return false;\r\n    }\r\n```\r\n\r\nThere is already a `filterFinishArray` but I don't think I can control the underlying filter with it. And I'm not sure if I can tell if the filter has filtered the contents of the array or not.\n",
+        "distance": 0,
+        "title": "Allow `TokenFilter`s to keep empty arrays and objects",
+        "name": "root",
+        "path": [],
+        "issue_id": "root",
+        "similarity": 2.0,
+        "type": "issue"
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "729",
+        "type": "issue",
+        "content": "This creates two new method on `TokenFilter` which you can override to\r\ndecide if empty arrays and objects should be included or excluded. An\r\noverride like this, for example, will include all arrays and objects\r\nthat were sent empty but strip any arrays or objects that were\r\n*filtered* to be empty:\r\n```\r\n        @Override\r\n        public boolean includeEmptyArray(boolean contentsFiltered) {\r\n            return !contentsFiltered;\r\n        }\r\n\r\n        @Override\r\n        public boolean includeEmptyObject(boolean contentsFiltered) {\r\n            return !contentsFiltered;\r\n        }\r\n```\r\n\r\nThe default to preserve backwards compatibility is to always *exclude*\r\nempty objects.\r\n\r\nCloses #715\n\n",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "Allow TokenFilter to preserve empty",
+        "name": "pr#729",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#729"
+          }
+        ],
+        "similarity": 0.7598437228255502,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "715",
+        "type": "issue",
+        "content": "Include version information for Jackson version you use: We use 2.10.4 but 2.13 doesn't support this either\r\n\r\nMaybe this is possible in a way I don't know about, but I was hoping I could write a `TokenFilter` that could preserve empty arrays and objects. It looks like now if a `TokenFilter#includeProperty` doesn't return `INCLUDE_ALL` for an empty array then the array is removed. I'd love it if the `TokenFilter` could make that choice- maybe something like adding this to `TokenFilter`:\r\n\r\n```\r\n    public boolean includeEmptyArray(boolean contentsFiltered) throws IOException {\r\n        return false;\r\n    }\r\n```\r\n\r\nThere is already a `filterFinishArray` but I don't think I can control the underlying filter with it. And I'm not sure if I can tell if the filter has filtered the contents of the array or not.\n\n\nComment by nik9000:\nSomething like [this](https://gist.github.com/nik9000/3ad414191b05265c6f140209abfa92eb) seems to work, but I really don't know the code base so i can't be sure it makes sense.\r\n\r\nI see `INCLUDE_NON_NULL`  which is new to me but I don't think it does what I want. It *looks* like it preserves the path to filtered stuff and I don't want that.\n\nComment by cowtowncoder:\nOne quick note: is this related to/same as #708 ? If so I wish I had time to work on it; help would be appreciated.\r\nAlthough time-wise might be getting too late to address for 2.13.\r\n\n\nComment by nik9000:\n> is this related to/same as #708 ?\r\n\r\nI had another look this morning and I think so. I'll try and open up a PR soon. I *think* the code that I linked in the gist works fine for the builder side. Filtering the parsers are a little wow. I'll keep poking at it. There's a whole giant switch statement I haven't looked at yet.\n\nComment by cowtowncoder:\nYes, the code is.... scary. It violates my usual \"never write as clever code as you can since the person debugging code must be twice as clever as the person who wrote it (hence write only half as clever you could)\".",
+        "source_code": null,
+        "distance": 0.5,
+        "title": "Allow `TokenFilter`s to keep empty arrays and objects",
+        "name": "issue#715",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#729"
+          },
+          {
+            "start_node": "pr#729",
+            "description": "referenced by issue",
+            "type": "RELATED",
+            "end_node": "issue#715"
+          }
+        ],
+        "similarity": 0.6991159863216557,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "716",
+        "type": "issue",
+        "content": "This creates two new method on `TokenFilter` which you can override to\r\ndecide if empty arrays and objects should be included or excluded. An\r\noverride like this, for example, will include all arrays and objects\r\nthat were sent empty but strip any arrays or objects that were\r\n*filtered* to be empty:\r\n```\r\n        @Override\r\n        public boolean includeEmptyArray(boolean contentsFiltered) {\r\n            return !contentsFiltered;\r\n        }\r\n\r\n        @Override\r\n        public boolean includeEmptyObject(boolean contentsFiltered) {\r\n            return !contentsFiltered;\r\n        }\r\n```\r\n\r\nThe default to preserve backwards compatibility is to always *exclude*\r\nempty objects.\r\n\r\nCloses #715\n\n\nComment by nik9000:\nOK! I've got *my* tests working for this, but, like I said on the issue, I don't know the code base and very well could be screwing things up in ways I don't understand.\r\n\r\nI haven't tested this with `ONLY_INCLUDE_ALL` or `INCLUDE_NON_NULL` because I'm not sure of a good way to do so. These things also feel like they operate at a different level of precision.\n\nComment by nik9000:\nHello! It's been a while. I'm still quite interested in this if any maintainers are willing to work with me.\n\nComment by cowtowncoder:\nHi @nik9000 ! Thank you for pinging me. I have had less time on Jackson lately, but hoping to pick up things now.\r\nAnd this is one of the things I'd like to get done.\r\n\n\nComment by cowtowncoder:\n@nik9000 Apologies for dropping this from 2.13, but I am now back working on getting 2.14 branch going; and I would be interested in getting this patch in. Could you rebase this PR against 2.14?\n\nComment by nik9000:\nI'll give it a go soon!\n\nOn Sat, Dec 4, 2021, 9:39 PM Tatu Saloranta ***@***.***>\nwrote:\n\n> @nik9000 <https://github.com/nik9000> Apologies for dropping this from\n> 2.13, but I am now back working on getting 2.14 branch going; and I would\n> be interested in getting this patch in. Could you rebase this PR against\n> 2.14?\n>\n> \u2014\n> You are receiving this because you were mentioned.\n> Reply to this email directly, view it on GitHub\n> <https://github.com/FasterXML/jackson-core/pull/716#issuecomment-986155417>,\n> or unsubscribe\n> <https://github.com/notifications/unsubscribe-auth/AABUXIU5HPKREAJGFA4QOCLUPLGH5ANCNFSM5D4KCWMQ>\n> .\n> Triage notifications on the go with GitHub Mobile for iOS\n> <https://apps.apple.com/app/apple-store/id1477376905?ct=notification-email&mt=8&pt=524675>\n> or Android\n> <https://play.google.com/store/apps/details?id=com.github.android&referrer=utm_campaign%3Dnotification-email%26utm_medium%3Demail%26utm_source%3Dgithub>.\n>\n>\n",
+        "source_code": null,
+        "distance": 0.5,
+        "title": "Allow TokenFilter to preserve empty",
+        "name": "pr#716",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#729"
+          },
+          {
+            "start_node": "pr#729",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#716"
+          }
+        ],
+        "similarity": 0.6566029455177783,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "649",
+        "type": "issue",
+        "content": "There seems to be a bug in `FilteringParserDelegate` that specifically manifests when trying to filter out arrays. Here's a test that reproduces the behavior (can be added to `BasicParserFilteringTest`):\r\n```java\r\n    public void testExcludeArrays() throws Exception\r\n    {\r\n        class NoArraysFilter extends TokenFilter\r\n        {\r\n            @Override\r\n            public TokenFilter filterStartArray() {\r\n                return null;\r\n            }\r\n        }\r\n\r\n        String jsonString = aposToQuotes(\"{'a':123,'array':[1,2]}\");\r\n        JsonParser p0 = JSON_F.createParser(jsonString);\r\n        FilteringParserDelegate p = new FilteringParserDelegate(p0,\r\n            new NoArraysFilter(),\r\n            true, // includePath\r\n            true // multipleMatches\r\n        );\r\n        String result = readAndWrite(JSON_F, p);\r\n        assertEquals(aposToQuotes(\"{'a':123}\"), result);\r\n        assertEquals(1, p.getMatchCount());\r\n    }\r\n```\r\n\r\nThis test fails with:\r\n```\r\njunit.framework.ComparisonFailure: \r\nExpected :{\"a\":123}\r\nActual   :{\"a\"}\r\n```\r\n\r\nI discovered this bug while adding test coverage for #573. However, I confirmed that the bug exists in jackson-core versions 2.8.9, 2.9.10, 2.10.5, and 2.11.3 (and therefore wasn't introduced in #573).\r\n\r\nNo one has complained yet, and a quick GitHub search suggests there isn't much code in the wild (if any) doing `filterStartArray() { return null; }` so I don't think it's a high priority to fix this. I mainly just wanted to log this issue so that I can link to it (above the commented out unit test)\n\n",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "Bug in FilteringParserDelegate",
+        "name": "issue#649",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#729"
+          },
+          {
+            "start_node": "pr#729",
+            "description": "referenced by issue",
+            "type": "RELATED",
+            "end_node": "issue#715"
+          },
+          {
+            "start_node": "issue#715",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#649"
+          }
+        ],
+        "similarity": 0.4527885294727654,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "708",
+        "type": "issue",
+        "content": "This is a follow up issue of https://github.com/FasterXML/jackson-core/issues/700 .\r\n\r\nIf using FilteringParserDelegate to filter out a part of json, it throws the following exception when the input json is an empty list (\"[]\").\r\n\r\n```\r\ncom.fasterxml.jackson.databind.exc.MismatchedInputException: No content to map due to end-of-input\r\n at [Source: (byte[])\"[]\"; line: 1, column: 2]\r\n\r\n\tat com.fasterxml.jackson.databind.exc.MismatchedInputException.from(MismatchedInputException.java:59)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper._initForReading(ObjectMapper.java:4688)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper._readValue(ObjectMapper.java:4561)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2823)\r\n\tat com.alibaba.dapr.serialization.json.FilteringParserDelegateTest.testFilteringParserDelegateWithEmptyList(FilteringParserDelegateTest.java:36)\r\n```\r\nTest case:\r\n```java\r\npackage com.alibaba.dapr.serialization.json;\r\n\r\nimport com.fasterxml.jackson.core.JsonParser;\r\nimport com.fasterxml.jackson.core.filter.FilteringParserDelegate;\r\nimport com.fasterxml.jackson.core.filter.TokenFilter;\r\nimport com.fasterxml.jackson.core.type.TypeReference;\r\nimport com.fasterxml.jackson.databind.ObjectMapper;\r\nimport org.junit.Test;\r\n\r\nimport java.io.IOException;\r\nimport java.nio.charset.StandardCharsets;\r\nimport java.util.List;\r\nimport java.util.Map;\r\n\r\nimport static org.junit.Assert.assertTrue;\r\n\r\npublic class FilteringParserDelegateTest {\r\n    @Test\r\n    public void testFilteringParserDelegateWithEmptyList() throws IOException {\r\n        ObjectMapper mapper = new ObjectMapper();\r\n        final TokenFilter tokenFilter = new TokenFilter() {\r\n            @Override\r\n            public TokenFilter includeProperty(String name) {\r\n                if (\"@type\".equals(name)) {\r\n                    return null;\r\n                }\r\n                return INCLUDE_ALL;\r\n            }\r\n        };\r\n\r\n        byte[] content = \"[]\".getBytes(StandardCharsets.UTF_8);\r\n\r\n        JsonParser jp = mapper.createParser(content);\r\n        JsonParser jsonParser = new FilteringParserDelegate(jp, tokenFilter, TokenFilter.Inclusion.INCLUDE_ALL_AND_PATH, true);\r\n\r\n        List<Map<String, String>> a = mapper.readValue(jsonParser, new TypeReference<List<Map<String, String>>>() {});\r\n        assertTrue(a.isEmpty());\r\n    }\r\n}\r\n\r\n```\r\nJackson version: 2.12.3\n\n\nComment by cowtowncoder:\nInteresting... empty array (and empty Object) are sort of edge cases since they are leaf values on their own.\r\n\r\nWill need to think of what to do with them; almost certainly need to add 2 more callback methods in `TokenFilter`.\r\nI hope to be able to fix this before 2.13.0 final but that may take time.\r\n\r\nWill add failing tests first.\r\n",
+        "source_code": null,
+        "distance": 1.0,
+        "title": "FilteringParserDelegate cannot deserialize empty list",
+        "name": "issue#708",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#729"
+          },
+          {
+            "start_node": "pr#729",
+            "description": "referenced by issue",
+            "type": "RELATED",
+            "end_node": "issue#715"
+          },
+          {
+            "start_node": "issue#715",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#708"
+          }
+        ],
+        "similarity": 0.38733144376719997,
+        "end_line": null,
+        "signature": null
+      }
+    ]
+  },
+  "artifact_stats": {
+    "skipped_due_to_time": 13,
+    "valid_related_items": 17
+  }
+}

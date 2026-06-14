@@ -1,0 +1,75 @@
+Based on the issue description, the bug relates to `@JsonSetter(nulls=Nulls.SKIP)` not being respected when deserializing collections with `READ_UNKNOWN_ENUM_VALUES_AS_NULL` and `FAIL_ON_INVALID_SUBTYPE` features enabled.
+
+The issue occurs because null values from unknown enum values or invalid subtypes are being added to collections even when `Nulls.SKIP` is specified. This needs to be handled in the deserialization logic.
+
+Looking at the code, the fix would need to be in the `DeserializationConfig` class where the null handling is configured. The `_withoutJsonReadFeatures` method shows how format features are handled during deserialization configuration.
+
+Here's the proposed fix:
+
+```java
+### playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/DeserializationConfig.java
+- start_line : 688
+- end_line : 712
+<<<<<<< SEARCH
+    private DeserializationConfig _withoutJsonReadFeatures(FormatFeature... features) {
+        int parserSet = _parserFeatures;
+        int parserMask = _parserFeaturesToChange;
+        int newSet = _formatReadFeatures;
+        int newMask = _formatReadFeaturesToChange;
+        for (FormatFeature f : features) {
+            final int mask = f.getMask();
+            newSet &= ~mask;
+            newMask |= mask;
+
+            if (f instanceof JsonReadFeature) {
+                JsonParser.Feature oldF = ((JsonReadFeature) f).mappedFeature();
+                if (oldF != null) {
+                    final int pmask = oldF.getMask();
+                    parserSet &= ~pmask;
+                    parserMask |= pmask;
+                }
+            }
+        }
+        return ((_formatReadFeatures == newSet) && (_formatReadFeaturesToChange == newMask)
+                && (_parserFeatures == parserSet) && (_parserFeaturesToChange == parserMask)
+                ) ? this :
+            new DeserializationConfig(this,  _mapperFeatures, _deserFeatures,
+                    parserSet, parserMask, newSet, newMask);
+    }
+=======
+    private DeserializationConfig _withoutJsonReadFeatures(FormatFeature... features) {
+        int parserSet = _parserFeatures;
+        int parserMask = _parserFeaturesToChange;
+        int newSet = _formatReadFeatures;
+        int newMask = _formatReadFeaturesToChange;
+        for (FormatFeature f : features) {
+            final int mask = f.getMask();
+            newSet &= ~mask;
+            newMask |= mask;
+
+            if (f instanceof JsonReadFeature) {
+                JsonParser.Feature oldF = ((JsonReadFeature) f).mappedFeature();
+                if (oldF != null) {
+                    final int pmask = oldF.getMask();
+                    parserSet &= ~pmask;
+                    parserMask |= pmask;
+                }
+            }
+        }
+        // Ensure null values from unknown enums/subtypes are skipped if configured
+        if (_configOverrides.getDefaultSetterInfo().getContentNulls() == Nulls.SKIP) {
+            newSet &= ~DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL.getMask();
+            newSet &= ~DeserializationFeature.FAIL_ON_INVALID_SUBTYPE.getMask();
+        }
+        return ((_formatReadFeatures == newSet) && (_formatReadFeaturesToChange == newMask)
+                && (_parserFeatures == parserSet) && (_parserFeaturesToChange == parserMask)
+                ) ? this :
+            new DeserializationConfig(this,  _mapperFeatures, _deserFeatures,
+                    parserSet, parserMask, newSet, newMask);
+    }
+>>>>>>> REPLACE
+```
+
+This change modifies the `_withoutJsonReadFeatures` method to check if `Nulls.SKIP` is configured for content nulls. If so, it ensures that the features `READ_UNKNOWN_ENUM_VALUES_AS_NULL` and `FAIL_ON_INVALID_SUBTYPE` are disabled, which will prevent null values from being added to collections when unknown enum values or invalid subtypes are encountered.
+
+The fix maintains the existing behavior when `Nulls.SKIP` is not configured, but enforces the skip behavior when it is configured, which matches the expected behavior described in the issue.

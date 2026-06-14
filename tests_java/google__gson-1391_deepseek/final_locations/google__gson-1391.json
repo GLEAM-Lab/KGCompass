@@ -1,0 +1,2357 @@
+{
+  "related_entities": {
+    "methods": [
+      {
+        "start_line": 185,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/TypeAdapter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public final TypeAdapter<T> nullSafe() {\n    return new TypeAdapter<T>() {\n      @Override public void write(JsonWriter out, T value) throws IOException {\n        if (value == null) {\n          out.nullValue();\n        } else {\n          TypeAdapter.this.write(out, value);\n        }\n      }\n      @Override public T read(JsonReader reader) throws IOException {\n        if (reader.peek() == JsonToken.NULL) {\n          reader.nextNull();\n          return null;\n        }\n        return TypeAdapter.this.read(reader);\n      }\n    };\n  }",
+        "distance": 1.5,
+        "title": null,
+        "name": "nullSafe",
+        "documentation": "/**\n   * This wrapper method is used to make a type adapter null tolerant. In general, a\n   * type adapter is required to handle nulls in write and read methods. Here is how this\n   * is typically done:<br>\n   * <pre>   {@code\n   *\n   * Gson gson = new GsonBuilder().registerTypeAdapter(Foo.class,\n   *   new TypeAdapter<Foo>() {\n   *     public Foo read(JsonReader in) throws IOException {\n   *       if (in.peek() == JsonToken.NULL) {\n   *         in.nextNull();\n   *         return null;\n   *       }\n   *       // read a Foo from in and return it\n   *     }\n   *     public void write(JsonWriter out, Foo src) throws IOException {\n   *       if (src == null) {\n   *         out.nullValue();\n   *         return;\n   *       }\n   *       // write src as JSON to out\n   *     }\n   *   }).create();\n   * }</pre>\n   * You can avoid this boilerplate handling of nulls by wrapping your type adapter with\n   * this method. Here is how we will rewrite the above example:\n   * <pre>   {@code\n   *\n   * Gson gson = new GsonBuilder().registerTypeAdapter(Foo.class,\n   *   new TypeAdapter<Foo>() {\n   *     public Foo read(JsonReader in) throws IOException {\n   *       // read a Foo from in and return it\n   *     }\n   *     public void write(JsonWriter out, Foo src) throws IOException {\n   *       // write src as JSON to out\n   *     }\n   *   }.nullSafe()).create();\n   * }</pre>\n   * Note that we didn't need to check for nulls in our type adapter after we used nullSafe.\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "TypeAdapter"
+          },
+          {
+            "start_node": "TypeAdapter",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "nullSafe"
+          }
+        ],
+        "similarity": 0.0904969611516734,
+        "end_line": 202,
+        "signature": "com.google.gson.TypeAdapter.nullSafe(): TypeAdapter"
+      },
+      {
+        "start_line": 918,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public <T> T fromJson(JsonReader reader, Type typeOfT) throws JsonIOException, JsonSyntaxException {\n    boolean isEmpty = true;\n    boolean oldLenient = reader.isLenient();\n    reader.setLenient(true);\n    try {\n      reader.peek();\n      isEmpty = false;\n      TypeToken<T> typeToken = (TypeToken<T>) TypeToken.get(typeOfT);\n      TypeAdapter<T> typeAdapter = getAdapter(typeToken);\n      T object = typeAdapter.read(reader);\n      return object;\n    } catch (EOFException e) {\n      /*\n       * For compatibility with JSON 1.5 and earlier, we return null for empty\n       * documents instead of throwing.\n       */\n      if (isEmpty) {\n        return null;\n      }\n      throw new JsonSyntaxException(e);\n    } catch (IllegalStateException e) {\n      throw new JsonSyntaxException(e);\n    } catch (IOException e) {\n      // TODO(inder): Figure out whether it is indeed right to rethrow this as JsonSyntaxException\n      throw new JsonSyntaxException(e);\n    } catch (AssertionError e) {\n      throw new AssertionError(\"AssertionError (GSON \" + GsonBuildConfig.VERSION + \"): \" + e.getMessage(), e);\n    } finally {\n      reader.setLenient(oldLenient);\n    }\n  }",
+        "distance": 2.0,
+        "title": null,
+        "name": "fromJson",
+        "documentation": "/**\n   * Reads the next JSON value from {@code reader} and convert it to an object\n   * of type {@code typeOfT}. Returns {@code null}, if the {@code reader} is at EOF.\n   * Since Type is not parameterized by T, this method is type unsafe and should be used carefully\n   *\n   * @throws JsonIOException if there was a problem writing to the Reader\n   * @throws JsonSyntaxException if json is not a valid representation for an object of type\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "Gson"
+          },
+          {
+            "start_node": "Gson",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          }
+        ],
+        "similarity": 0.08687322070942477,
+        "end_line": 948,
+        "signature": "com.google.gson.Gson.fromJson(JsonReader reader, Type typeOfT): T"
+      },
+      {
+        "start_line": 195,
+        "file_path": "playground/google__gson/extras/src/main/java/com/google/gson/typeadapters/RuntimeTypeAdapterFactory.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public <R> TypeAdapter<R> create(Gson gson, TypeToken<R> type) {\n    if (type.getRawType() != baseType) {\n      return null;\n    }\n\n    final Map<String, TypeAdapter<?>> labelToDelegate\n        = new LinkedHashMap<String, TypeAdapter<?>>();\n    final Map<Class<?>, TypeAdapter<?>> subtypeToDelegate\n        = new LinkedHashMap<Class<?>, TypeAdapter<?>>();\n    for (Map.Entry<String, Class<?>> entry : labelToSubtype.entrySet()) {\n      TypeAdapter<?> delegate = gson.getDelegateAdapter(this, TypeToken.get(entry.getValue()));\n      labelToDelegate.put(entry.getKey(), delegate);\n      subtypeToDelegate.put(entry.getValue(), delegate);\n    }\n\n    return new TypeAdapter<R>() {\n      @Override public R read(JsonReader in) throws IOException {\n        JsonElement jsonElement = Streams.parse(in);\n        JsonElement labelJsonElement;\n        if (maintainType) {\n            labelJsonElement = jsonElement.getAsJsonObject().get(typeFieldName);\n        } else {\n            labelJsonElement = jsonElement.getAsJsonObject().remove(typeFieldName);\n        }\n        \n        if (labelJsonElement == null) {\n          throw new JsonParseException(\"cannot deserialize \" + baseType\n              + \" because it does not define a field named \" + typeFieldName);\n        }\n        String label = labelJsonElement.getAsString();\n        @SuppressWarnings(\"unchecked\") // registration requires that subtype extends T\n        TypeAdapter<R> delegate = (TypeAdapter<R>) labelToDelegate.get(label);\n        if (delegate == null) {\n          throw new JsonParseException(\"cannot deserialize \" + baseType + \" subtype named \"\n              + label + \"; did you forget to register a subtype?\");\n        }\n        return delegate.fromJsonTree(jsonElement);\n      }\n\n      @Override public void write(JsonWriter out, R value) throws IOException {\n        Class<?> srcType = value.getClass();\n        String label = subtypeToLabel.get(srcType);\n        @SuppressWarnings(\"unchecked\") // registration requires that subtype extends T\n        TypeAdapter<R> delegate = (TypeAdapter<R>) subtypeToDelegate.get(srcType);\n        if (delegate == null) {\n          throw new JsonParseException(\"cannot serialize \" + srcType.getName()\n              + \"; did you forget to register a subtype?\");\n        }\n        JsonObject jsonObject = delegate.toJsonTree(value).getAsJsonObject();\n\n        if (maintainType) {\n          Streams.write(jsonObject, out);\n          return;\n        }\n\n        JsonObject clone = new JsonObject();\n\n        if (jsonObject.has(typeFieldName)) {\n          throw new JsonParseException(\"cannot serialize \" + srcType.getName()\n              + \" because it already defines a field named \" + typeFieldName);\n        }\n        clone.add(typeFieldName, new JsonPrimitive(label));\n        \n        for (Map.Entry<String, JsonElement> e : jsonObject.entrySet()) {\n          clone.add(e.getKey(), e.getValue());\n        }\n        Streams.write(clone, out);\n      }\n    }.nullSafe();\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "create",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "TypeAdapter"
+          },
+          {
+            "start_node": "TypeAdapter",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "nullSafe"
+          },
+          {
+            "start_node": "nullSafe",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "create"
+          }
+        ],
+        "similarity": 0.07909761488136885,
+        "end_line": 264,
+        "signature": "com.google.gson.typeadapters.RuntimeTypeAdapterFactory.create(Gson gson, TypeToken type): TypeAdapter"
+      },
+      {
+        "start_line": 433,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public <T> TypeAdapter<T> getAdapter(TypeToken<T> type) {\n    TypeAdapter<?> cached = typeTokenCache.get(type == null ? NULL_KEY_SURROGATE : type);\n    if (cached != null) {\n      return (TypeAdapter<T>) cached;\n    }\n\n    Map<TypeToken<?>, FutureTypeAdapter<?>> threadCalls = calls.get();\n    boolean requiresThreadLocalCleanup = false;\n    if (threadCalls == null) {\n      threadCalls = new HashMap<TypeToken<?>, FutureTypeAdapter<?>>();\n      calls.set(threadCalls);\n      requiresThreadLocalCleanup = true;\n    }\n\n    // the key and value type parameters always agree\n    FutureTypeAdapter<T> ongoingCall = (FutureTypeAdapter<T>) threadCalls.get(type);\n    if (ongoingCall != null) {\n      return ongoingCall;\n    }\n\n    try {\n      FutureTypeAdapter<T> call = new FutureTypeAdapter<T>();\n      threadCalls.put(type, call);\n\n      for (TypeAdapterFactory factory : factories) {\n        TypeAdapter<T> candidate = factory.create(this, type);\n        if (candidate != null) {\n          call.setDelegate(candidate);\n          typeTokenCache.put(type, candidate);\n          return candidate;\n        }\n      }\n      throw new IllegalArgumentException(\"GSON (\" + GsonBuildConfig.VERSION + \") cannot handle \" + type);\n    } finally {\n      threadCalls.remove(type);\n\n      if (requiresThreadLocalCleanup) {\n        calls.remove();\n      }\n    }\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "getAdapter",
+        "documentation": "/**\n   * Returns the type adapter for {@code} type.\n   *\n   * @throws IllegalArgumentException if this GSON cannot serialize and\n   *     deserialize {@code type}.\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "Gson"
+          },
+          {
+            "start_node": "Gson",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getAdapter"
+          }
+        ],
+        "similarity": 0.07203219590499906,
+        "end_line": 473,
+        "signature": "com.google.gson.Gson.getAdapter(TypeToken type): TypeAdapter"
+      },
+      {
+        "start_line": 160,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/MapTypeAdapterFactory.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    @Override public Map<K, V> read(JsonReader in) throws IOException {\n      JsonToken peek = in.peek();\n      if (peek == JsonToken.NULL) {\n        in.nextNull();\n        return null;\n      }\n\n      Map<K, V> map = constructor.construct();\n\n      if (peek == JsonToken.BEGIN_ARRAY) {\n        in.beginArray();\n        while (in.hasNext()) {\n          in.beginArray(); // entry array\n          K key = keyTypeAdapter.read(in);\n          V value = valueTypeAdapter.read(in);\n          V replaced = map.put(key, value);\n          if (replaced != null) {\n            throw new JsonSyntaxException(\"duplicate key: \" + key);\n          }\n          in.endArray();\n        }\n        in.endArray();\n      } else {\n        in.beginObject();\n        while (in.hasNext()) {\n          JsonReaderInternalAccess.INSTANCE.promoteNameToValue(in);\n          K key = keyTypeAdapter.read(in);\n          V value = valueTypeAdapter.read(in);\n          V replaced = map.put(key, value);\n          if (replaced != null) {\n            throw new JsonSyntaxException(\"duplicate key: \" + key);\n          }\n        }\n        in.endObject();\n      }\n      return map;\n    }",
+        "distance": 2.0,
+        "title": null,
+        "name": "read",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "read"
+          }
+        ],
+        "similarity": 0.06748166837304578,
+        "end_line": 196,
+        "signature": "com.google.gson.internal.bind.MapTypeAdapterFactory.Adapter.read(JsonReader in): Map"
+      },
+      {
+        "start_line": 930,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public long nextLong() throws IOException {\n    int p = peeked;\n    if (p == PEEKED_NONE) {\n      p = doPeek();\n    }\n\n    if (p == PEEKED_LONG) {\n      peeked = PEEKED_NONE;\n      pathIndices[stackSize - 1]++;\n      return peekedLong;\n    }\n\n    if (p == PEEKED_NUMBER) {\n      peekedString = new String(buffer, pos, peekedNumberLength);\n      pos += peekedNumberLength;\n    } else if (p == PEEKED_SINGLE_QUOTED || p == PEEKED_DOUBLE_QUOTED || p == PEEKED_UNQUOTED) {\n      if (p == PEEKED_UNQUOTED) {\n        peekedString = nextUnquotedValue();\n      } else {\n        peekedString = nextQuotedValue(p == PEEKED_SINGLE_QUOTED ? '\\'' : '\"');\n      }\n      try {\n        long result = Long.parseLong(peekedString);\n        peeked = PEEKED_NONE;\n        pathIndices[stackSize - 1]++;\n        return result;\n      } catch (NumberFormatException ignored) {\n        // Fall back to parse as a double below.\n      }\n    } else {\n      throw new IllegalStateException(\"Expected a long but was \" + peek() + locationString());\n    }\n\n    peeked = PEEKED_BUFFERED;\n    double asDouble = Double.parseDouble(peekedString); // don't catch this NumberFormatException.\n    long result = (long) asDouble;\n    if (result != asDouble) { // Make sure no precision was lost casting to 'long'.\n      throw new NumberFormatException(\"Expected a long but was \" + peekedString + locationString());\n    }\n    peekedString = null;\n    peeked = PEEKED_NONE;\n    pathIndices[stackSize - 1]++;\n    return result;\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "nextLong",
+        "documentation": "/**\n   * Returns the {@link com.google.gson.stream.JsonToken#NUMBER long} value of the next token,\n   * consuming it. If the next token is a string, this method will attempt to\n   * parse it as a long. If the next token's numeric value cannot be exactly\n   * represented by a Java {@code long}, this method throws.\n   *\n   * @throws IllegalStateException if the next token is not a literal value.\n   * @throws NumberFormatException if the next literal value cannot be parsed\n   *     as a number, or exactly represented as a long.\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextLong"
+          }
+        ],
+        "similarity": 0.06511344404274348,
+        "end_line": 973,
+        "signature": "com.google.gson.stream.JsonReader.nextLong(): long"
+      },
+      {
+        "start_line": 1162,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public int nextInt() throws IOException {\n    int p = peeked;\n    if (p == PEEKED_NONE) {\n      p = doPeek();\n    }\n\n    int result;\n    if (p == PEEKED_LONG) {\n      result = (int) peekedLong;\n      if (peekedLong != result) { // Make sure no precision was lost casting to 'int'.\n        throw new NumberFormatException(\"Expected an int but was \" + peekedLong + locationString());\n      }\n      peeked = PEEKED_NONE;\n      pathIndices[stackSize - 1]++;\n      return result;\n    }\n\n    if (p == PEEKED_NUMBER) {\n      peekedString = new String(buffer, pos, peekedNumberLength);\n      pos += peekedNumberLength;\n    } else if (p == PEEKED_SINGLE_QUOTED || p == PEEKED_DOUBLE_QUOTED || p == PEEKED_UNQUOTED) {\n      if (p == PEEKED_UNQUOTED) {\n        peekedString = nextUnquotedValue();\n      } else {\n        peekedString = nextQuotedValue(p == PEEKED_SINGLE_QUOTED ? '\\'' : '\"');\n      }\n      try {\n        result = Integer.parseInt(peekedString);\n        peeked = PEEKED_NONE;\n        pathIndices[stackSize - 1]++;\n        return result;\n      } catch (NumberFormatException ignored) {\n        // Fall back to parse as a double below.\n      }\n    } else {\n      throw new IllegalStateException(\"Expected an int but was \" + peek() + locationString());\n    }\n\n    peeked = PEEKED_BUFFERED;\n    double asDouble = Double.parseDouble(peekedString); // don't catch this NumberFormatException.\n    result = (int) asDouble;\n    if (result != asDouble) { // Make sure no precision was lost casting to 'int'.\n      throw new NumberFormatException(\"Expected an int but was \" + peekedString + locationString());\n    }\n    peekedString = null;\n    peeked = PEEKED_NONE;\n    pathIndices[stackSize - 1]++;\n    return result;\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "nextInt",
+        "documentation": "/**\n   * Returns the {@link com.google.gson.stream.JsonToken#NUMBER int} value of the next token,\n   * consuming it. If the next token is a string, this method will attempt to\n   * parse it as an int. If the next token's numeric value cannot be exactly\n   * represented by a Java {@code int}, this method throws.\n   *\n   * @throws IllegalStateException if the next token is not a literal value.\n   * @throws NumberFormatException if the next literal value cannot be parsed\n   *     as a number, or exactly represented as an int.\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextInt"
+          }
+        ],
+        "similarity": 0.06412164630493336,
+        "end_line": 1210,
+        "signature": "com.google.gson.stream.JsonReader.nextInt(): int"
+      },
+      {
+        "start_line": 46,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TypeAdapterRuntimeTypeWrapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public void write(JsonWriter out, T value) throws IOException {\n    // Order of preference for choosing type adapters\n    // First preference: a type adapter registered for the runtime type\n    // Second preference: a type adapter registered for the declared type\n    // Third preference: reflective type adapter for the runtime type (if it is a sub class of the declared type)\n    // Fourth preference: reflective type adapter for the declared type\n\n    TypeAdapter chosen = delegate;\n    Type runtimeType = getRuntimeTypeIfMoreSpecific(type, value);\n    if (runtimeType != type) {\n      TypeAdapter runtimeTypeAdapter = context.getAdapter(TypeToken.get(runtimeType));\n      if (!(runtimeTypeAdapter instanceof ReflectiveTypeAdapterFactory.Adapter)) {\n        // The user registered a type adapter for the runtime type, so we will use that\n        chosen = runtimeTypeAdapter;\n      } else if (!(delegate instanceof ReflectiveTypeAdapterFactory.Adapter)) {\n        // The user registered a type adapter for Base class, so we prefer it over the\n        // reflective type adapter for the runtime type\n        chosen = delegate;\n      } else {\n        // Use the type adapter for runtime type\n        chosen = runtimeTypeAdapter;\n      }\n    }\n    chosen.write(out, value);\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "write",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "read"
+          },
+          {
+            "start_node": "read",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "Adapter"
+          },
+          {
+            "start_node": "Adapter",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "write"
+          }
+        ],
+        "similarity": 0.06295700996145893,
+        "end_line": 70,
+        "signature": "com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper.write(JsonWriter out, T value): void"
+      },
+      {
+        "start_line": 106,
+        "file_path": "playground/google__gson/metrics/src/main/java/com/google/gson/metrics/CollectionsDeserializationBenchmark.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public void timeCollectionsReflectionStreaming(int reps) throws Exception {\n    for (int i=0; i<reps; ++i) {\n      StringReader reader = new StringReader(json);\n      JsonReader jr = new JsonReader(reader);\n      jr.beginArray();\n      List<BagOfPrimitives> bags = new ArrayList<BagOfPrimitives>();\n      while(jr.hasNext()) {\n        jr.beginObject();\n        BagOfPrimitives bag = new BagOfPrimitives();\n        while(jr.hasNext()) {\n          String name = jr.nextName();\n          for (Field field : BagOfPrimitives.class.getDeclaredFields()) {\n            if (field.getName().equals(name)) {\n              Class<?> fieldType = field.getType();\n              if (fieldType.equals(long.class)) {\n                field.setLong(bag, jr.nextLong());\n              } else if (fieldType.equals(int.class)) {\n                field.setInt(bag, jr.nextInt());\n              } else if (fieldType.equals(boolean.class)) {\n                field.setBoolean(bag, jr.nextBoolean());\n              } else if (fieldType.equals(String.class)) {\n                field.set(bag, jr.nextString());\n              } else {\n                throw new RuntimeException(\"Unexpected: type: \" + fieldType + \", name: \" + name);\n              }\n            }\n          }\n        }\n        jr.endObject();\n        bags.add(bag);\n      }\n      jr.endArray();\n    }\n  }",
+        "distance": 3.0,
+        "title": null,
+        "name": "timeCollectionsReflectionStreaming",
+        "documentation": "/**\n   * This benchmark measures the ideal Gson performance: the cost of parsing a JSON stream and\n   * setting object values by reflection. We should strive to reduce the discrepancy between this\n   * and {@link #timeCollectionsDefault(int)} .\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "timeCollectionsReflectionStreaming"
+          }
+        ],
+        "similarity": 0.05855023835977403,
+        "end_line": 139,
+        "signature": "com.google.gson.metrics.CollectionsDeserializationBenchmark.timeCollectionsReflectionStreaming(int reps): void"
+      },
+      {
+        "start_line": 461,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  int doPeek() throws IOException {\n    int peekStack = stack[stackSize - 1];\n    if (peekStack == JsonScope.EMPTY_ARRAY) {\n      stack[stackSize - 1] = JsonScope.NONEMPTY_ARRAY;\n    } else if (peekStack == JsonScope.NONEMPTY_ARRAY) {\n      // Look for a comma before the next element.\n      int c = nextNonWhitespace(true);\n      switch (c) {\n      case ']':\n        return peeked = PEEKED_END_ARRAY;\n      case ';':\n        checkLenient(); // fall-through\n      case ',':\n        break;\n      default:\n        throw syntaxError(\"Unterminated array\");\n      }\n    } else if (peekStack == JsonScope.EMPTY_OBJECT || peekStack == JsonScope.NONEMPTY_OBJECT) {\n      stack[stackSize - 1] = JsonScope.DANGLING_NAME;\n      // Look for a comma before the next element.\n      if (peekStack == JsonScope.NONEMPTY_OBJECT) {\n        int c = nextNonWhitespace(true);\n        switch (c) {\n        case '}':\n          return peeked = PEEKED_END_OBJECT;\n        case ';':\n          checkLenient(); // fall-through\n        case ',':\n          break;\n        default:\n          throw syntaxError(\"Unterminated object\");\n        }\n      }\n      int c = nextNonWhitespace(true);\n      switch (c) {\n      case '\"':\n        return peeked = PEEKED_DOUBLE_QUOTED_NAME;\n      case '\\'':\n        checkLenient();\n        return peeked = PEEKED_SINGLE_QUOTED_NAME;\n      case '}':\n        if (peekStack != JsonScope.NONEMPTY_OBJECT) {\n          return peeked = PEEKED_END_OBJECT;\n        } else {\n          throw syntaxError(\"Expected name\");\n        }\n      default:\n        checkLenient();\n        pos--; // Don't consume the first character in an unquoted string.\n        if (isLiteral((char) c)) {\n          return peeked = PEEKED_UNQUOTED_NAME;\n        } else {\n          throw syntaxError(\"Expected name\");\n        }\n      }",
+        "distance": 2.5,
+        "title": null,
+        "name": "doPeek",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "doPeek"
+          }
+        ],
+        "similarity": 0.05807005368891808,
+        "end_line": 515,
+        "signature": "com.google.gson.stream.JsonReader.doPeek(): int"
+      },
+      {
+        "start_line": 95,
+        "file_path": "playground/google__gson/metrics/src/main/java/com/google/gson/metrics/BagOfPrimitivesDeserializationBenchmark.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public void timeBagOfPrimitivesReflectionStreaming(int reps) throws Exception {\n    for (int i=0; i<reps; ++i) {\n      StringReader reader = new StringReader(json);\n      JsonReader jr = new JsonReader(reader);\n      jr.beginObject();\n      BagOfPrimitives bag = new BagOfPrimitives();\n      while(jr.hasNext()) {\n        String name = jr.nextName();\n        for (Field field : BagOfPrimitives.class.getDeclaredFields()) {\n          if (field.getName().equals(name)) {\n            Class<?> fieldType = field.getType();\n            if (fieldType.equals(long.class)) {\n              field.setLong(bag, jr.nextLong());\n            } else if (fieldType.equals(int.class)) {\n              field.setInt(bag, jr.nextInt());\n            } else if (fieldType.equals(boolean.class)) {\n              field.setBoolean(bag, jr.nextBoolean());\n            } else if (fieldType.equals(String.class)) {\n              field.set(bag, jr.nextString());\n            } else {\n              throw new RuntimeException(\"Unexpected: type: \" + fieldType + \", name: \" + name);\n            }\n          }\n        }\n      }\n      jr.endObject();\n    }\n  }",
+        "distance": 3.0,
+        "title": null,
+        "name": "timeBagOfPrimitivesReflectionStreaming",
+        "documentation": "/**\n   * This benchmark measures the ideal Gson performance: the cost of parsing a JSON stream and\n   * setting object values by reflection. We should strive to reduce the discrepancy between this\n   * and {@link #timeBagOfPrimitivesDefault(int)} .\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "timeBagOfPrimitivesReflectionStreaming"
+          }
+        ],
+        "similarity": 0.057012792163049116,
+        "end_line": 122,
+        "signature": "com.google.gson.metrics.BagOfPrimitivesDeserializationBenchmark.timeBagOfPrimitivesReflectionStreaming(int reps): void"
+      },
+      {
+        "start_line": 525,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public <T> TypeAdapter<T> getDelegateAdapter(TypeAdapterFactory skipPast, TypeToken<T> type) {\n    // Hack. If the skipPast factory isn't registered, assume the factory is being requested via\n    // our @JsonAdapter annotation.\n    if (!factories.contains(skipPast)) {\n      skipPast = jsonAdapterFactory;\n    }\n\n    boolean skipPastFound = false;\n    for (TypeAdapterFactory factory : factories) {\n      if (!skipPastFound) {\n        if (factory == skipPast) {\n          skipPastFound = true;\n        }\n        continue;\n      }\n\n      TypeAdapter<T> candidate = factory.create(this, type);\n      if (candidate != null) {\n        return candidate;\n      }\n    }\n    throw new IllegalArgumentException(\"GSON cannot serialize \" + type);\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "getDelegateAdapter",
+        "documentation": "/**\n   * This method is used to get an alternate type adapter for the specified type. This is used\n   * to access a type adapter that is overridden by a {@link TypeAdapterFactory} that you\n   * may have registered. This features is typically used when you want to register a type\n   * adapter that does a little bit of work but then delegates further processing to the Gson\n   * default type adapter. Here is an example:\n   * <p>Let's say we want to write a type adapter that counts the number of objects being read\n   *  from or written to JSON. We can achieve this by writing a type adapter factory that uses\n   *  the <code>getDelegateAdapter</code> method:\n   *  <pre> {@code\n   *  class StatsTypeAdapterFactory implements TypeAdapterFactory {\n   *    public int numReads = 0;\n   *    public int numWrites = 0;\n   *    public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {\n   *      final TypeAdapter<T> delegate = gson.getDelegateAdapter(this, type);\n   *      return new TypeAdapter<T>() {\n   *        public void write(JsonWriter out, T value) throws IOException {\n   *          ++numWrites;\n   *          delegate.write(out, value);\n   *        }\n   *        public T read(JsonReader in) throws IOException {\n   *          ++numReads;\n   *          return delegate.read(in);\n   *        }\n   *      };\n   *    }\n   *  }\n   *  } </pre>\n   *  This factory can now be used like this:\n   *  <pre> {@code\n   *  StatsTypeAdapterFactory stats = new StatsTypeAdapterFactory();\n   *  Gson gson = new GsonBuilder().registerTypeAdapterFactory(stats).create();\n   *  // Call gson.toJson() and fromJson methods on objects\n   *  System.out.println(\"Num JSON reads\" + stats.numReads);\n   *  System.out.println(\"Num JSON writes\" + stats.numWrites);\n   *  }</pre>\n   *  Note that this call will skip all factories registered before {@code skipPast}. In case of\n   *  multiple TypeAdapterFactories registered it is up to the caller of this function to insure\n   *  that the order of registration does not prevent this method from reaching a factory they\n   *  would expect to reply from this call.\n   *  Note that since you can not override type adapter factories for String and Java primitive\n   *  types, our stats factory will not count the number of String or primitives that will be\n   *  read or written.\n   * @param skipPast The type adapter factory that needs to be skipped while searching for\n   *   a matching type adapter. In most cases, you should just pass <i>this</i> (the type adapter\n   *   factory from where {@link #getDelegateAdapter} method is being invoked).\n   * @param type Type for which the delegate adapter is being searched for.\n   *\n   * @since 2.2\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "Gson"
+          },
+          {
+            "start_node": "Gson",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getDelegateAdapter"
+          }
+        ],
+        "similarity": 0.0562665847446602,
+        "end_line": 547,
+        "signature": "com.google.gson.Gson.getDelegateAdapter(TypeAdapterFactory skipPast, TypeToken type): TypeAdapter"
+      },
+      {
+        "start_line": 1227,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public void skipValue() throws IOException {\n    int count = 0;\n    do {\n      int p = peeked;\n      if (p == PEEKED_NONE) {\n        p = doPeek();\n      }\n\n      if (p == PEEKED_BEGIN_ARRAY) {\n        push(JsonScope.EMPTY_ARRAY);\n        count++;\n      } else if (p == PEEKED_BEGIN_OBJECT) {\n        push(JsonScope.EMPTY_OBJECT);\n        count++;\n      } else if (p == PEEKED_END_ARRAY) {\n        stackSize--;\n        count--;\n      } else if (p == PEEKED_END_OBJECT) {\n        stackSize--;\n        count--;\n      } else if (p == PEEKED_UNQUOTED_NAME || p == PEEKED_UNQUOTED) {\n        skipUnquotedValue();\n      } else if (p == PEEKED_SINGLE_QUOTED || p == PEEKED_SINGLE_QUOTED_NAME) {\n        skipQuotedValue('\\'');\n      } else if (p == PEEKED_DOUBLE_QUOTED || p == PEEKED_DOUBLE_QUOTED_NAME) {\n        skipQuotedValue('\"');\n      } else if (p == PEEKED_NUMBER) {\n        pos += peekedNumberLength;\n      }\n      peeked = PEEKED_NONE;\n    } while (count != 0);\n\n    pathIndices[stackSize - 1]++;\n    pathNames[stackSize - 1] = \"null\";\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "skipValue",
+        "documentation": "/**\n   * Skips the next value recursively. If it is an object or array, all nested\n   * elements are skipped. This method is intended for use when the JSON token\n   * stream contains unrecognized or unhandled values.\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "skipValue"
+          }
+        ],
+        "similarity": 0.055034618821498744,
+        "end_line": 1261,
+        "signature": "com.google.gson.stream.JsonReader.skipValue(): void"
+      },
+      {
+        "start_line": 885,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public double nextDouble() throws IOException {\n    int p = peeked;\n    if (p == PEEKED_NONE) {\n      p = doPeek();\n    }\n\n    if (p == PEEKED_LONG) {\n      peeked = PEEKED_NONE;\n      pathIndices[stackSize - 1]++;\n      return (double) peekedLong;\n    }\n\n    if (p == PEEKED_NUMBER) {\n      peekedString = new String(buffer, pos, peekedNumberLength);\n      pos += peekedNumberLength;\n    } else if (p == PEEKED_SINGLE_QUOTED || p == PEEKED_DOUBLE_QUOTED) {\n      peekedString = nextQuotedValue(p == PEEKED_SINGLE_QUOTED ? '\\'' : '\"');\n    } else if (p == PEEKED_UNQUOTED) {\n      peekedString = nextUnquotedValue();\n    } else if (p != PEEKED_BUFFERED) {\n      throw new IllegalStateException(\"Expected a double but was \" + peek() + locationString());\n    }\n\n    peeked = PEEKED_BUFFERED;\n    double result = Double.parseDouble(peekedString); // don't catch this NumberFormatException.\n    if (!lenient && (Double.isNaN(result) || Double.isInfinite(result))) {\n      throw new MalformedJsonException(\n          \"JSON forbids NaN and infinities: \" + result + locationString());\n    }\n    peekedString = null;\n    peeked = PEEKED_NONE;\n    pathIndices[stackSize - 1]++;\n    return result;\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "nextDouble",
+        "documentation": "/**\n   * Returns the {@link com.google.gson.stream.JsonToken#NUMBER double} value of the next token,\n   * consuming it. If the next token is a string, this method will attempt to\n   * parse it as a double using {@link Double#parseDouble(String)}.\n   *\n   * @throws IllegalStateException if the next token is not a literal value.\n   * @throws NumberFormatException if the next literal value cannot be parsed\n   *     as a double, or is non-finite.\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextDouble"
+          }
+        ],
+        "similarity": 0.054816233471248504,
+        "end_line": 918,
+        "signature": "com.google.gson.stream.JsonReader.nextDouble(): double"
+      },
+      {
+        "start_line": 1040,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  private String nextUnquotedValue() throws IOException {\n    StringBuilder builder = null;\n    int i = 0;\n\n    findNonLiteralCharacter:\n    while (true) {\n      for (; pos + i < limit; i++) {\n        switch (buffer[pos + i]) {\n        case '/':\n        case '\\\\':\n        case ';':\n        case '#':\n        case '=':\n          checkLenient(); // fall-through\n        case '{':\n        case '}':\n        case '[':\n        case ']':\n        case ':':\n        case ',':\n        case ' ':\n        case '\\t':\n        case '\\f':\n        case '\\r':\n        case '\\n':\n          break findNonLiteralCharacter;\n        }\n      }\n\n      // Attempt to load the entire literal into the buffer at once.\n      if (i < buffer.length) {\n        if (fillBuffer(i + 1)) {\n          continue;\n        } else {\n          break;\n        }\n      }\n\n      // use a StringBuilder when the value is too long. This is too long to be a number!\n      if (builder == null) {\n        builder = new StringBuilder(Math.max(i,16));\n      }\n      builder.append(buffer, pos, i);\n      pos += i;\n      i = 0;\n      if (!fillBuffer(1)) {\n        break;\n      }\n    }\n   \n    String result = (null == builder) ? new String(buffer, pos, i) : builder.append(buffer, pos, i).toString();\n    pos += i;\n    return result;\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "nextUnquotedValue",
+        "documentation": "/**\n   * Returns an unquoted value as a string.\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextUnquotedValue"
+          }
+        ],
+        "similarity": 0.05422787521588651,
+        "end_line": 1093,
+        "signature": "com.google.gson.stream.JsonReader.nextUnquotedValue(): String"
+      },
+      {
+        "start_line": 309,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  private TypeAdapter<Number> doubleAdapter(boolean serializeSpecialFloatingPointValues) {\n    if (serializeSpecialFloatingPointValues) {\n      return TypeAdapters.DOUBLE;\n    }\n    return new TypeAdapter<Number>() {\n      @Override public Double read(JsonReader in) throws IOException {\n        if (in.peek() == JsonToken.NULL) {\n          in.nextNull();\n          return null;\n        }\n        return in.nextDouble();\n      }\n      @Override public void write(JsonWriter out, Number value) throws IOException {\n        if (value == null) {\n          out.nullValue();\n          return;\n        }\n        double doubleValue = value.doubleValue();\n        checkValidFloatingPoint(doubleValue);\n        out.value(value);\n      }\n    };\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "doubleAdapter",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "Gson"
+          },
+          {
+            "start_node": "Gson",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "doubleAdapter"
+          }
+        ],
+        "similarity": 0.05350586772584522,
+        "end_line": 331,
+        "signature": "com.google.gson.Gson.doubleAdapter(boolean serializeSpecialFloatingPointValues): TypeAdapter"
+      },
+      {
+        "start_line": 1503,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  private char readEscapeCharacter() throws IOException {\n    if (pos == limit && !fillBuffer(1)) {\n      throw syntaxError(\"Unterminated escape sequence\");\n    }\n\n    char escaped = buffer[pos++];\n    switch (escaped) {\n    case 'u':\n      if (pos + 4 > limit && !fillBuffer(4)) {\n        throw syntaxError(\"Unterminated escape sequence\");\n      }\n      // Equivalent to Integer.parseInt(stringPool.get(buffer, pos, 4), 16);\n      char result = 0;\n      for (int i = pos, end = i + 4; i < end; i++) {\n        char c = buffer[i];\n        result <<= 4;\n        if (c >= '0' && c <= '9') {\n          result += (c - '0');\n        } else if (c >= 'a' && c <= 'f') {\n          result += (c - 'a' + 10);\n        } else if (c >= 'A' && c <= 'F') {\n          result += (c - 'A' + 10);\n        } else {\n          throw new NumberFormatException(\"\\\\u\" + new String(buffer, pos, 4));\n        }\n      }\n      pos += 4;\n      return result;\n\n    case 't':\n      return '\\t';\n\n    case 'b':\n      return '\\b';\n\n    case 'n':\n      return '\\n';\n\n    case 'r':\n      return '\\r';\n\n    case 'f':\n      return '\\f';\n\n    case '\\n':\n      lineNumber++;\n      lineStart = pos;\n      // fall-through\n\n    case '\\'':\n    case '\"':\n    case '\\\\':\n    case '/':\t\n    \treturn escaped;\n    default:\n    \t// throw error when none of the above cases are matched\n    \tthrow syntaxError(\"Invalid escape sequence\");\n    }\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "readEscapeCharacter",
+        "documentation": "/**\n   * Unescapes the character identified by the character or characters that\n   * immediately follow a backslash. The backslash '\\' should have already\n   * been read. This supports both unicode escapes \"u000A\" and two-character\n   * escapes \"\\n\".\n   *\n   * @throws NumberFormatException if any unicode escape sequences are\n   *     malformed.\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "readEscapeCharacter"
+          }
+        ],
+        "similarity": 0.0529687182390491,
+        "end_line": 1561,
+        "signature": "com.google.gson.stream.JsonReader.readEscapeCharacter(): char"
+      },
+      {
+        "start_line": 333,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  private TypeAdapter<Number> floatAdapter(boolean serializeSpecialFloatingPointValues) {\n    if (serializeSpecialFloatingPointValues) {\n      return TypeAdapters.FLOAT;\n    }\n    return new TypeAdapter<Number>() {\n      @Override public Float read(JsonReader in) throws IOException {\n        if (in.peek() == JsonToken.NULL) {\n          in.nextNull();\n          return null;\n        }\n        return (float) in.nextDouble();\n      }\n      @Override public void write(JsonWriter out, Number value) throws IOException {\n        if (value == null) {\n          out.nullValue();\n          return;\n        }\n        float floatValue = value.floatValue();\n        checkValidFloatingPoint(floatValue);\n        out.value(value);\n      }\n    };\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "floatAdapter",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "Gson"
+          },
+          {
+            "start_node": "Gson",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "floatAdapter"
+          }
+        ],
+        "similarity": 0.05262302503453148,
+        "end_line": 355,
+        "signature": "com.google.gson.Gson.floatAdapter(boolean serializeSpecialFloatingPointValues): TypeAdapter"
+      },
+      {
+        "start_line": 399,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  private static TypeAdapter<AtomicLongArray> atomicLongArrayAdapter(final TypeAdapter<Number> longAdapter) {\n    return new TypeAdapter<AtomicLongArray>() {\n      @Override public void write(JsonWriter out, AtomicLongArray value) throws IOException {\n        out.beginArray();\n        for (int i = 0, length = value.length(); i < length; i++) {\n          longAdapter.write(out, value.get(i));\n        }\n        out.endArray();\n      }\n      @Override public AtomicLongArray read(JsonReader in) throws IOException {\n        List<Long> list = new ArrayList<Long>();\n        in.beginArray();\n        while (in.hasNext()) {\n            long value = longAdapter.read(in).longValue();\n            list.add(value);\n        }\n        in.endArray();\n        int length = list.size();\n        AtomicLongArray array = new AtomicLongArray(length);\n        for (int i = 0; i < length; ++i) {\n          array.set(i, list.get(i));\n        }\n        return array;\n      }\n    }.nullSafe();\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "atomicLongArrayAdapter",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "TypeAdapter"
+          },
+          {
+            "start_node": "TypeAdapter",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "nullSafe"
+          },
+          {
+            "start_node": "nullSafe",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "atomicLongArrayAdapter"
+          }
+        ],
+        "similarity": 0.05233241544964412,
+        "end_line": 424,
+        "signature": "com.google.gson.Gson.atomicLongArrayAdapter(TypeAdapter longAdapter): TypeAdapter"
+      },
+      {
+        "start_line": 804,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public String nextString() throws IOException {\n    int p = peeked;\n    if (p == PEEKED_NONE) {\n      p = doPeek();\n    }\n    String result;\n    if (p == PEEKED_UNQUOTED) {\n      result = nextUnquotedValue();\n    } else if (p == PEEKED_SINGLE_QUOTED) {\n      result = nextQuotedValue('\\'');\n    } else if (p == PEEKED_DOUBLE_QUOTED) {\n      result = nextQuotedValue('\"');\n    } else if (p == PEEKED_BUFFERED) {\n      result = peekedString;\n      peekedString = null;\n    } else if (p == PEEKED_LONG) {\n      result = Long.toString(peekedLong);\n    } else if (p == PEEKED_NUMBER) {\n      result = new String(buffer, pos, peekedNumberLength);\n      pos += peekedNumberLength;\n    } else {\n      throw new IllegalStateException(\"Expected a string but was \" + peek() + locationString());\n    }\n    peeked = PEEKED_NONE;\n    pathIndices[stackSize - 1]++;\n    return result;\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "nextString",
+        "documentation": "/**\n   * Returns the {@link com.google.gson.stream.JsonToken#STRING string} value of the next token,\n   * consuming it. If the next token is a number, this method will return its\n   * string form.\n   *\n   * @throws IllegalStateException if the next token is not a string or if\n   *     this reader is closed.\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextString"
+          }
+        ],
+        "similarity": 0.05090074730937244,
+        "end_line": 830,
+        "signature": "com.google.gson.stream.JsonReader.nextString(): String"
+      },
+      {
+        "start_line": 985,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  private String nextQuotedValue(char quote) throws IOException {\n    // Like nextNonWhitespace, this uses locals 'p' and 'l' to save inner-loop field access.\n    char[] buffer = this.buffer;\n    StringBuilder builder = null;\n    while (true) {\n      int p = pos;\n      int l = limit;\n      /* the index of the first character not yet appended to the builder. */\n      int start = p;\n      while (p < l) {\n        int c = buffer[p++];\n\n        if (c == quote) {\n          pos = p;\n          int len = p - start - 1;\n          if (builder == null) {\n            return new String(buffer, start, len);\n          } else {\n            builder.append(buffer, start, len);\n            return builder.toString();\n          }\n        } else if (c == '\\\\') {\n          pos = p;\n          int len = p - start - 1;\n          if (builder == null) {\n            int estimatedLength = (len + 1) * 2;\n            builder = new StringBuilder(Math.max(estimatedLength, 16));\n          }\n          builder.append(buffer, start, len);\n          builder.append(readEscapeCharacter());\n          p = pos;\n          l = limit;\n          start = p;\n        } else if (c == '\\n') {\n          lineNumber++;\n          lineStart = p;\n        }\n      }\n\n      if (builder == null) {\n        int estimatedLength = (p - start) * 2;\n        builder = new StringBuilder(Math.max(estimatedLength, 16));\n      }\n      builder.append(buffer, start, p - start);\n      pos = p;\n      if (!fillBuffer(1)) {\n        throw syntaxError(\"Unterminated string\");\n      }\n    }\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "nextQuotedValue",
+        "documentation": "/**\n   * Returns the string up to but not including {@code quote}, unescaping any\n   * character escape sequences encountered along the way. The opening quote\n   * should have already been read. This consumes the closing quote, but does\n   * not include it in the returned string.\n   *\n   * @param quote either ' or \".\n   * @throws NumberFormatException if any unicode escape sequences are\n   *     malformed.\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextQuotedValue"
+          }
+        ],
+        "similarity": 0.05081919427222245,
+        "end_line": 1034,
+        "signature": "com.google.gson.stream.JsonReader.nextQuotedValue(char quote): String"
+      },
+      {
+        "start_line": 68,
+        "file_path": "playground/google__gson/metrics/src/main/java/com/google/gson/metrics/CollectionsDeserializationBenchmark.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public void timeCollectionsStreaming(int reps) throws IOException {\n    for (int i=0; i<reps; ++i) {\n      StringReader reader = new StringReader(json);\n      JsonReader jr = new JsonReader(reader);\n      jr.beginArray();\n      List<BagOfPrimitives> bags = new ArrayList<BagOfPrimitives>();\n      while(jr.hasNext()) {\n        jr.beginObject();\n        long longValue = 0;\n        int intValue = 0;\n        boolean booleanValue = false;\n        String stringValue = null;\n        while(jr.hasNext()) {\n          String name = jr.nextName();\n          if (name.equals(\"longValue\")) {\n            longValue = jr.nextLong();\n          } else if (name.equals(\"intValue\")) {\n            intValue = jr.nextInt();\n          } else if (name.equals(\"booleanValue\")) {\n            booleanValue = jr.nextBoolean();\n          } else if (name.equals(\"stringValue\")) {\n            stringValue = jr.nextString();\n          } else {\n            throw new IOException(\"Unexpected name: \" + name);\n          }\n        }\n        jr.endObject();\n        bags.add(new BagOfPrimitives(longValue, intValue, booleanValue, stringValue));\n      }\n      jr.endArray();\n    }\n  }",
+        "distance": 3.0,
+        "title": null,
+        "name": "timeCollectionsStreaming",
+        "documentation": "/**\n   * Benchmark to measure deserializing objects by hand\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "timeCollectionsStreaming"
+          }
+        ],
+        "similarity": 0.05048755243143229,
+        "end_line": 99,
+        "signature": "com.google.gson.metrics.CollectionsDeserializationBenchmark.timeCollectionsStreaming(int reps): void"
+      },
+      {
+        "start_line": 695,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public void toJson(Object src, Type typeOfSrc, JsonWriter writer) throws JsonIOException {\n    TypeAdapter<?> adapter = getAdapter(TypeToken.get(typeOfSrc));\n    boolean oldLenient = writer.isLenient();\n    writer.setLenient(true);\n    boolean oldHtmlSafe = writer.isHtmlSafe();\n    writer.setHtmlSafe(htmlSafe);\n    boolean oldSerializeNulls = writer.getSerializeNulls();\n    writer.setSerializeNulls(serializeNulls);\n    try {\n      ((TypeAdapter<Object>) adapter).write(writer, src);\n    } catch (IOException e) {\n      throw new JsonIOException(e);\n    } catch (AssertionError e) {\n      throw new AssertionError(\"AssertionError (GSON \" + GsonBuildConfig.VERSION + \"): \" + e.getMessage(), e);\n    } finally {\n      writer.setLenient(oldLenient);\n      writer.setHtmlSafe(oldHtmlSafe);\n      writer.setSerializeNulls(oldSerializeNulls);\n    }\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "toJson",
+        "documentation": "/**\n   * Writes the JSON representation of {@code src} of type {@code typeOfSrc} to\n   * {@code writer}.\n   * @throws JsonIOException if there was a problem writing to the writer\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "Gson"
+          },
+          {
+            "start_node": "Gson",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "toJson"
+          }
+        ],
+        "similarity": 0.05003785955986577,
+        "end_line": 714,
+        "signature": "com.google.gson.Gson.toJson(Object src, Type typeOfSrc, JsonWriter writer): void"
+      },
+      {
+        "start_line": 198,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/MapTypeAdapterFactory.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "    @Override public void write(JsonWriter out, Map<K, V> map) throws IOException {\n      if (map == null) {\n        out.nullValue();\n        return;\n      }\n\n      if (!complexMapKeySerialization) {\n        out.beginObject();\n        for (Map.Entry<K, V> entry : map.entrySet()) {\n          out.name(String.valueOf(entry.getKey()));\n          valueTypeAdapter.write(out, entry.getValue());\n        }\n        out.endObject();\n        return;\n      }\n\n      boolean hasComplexKeys = false;\n      List<JsonElement> keys = new ArrayList<JsonElement>(map.size());\n\n      List<V> values = new ArrayList<V>(map.size());\n      for (Map.Entry<K, V> entry : map.entrySet()) {\n        JsonElement keyElement = keyTypeAdapter.toJsonTree(entry.getKey());\n        keys.add(keyElement);\n        values.add(entry.getValue());\n        hasComplexKeys |= keyElement.isJsonArray() || keyElement.isJsonObject();\n      }\n\n      if (hasComplexKeys) {\n        out.beginArray();\n        for (int i = 0, size = keys.size(); i < size; i++) {\n          out.beginArray(); // entry array\n          Streams.write(keys.get(i), out);\n          valueTypeAdapter.write(out, values.get(i));\n          out.endArray();\n        }\n        out.endArray();\n      } else {\n        out.beginObject();\n        for (int i = 0, size = keys.size(); i < size; i++) {\n          JsonElement keyElement = keys.get(i);\n          out.name(keyToString(keyElement));\n          valueTypeAdapter.write(out, values.get(i));\n        }\n        out.endObject();\n      }\n    }",
+        "distance": 2.5,
+        "title": null,
+        "name": "write",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "read"
+          },
+          {
+            "start_node": "read",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "Adapter"
+          },
+          {
+            "start_node": "Adapter",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "write"
+          }
+        ],
+        "similarity": 0.04981831146157273,
+        "end_line": 243,
+        "signature": "com.google.gson.internal.bind.MapTypeAdapterFactory.Adapter.write(JsonWriter out, Map map): void"
+      },
+      {
+        "start_line": 62,
+        "file_path": "playground/google__gson/metrics/src/main/java/com/google/gson/metrics/BagOfPrimitivesDeserializationBenchmark.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public void timeBagOfPrimitivesStreaming(int reps) throws IOException {\n    for (int i=0; i<reps; ++i) {\n      StringReader reader = new StringReader(json);\n      JsonReader jr = new JsonReader(reader);\n      jr.beginObject();\n      long longValue = 0;\n      int intValue = 0;\n      boolean booleanValue = false;\n      String stringValue = null;\n      while(jr.hasNext()) {\n        String name = jr.nextName();\n        if (name.equals(\"longValue\")) {\n          longValue = jr.nextLong();\n        } else if (name.equals(\"intValue\")) {\n          intValue = jr.nextInt();\n        } else if (name.equals(\"booleanValue\")) {\n          booleanValue = jr.nextBoolean();\n        } else if (name.equals(\"stringValue\")) {\n          stringValue = jr.nextString();\n        } else {\n          throw new IOException(\"Unexpected name: \" + name);\n        }\n      }\n      jr.endObject();\n      new BagOfPrimitives(longValue, intValue, booleanValue, stringValue);\n    }\n  }",
+        "distance": 3.0,
+        "title": null,
+        "name": "timeBagOfPrimitivesStreaming",
+        "documentation": "/**\n   * Benchmark to measure deserializing objects by hand\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "timeBagOfPrimitivesStreaming"
+          }
+        ],
+        "similarity": 0.049450217561235264,
+        "end_line": 88,
+        "signature": "com.google.gson.metrics.BagOfPrimitivesDeserializationBenchmark.timeBagOfPrimitivesStreaming(int reps): void"
+      },
+      {
+        "start_line": 365,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  private static TypeAdapter<Number> longAdapter(LongSerializationPolicy longSerializationPolicy) {\n    if (longSerializationPolicy == LongSerializationPolicy.DEFAULT) {\n      return TypeAdapters.LONG;\n    }\n    return new TypeAdapter<Number>() {\n      @Override public Number read(JsonReader in) throws IOException {\n        if (in.peek() == JsonToken.NULL) {\n          in.nextNull();\n          return null;\n        }\n        return in.nextLong();\n      }\n      @Override public void write(JsonWriter out, Number value) throws IOException {\n        if (value == null) {\n          out.nullValue();\n          return;\n        }\n        out.value(value.toString());\n      }\n    };\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "longAdapter",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "Gson"
+          },
+          {
+            "start_node": "Gson",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "longAdapter"
+          }
+        ],
+        "similarity": 0.0491430027319097,
+        "end_line": 385,
+        "signature": "com.google.gson.Gson.longAdapter(LongSerializationPolicy longSerializationPolicy): TypeAdapter"
+      },
+      {
+        "start_line": 258,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/TypeAdapter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public final T fromJson(Reader in) throws IOException {\n    JsonReader reader = new JsonReader(in);\n    return read(reader);\n  }",
+        "distance": 1.0,
+        "title": null,
+        "name": "fromJson",
+        "documentation": "/**\n   * Converts the JSON document in {@code in} to a Java object. Unlike Gson's\n   * similar {@link Gson#fromJson(java.io.Reader, Class) fromJson} method, this\n   * read is strict. Create a {@link JsonReader#setLenient(boolean) lenient}\n   * {@code JsonReader} and call {@link #read(JsonReader)} for lenient reading.\n   *\n   * @return the converted Java object. May be null.\n   * @since 2.2\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "Gson"
+          },
+          {
+            "start_node": "Gson",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          }
+        ],
+        "similarity": 0.048758985448322786,
+        "end_line": 261,
+        "signature": "com.google.gson.TypeAdapter.fromJson(Reader in): T"
+      },
+      {
+        "start_line": 422,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public JsonToken peek() throws IOException {\n    int p = peeked;\n    if (p == PEEKED_NONE) {\n      p = doPeek();\n    }\n\n    switch (p) {\n    case PEEKED_BEGIN_OBJECT:\n      return JsonToken.BEGIN_OBJECT;\n    case PEEKED_END_OBJECT:\n      return JsonToken.END_OBJECT;\n    case PEEKED_BEGIN_ARRAY:\n      return JsonToken.BEGIN_ARRAY;\n    case PEEKED_END_ARRAY:\n      return JsonToken.END_ARRAY;\n    case PEEKED_SINGLE_QUOTED_NAME:\n    case PEEKED_DOUBLE_QUOTED_NAME:\n    case PEEKED_UNQUOTED_NAME:\n      return JsonToken.NAME;\n    case PEEKED_TRUE:\n    case PEEKED_FALSE:\n      return JsonToken.BOOLEAN;\n    case PEEKED_NULL:\n      return JsonToken.NULL;\n    case PEEKED_SINGLE_QUOTED:\n    case PEEKED_DOUBLE_QUOTED:\n    case PEEKED_UNQUOTED:\n    case PEEKED_BUFFERED:\n      return JsonToken.STRING;\n    case PEEKED_LONG:\n    case PEEKED_NUMBER:\n      return JsonToken.NUMBER;\n    case PEEKED_EOF:\n      return JsonToken.END_DOCUMENT;\n    default:\n      throw new AssertionError();\n    }\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "peek",
+        "documentation": "/**\n   * Returns the type of the next token without consuming it.\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "peek"
+          }
+        ],
+        "similarity": 0.04824741114803258,
+        "end_line": 459,
+        "signature": "com.google.gson.stream.JsonReader.peek(): JsonToken"
+      },
+      {
+        "start_line": 282,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/TypeAdapter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public final T fromJsonTree(JsonElement jsonTree) {\n    try {\n      JsonReader jsonReader = new JsonTreeReader(jsonTree);\n      return read(jsonReader);\n    } catch (IOException e) {\n      throw new JsonIOException(e);\n    }\n  }",
+        "distance": 1.5,
+        "title": null,
+        "name": "fromJsonTree",
+        "documentation": "/**\n   * Converts {@code jsonTree} to a Java object.\n   *\n   * @param jsonTree the Java object to convert. May be {@link JsonNull}.\n   * @since 2.2\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "TypeAdapter"
+          },
+          {
+            "start_node": "TypeAdapter",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "fromJsonTree"
+          }
+        ],
+        "similarity": 0.04809411529509456,
+        "end_line": 289,
+        "signature": "com.google.gson.TypeAdapter.fromJsonTree(JsonElement jsonTree): T"
+      },
+      {
+        "start_line": 641,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  private int peekNumber() throws IOException {\n    // Like nextNonWhitespace, this uses locals 'p' and 'l' to save inner-loop field access.\n    char[] buffer = this.buffer;\n    int p = pos;\n    int l = limit;\n\n    long value = 0; // Negative to accommodate Long.MIN_VALUE more easily.\n    boolean negative = false;\n    boolean fitsInLong = true;\n    int last = NUMBER_CHAR_NONE;\n\n    int i = 0;\n\n    charactersOfNumber:\n    for (; true; i++) {\n      if (p + i == l) {\n        if (i == buffer.length) {\n          // Though this looks like a well-formed number, it's too long to continue reading. Give up\n          // and let the application handle this as an unquoted literal.\n          return PEEKED_NONE;\n        }\n        if (!fillBuffer(i + 1)) {\n          break;\n        }\n        p = pos;\n        l = limit;\n      }\n\n      char c = buffer[p + i];\n      switch (c) {\n      case '-':\n        if (last == NUMBER_CHAR_NONE) {\n          negative = true;\n          last = NUMBER_CHAR_SIGN;\n          continue;\n        } else if (last == NUMBER_CHAR_EXP_E) {\n          last = NUMBER_CHAR_EXP_SIGN;\n          continue;\n        }\n        return PEEKED_NONE;\n\n      case '+':\n        if (last == NUMBER_CHAR_EXP_E) {\n          last = NUMBER_CHAR_EXP_SIGN;\n          continue;\n        }\n        return PEEKED_NONE;\n\n      case 'e':\n      case 'E':\n        if (last == NUMBER_CHAR_DIGIT || last == NUMBER_CHAR_FRACTION_DIGIT) {\n          last = NUMBER_CHAR_EXP_E;\n          continue;\n        }\n        return PEEKED_NONE;\n\n      case '.':\n        if (last == NUMBER_CHAR_DIGIT) {\n          last = NUMBER_CHAR_DECIMAL;\n          continue;\n        }\n        return PEEKED_NONE;\n\n      default:\n        if (c < '0' || c > '9') {\n          if (!isLiteral(c)) {\n            break charactersOfNumber;\n          }\n          return PEEKED_NONE;\n        }\n        if (last == NUMBER_CHAR_SIGN || last == NUMBER_CHAR_NONE) {\n          value = -(c - '0');\n          last = NUMBER_CHAR_DIGIT;\n        } else if (last == NUMBER_CHAR_DIGIT) {\n          if (value == 0) {\n            return PEEKED_NONE; // Leading '0' prefix is not allowed (since it could be octal).\n          }\n          long newValue = value * 10 - (c - '0');\n          fitsInLong &= value > MIN_INCOMPLETE_INTEGER\n              || (value == MIN_INCOMPLETE_INTEGER && newValue < value);\n          value = newValue;\n        } else if (last == NUMBER_CHAR_DECIMAL) {\n          last = NUMBER_CHAR_FRACTION_DIGIT;\n        } else if (last == NUMBER_CHAR_EXP_E || last == NUMBER_CHAR_EXP_SIGN) {\n          last = NUMBER_CHAR_EXP_DIGIT;\n        }\n      }\n    }\n\n    // We've read a complete number. Decide if it's a PEEKED_LONG or a PEEKED_NUMBER.\n    if (last == NUMBER_CHAR_DIGIT && fitsInLong && (value != Long.MIN_VALUE || negative) && (value!=0 || false==negative)) {\n      peekedLong = negative ? value : -value;\n      pos += i;\n      return peeked = PEEKED_LONG;\n    } else if (last == NUMBER_CHAR_DIGIT || last == NUMBER_CHAR_FRACTION_DIGIT\n        || last == NUMBER_CHAR_EXP_DIGIT) {\n      peekedNumberLength = i;\n      return peeked = PEEKED_NUMBER;\n    } else {\n      return PEEKED_NONE;\n    }\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "peekNumber",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "peekNumber"
+          }
+        ],
+        "similarity": 0.04719576762527308,
+        "end_line": 742,
+        "signature": "com.google.gson.stream.JsonReader.peekNumber(): int"
+      },
+      {
+        "start_line": 185,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public Gson() {\n    this(Excluder.DEFAULT, FieldNamingPolicy.IDENTITY,\n        Collections.<Type, InstanceCreator<?>>emptyMap(), DEFAULT_SERIALIZE_NULLS,\n        DEFAULT_COMPLEX_MAP_KEYS, DEFAULT_JSON_NON_EXECUTABLE, DEFAULT_ESCAPE_HTML,\n        DEFAULT_PRETTY_PRINT, DEFAULT_LENIENT, DEFAULT_SPECIALIZE_FLOAT_VALUES,\n        LongSerializationPolicy.DEFAULT, null, DateFormat.DEFAULT, DateFormat.DEFAULT,\n        Collections.<TypeAdapterFactory>emptyList(), Collections.<TypeAdapterFactory>emptyList(),\n        Collections.<TypeAdapterFactory>emptyList());\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "Gson",
+        "documentation": "/**\n   * Constructs a Gson object with default configuration. The default configuration has the\n   * following settings:\n   * <ul>\n   *   <li>The JSON generated by <code>toJson</code> methods is in compact representation. This\n   *   means that all the unneeded white-space is removed. You can change this behavior with\n   *   {@link GsonBuilder#setPrettyPrinting()}. </li>\n   *   <li>The generated JSON omits all the fields that are null. Note that nulls in arrays are\n   *   kept as is since an array is an ordered list. Moreover, if a field is not null, but its\n   *   generated JSON is empty, the field is kept. You can configure Gson to serialize null values\n   *   by setting {@link GsonBuilder#serializeNulls()}.</li>\n   *   <li>Gson provides default serialization and deserialization for Enums, {@link Map},\n   *   {@link java.net.URL}, {@link java.net.URI}, {@link java.util.Locale}, {@link java.util.Date},\n   *   {@link java.math.BigDecimal}, and {@link java.math.BigInteger} classes. If you would prefer\n   *   to change the default representation, you can do so by registering a type adapter through\n   *   {@link GsonBuilder#registerTypeAdapter(Type, Object)}. </li>\n   *   <li>The default Date format is same as {@link java.text.DateFormat#DEFAULT}. This format\n   *   ignores the millisecond portion of the date during serialization. You can change\n   *   this by invoking {@link GsonBuilder#setDateFormat(int)} or\n   *   {@link GsonBuilder#setDateFormat(String)}. </li>\n   *   <li>By default, Gson ignores the {@link com.google.gson.annotations.Expose} annotation.\n   *   You can enable Gson to serialize/deserialize only those fields marked with this annotation\n   *   through {@link GsonBuilder#excludeFieldsWithoutExposeAnnotation()}. </li>\n   *   <li>By default, Gson ignores the {@link com.google.gson.annotations.Since} annotation. You\n   *   can enable Gson to use this annotation through {@link GsonBuilder#setVersion(double)}.</li>\n   *   <li>The default field naming policy for the output Json is same as in Java. So, a Java class\n   *   field <code>versionNumber</code> will be output as <code>&quot;versionNumber&quot;</code> in\n   *   Json. The same rules are applied for mapping incoming Json to the Java classes. You can\n   *   change this policy through {@link GsonBuilder#setFieldNamingPolicy(FieldNamingPolicy)}.</li>\n   *   <li>By default, Gson excludes <code>transient</code> or <code>static</code> fields from\n   *   consideration for serialization and deserialization. You can change this behavior through\n   *   {@link GsonBuilder#excludeFieldsWithModifiers(int...)}.</li>\n   * </ul>\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "Gson"
+          },
+          {
+            "start_node": "Gson",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "Gson"
+          }
+        ],
+        "similarity": 0.046413665426280754,
+        "end_line": 193,
+        "signature": "com.google.gson.Gson()"
+      },
+      {
+        "start_line": 214,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/TypeAdapter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public final String toJson(T value) {\n    StringWriter stringWriter = new StringWriter();\n    try {\n      toJson(stringWriter, value);\n    } catch (IOException e) {\n      throw new AssertionError(e); // No I/O writing to a StringWriter.\n    }\n    return stringWriter.toString();\n  }",
+        "distance": 1.5,
+        "title": null,
+        "name": "toJson",
+        "documentation": "/**\n   * Converts {@code value} to a JSON document. Unlike Gson's similar {@link\n   * Gson#toJson(Object) toJson} method, this write is strict. Create a {@link\n   * JsonWriter#setLenient(boolean) lenient} {@code JsonWriter} and call\n   * {@link #write(com.google.gson.stream.JsonWriter, Object)} for lenient\n   * writing.\n   *\n   * @param value the Java object to convert. May be null.\n   * @since 2.2\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "Gson"
+          },
+          {
+            "start_node": "Gson",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "toJson"
+          }
+        ],
+        "similarity": 0.045913267609112324,
+        "end_line": 222,
+        "signature": "com.google.gson.TypeAdapter.toJson(T value): String"
+      },
+      {
+        "start_line": 231,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/TypeAdapter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public final JsonElement toJsonTree(T value) {\n    try {\n      JsonTreeWriter jsonWriter = new JsonTreeWriter();\n      write(jsonWriter, value);\n      return jsonWriter.get();\n    } catch (IOException e) {\n      throw new JsonIOException(e);\n    }\n  }",
+        "distance": 1.5,
+        "title": null,
+        "name": "toJsonTree",
+        "documentation": "/**\n   * Converts {@code value} to a JSON tree.\n   *\n   * @param value the Java object to convert. May be null.\n   * @return the converted JSON tree. May be {@link JsonNull}.\n   * @since 2.2\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "TypeAdapter"
+          },
+          {
+            "start_node": "TypeAdapter",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "toJsonTree"
+          }
+        ],
+        "similarity": 0.04520503069866648,
+        "end_line": 239,
+        "signature": "com.google.gson.TypeAdapter.toJsonTree(T value): JsonElement"
+      },
+      {
+        "start_line": 272,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/TypeAdapter.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public final T fromJson(String json) throws IOException {\n    return fromJson(new StringReader(json));\n  }",
+        "distance": 1.0,
+        "title": null,
+        "name": "fromJson",
+        "documentation": "/**\n   * Converts the JSON document in {@code json} to a Java object. Unlike Gson's\n   * similar {@link Gson#fromJson(String, Class) fromJson} method, this read is\n   * strict. Create a {@link JsonReader#setLenient(boolean) lenient} {@code\n   * JsonReader} and call {@link #read(JsonReader)} for lenient reading.\n   *\n   * @return the converted Java object. May be null.\n   * @since 2.2\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "Gson"
+          },
+          {
+            "start_node": "Gson",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          }
+        ],
+        "similarity": 0.04458704595593587,
+        "end_line": 274,
+        "signature": "com.google.gson.TypeAdapter.fromJson(String json): T"
+      },
+      {
+        "start_line": 597,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  private int peekKeyword() throws IOException {\n    // Figure out which keyword we're matching against by its first character.\n    char c = buffer[pos];\n    String keyword;\n    String keywordUpper;\n    int peeking;\n    if (c == 't' || c == 'T') {\n      keyword = \"true\";\n      keywordUpper = \"TRUE\";\n      peeking = PEEKED_TRUE;\n    } else if (c == 'f' || c == 'F') {\n      keyword = \"false\";\n      keywordUpper = \"FALSE\";\n      peeking = PEEKED_FALSE;\n    } else if (c == 'n' || c == 'N') {\n      keyword = \"null\";\n      keywordUpper = \"NULL\";\n      peeking = PEEKED_NULL;\n    } else {\n      return PEEKED_NONE;\n    }\n\n    // Confirm that chars [1..length) match the keyword.\n    int length = keyword.length();\n    for (int i = 1; i < length; i++) {\n      if (pos + i >= limit && !fillBuffer(i + 1)) {\n        return PEEKED_NONE;\n      }\n      c = buffer[pos + i];\n      if (c != keyword.charAt(i) && c != keywordUpper.charAt(i)) {\n        return PEEKED_NONE;\n      }\n    }\n\n    if ((pos + length < limit || fillBuffer(length + 1))\n        && isLiteral(buffer[pos + length])) {\n      return PEEKED_NONE; // Don't match trues, falsey or nullsoft!\n    }\n\n    // We've found the keyword followed either by EOF or by a non-literal character.\n    pos += length;\n    return peeked = peeking;\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "peekKeyword",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "peekKeyword"
+          }
+        ],
+        "similarity": 0.04439432967947766,
+        "end_line": 639,
+        "signature": "com.google.gson.stream.JsonReader.peekKeyword(): int"
+      },
+      {
+        "start_line": 1467,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public String getPath() {\n    StringBuilder result = new StringBuilder().append('$');\n    for (int i = 0, size = stackSize; i < size; i++) {\n      switch (stack[i]) {\n        case JsonScope.EMPTY_ARRAY:\n        case JsonScope.NONEMPTY_ARRAY:\n          result.append('[').append(pathIndices[i]).append(']');\n          break;\n\n        case JsonScope.EMPTY_OBJECT:\n        case JsonScope.DANGLING_NAME:\n        case JsonScope.NONEMPTY_OBJECT:\n          result.append('.');\n          if (pathNames[i] != null) {\n            result.append(pathNames[i]);\n          }\n          break;\n\n        case JsonScope.NONEMPTY_DOCUMENT:\n        case JsonScope.EMPTY_DOCUMENT:\n        case JsonScope.CLOSED:\n          break;\n      }\n    }\n    return result.toString();\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "getPath",
+        "documentation": "/**\n   * Returns a <a href=\"http://goessner.net/articles/JsonPath/\">JsonPath</a> to\n   * the current location in the JSON value.\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getPath"
+          }
+        ],
+        "similarity": 0.04270474205113756,
+        "end_line": 1492,
+        "signature": "com.google.gson.stream.JsonReader.getPath(): String"
+      },
+      {
+        "start_line": 776,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public String nextName() throws IOException {\n    int p = peeked;\n    if (p == PEEKED_NONE) {\n      p = doPeek();\n    }\n    String result;\n    if (p == PEEKED_UNQUOTED_NAME) {\n      result = nextUnquotedValue();\n    } else if (p == PEEKED_SINGLE_QUOTED_NAME) {\n      result = nextQuotedValue('\\'');\n    } else if (p == PEEKED_DOUBLE_QUOTED_NAME) {\n      result = nextQuotedValue('\"');\n    } else {\n      throw new IllegalStateException(\"Expected a name but was \" + peek() + locationString());\n    }\n    peeked = PEEKED_NONE;\n    pathNames[stackSize - 1] = result;\n    return result;\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "nextName",
+        "documentation": "/**\n   * Returns the next token, a {@link com.google.gson.stream.JsonToken#NAME property name}, and\n   * consumes it.\n   *\n   * @throws java.io.IOException if the next token in the stream is not a property\n   *     name.\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextName"
+          }
+        ],
+        "similarity": 0.04241129630849224,
+        "end_line": 794,
+        "signature": "com.google.gson.stream.JsonReader.nextName(): String"
+      },
+      {
+        "start_line": 1122,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  private void skipUnquotedValue() throws IOException {\n    do {\n      int i = 0;\n      for (; pos + i < limit; i++) {\n        switch (buffer[pos + i]) {\n        case '/':\n        case '\\\\':\n        case ';':\n        case '#':\n        case '=':\n          checkLenient(); // fall-through\n        case '{':\n        case '}':\n        case '[':\n        case ']':\n        case ':':\n        case ',':\n        case ' ':\n        case '\\t':\n        case '\\f':\n        case '\\r':\n        case '\\n':\n          pos += i;\n          return;\n        }\n      }\n      pos += i;\n    } while (fillBuffer(1));\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "skipUnquotedValue",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "skipUnquotedValue"
+          }
+        ],
+        "similarity": 0.04180987670878015,
+        "end_line": 1150,
+        "signature": "com.google.gson.stream.JsonReader.skipUnquotedValue(): void"
+      },
+      {
+        "start_line": 1095,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  private void skipQuotedValue(char quote) throws IOException {\n    // Like nextNonWhitespace, this uses locals 'p' and 'l' to save inner-loop field access.\n    char[] buffer = this.buffer;\n    do {\n      int p = pos;\n      int l = limit;\n      /* the index of the first character not yet appended to the builder. */\n      while (p < l) {\n        int c = buffer[p++];\n        if (c == quote) {\n          pos = p;\n          return;\n        } else if (c == '\\\\') {\n          pos = p;\n          readEscapeCharacter();\n          p = pos;\n          l = limit;\n        } else if (c == '\\n') {\n          lineNumber++;\n          lineStart = p;\n        }\n      }\n      pos = p;\n    } while (fillBuffer(1));\n    throw syntaxError(\"Unterminated string\");\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "skipQuotedValue",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "skipQuotedValue"
+          }
+        ],
+        "similarity": 0.04102298707399496,
+        "end_line": 1120,
+        "signature": "com.google.gson.stream.JsonReader.skipQuotedValue(char quote): void"
+      },
+      {
+        "start_line": 1318,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  private int nextNonWhitespace(boolean throwOnEof) throws IOException {\n    /*\n     * This code uses ugly local variables 'p' and 'l' representing the 'pos'\n     * and 'limit' fields respectively. Using locals rather than fields saves\n     * a few field reads for each whitespace character in a pretty-printed\n     * document, resulting in a 5% speedup. We need to flush 'p' to its field\n     * before any (potentially indirect) call to fillBuffer() and reread both\n     * 'p' and 'l' after any (potentially indirect) call to the same method.\n     */\n    char[] buffer = this.buffer;\n    int p = pos;\n    int l = limit;\n    while (true) {\n      if (p == l) {\n        pos = p;\n        if (!fillBuffer(1)) {\n          break;\n        }\n        p = pos;\n        l = limit;\n      }\n\n      int c = buffer[p++];\n      if (c == '\\n') {\n        lineNumber++;\n        lineStart = p;\n        continue;\n      } else if (c == ' ' || c == '\\r' || c == '\\t') {\n        continue;\n      }\n\n      if (c == '/') {\n        pos = p;\n        if (p == l) {\n          pos--; // push back '/' so it's still in the buffer when this method returns\n          boolean charsLoaded = fillBuffer(2);\n          pos++; // consume the '/' again\n          if (!charsLoaded) {\n            return c;\n          }\n        }\n\n        checkLenient();\n        char peek = buffer[pos];\n        switch (peek) {\n        case '*':\n          // skip a /* c-style comment */\n          pos++;\n          if (!skipTo(\"*/\")) {\n            throw syntaxError(\"Unterminated comment\");\n          }\n          p = pos + 2;\n          l = limit;\n          continue;\n\n        case '/':\n          // skip a // end-of-line comment\n          pos++;\n          skipToEndOfLine();\n          p = pos;\n          l = limit;\n          continue;\n\n        default:\n          return c;\n        }\n      } else if (c == '#') {\n        pos = p;\n        /*\n         * Skip a # hash end-of-line comment. The JSON RFC doesn't\n         * specify this behaviour, but it's required to parse\n         * existing documents. See http://b/2571423.\n         */\n        checkLenient();\n        skipToEndOfLine();\n        p = pos;\n        l = limit;\n      } else {\n        pos = p;\n        return c;\n      }\n    }\n    if (throwOnEof) {\n      throw new EOFException(\"End of input\" + locationString());\n    } else {\n      return -1;\n    }\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "nextNonWhitespace",
+        "documentation": "/**\n   * Returns the next character in the stream that is neither whitespace nor a\n   * part of a comment. When this returns, the returned character is always at\n   * {@code buffer[pos-1]}; this means the caller can always push back the\n   * returned character by decrementing {@code pos}.\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "nextNonWhitespace"
+          }
+        ],
+        "similarity": 0.03966541904101622,
+        "end_line": 1405,
+        "signature": "com.google.gson.stream.JsonReader.nextNonWhitespace(boolean throwOnEof): int"
+      },
+      {
+        "start_line": 387,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  private static TypeAdapter<AtomicLong> atomicLongAdapter(final TypeAdapter<Number> longAdapter) {\n    return new TypeAdapter<AtomicLong>() {\n      @Override public void write(JsonWriter out, AtomicLong value) throws IOException {\n        longAdapter.write(out, value.get());\n      }\n      @Override public AtomicLong read(JsonReader in) throws IOException {\n        Number value = longAdapter.read(in);\n        return new AtomicLong(value.longValue());\n      }\n    }.nullSafe();\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "atomicLongAdapter",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "TypeAdapter"
+          },
+          {
+            "start_node": "TypeAdapter",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "nullSafe"
+          },
+          {
+            "start_node": "nullSafe",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "atomicLongAdapter"
+          }
+        ],
+        "similarity": 0.03946132944720071,
+        "end_line": 397,
+        "signature": "com.google.gson.Gson.atomicLongAdapter(TypeAdapter longAdapter): TypeAdapter"
+      },
+      {
+        "start_line": 774,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public void toJson(JsonElement jsonElement, JsonWriter writer) throws JsonIOException {\n    boolean oldLenient = writer.isLenient();\n    writer.setLenient(true);\n    boolean oldHtmlSafe = writer.isHtmlSafe();\n    writer.setHtmlSafe(htmlSafe);\n    boolean oldSerializeNulls = writer.getSerializeNulls();\n    writer.setSerializeNulls(serializeNulls);\n    try {\n      Streams.write(jsonElement, writer);\n    } catch (IOException e) {\n      throw new JsonIOException(e);\n    } catch (AssertionError e) {\n      throw new AssertionError(\"AssertionError (GSON \" + GsonBuildConfig.VERSION + \"): \" + e.getMessage(), e);\n    } finally {\n      writer.setLenient(oldLenient);\n      writer.setHtmlSafe(oldHtmlSafe);\n      writer.setSerializeNulls(oldSerializeNulls);\n    }\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "toJson",
+        "documentation": "/**\n   * Writes the JSON for {@code jsonElement} to {@code writer}.\n   * @throws JsonIOException if there was a problem writing to the writer\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "Gson"
+          },
+          {
+            "start_node": "Gson",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "toJson"
+          }
+        ],
+        "similarity": 0.03858657265842883,
+        "end_line": 792,
+        "signature": "com.google.gson.Gson.toJson(JsonElement jsonElement, JsonWriter writer): void"
+      },
+      {
+        "start_line": 1263,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  private void push(int newTop) {\n    if (stackSize == stack.length) {\n      int[] newStack = new int[stackSize * 2];\n      int[] newPathIndices = new int[stackSize * 2];\n      String[] newPathNames = new String[stackSize * 2];\n      System.arraycopy(stack, 0, newStack, 0, stackSize);\n      System.arraycopy(pathIndices, 0, newPathIndices, 0, stackSize);\n      System.arraycopy(pathNames, 0, newPathNames, 0, stackSize);\n      stack = newStack;\n      pathIndices = newPathIndices;\n      pathNames = newPathNames;\n    }\n    stack[stackSize++] = newTop;\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "push",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "push"
+          }
+        ],
+        "similarity": 0.03836377267196926,
+        "end_line": 1276,
+        "signature": "com.google.gson.stream.JsonReader.push(int newTop): void"
+      },
+      {
+        "start_line": 393,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public void endObject() throws IOException {\n    int p = peeked;\n    if (p == PEEKED_NONE) {\n      p = doPeek();\n    }\n    if (p == PEEKED_END_OBJECT) {\n      stackSize--;\n      pathNames[stackSize] = null; // Free the last path name so that it can be garbage collected!\n      pathIndices[stackSize - 1]++;\n      peeked = PEEKED_NONE;\n    } else {\n      throw new IllegalStateException(\"Expected END_OBJECT but was \" + peek() + locationString());\n    }\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "endObject",
+        "documentation": "/**\n   * Consumes the next token from the JSON stream and asserts that it is the\n   * end of the current object.\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "endObject"
+          }
+        ],
+        "similarity": 0.0379603602070796,
+        "end_line": 406,
+        "signature": "com.google.gson.stream.JsonReader.endObject(): void"
+      },
+      {
+        "start_line": 172,
+        "file_path": "playground/google__gson/extras/src/main/java/com/google/gson/typeadapters/RuntimeTypeAdapterFactory.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public RuntimeTypeAdapterFactory<T> registerSubtype(Class<? extends T> type, String label) {\n    if (type == null || label == null) {\n      throw new NullPointerException();\n    }\n    if (subtypeToLabel.containsKey(type) || labelToSubtype.containsKey(label)) {\n      throw new IllegalArgumentException(\"types and labels must be unique\");\n    }\n    labelToSubtype.put(label, type);\n    subtypeToLabel.put(type, label);\n    return this;\n  }",
+        "distance": 3.0,
+        "title": null,
+        "name": "registerSubtype",
+        "documentation": "/**\n   * Registers {@code type} identified by {@code label}. Labels are case\n   * sensitive.\n   *\n   * @throws IllegalArgumentException if either {@code type} or {@code label}\n   *     have already been registered on this type adapter.\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "TypeAdapter"
+          },
+          {
+            "start_node": "TypeAdapter",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "nullSafe"
+          },
+          {
+            "start_node": "nullSafe",
+            "description": "called by method",
+            "type": "RELATED",
+            "end_node": "create"
+          },
+          {
+            "start_node": "create",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "RuntimeTypeAdapterFactory"
+          },
+          {
+            "start_node": "RuntimeTypeAdapterFactory",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "registerSubtype"
+          }
+        ],
+        "similarity": 0.03732644086306825,
+        "end_line": 182,
+        "signature": "com.google.gson.typeadapters.RuntimeTypeAdapterFactory.registerSubtype(Class type, String label): RuntimeTypeAdapterFactory"
+      },
+      {
+        "start_line": 75,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/TypeAdapterRuntimeTypeWrapper.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  private Type getRuntimeTypeIfMoreSpecific(Type type, Object value) {\n    if (value != null\n        && (type == Object.class || type instanceof TypeVariable<?> || type instanceof Class<?>)) {\n      type = value.getClass();\n    }\n    return type;\n  }",
+        "distance": 3.0,
+        "title": null,
+        "name": "getRuntimeTypeIfMoreSpecific",
+        "documentation": "/**\n   * Finds a compatible runtime type if it is more specific\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "TypeAdapter"
+          },
+          {
+            "start_node": "TypeAdapter",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "toJson"
+          },
+          {
+            "start_node": "toJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "write"
+          },
+          {
+            "start_node": "write",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "TypeAdapterRuntimeTypeWrapper"
+          },
+          {
+            "start_node": "TypeAdapterRuntimeTypeWrapper",
+            "description": "contains method",
+            "type": "RELATED",
+            "end_node": "getRuntimeTypeIfMoreSpecific"
+          }
+        ],
+        "similarity": 0.036725191926532286,
+        "end_line": 81,
+        "signature": "com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper.getRuntimeTypeIfMoreSpecific(Type type, Object value): Type"
+      },
+      {
+        "start_line": 1283,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/stream/JsonReader.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  private boolean fillBuffer(int minimum) throws IOException {\n    char[] buffer = this.buffer;\n    lineStart -= pos;\n    if (limit != pos) {\n      limit -= pos;\n      System.arraycopy(buffer, pos, buffer, 0, limit);\n    } else {\n      limit = 0;\n    }\n\n    pos = 0;\n    int total;\n    while ((total = in.read(buffer, limit, buffer.length - limit)) != -1) {\n      limit += total;\n\n      // if this is the first read, consume an optional byte order mark (BOM) if it exists\n      if (lineNumber == 0 && lineStart == 0 && limit > 0 && buffer[0] == '\\ufeff') {\n        pos++;\n        lineStart++;\n        minimum++;\n      }\n\n      if (limit >= minimum) {\n        return true;\n      }\n    }\n    return false;\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "fillBuffer",
+        "documentation": "/**\n   * Returns true once {@code limit - pos >= minimum}. If the data is\n   * exhausted before that many characters are available, this returns\n   * false.\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "JsonReader"
+          },
+          {
+            "start_node": "JsonReader",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "fillBuffer"
+          }
+        ],
+        "similarity": 0.03662403965279866,
+        "end_line": 1310,
+        "signature": "com.google.gson.stream.JsonReader.fillBuffer(int minimum): boolean"
+      },
+      {
+        "start_line": 113,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/GsonBuilder.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  GsonBuilder(Gson gson) {\n    this.excluder = gson.excluder;\n    this.fieldNamingPolicy = gson.fieldNamingStrategy;\n    this.instanceCreators.putAll(gson.instanceCreators);\n    this.serializeNulls = gson.serializeNulls;\n    this.complexMapKeySerialization = gson.complexMapKeySerialization;\n    this.generateNonExecutableJson = gson.generateNonExecutableJson;\n    this.escapeHtmlChars = gson.htmlSafe;\n    this.prettyPrinting = gson.prettyPrinting;\n    this.lenient = gson.lenient;\n    this.serializeSpecialFloatingPointValues = gson.serializeSpecialFloatingPointValues;\n    this.longSerializationPolicy = gson.longSerializationPolicy;\n    this.datePattern = gson.datePattern;\n    this.dateStyle = gson.dateStyle;\n    this.timeStyle = gson.timeStyle;\n    this.factories.addAll(gson.builderFactories);\n    this.hierarchyFactories.addAll(gson.builderHierarchyFactories);\n  }",
+        "distance": 3.5,
+        "title": null,
+        "name": "GsonBuilder",
+        "documentation": "/**\n   * Constructs a GsonBuilder instance from a Gson instance. The newly constructed GsonBuilder\n   * has the same configuration as the previously built Gson instance.\n   *\n   * @param gson the gson instance whose configuration should by applied to a new GsonBuilder.\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "Gson"
+          },
+          {
+            "start_node": "Gson",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "newBuilder"
+          },
+          {
+            "start_node": "newBuilder",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "GsonBuilder"
+          }
+        ],
+        "similarity": 0.035636246746859494,
+        "end_line": 130,
+        "signature": "com.google.gson.GsonBuilder(Gson gson)"
+      },
+      {
+        "start_line": 144,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/internal/bind/ReflectiveTypeAdapterFactory.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  private Map<String, BoundField> getBoundFields(Gson context, TypeToken<?> type, Class<?> raw) {\n    Map<String, BoundField> result = new LinkedHashMap<String, BoundField>();\n    if (raw.isInterface()) {\n      return result;\n    }\n\n    Type declaredType = type.getType();\n    while (raw != Object.class) {\n      Field[] fields = raw.getDeclaredFields();\n      for (Field field : fields) {\n        boolean serialize = excludeField(field, true);\n        boolean deserialize = excludeField(field, false);\n        if (!serialize && !deserialize) {\n          continue;\n        }\n        accessor.makeAccessible(field);\n        Type fieldType = $Gson$Types.resolve(type.getType(), raw, field.getGenericType());\n        List<String> fieldNames = getFieldNames(field);\n        BoundField previous = null;\n        for (int i = 0, size = fieldNames.size(); i < size; ++i) {\n          String name = fieldNames.get(i);\n          if (i != 0) serialize = false; // only serialize the default name\n          BoundField boundField = createBoundField(context, field, name,\n              TypeToken.get(fieldType), serialize, deserialize);\n          BoundField replaced = result.put(name, boundField);\n          if (previous == null) previous = replaced;\n        }\n        if (previous != null) {\n          throw new IllegalArgumentException(declaredType\n              + \" declares multiple JSON fields named \" + previous.name);\n        }\n      }\n      type = TypeToken.get($Gson$Types.resolve(type.getType(), raw, raw.getGenericSuperclass()));\n      raw = type.getRawType();\n    }\n    return result;\n  }",
+        "distance": 4.0,
+        "title": null,
+        "name": "getBoundFields",
+        "documentation": "",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "Gson"
+          },
+          {
+            "start_node": "Gson",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "Gson"
+          },
+          {
+            "start_node": "Gson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "ReflectiveTypeAdapterFactory"
+          },
+          {
+            "start_node": "ReflectiveTypeAdapterFactory",
+            "description": "contained in class",
+            "type": "RELATED",
+            "end_node": "ReflectiveTypeAdapterFactory"
+          },
+          {
+            "start_node": "ReflectiveTypeAdapterFactory",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "getBoundFields"
+          }
+        ],
+        "similarity": 0.03551535698227835,
+        "end_line": 180,
+        "signature": "com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.getBoundFields(Gson context, TypeToken type, Class raw): Map"
+      },
+      {
+        "start_line": 863,
+        "file_path": "playground/google__gson/gson/src/main/java/com/google/gson/Gson.java",
+        "issue_id": null,
+        "type": "method",
+        "content": null,
+        "source_code": "  public <T> T fromJson(Reader json, Class<T> classOfT) throws JsonSyntaxException, JsonIOException {\n    JsonReader jsonReader = newJsonReader(json);\n    Object object = fromJson(jsonReader, classOfT);\n    assertFullConsumption(object, jsonReader);\n    return Primitives.wrap(classOfT).cast(object);\n  }",
+        "distance": 2.5,
+        "title": null,
+        "name": "fromJson",
+        "documentation": "/**\n   * This method deserializes the Json read from the specified reader into an object of the\n   * specified class. It is not suitable to use if the specified class is a generic type since it\n   * will not have the generic type information because of the Type Erasure feature of Java.\n   * Therefore, this method should not be used if the desired type is a generic type. Note that\n   * this method works fine if the any of the fields of the specified object are generics, just the\n   * object itself should not be a generic type. For the cases when the object is of generic type,\n   * invoke {@link #fromJson(Reader, Type)}. If you have the Json in a String form instead of a\n   * {@link Reader}, use {@link #fromJson(String, Class)} instead.\n   *\n   * @param <T> the type of the desired object\n   * @param json the reader producing the Json from which the object is to be deserialized.\n   * @param classOfT the class of T\n   * @return an object of type T from the string. Returns {@code null} if {@code json} is at EOF.\n   * @throws JsonIOException if there was a problem reading from the Reader\n   * @throws JsonSyntaxException if json is not a valid representation for an object of type\n   * @since 1.2\n   */",
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "calls method",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          },
+          {
+            "start_node": "fromJson",
+            "description": "contained in method",
+            "type": "RELATED",
+            "end_node": "Gson"
+          },
+          {
+            "start_node": "Gson",
+            "description": "contains class",
+            "type": "RELATED",
+            "end_node": "fromJson"
+          }
+        ],
+        "similarity": 0.035489057635247234,
+        "end_line": 868,
+        "signature": "com.google.gson.Gson.fromJson(Reader json, Class classOfT): T"
+      }
+    ],
+    "classes": [],
+    "issues": [
+      {
+        "content": "The recursive type variable resolution protections put into place in Gson 2.8.2 to fix #1128 does not work if a TypeVariable is referenced multiple times.\r\n\r\nExample failing code:\r\n```\r\n    enum TestEnum { ONE, TWO, THREE }\r\n\r\n    private static class TestEnumSetCollection extends SetCollection<TestEnum> {}\r\n\r\n    private static class SetCollection<T> extends BaseCollection<T, Set<T>> {}\r\n\r\n    private static class BaseCollection<U, C extends Collection<U>>\r\n    {\r\n        public C collection;\r\n    }\r\n```\r\n\r\nWhen used with the following code to unmarshal\r\n```\r\nTestEnumSetCollection withSet = gson.fromJson(\"{\\\"collection\\\":[\\\"ONE\\\",\\\"THREE\\\"]}\", TestEnumSetCollection.class);\r\n```\r\nThe enum values are unmarshaled as `String` instances instead of as `TestEnum` instances, causing `ClassCastException` to be raised at runtime.  This is due to the fact that the `visitedTypeVariables` map receives an entry for `T`, resolves it properly, and then upon subsequent attempt to resolve `T` fails, since the `visitedTypeVariables` set indicates that `T` has already been resolved.\nRecursive TypeVariable resolution results in ClassCastException when type var is referenced multiple times\nThe recursive type variable resolution protections put into place in Gson 2.8.2 to fix #1128 does not work if a TypeVariable is referenced multiple times.\r\n\r\nExample failing code:\r\n```\r\n    enum TestEnum { ONE, TWO, THREE }\r\n\r\n    private static class TestEnumSetCollection extends SetCollection<TestEnum> {}\r\n\r\n    private static class SetCollection<T> extends BaseCollection<T, Set<T>> {}\r\n\r\n    private static class BaseCollection<U, C extends Collection<U>>\r\n    {\r\n        public C collection;\r\n    }\r\n```\r\n\r\nWhen used with the following code to unmarshal\r\n```\r\nTestEnumSetCollection withSet = gson.fromJson(\"{\\\"collection\\\":[\\\"ONE\\\",\\\"THREE\\\"]}\", TestEnumSetCollection.class);\r\n```\r\nThe enum values are unmarshaled as `String` instances instead of as `TestEnum` instances, causing `ClassCastException` to be raised at runtime.  This is due to the fact that the `visitedTypeVariables` map receives an entry for `T`, resolves it properly, and then upon subsequent attempt to resolve `T` fails, since the `visitedTypeVariables` set indicates that `T` has already been resolved.\n",
+        "distance": 0,
+        "title": "Recursive TypeVariable resolution results in ClassCastException when type var is referenced multiple times",
+        "name": "root",
+        "path": [],
+        "issue_id": "root",
+        "similarity": 2.0,
+        "type": "issue"
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1390",
+        "type": "issue",
+        "content": "The recursive type variable resolution protections put into place in Gson 2.8.2 to fix #1128 does not work if a TypeVariable is referenced multiple times.\r\n\r\nExample failing code:\r\n```\r\n    enum TestEnum { ONE, TWO, THREE }\r\n\r\n    private static class TestEnumSetCollection extends SetCollection<TestEnum> {}\r\n\r\n    private static class SetCollection<T> extends BaseCollection<T, Set<T>> {}\r\n\r\n    private static class BaseCollection<U, C extends Collection<U>>\r\n    {\r\n        public C collection;\r\n    }\r\n```\r\n\r\nWhen used with the following code to unmarshal\r\n```\r\nTestEnumSetCollection withSet = gson.fromJson(\"{\\\"collection\\\":[\\\"ONE\\\",\\\"THREE\\\"]}\", TestEnumSetCollection.class);\r\n```\r\nThe enum values are unmarshaled as `String` instances instead of as `TestEnum` instances, causing `ClassCastException` to be raised at runtime.  This is due to the fact that the `visitedTypeVariables` map receives an entry for `T`, resolves it properly, and then upon subsequent attempt to resolve `T` fails, since the `visitedTypeVariables` set indicates that `T` has already been resolved.\n\n",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "Recursive TypeVariable resolution results in ClassCastException when type var is referenced multiple times",
+        "name": "issue#1390",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1390"
+          }
+        ],
+        "similarity": 0.8494008271213945,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1128",
+        "type": "issue",
+        "content": "Sample failing code:\r\n  private static class TestType<X> {\r\n    TestType<? super X> superType;\r\n  }\r\n  ...\r\n  new Gson().getAdapter(TestType.class);\n\n\nComment by inder123:\n\ud83d\udc4d \n\nComment by inder123:\nThank you for a test that demonstrates the problem!",
+        "source_code": null,
+        "distance": 0.25,
+        "title": "Fix StackOverflowError on resolving types with TypeVariable recursion",
+        "name": "pr#1128",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1128"
+          }
+        ],
+        "similarity": 0.5915972427680287,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1391",
+        "type": "issue",
+        "content": "When a type variable is referenced multiple times it needs to resolve to the same value.  Previously, the second attempt would abort resolution early in order to protect against infinite recursion.\r\n\r\nNOTE: I could use some scrutiny on this as I don't fully understand the implications of all the code branches.  This commit does resolve the issue but stylistically I'm not really sold on breaking out of the while loop in order to capture the final result for subsequent resolution attempts.\r\n\r\nFixes #1390 \r\n\n\n",
+        "source_code": null,
+        "distance": 0.5,
+        "title": "Fix issue with recursive type variable protections to fix #1390",
+        "name": "pr#1391",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#1390"
+          },
+          {
+            "start_node": "issue#1390",
+            "description": "referenced by issue",
+            "type": "RELATED",
+            "end_node": "pr#1391"
+          }
+        ],
+        "similarity": 0.4920022901915808,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1243",
+        "type": "issue",
+        "content": " **while doing code** \r\n\r\n```\r\n  import java.util.Timer;\r\n\r\n  Gson gson = new Gson();\r\n   Timer tmr = new Timer();\r\n   System.out.println(gson.toJson(tmr));\r\n```\r\n\r\n**I have got error**\r\n```\r\n\r\njava.lang.StackOverflowError\r\n\tat com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:353)\r\n\tat com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:378)\r\n\tat com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:383)\r\n\tat com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:378)\r\n\tat com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:383)\r\n\tat com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:378)\r\n```\n\n\nComment by NightlyNexus:\nWhat's `Timer`? See https://github.com/google/gson/pull/1128\r\nAs a blind guess, update to the latest Gson.\n\nComment by SashaAV:\nI,ve edited message. tmr - it's java.util.Timer.  I've tried on 2.8.2 version\n\nComment by Dhirajpandit:\nHi @SashaAV  \r\nas per my opinion.\r\n 1) Timer class schedule the task.  please refer this link https://www.geeksforgeeks.org/java-util-timer-class-java/ \r\n2)  if you use timer  so there must be a limits, where to stop this timer, \r\n\r\n\r\n\n\nComment by SashaAV:\nI see.\r\nI have marked this field with transient and do not serialize it.\r\nI just give you an example of error while gson resolve type java.util.Timer\r\n\r\nThe point is **only** in $Gson$Types.resolve   error.\r\n\r\nThank you.\r\nps: possibly I have to provide   example with more additional info. \n\nComment by amogilev:\nThe line numbers in your stacktrace do not correspond to $Gson$Types.resolve calls in 2.8.2. Probably you have got it on older version.\r\n\r\nIn 2.8.2, there is StackOverflowError for Timer as well, but it is related to actual circular references, and do not include any $Gson$Types.resolve() lines in the stacktrace",
+        "source_code": null,
+        "distance": 0.5,
+        "title": "java.lang.StackOverflowError at com.google.gson.internal.$Gson$Types.resolve",
+        "name": "issue#1243",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1128"
+          },
+          {
+            "start_node": "pr#1128",
+            "description": "referenced by issue",
+            "type": "RELATED",
+            "end_node": "issue#1243"
+          }
+        ],
+        "similarity": 0.3851554463307522,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1153",
+        "type": "issue",
+        "content": "Any chance of a 2.8.2 release? We're running into #1128, which was fixed by https://github.com/google/gson/commit/03a72e752ef68269990f984c9fd613cfd59224bc.\n\n\nComment by inder123:\nLet's do it this week. Thanks.\n\nComment by naturalwarren:\nMaybe we cut this as 2.9 if #1142 makes it into the release?\n\nComment by inder123:\nDone http://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.2/",
+        "source_code": null,
+        "distance": 0.5,
+        "title": "2.8.2 release?",
+        "name": "issue#1153",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1128"
+          },
+          {
+            "start_node": "pr#1128",
+            "description": "referenced by issue",
+            "type": "RELATED",
+            "end_node": "issue#1153"
+          }
+        ],
+        "similarity": 0.3433888130767568,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1197",
+        "type": "issue",
+        "content": "S:Fault \txmlns:ns4=\"http://www.w3.org/2003/05/soap-envelope\">\r\n<faultcode>S:Server</faultcode>\r\n<faultstring>\r\nEJB Exception: : java.lang.StackOverflowError\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:380)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:375)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:380)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:375)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:380)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:375)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:380)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:375)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:380)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:375)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:380)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:375)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:380)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:375)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:380)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:375)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:380)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:375)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:380)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:375)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:380)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:375)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:380)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:375)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:380)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:375)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:380)\r\n at com.google.gson.internal.$Gson$Types.resolve($Gson$Types.java:375)\n\n\nComment by NightlyNexus:\n#1128 fixes this. Use Gson 2.8.2.",
+        "source_code": null,
+        "distance": 0.5,
+        "title": "Getting this issue while using GSON Api",
+        "name": "issue#1197",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1128"
+          },
+          {
+            "start_node": "pr#1128",
+            "description": "referenced by issue",
+            "type": "RELATED",
+            "end_node": "issue#1197"
+          }
+        ],
+        "similarity": 0.2950760880424027,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "338",
+        "type": "issue",
+        "content": "```\nWhat steps will reproduce the problem?\n1.I write a simple Java package game extension for Smartfox Server 2x using \nGson and get the exception java.lang.NoClassDefFoundError: com/google/Gson. But \nusing unzip sources there's no error found.\n2.\n3.\n\nWhat is the expected output? What do you see instead?\nI don't know while ClassLoader can not find class def.\n\nWhat version of the product are you using? On what operating system?\nI use Eclipse Helios\n\nPlease provide any additional information below.\nI think maybe Gson has loaded somewhere and try to follow this article \nhttp://www.gitshah.com/2011/04/fixing-javalangclassnotfoundexception.html but \nnothing changes.\n```\n\nOriginal issue reported on code.google.com by `langxangvn` on 27 Jun 2011 at 3:48\n\n\n",
+        "source_code": null,
+        "distance": 0.5,
+        "title": "Exception java.lang.NoClassDefFoundError",
+        "name": "issue#338",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1128"
+          },
+          {
+            "start_node": "pr#1128",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#338"
+          }
+        ],
+        "similarity": 0.24085823184172975,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "1142",
+        "type": "issue",
+        "content": "Addresses #1139 \r\n\r\n`Gson.newBuilder()` returns `GsonBuilder`\r\n\r\nFew changes here:\r\n- Increases visibility of `Gson` member variables so they can be seen by `GsonBuilder`\r\n- Adds additional member variables to `Gson` to save state required to transform `Gson` back to `GsonBuilder`\n\n\nComment by naturalwarren:\n@inder123 What do you think about this?\n\nComment by naturalwarren:\n@inder123 @swankjesse Is there interest in this? We'd find it particularly useful in our stack for sharing Gson instances but if there isn't I can abandon. \n\nComment by naturalwarren:\nThis built fine locally, CI is having trouble:\r\n\r\n```\r\n0.01s$ mvn -f gson install -DskipTests=true\r\nError: JAVA_HOME is not defined correctly.\r\n  We cannot execute /usr/lib/jvm/java-7-oracle/bin/java\r\nThe command \"mvn -f gson install -DskipTests=true\" failed and exited with 1 during .\r\n```\n\nComment by inder123:\n@JakeWharton  This looks interesting. I am inclined to accept, what do you think?\n\nComment by JakeWharton:\nI'm fine with it, yes.\n\nOn Mon, Sep 18, 2017 at 2:52 AM inder123 <notifications@github.com> wrote:\n\n> @JakeWharton <https://github.com/jakewharton> This looks interesting. I\n> am inclined to accept, what do you think?\n>\n> \u2014\n> You are receiving this because you were mentioned.\n>\n>\n> Reply to this email directly, view it on GitHub\n> <https://github.com/google/gson/pull/1142#issuecomment-330140542>, or mute\n> the thread\n> <https://github.com/notifications/unsubscribe-auth/AAEEESTjC8aingVr3qhW30ruwN4O7Asaks5sjhNGgaJpZM4O2pvA>\n> .\n>\n\n\nComment by inder123:\n\ud83d\udc4d ",
+        "source_code": null,
+        "distance": 1.0,
+        "title": "Add newBuilder() API",
+        "name": "pr#1142",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1128"
+          },
+          {
+            "start_node": "pr#1128",
+            "description": "referenced by issue",
+            "type": "RELATED",
+            "end_node": "issue#1153"
+          },
+          {
+            "start_node": "issue#1153",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1142"
+          }
+        ],
+        "similarity": 0.23742361522526023,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "817",
+        "type": "issue",
+        "content": "I am getting a 'JNI DETECTED AN ERROR IN APPLICATION\" while using gson 2.5.jar in Android. Can anyone tell me how to solve this? Appreciate it.\nI am using a sub-class of Parse Object using Parse SDK.\nHere is the stack trace: \n\n```\n03-28 14:01:15.445: E/art(28683): JNI DETECTED ERROR IN APPLICATION: can't make objects of type java.util.concurrent.locks.Lock: 0x70dd7858\n03-28 14:01:15.445: E/art(28683):     in call to AllocObject\n03-28 14:01:15.445: E/art(28683):     from java.lang.Object sun.misc.Unsafe.allocateInstance(java.lang.Class)\n03-28 14:01:15.445: E/art(28683): \"main\" prio=5 tid=1 Runnable\n03-28 14:01:15.445: E/art(28683):   | group=\"main\" sCount=0 dsCount=0 obj=0x7617aef8 self=0x7fa917c400\n03-28 14:01:15.445: E/art(28683):   | sysTid=28683 nice=0 cgrp=default sched=0/0 handle=0x7face5d2c0\n03-28 14:01:15.445: E/art(28683):   | state=R schedstat=( 657346072 17671229 611 ) utm=52 stm=13 core=1 HZ=100\n03-28 14:01:15.445: E/art(28683):   | stack=0x7fe28ac000-0x7fe28ae000 stackSize=8MB\n03-28 14:01:15.445: E/art(28683):   | held mutexes= \"mutator lock\"(shared held)\n03-28 14:01:15.445: E/art(28683):   at sun.misc.Unsafe.allocateInstance(Native method)\n03-28 14:01:15.445: E/art(28683):   at java.lang.reflect.Method.invoke!(Native method)\n03-28 14:01:15.445: E/art(28683):   at com.google.gson.internal.UnsafeAllocator$1.newInstance(UnsafeAllocator.java:48)\n03-28 14:01:15.445: E/art(28683):   at com.google.gson.internal.ConstructorConstructor$14.construct(ConstructorConstructor.java:223)\n03-28 14:01:15.445: E/art(28683):   at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter.read(ReflectiveTypeAdapterFactory.java:207)\n03-28 14:01:15.445: E/art(28683):   at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$1.read(ReflectiveTypeAdapterFactory.java:117)\n03-28 14:01:15.445: E/art(28683):   at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter.read(ReflectiveTypeAdapterFactory.java:217)\n03-28 14:01:15.445: E/art(28683):   at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$1.read(ReflectiveTypeAdapterFactory.java:117)\n03-28 14:01:15.445: E/art(28683):   at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter.read(ReflectiveTypeAdapterFactory.java:217)\n03-28 14:01:15.445: E/art(28683):   at com.google.gson.Gson.fromJson(Gson.java:861)\n03-28 14:01:15.445: E/art(28683):   at com.google.gson.Gson.fromJson(Gson.java:826)\n03-28 14:01:15.445: E/art(28683):   at com.google.gson.Gson.fromJson(Gson.java:775)\n03-28 14:01:15.445: E/art(28683):   at com.google.gson.Gson.fromJson(Gson.java:747)\n03-28 14:01:15.445: E/art(28683):   at b5.project.medibro.FeedItemDetails.onCreate(FeedItemDetails.java:47)\n03-28 14:01:15.445: E/art(28683):   at android.app.Activity.performCreate(Activity.java:6583)\n03-28 14:01:15.445: E/art(28683):   at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1114)\n03-28 14:01:15.445: E/art(28683):   at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:2531)\n03-28 14:01:15.445: E/art(28683):   at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:2666)\n03-28 14:01:15.445: E/art(28683):   at android.app.ActivityThread.-wrap11(ActivityThread.java:-1)\n03-28 14:01:15.445: E/art(28683):   at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1493)\n03-28 14:01:15.445: E/art(28683):   at android.os.Handler.dispatchMessage(Handler.java:111)\n03-28 14:01:15.445: E/art(28683):   at android.os.Looper.loop(Looper.java:207)\n03-28 14:01:15.445: E/art(28683):   at android.app.ActivityThread.main(ActivityThread.java:5769)\n03-28 14:01:15.445: E/art(28683):   at java.lang.reflect.Method.invoke!(Native method)\n03-28 14:01:15.445: E/art(28683):   at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:789)\n03-28 14:01:15.445: E/art(28683):   at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:679)\n```\n\nThe error is occurring at the last line of this code:\n\n```\n        gson=new Gson();\n        String jsonObj=getIntent().getStringExtra(\"feedItem\");\n        item = gson.fromJson(jsonObj, FeedItem.class);\n```\n\nI have logged the json string which I am getting. The formatted json string is \n\n```\n{\n   \"feedItemChannel\":\"mdldsrgXN1\",\n   \"estimatedData\":{\n      \"feedTopic\":\"Testing\",\n      \"feedComments\":2,\n      \"createdBy\":\"KXTQtpfBSW\",\n      \"feedQuestion\":\"Test Question \",\n      \"feedDesc\":\"Test \"\n   },\n   \"hashedObjects\":{\n\n   },\n   \"isDeleted\":false,\n   \"isDeletingEventually\":0,\n   \"mutex\":{\n\n   },\n   \"operationSetQueue\":[\n      {\n\n      }\n   ],\n   \"saveEvent\":{\n      \"callbacks\":[\n\n      ]\n   },\n   \"state\":{\n      \"className\":\"FeedItem\",\n      \"createdAt\":1458798818385,\n      \"isComplete\":true,\n      \"objectId\":\"mdldsrgXN1\",\n      \"serverData\":{\n         \"feedTopic\":\"TestTopic\",\n         \"createdBy\":\"KXTQtpfBSW\",\n         \"feedComments\":2,\n         \"feedQuestion\":\"Test Question \",\n         \"feedDesc\":\"Test \"\n      },\n      \"updatedAt\":1458803553636\n   },\n   \"taskQueue\":{\n      \"lock\":{\n         \"sync\":{\n            \"state\":0\n         }\n      }\n   }\n}\n```\n\n\n\nComment by marcelohd:\nOk\n\n\nComment by JakeWharton:\nYou're trying to deserliaze a type which has a Lock which can't be\ninstantiated. Either mark it as transient or write a TypeAdapter if you're\nactually want the lock to be serialized.\n\nOn Mon, Mar 28, 2016, 10:56 AM Alex Ironz notifications@github.com wrote:\n\n> OMG, Unsafe object allocation bug, i think using in popular libaray\n> non-documented API in client - a big mistake\n> \n> \u2014\n> You are receiving this because you are subscribed to this thread.\n> Reply to this email directly or view it on GitHub\n> https://github.com/google/gson/issues/817#issuecomment-202426835\n\n\nComment by abhijith-gururaj:\nThe catch here is there is no exception while running the app in some\ndevices(tested it on One Plus Two, Worked fine, API 22) where as the\nexception is thrown while running the application in some other\ndevices(Tested on Lenovo K3 Note, API 23, the exception is thrown). Unable to figure it out.\n\nRegards,\nAbhijith Gururaj\n\nOn Mon, Mar 28, 2016 at 8:31 PM, Jake Wharton notifications@github.com\nwrote:\n\n> You're trying to deserliaze a type which has a Lock which can't be\n> instantiated. Either mark it as transient or write a TypeAdapter if you're\n> actually want the lock to be serialized.\n> \n> On Mon, Mar 28, 2016, 10:56 AM Alex Ironz notifications@github.com\n> wrote:\n> \n> > OMG, Unsafe object allocation bug, i think using in popular libaray\n> > non-documented API in client - a big mistake\n> > \n> > \u2014\n> > You are receiving this because you are subscribed to this thread.\n> > Reply to this email directly or view it on GitHub\n> > https://github.com/google/gson/issues/817#issuecomment-202426835\n> \n> \u2014\n> You are receiving this because you authored the thread.\n> Reply to this email directly or view it on GitHub\n> https://github.com/google/gson/issues/817#issuecomment-202429152\n\n\nComment by ionspin:\nIt seems to behaves differently based on the underlying Android implementation, I used a simple test app:\n\n``` java\npublic interface A {\n        void method();\n    }\n\n...\nUnsafeAllocator unsafeAllocator = UnsafeAllocator.create();\n        Log.d(TAG, \"Try to allocate interface\");\n        A a = null;\n        try {\n            a = unsafeAllocator.newInstance(A.class);\n        } catch (Exception e) {\n            Log.e(TAG, \"\", e);\n        }\n        Log.d(TAG, \"Try to call a method on allocated interface\");\n        a.method();\n        Log.d(TAG, \"Method called\");\n...\n```\n\nOn Nexus 5X running Android N preview 1 that would cause VM to abort and report JNI error, then try to restart the app and immediately crash again entering a infinite loop\n\n```\n04-12 21:25:00.284 11396-11396/ionspin.com.unsafetest D/MainActivity: Try to allocate interface\n04-12 21:25:00.294 11396-11396/ionspin.com.unsafetest A/art: art/runtime/java_vm_ext.cc:468] JNI DETECTED ERROR IN APPLICATION: can't make objects of type ionspin.com.unsafetest.MainActivity$A: 0x12d79380\n04-12 21:25:00.295 11396-11396/ionspin.com.unsafetest A/art: art/runtime/java_vm_ext.cc:468]     in call to AllocObject\n04-12 21:25:00.295 11396-11396/ionspin.com.unsafetest A/art: art/runtime/java_vm_ext.cc:468]     from java.lang.Object sun.misc.Unsafe.allocateInstance(java.lang.Class)\n04-12 21:25:00.295 11396-11396/ionspin.com.unsafetest A/art: art/runtime/java_vm_ext.cc:468] \"main\" prio=5 tid=1 Runnable\n```\n\nBut on Nexus 5 running Android 5.1.1, instantiation would succeed, while a method call would cause a segmentation fault\n\n```\n04-12 21:31:57.317 27351-27351/? D/MainActivity: Try to allocate interface\n04-12 21:31:57.317 27351-27351/? D/MainActivity: Try to call a method on allocated interface\n04-12 21:31:57.317 27351-27351/? A/libc: Fatal signal 11 (SIGSEGV), code 1, fault addr 0x2c in tid 27351 (.com.unsafetest)\n04-12 21:31:57.430 8534-8534/? I/DEBUG: *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***\n04-12 21:31:57.430 8534-8534/? I/DEBUG: Build fingerprint: 'google/hammerhead/hammerhead:5.1.1/LMY48M/2167285:user/release-keys'\n04-12 21:31:57.430 8534-8534/? I/DEBUG: Revision: '11'\n04-12 21:31:57.430 8534-8534/? I/DEBUG: ABI: 'arm'\n04-12 21:31:57.430 8534-8534/? I/DEBUG: pid: 27351, tid: 27351, name: .com.unsafetest  >>> ionspin.com.unsafetest <<<\n04-12 21:31:57.430 8534-8534/? I/DEBUG: signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0x2c\n```\n\nWhile on LG D772 (G3 mini or something like that running 4.4.2) it actually threw the exception\n\n```\n04-12 21:38:04.219 7803-7803/ionspin.com.unsafetest D/MainActivity: Try to allocate interface\n04-12 21:38:04.239 7803-7803/ionspin.com.unsafetest E/MainActivity: java.lang.reflect.InvocationTargetException\n                                                                        at java.lang.reflect.Method.invokeNative(Native Method)\n                                                                        at java.lang.reflect.Method.invoke(Method.java:515)\n                                                                        at com.google.gson.internal.UnsafeAllocator$1.newInstance(UnsafeAllocator.java:48)\n```\n\nUnfortunately I don't have a device running Marshmallow to test on currently\n\nWhile I completely agree that either a transient modifier or a TypeAdapter implementation is the right solution for this problem, maybe adding a check if the class modifiers contain interface or abstract and throwing a RuntimeException could help spotting this kind of issue quicker. Especially on some versions of Android where the only feedback would be a segmentation fault.\n\n\nComment by abhishek-housingman:\nHello guys. I am also facing similar issue. App crashes only on specific device. I am running my code on MotoG2 and it crashed with following error. \r\n\r\n`A/art: art/runtime/java_vm_ext.cc:410] JNI DETECTED ERROR IN APPLICATION: can't make objects of type java.security.acl.Owner: 0x130821f0\r\nA/art: art/runtime/java_vm_ext.cc:410]     in call to AllocObject\r\nA/art: art/runtime/java_vm_ext.cc:410]     from java.lang.Object sun.misc.Unsafe.allocateInstance(java.lang.Class)\r\nA/art: art/runtime/java_vm_ext.cc:410] \"OkHttp https://api.github.com/...\" prio=5 tid=17 Runnable\r\nA/art: art/runtime/java_vm_ext.cc:410]   | group=\"main\" sCount=0 dsCount=0 obj=0x13160760 self=0xb94bd270\r\nA/art: art/runtime/java_vm_ext.cc:410]   | sysTid=11595 nice=0 cgrp=default sched=0/0 handle=0xa1c89930\r\nA/art: art/runtime/java_vm_ext.cc:410]   | state=R schedstat=( 0 0 0 ) utm=14 stm=3 core=1 HZ=100\r\nA/art: art/runtime/java_vm_ext.cc:410]   | stack=0xa1b87000-0xa1b89000 stackSize=1038KB\r\nA/art: art/runtime/java_vm_ext.cc:410]   | held mutexes= \"mutator lock\"(shared held)\r\nA/art: art/runtime/java_vm_ext.cc:410]   native: #00 pc 00370c01  /system/lib/libart.so (art::DumpNativeStack(std::__1::basic_ostream<char, std::__1::char_traits<char> >&, int, char const*, art::ArtMethod*, void*)+160)\r\nA/art: art/runtime/java_vm_ext.cc:410]   native: #01 pc 0035054b  /system/lib/libart.so (art::Thread::Dump(std::__1::basic_ostream<char, std::__1::char_traits<char> >&) const+150)\r\nA/art: art/runtime/java_vm_ext.cc:410]   native: #02 pc 0025a50d  /system/lib/libart.so (art::JavaVMExt::JniAbort(char const*, char const*)+740)\r\nA/art: art/runtime/java_vm_ext.cc:410]   native: #03 pc 0025abe5  /system/lib/libart.so (art::JavaVMExt::JniAbortV(char const*, char const*, std::__va_list)+64)\r\nA/art: art/runtime/java_vm_ext.cc:410]   native: #04 pc 000fd2e1  /system/lib/libart.so (art::ScopedCheck::AbortF(char const*, ...)+32)\r\nA/art: art/runtime/java_vm_ext.cc:410]   native: #05 pc 00108459  /system/lib/libart.so (art::CheckJNI::AllocObject(_JNIEnv*, _jclass*)+584)\r\nA/art: art/runtime/java_vm_ext.cc:410]   native: #06 pc 00254bdd  /data/dalvik-cache/arm/system@framework@boot.oat (Java_sun_misc_Unsafe_allocateInstance__Ljava_lang_Class_2+96)\r\nA/art: art/runtime/java_vm_ext.cc:410]   at sun.misc.Unsafe.allocateInstance(Native method)\r\nA/art: art/runtime/java_vm_ext.cc:410]   at java.lang.reflect.Method.invoke!(Native method)\r\nA/art: art/runtime/java_vm_ext.cc:410]   at com.google.gson.internal.UnsafeAllocator$1.newInstance(UnsafeAllocator.java:48)\r\nA/art: art/runtime/java_vm_ext.cc:410]   at com.google.gson.internal.ConstructorConstructor$14.construct(ConstructorConstructor.java:223)\r\nA/art: art/runtime/java_vm_ext.cc:410]   at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter.read(ReflectiveTypeAdapterFactory.java:206)\r\nA/art: art/runtime/java_vm_ext.cc:410]   at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$1.read(ReflectiveTypeAdapterFactory.java:116)\r\nA/art: art/runtime/java_vm_ext.cc:410]   at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter.read(ReflectiveTypeAdapterFactory.java:216)\r\nA/art: art/runtime/java_vm_ext.cc:410]   at com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper.read(TypeAdapterRuntimeTypeWrapper.java:40)\r\nA/art: art/runtime/java_vm_ext.cc:410]   at com.google.gson.internal.bind.CollectionTypeAdapterFactory$Adapter.read(CollectionTypeAdapterFactory.java:82)\r\nA/art: art/runtime/java_vm_ext.cc:410]   at com.google.gson.internal.bind.CollectionTypeAdapterFactory$Adapter.read(CollectionTypeAdapterFactory.java:61)\r\nA/art: art/runtime/java_vm_ext.cc:410]   at retrofit2.converter.gson.GsonResponseBodyConverter.convert(GsonResponseBodyConverter.java:37)\r\nA/art: art/runtime/java_vm_ext.cc:410]   at retrofit2.converter.gson.GsonResponseBodyConverter.convert(GsonResponseBodyConverter.java:25)\r\nA/art: art/runtime/java_vm_ext.cc:410]   at retrofit2.ServiceMethod.toResponse(ServiceMethod.java:117)\r\nA/art: art/runtime/java_vm_ext.cc:410]   at retrofit2.OkHttpCall.parseResponse(OkHttpCall.java:211)\r\nA/art: art/runtime/java_vm_ext.cc:410]   at retrofit2.OkHttpCall$1.onResponse(OkHttpCall.java:106)\r\nA/art: art/runtime/java_vm_ext.cc:410]   at okhttp3.RealCall$AsyncCall.execute(RealCall.java:133)\r\nA/art: art/runtime/java_vm_ext.cc:410]   at okhttp3.internal.NamedRunnable.run(NamedRunnable.java:32)\r\nA/art: art/runtime/java_vm_ext.cc:410]   at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1113)\r\nA/art: art/runtime/java_vm_ext.cc:410]   at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:588)\r\nA/art: art/runtime/java_vm_ext.cc:410]   at java.lang.Thread.run(Thread.java:818)\r\nA/art: art/runtime/java_vm_ext.cc:410] \r\nA/art: art/runtime/runtime.cc:399] Runtime aborting...\r\nA/art: art/runtime/runtime.cc:399] Aborting thread:\r\nA/art: art/runtime/runtime.cc:399] \"OkHttp https://api.github.com/...\" prio=5 tid=17 Native\r\nA/art: art/runtime/runtime.cc:399]   | group=\"\" sCount=0 dsCount=0 obj=0x13160760 self=0xb94bd270\r\nA/art: art/runtime/runtime.cc:399]   | sysTid=11595 nice=0 cgrp=default sched=0/0 handle=0xa1c89930\r\nA/art: art/runtime/runtime.cc:399]   | state=R schedstat=( 0 0 0 ) utm=15 stm=5 core=1 HZ=100\r\nA/art: art/runtime/runtime.cc:399]   | stack=0xa1b87000-0xa1b89000 stackSize=1038KB\r\nA/art: art/runtime/runtime.cc:399]   | held mutexes= \"abort lock\"\r\nA/art: art/runtime/runtime.cc:399]   native: #00 pc 00370c01  /system/lib/libart.so (art::DumpNativeStack(std::__1::basic_ostream<char, std::__1::char_traits<char> >&, int, char const*, art::ArtMethod*, void*)+160)\r\nA/art: art/runtime/runtime.cc:399]   native: #01 pc 0035054b  /system/lib/libart.so (art::Thread::Dump(std::__1::basic_ostream<char, std::__1::char_traits<char> >&) const+150)\r\nA/art: art/runtime/runtime.cc:399]   native: #02 pc 003333ab  /system/lib/libart.so (art::AbortState::DumpThread(std::__1::basic_ostream<char, std::__1::char_traits<char> >&, art::Thread*) const+26)\r\nA/art: art/runtime/runtime.cc:399]   native: #03 pc 00333643  /system/lib/libart.so (art::Runtime::Abort()+562)\r\nA/art: art/runtime/runtime.cc:399]   native: #04 pc 000f470b  /system/lib/libart.so (art::LogMessage::~LogMessage()+2226)\r\nA/art: art/runtime/runtime.cc:399]   native: #05 pc 0025a837  /system/lib/libart.so (art::JavaVMExt::JniAbort(char const*, char const*)+1550)\r\nA/art: art/runtime/runtime.cc:399]   native: #06 pc 0025abe5  /system/lib/libart.so (art::JavaVMExt::JniAbortV(char const*, char const*, std::__va_list)+64)\r\nA/art: art/runtime/runtime.cc:399]   native: #07 pc 000fd2e1  /system/lib/libart.so (art::ScopedCheck::AbortF(char const*, ...)+32)\r\nA/art: art/runtime/runtime.cc:399]   native: #08 pc 00108459  /system/lib/libart.so (art::CheckJNI::AllocObject(_JNIEnv*, _jclass*)+584)\r\nA/art: art/runtime/runtime.cc:399]   native: #09 pc 00254bdd  /data/dalvik-cache/arm/system@framework@boot.oat (???)\r\nA/art: art/runtime/runtime.cc:399]   at sun.misc.Unsafe.allocateInstance(Native method)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.reflect.Method.invoke!(Native method)\r\nA/art: art/runtime/runtime.cc:399]   at com.google.gson.internal.UnsafeAllocator$1.newInstance(UnsafeAllocator.java:48)\r\nA/art: art/runtime/runtime.cc:399]   at com.google.gson.internal.ConstructorConstructor$14.construct(ConstructorConstructor.java:223)\r\nA/art: art/runtime/runtime.cc:399]   at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter.read(ReflectiveTypeAdapterFactory.java:206)\r\nA/art: art/runtime/runtime.cc:399]   at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$1.read(ReflectiveTypeAdapterFactory.java:116)\r\nA/art: art/runtime/runtime.cc:399]   at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter.read(ReflectiveTypeAdapterFactory.java:216)\r\nA/art: art/runtime/runtime.cc:399]   at com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper.read(TypeAdapterRuntimeTypeWrapper.java:40)\r\nA/art: art/runtime/runtime.cc:399]   at com.google.gson.internal.bind.CollectionTypeAdapterFactory$Adapter.read(CollectionTypeAdapterFactory.java:82)\r\nA/art: art/runtime/runtime.cc:399]   at com.google.gson.internal.bind.CollectionTypeAdapterFactory$Adapter.read(CollectionTypeAdapterFactory.java:61)\r\nA/art: art/runtime/runtime.cc:399]   at retrofit2.converter.gson.GsonResponseBodyConverter.convert(GsonResponseBodyConverter.java:37)\r\nA/art: art/runtime/runtime.cc:399]   at retrofit2.converter.gson.GsonResponseBodyConverter.convert(GsonResponseBodyConverter.java:25)\r\nA/art: art/runtime/runtime.cc:399]   at retrofit2.ServiceMethod.toResponse(ServiceMethod.java:117)\r\nA/art: art/runtime/runtime.cc:399]   at retrofit2.OkHttpCall.parseResponse(OkHttpCall.java:211)\r\nA/art: art/runtime/runtime.cc:399]   at retrofit2.OkHttpCall$1.onResponse(OkHttpCall.java:106)\r\nA/art: art/runtime/runtime.cc:399]   at okhttp3.RealCall$AsyncCall.execute(RealCall.java:133)\r\nA/art: art/runtime/runtime.cc:399]   at okhttp3.internal.NamedRunnable.run(NamedRunnable.java:32)\r\nA/art: art/runtime/runtime.cc:399]   at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1113)\r\nA/art: art/runtime/runtime.cc:399]   at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:588)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.Thread.run(Thread.java:818)\r\nA/art: art/runtime/runtime.cc:399] Dumping all threads without appropriate locks held: thread list lock mutator lock\r\nA/art: art/runtime/runtime.cc:399] All threads:\r\nA/art: art/runtime/runtime.cc:399] DALVIK THREADS (19):\r\nA/art: art/runtime/runtime.cc:399] \"OkHttp https://api.github.com/...\" prio=5 tid=17 Runnable\r\nA/art: art/runtime/runtime.cc:399]   | group=\"\" sCount=0 dsCount=0 obj=0x13160760 self=0xb94bd270\r\nA/art: art/runtime/runtime.cc:399]   | sysTid=11595 nice=0 cgrp=default sched=0/0 handle=0xa1c89930\r\nA/art: art/runtime/runtime.cc:399]   | state=R schedstat=( 0 0 0 ) utm=17 stm=5 core=1 HZ=100\r\nA/art: art/runtime/runtime.cc:399]   | stack=0xa1b87000-0xa1b89000 stackSize=1038KB\r\nA/art: art/runtime/runtime.cc:399]   | held mutexes= \"abort lock\" \"mutator lock\"(shared held)\r\nA/art: art/runtime/runtime.cc:399]   native: #00 pc 00370c01  /system/lib/libart.so (art::DumpNativeStack(std::__1::basic_ostream<char, std::__1::char_traits<char> >&, int, char const*, art::ArtMethod*, void*)+160)\r\nA/art: art/runtime/runtime.cc:399]   native: #01 pc 0035054b  /system/lib/libart.so (art::Thread::Dump(std::__1::basic_ostream<char, std::__1::char_traits<char> >&) const+150)\r\nA/art: art/runtime/runtime.cc:399]   native: #02 pc 0035a1b3  /system/lib/libart.so (art::DumpCheckpoint::Run(art::Thread*)+442)\r\nA/art: art/runtime/runtime.cc:399]   native: #03 pc 0035ad5f  /system/lib/libart.so (art::ThreadList::RunCheckpoint(art::Closure*)+210)\r\nA/art: art/runtime/runtime.cc:399]   native: #04 pc 0035b29f  /system/lib/libart.so (art::ThreadList::Dump(std::__1::basic_ostream<char, std::__1::char_traits<char> >&)+142)\r\nA/art: art/runtime/runtime.cc:399]   native: #05 pc 003335b9  /system/lib/libart.so (art::Runtime::Abort()+424)\r\nA/art: art/runtime/runtime.cc:399]   native: #06 pc 000f470b  /system/lib/libart.so (art::LogMessage::~LogMessage()+2226)\r\nA/art: art/runtime/runtime.cc:399]   native: #07 pc 0025a837  /system/lib/libart.so (art::JavaVMExt::JniAbort(char const*, char const*)+1550)\r\nA/art: art/runtime/runtime.cc:399]   native: #08 pc 0025abe5  /system/lib/libart.so (art::JavaVMExt::JniAbortV(char const*, char const*, std::__va_list)+64)\r\nA/art: art/runtime/runtime.cc:399]   native: #09 pc 000fd2e1  /system/lib/libart.so (art::ScopedCheck::AbortF(char const*, ...)+32)\r\nA/art: art/runtime/runtime.cc:399]   native: #10 pc 00108459  /system/lib/libart.so (art::CheckJNI::AllocObject(_JNIEnv*, _jclass*)+584)\r\nA/art: art/runtime/runtime.cc:399]   native: #11 pc 00254bdd  /data/dalvik-cache/arm/system@framework@boot.oat (Java_sun_misc_Unsafe_allocateInstance__Ljava_lang_Class_2+96)\r\nA/art: art/runtime/runtime.cc:399]   at sun.misc.Unsafe.allocateInstance(Native method)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.reflect.Method.invoke!(Native method)\r\nA/art: art/runtime/runtime.cc:399]   at com.google.gson.internal.UnsafeAllocator$1.newInstance(UnsafeAllocator.java:48)\r\nA/art: art/runtime/runtime.cc:399]   at com.google.gson.internal.ConstructorConstructor$14.construct(ConstructorConstructor.java:223)\r\nA/art: art/runtime/runtime.cc:399]   at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter.read(ReflectiveTypeAdapterFactory.java:206)\r\nA/art: art/runtime/runtime.cc:399]   at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$1.read(ReflectiveTypeAdapterFactory.java:116)\r\nA/art: art/runtime/runtime.cc:399]   at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter.read(ReflectiveTypeAdapterFactory.java:216)\r\nA/art: art/runtime/runtime.cc:399]   at com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper.read(TypeAdapterRuntimeTypeWrapper.java:40)\r\nA/art: art/runtime/runtime.cc:399]   at com.google.gson.internal.bind.CollectionTypeAdapterFactory$Adapter.read(CollectionTypeAdapterFactory.java:82)\r\nA/art: art/runtime/runtime.cc:399]   at com.google.gson.internal.bind.CollectionTypeAdapterFactory$Adapter.read(CollectionTypeAdapterFactory.java:61)\r\nA/art: art/runtime/runtime.cc:399]   at retrofit2.converter.gson.GsonResponseBodyConverter.convert(GsonResponseBodyConverter.java:37)\r\nA/art: art/runtime/runtime.cc:399]   at retrofit2.converter.gson.GsonResponseBodyConverter.convert(GsonResponseBodyConverter.java:25)\r\nA/art: art/runtime/runtime.cc:399]   at retrofit2.ServiceMethod.toResponse(ServiceMethod.java:117)\r\nA/art: art/runtime/runtime.cc:399]   at retrofit2.OkHttpCall.parseResponse(OkHttpCall.java:211)\r\nA/art: art/runtime/runtime.cc:399]   at retrofit2.OkHttpCall$1.onResponse(OkHttpCall.java:106)\r\nA/art: art/runtime/runtime.cc:399]   at okhttp3.RealCall$AsyncCall.execute(RealCall.java:133)\r\nA/art: art/runtime/runtime.cc:399]   at okhttp3.internal.NamedRunnable.run(NamedRunnable.java:32)\r\nA/art: art/runtime/runtime.cc:399]   at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1113)\r\nA/art: art/runtime/runtime.cc:399]   at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:588)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.Thread.run(Thread.java:818)\r\nA/art: art/runtime/runtime.cc:399] \r\nA/art: art/runtime/runtime.cc:399] \"main\" prio=5 tid=1 Native\r\nA/art: art/runtime/runtime.cc:399]   | group=\"\" sCount=1 dsCount=0 obj=0x742de2a0 self=0xb8340590\r\nA/art: art/runtime/runtime.cc:399]   | sysTid=10957 nice=0 cgrp=default sched=0/0 handle=0xb6f82b34\r\nA/art: art/runtime/runtime.cc:399]   | state=S schedstat=( 0 0 0 ) utm=198 stm=46 core=1 HZ=100\r\nA/art: art/runtime/runtime.cc:399]   | stack=0xbe5f2000-0xbe5f4000 stackSize=8MB\r\nA/art: art/runtime/runtime.cc:399]   | held mutexes=\r\nA/art: art/runtime/runtime.cc:399]   kernel: sys_epoll_wait+0x2bc/0x398\r\nA/art: art/runtime/runtime.cc:399]   kernel: sys_epoll_pwait+0x124/0x130\r\nA/art: art/runtime/runtime.cc:399]   kernel: ret_fast_syscall+0x0/0x30\r\nA/art: art/runtime/runtime.cc:399]   native: #00 pc 00043174  /system/lib/libc.so (__epoll_pwait+20)\r\nA/art: art/runtime/runtime.cc:399]   native: #01 pc 00019447  /system/lib/libc.so (epoll_pwait+26)\r\nA/art: art/runtime/runtime.cc:399]   native: #02 pc 00019455  /system/lib/libc.so (epoll_wait+6)\r\nA/art: art/runtime/runtime.cc:399]   native: #03 pc 00012c6f  /system/lib/libutils.so (android::Looper::pollInner(int)+102)\r\nA/art: art/runtime/runtime.cc:399]   native: #04 pc 00012eeb  /system/lib/libutils.so (android::Looper::pollOnce(int, int*, int*, void**)+130)\r\nA/art: art/runtime/runtime.cc:399]   native: #05 pc 00082619  /system/lib/libandroid_runtime.so (android::NativeMessageQueue::pollOnce(_JNIEnv*, _jobject*, int)+22)\r\nA/art: art/runtime/runtime.cc:399]   native: #06 pc 0000056d  /data/dalvik-cache/arm/system@framework@boot.oat (Java_android_os_MessageQueue_nativePollOnce__JI+96)\r\nA/art: art/runtime/runtime.cc:399]   at android.os.MessageQueue.nativePollOnce(Native method)\r\nA/art: art/runtime/runtime.cc:399]   at android.os.MessageQueue.next(MessageQueue.java:323)\r\nA/art: art/runtime/runtime.cc:399]   at android.os.Looper.loop(Looper.java:135)\r\nA/art: art/runtime/runtime.cc:399]   at android.app.ActivityThread.main(ActivityThread.java:5443)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.reflect.Method.invoke!(Native method)\r\nA/art: art/runtime/runtime.cc:399]   at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:728)\r\nA/art: art/runtime/runtime.cc:399]   at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:618)\r\nA/art: art/runtime/runtime.cc:399] \r\nA/art: art/runtime/runtime.cc:399] \"Signal Catcher\" prio=5 tid=2 WaitingInMainSignalCatcherLoop\r\nA/art: art/runtime/runtime.cc:399]   | group=\"\" sCount=1 dsCount=0 obj=0x12cc00a0 self=0xb92e64f0\r\nA/art: art/runtime/runtime.cc:399]   | sysTid=10962 nice=0 cgrp=default sched=0/0 handle=0xb4515930\r\nA/art: art/runtime/runtime.cc:399]   | state=S schedstat=( 0 0 0 ) utm=0 stm=0 core=3 HZ=100\r\nA/art: art/runtime/runtime.cc:399]   | stack=0xb4419000-0xb441b000 stackSize=1014KB\r\nA/art: art/runtime/runtime.cc:399]   | held mutexes=\r\nA/art: art/runtime/runtime.cc:399]   kernel: do_sigtimedwait+0x168/0x1b8\r\nA/art: art/runtime/runtime.cc:399]   kernel: sys_rt_sigtimedwait+0xa0/0x114\r\nA/art: art/runtime/runtime.cc:399]   kernel: ret_fast_syscall+0x0/0x30\r\nA/art: art/runtime/runtime.cc:399]   native: #00 pc 00042978  /system/lib/libc.so (__rt_sigtimedwait+12)\r\nA/art: art/runtime/runtime.cc:399]   native: #01 pc 0001bf3b  /system/lib/libc.so (sigwait+22)\r\nA/art: art/runtime/runtime.cc:399]   native: #02 pc 0033a799  /system/lib/libart.so (art::SignalCatcher::WaitForSignal(art::Thread*, art::SignalSet&)+76)\r\nA/art: art/runtime/runtime.cc:399]   native: #03 pc 0033b903  /system/lib/libart.so (art::SignalCatcher::Run(void*)+226)\r\nA/art: art/runtime/runtime.cc:399]   native: #04 pc 00041687  /system/lib/libc.so (__pthread_start(void*)+30)\r\nA/art: art/runtime/runtime.cc:399]   native: #05 pc 0001911b  /system/lib/libc.so (__start_thread+6)\r\nA/art: art/runtime/runtime.cc:399]   (no managed stack frames)\r\nA/art: art/runtime/runtime.cc:399] \r\nA/art: art/runtime/runtime.cc:399] \"JDWP\" prio=5 tid=3 WaitingInMainDebuggerLoop\r\nA/art: art/runtime/runtime.cc:399]   | group=\"\" sCount=1 dsCount=0 obj=0x12cc30a0 self=0xb92e92f8\r\nA/art: art/runtime/runtime.cc:399]   | sysTid=10964 nice=0 cgrp=default sched=0/0 handle=0xb4411930\r\nA/art: art/runtime/runtime.cc:399]   | state=S schedstat=( 0 0 0 ) utm=0 stm=0 core=0 HZ=100\r\nA/art: art/runtime/runtime.cc:399]   | stack=0xb4315000-0xb4317000 stackSize=1014KB\r\nA/art: art/runtime/runtime.cc:399]   | held mutexes=\r\nA/art: art/runtime/runtime.cc:399]   kernel: poll_schedule_timeout+0x3c/0x60\r\nA/art: art/runtime/runtime.cc:399]   kernel: do_select+0x4a4/0x54c\r\nA/art: art/runtime/runtime.cc:399]   kernel: core_sys_select+0x11c/0x318\r\nA/art: art/runtime/runtime.cc:399]   kernel: sys_pselect6+0x234/0x24c\r\nA/art: art/runtime/runtime.cc:399]   kernel: ret_fast_syscall+0x0/0x30\r\nA/art: art/runtime/runtime.cc:399]   native: #00 pc 000440b4  /system/lib/libc.so (__pselect6+20)\r\nA/art: art/runtime/runtime.cc:399]   native: #01 pc 0001b28d  /system/lib/libc.so (select+60)\r\nA/art: art/runtime/runtime.cc:399]   native: #02 pc 00401243  /system/lib/libart.so (art::JDWP::JdwpAdbState::ProcessIncoming()+218)\r\nA/art: art/runtime/runtime.cc:399]   native: #03 pc 00266c2f  /system/lib/libart.so (art::JDWP::JdwpState::Run()+314)\r\nA/art: art/runtime/runtime.cc:399]   native: #04 pc 00267aad  /system/lib/libart.so (art::JDWP::StartJdwpThread(void*)+16)\r\nA/art: art/runtime/runtime.cc:399]   native: #05 pc 00041687  /system/lib/libc.so (__pthread_start(void*)+30)\r\nA/art: art/runtime/runtime.cc:399]   native: #06 pc 0001911b  /system/lib/libc.so (__start_thread+6)\r\nA/art: art/runtime/runtime.cc:399]   (no managed stack frames)\r\nA/art: art/runtime/runtime.cc:399] \r\nA/art: art/runtime/runtime.cc:399] \"ReferenceQueueDaemon\" prio=5 tid=4 Waiting\r\nA/art: art/runtime/runtime.cc:399]   | group=\"\" sCount=1 dsCount=0 obj=0x12cbae80 self=0xb92e79f0\r\nA/art: art/runtime/runtime.cc:399]   | sysTid=10965 nice=0 cgrp=default sched=0/0 handle=0xb430b930\r\nA/art: art/runtime/runtime.cc:399]   | state=S schedstat=( 0 0 0 ) utm=0 stm=0 core=0 HZ=100\r\nA/art: art/runtime/runtime.cc:399]   | stack=0xb4209000-0xb420b000 stackSize=1038KB\r\nA/art: art/runtime/runtime.cc:399]   | held mutexes=\r\nA/art: art/runtime/runtime.cc:399]   kernel: futex_wait_queue_me+0xe0/0x108\r\nA/art: art/runtime/runtime.cc:399]   kernel: futex_wait+0x170/0x238\r\nA/art: art/runtime/runtime.cc:399]   kernel: do_futex+0xfc/0x9fc\r\nA/art: art/runtime/runtime.cc:399]   kernel: sys_futex+0x80/0x160\r\nA/art: art/runtime/runtime.cc:399]   kernel: ret_fast_syscall+0x0/0x30\r\nA/art: art/runtime/runtime.cc:399]   native: #00 pc 00016a58  /system/lib/libc.so (syscall+28)\r\nA/art: art/runtime/runtime.cc:399]   native: #01 pc 000f6c59  /system/lib/libart.so (art::ConditionVariable::Wait(art::Thread*)+96)\r\nA/art: art/runtime/runtime.cc:399]   native: #02 pc 002bec69  /system/lib/libart.so (art::Monitor::Wait(art::Thread*, long long, int, bool, art::ThreadState)+1176)\r\nA/art: art/runtime/runtime.cc:399]   native: #03 pc 002bf9c7  /system/lib/libart.so (art::Monitor::Wait(art::Thread*, art::mirror::Object*, long long, int, bool, art::ThreadState)+142)\r\nA/art: art/runtime/runtime.cc:399]   native: #04 pc 002d128b  /system/lib/libart.so (art::Object_wait(_JNIEnv*, _jobject*)+38)\r\nA/art: art/runtime/runtime.cc:399]   native: #05 pc 0000037f  /data/dalvik-cache/arm/system@framework@boot.oat (Java_java_lang_Object_wait__+74)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.Object.wait!(Native method)\r\nA/art: art/runtime/runtime.cc:399]   - waiting on <0x050d46f8> (a java.lang.Class<java.lang.ref.ReferenceQueue>)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.Daemons$ReferenceQueueDaemon.run(Daemons.java:147)\r\nA/art: art/runtime/runtime.cc:399]   - locked <0x050d46f8> (a java.lang.Class<java.lang.ref.ReferenceQueue>)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.Thread.run(Thread.java:818)\r\nA/art: art/runtime/runtime.cc:399] \r\nA/art: art/runtime/runtime.cc:399] \"FinalizerDaemon\" prio=5 tid=5 Waiting\r\nA/art: art/runtime/runtime.cc:399]   | group=\"\" sCount=1 dsCount=0 obj=0x12cbaee0 self=0xb8536ff8\r\nA/art: art/runtime/runtime.cc:399]   | sysTid=10966 nice=0 cgrp=default sched=0/0 handle=0xb4201930\r\nA/art: art/runtime/runtime.cc:399]   | state=S schedstat=( 0 0 0 ) utm=0 stm=0 core=1 HZ=100\r\nA/art: art/runtime/runtime.cc:399]   | stack=0xb40ff000-0xb4101000 stackSize=1038KB\r\nA/art: art/runtime/runtime.cc:399]   | held mutexes=\r\nA/art: art/runtime/runtime.cc:399]   kernel: futex_wait_queue_me+0xe0/0x108\r\nA/art: art/runtime/runtime.cc:399]   kernel: futex_wait+0x170/0x238\r\nA/art: art/runtime/runtime.cc:399]   kernel: do_futex+0xfc/0x9fc\r\nA/art: art/runtime/runtime.cc:399]   kernel: sys_futex+0x80/0x160\r\nA/art: art/runtime/runtime.cc:399]   kernel: ret_fast_syscall+0x0/0x30\r\nA/art: art/runtime/runtime.cc:399]   native: #00 pc 00016a58  /system/lib/libc.so (syscall+28)\r\nA/art: art/runtime/runtime.cc:399]   native: #01 pc 000f6c59  /system/lib/libart.so (art::ConditionVariable::Wait(art::Thread*)+96)\r\nA/art: art/runtime/runtime.cc:399]   native: #02 pc 002bec69  /system/lib/libart.so (art::Monitor::Wait(art::Thread*, long long, int, bool, art::ThreadState)+1176)\r\nA/art: art/runtime/runtime.cc:399]   native: #03 pc 002bf9c7  /system/lib/libart.so (art::Monitor::Wait(art::Thread*, art::mirror::Object*, long long, int, bool, art::ThreadState)+142)\r\nA/art: art/runtime/runtime.cc:399]   native: #04 pc 002d12c5  /system/lib/libart.so (art::Object_waitJI(_JNIEnv*, _jobject*, long long, int)+44)\r\nA/art: art/runtime/runtime.cc:399]   native: #05 pc 0000056d  /data/dalvik-cache/arm/system@framework@boot.oat (Java_java_lang_Object_wait__JI+96)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.Object.wait!(Native method)\r\nA/art: art/runtime/runtime.cc:399]   - waiting on <0x0e16f7d1> (a java.lang.ref.ReferenceQueue)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.Object.wait(Object.java:423)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:101)\r\nA/art: art/runtime/runtime.cc:399]   - locked <0x0e16f7d1> (a java.lang.ref.ReferenceQueue)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:72)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.Daemons$FinalizerDaemon.run(Daemons.java:185)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.Thread.run(Thread.java:818)\r\nA/art: art/runtime/runtime.cc:399] \r\nA/art: art/runtime/runtime.cc:399] \"FinalizerWatchdogDaemon\" prio=5 tid=6 Sleeping\r\nA/art: art/runtime/runtime.cc:399]   | group=\"\" sCount=1 dsCount=0 obj=0x12cbaf40 self=0xb853aa88\r\nA/art: art/runtime/runtime.cc:399]   | sysTid=10967 nice=0 cgrp=default sched=0/0 handle=0xb40f7930\r\nA/art: art/runtime/runtime.cc:399]   | state=S schedstat=( 0 0 0 ) utm=0 stm=0 core=0 HZ=100\r\nA/art: art/runtime/runtime.cc:399]   | stack=0xb3ff5000-0xb3ff7000 stackSize=1038KB\r\nA/art: art/runtime/runtime.cc:399]   | held mutexes=\r\nA/art: art/runtime/runtime.cc:399]   kernel: futex_wait_queue_me+0xe0/0x108\r\nA/art: art/runtime/runtime.cc:399]   kernel: futex_wait+0x170/0x238\r\nA/art: art/runtime/runtime.cc:399]   kernel: do_futex+0xfc/0x9fc\r\nA/art: art/runtime/runtime.cc:399]   kernel: sys_futex+0x80/0x160\r\nA/art: art/runtime/runtime.cc:399]   kernel: ret_fast_syscall+0x0/0x30\r\nA/art: art/runtime/runtime.cc:399]   native: #00 pc 00016a5c  /system/lib/libc.so (syscall+32)\r\nA/art: art/runtime/runtime.cc:399]   native: #01 pc 000f6ed9  /system/lib/libart.so (art::ConditionVariable::TimedWait(art::Thread*, long long, int)+120)\r\nA/art: art/runtime/runtime.cc:399]   native: #02 pc 002be9a7  /system/lib/libart.so (art::Monitor::Wait(art::Thread*, long long, int, bool, art::ThreadState)+470)\r\nA/art: art/runtime/runtime.cc:399]   native: #03 pc 002bf9c7  /system/lib/libart.so (art::Monitor::Wait(art::Thread*, art::mirror::Object*, long long, int, bool, art::ThreadState)+142)\r\nA/art: art/runtime/runtime.cc:399]   native: #04 pc 0001c063  /data/dalvik-cache/arm/system@framework@boot.oat (Java_java_lang_Thread_sleep__Ljava_lang_Object_2JI+126)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.Thread.sleep!(Native method)\r\nA/art: art/runtime/runtime.cc:399]   - sleeping on <0x0bef6236> (a java.lang.Object)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.Thread.sleep(Thread.java:1031)\r\nA/art: art/runtime/runtime.cc:399]   - locked <0x0bef6236> (a java.lang.Object)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.Thread.sleep(Thread.java:985)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.Daemons$FinalizerWatchdogDaemon.sleepFor(Daemons.java:273)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.Daemons$FinalizerWatchdogDaemon.waitForFinalization(Daemons.java:284)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.Daemons$FinalizerWatchdogDaemon.run(Daemons.java:232)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.Thread.run(Thread.java:818)\r\nA/art: art/runtime/runtime.cc:399] \r\nA/art: art/runtime/runtime.cc:399] \"HeapTaskDaemon\" prio=5 tid=7 Blocked\r\nA/art: art/runtime/runtime.cc:399]   | group=\"\" sCount=1 dsCount=0 obj=0x12cbafa0 self=0xb92e6d50\r\nA/art: art/runtime/runtime.cc:399]   | sysTid=10968 nice=0 cgrp=default sched=0/0 handle=0xab135930\r\nA/art: art/runtime/runtime.cc:399]   | state=S schedstat=( 0 0 0 ) utm=3 stm=2 core=0 HZ=100\r\nA/art: art/runtime/runtime.cc:399]   | stack=0xab033000-0xab035000 stackSize=1038KB\r\nA/art: art/runtime/runtime.cc:399]   | held mutexes=\r\nA/art: art/runtime/runtime.cc:399]   kernel: futex_wait_queue_me+0xe0/0x108\r\nA/art: art/runtime/runtime.cc:399]   kernel: futex_wait+0x170/0x238\r\nA/art: art/runtime/runtime.cc:399]   kernel: do_futex+0xfc/0x9fc\r\nA/art: art/runtime/runtime.cc:399]   kernel: sys_futex+0x80/0x160\r\nA/art: art/runtime/runtime.cc:399]   kernel: ret_fast_syscall+0x0/0x30\r\nA/art: art/runtime/runtime.cc:399]   native: #00 pc 00016a5c  /system/lib/libc.so (syscall+32)\r\nA/art: art/runtime/runtime.cc:399]   native: #01 pc 000f6ed9  /system/lib/libart.so (art::ConditionVariable::TimedWait(art::Thread*, long long, int)+120)\r\nA/art: art/runtime/runtime.cc:399]   native: #02 pc 001d7265  /system/lib/libart.so (art::gc::TaskProcessor::GetTask(art::Thread*)+240)\r\nA/art: art/runtime/runtime.cc:399]   native: #03 pc 001d7711  /system/lib/libart.so (art::gc::TaskProcessor::RunAllTasks(art::Thread*)+72)\r\nA/art: art/runtime/runtime.cc:399]   native: #04 pc 0000037f  /data/dalvik-cache/arm/system@framework@boot.oat (Java_dalvik_system_VMRuntime_runHeapTasks__+74)\r\nA/art: art/runtime/runtime.cc:399]   at dalvik.system.VMRuntime.runHeapTasks(Native method)\r\nA/art: art/runtime/runtime.cc:399]   - waiting to lock an unknown object\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.Daemons$HeapTaskDaemon.run(Daemons.java:355)\r\nA/art: art/runtime/runtime.cc:399]   at java.lang.Thread.run(Thread.java:818)\r\nA/art: art/runtime/runtime.cc:399] \r\nA/art: art/runtime/runtime.cc:399] \"Binder_1\" prio=5 tid=8 Native\r\nA/art: art/runtime/runtime.cc:399]   | group=\"\" sCount=1 dsCount=0 obj=0x12ccb0a0 self=0xb92e9ee0\r\nA/art: art/runtime/runtime.cc:399]   | sysTid=10970 nice=0 cgrp=default sched=0/0 handle=0xa4b1e930\r\nA/art: art/runtime/runtime.cc:399]   | state=S schedstat=( 0 0 0 ) utm=0 stm=0 core=0 HZ=100\r\nA/art: art/runtime/runtime.cc:399]   | stack=0xa4a22000-0xa4a24000 stackSize=1014KB\r\nA/art: art/runtime/runtime.cc:399]   | held mutexes=\r\nA/art: art/runtime/runtime.cc:399]   kernel: binder_thread_read+0x8e8/0xdd0\r\nA/art: art/runtime/runtime.cc:399]   kernel: binder_ioctl+0x420/0x860\r\nA/art: art/runtime/runtime.cc:399]   kernel: do_vfs_ioctl+0x3f4/0x5a8\r\nA/art: art/runtime/runtime.cc:399]   kernel: sys_ioctl+0x6c/0x7c\r\nA/art: art/runtime/runtime.cc:399]   | state=S schedstat=( 0 0 0 ) utm=0 stm=0 core=0 HZ=100\r\nA/art: art/runtime/runtime.cc:399]   | stack=0xa491e000-0xa4920000 stackSize=1014KB\r\nA/art: art/runtime/runtime.cc:399]   kernel: do_vfs_ioctl+0x3f4/0x5a8\r\nA/art: art/runtime/runtime.cc:399]   kernel: ret_fast_syscall+0x0/0x30\r\nA/art: art/runtime/runtime.cc:399]   native: #00 pc 00043388  /system/lib/libc.so (__ioctl+8)\r\nA/art: art/runtime/runtime.cc:399]   native: #04 pc 00012eeb  /system/lib/libutils.so (android::Looper::pollOnce(int, int*, int*, void**)+130)\r\nA/art: art/runtime/runtime.cc:399]   native: #08 pc 00041687  /system/lib/libc.so (__pthread_start(void*)+30)\r\nA/art: art/runtime/runtime.cc:399] \"hwuiTask1\" prio=5 tid=15 Native\r\nA/art: art/runtime/runtime.cc:399]   | group=\"\" sCount=1 dsCount=0 obj=0x12fec0a0 self=0xb944bce0\r\nA/art: art/runtime/runtime.cc:399]   | held mutexes=\r\nA/art: art/runtime/runtime.cc:399]   kernel: futex_wait_queue_me+0xe0/0x108\r\nA/art: art/runtime/runtime.cc:399]   kernel: sys_futex+0x80/0x160\r\nA/art: art/runtime/runtime.cc:399]   kernel: ret_fast_syscall+0x0/0x30\r\nA/art: art/runtime/runtime.cc:399]   native: #01 pc 000414a3  /system/lib/libc.so (__pthread_cond_timedwait_relative(pthread_cond_internal_t*, pthread_mutex_t*, timespec const*)+56)\r\nA/libc: Fatal signal 6 (SIGABRT), code -6 in tid 11595 (.github.com/...)`\r\n\r\nHowever, I ran the same on my emulator(Nexus 5) and I runs perfectly. \r\n\r\nKindly share what I am missing. Thanks!\n\nComment by andreluiz1987:\nI have similiar error when change connection wifi to simcard.",
+        "source_code": null,
+        "distance": 0.75,
+        "title": "JNI Error in Android",
+        "name": "issue#817",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1128"
+          },
+          {
+            "start_node": "pr#1128",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#11"
+          },
+          {
+            "start_node": "issue#11",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#817"
+          }
+        ],
+        "similarity": 0.20236530599918637,
+        "end_line": null,
+        "signature": null
+      },
+      {
+        "start_line": null,
+        "file_path": null,
+        "issue_id": "11",
+        "type": "issue",
+        "content": "```\nProbably best to check them in the svn alongwith setting properties to\nenable them to be viewed as HTML. \n```\n\nOriginal issue reported on code.google.com by `inder123` on 29 May 2008 at 4:09\n\n\n",
+        "source_code": null,
+        "distance": 0.5,
+        "title": "publish javadocs on the web",
+        "name": "issue#11",
+        "documentation": null,
+        "path": [
+          {
+            "start_node": "root",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "pr#1128"
+          },
+          {
+            "start_node": "pr#1128",
+            "description": "points to issue",
+            "type": "RELATED",
+            "end_node": "issue#11"
+          }
+        ],
+        "similarity": -0.008737943581065492,
+        "end_line": null,
+        "signature": null
+      }
+    ]
+  },
+  "artifact_stats": {
+    "skipped_due_to_time": 14,
+    "valid_related_items": 36
+  }
+}

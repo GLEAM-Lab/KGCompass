@@ -1,0 +1,1591 @@
+{
+    "related_entities": {
+        "methods": [
+            {
+                "start_line": 1397,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected boolean _resolveFieldVsGetter(List<AnnotatedMember> accessors) {\n        do {\n            AnnotatedMember acc1 = accessors.get(0);\n            AnnotatedMember acc2 = accessors.get(1);\n\n            if (acc1 instanceof AnnotatedField) {\n                if (acc2 instanceof AnnotatedMethod) {\n                    // Method has precedence, remove first entry\n                    accessors.remove(0);\n                    continue;\n                }\n            } else if (acc1 instanceof AnnotatedMethod) {\n                // Method has precedence, remove second entry\n                if (acc2 instanceof AnnotatedField) {\n                    accessors.remove(1);\n                    continue;\n                }\n            }\n            // Not a field/method pair; fail\n            return false;\n        } while (accessors.size() > 1);\n        return true;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_resolveFieldVsGetter",
+                "documentation": "/**\n     * Method that will be given a {@link List} with 2 or more accessors\n     * that may be in conflict: it will need to remove lower-priority accessors\n     * to leave just a single highest-priority accessor to use.\n     * If this succeeds method returns {@code true}, otherwise {@code false}.\n     *<p>\n     * NOTE: method will directly modify given {@code List} directly, regardless\n     * of whether it ultimately succeeds or not.\n     *\n     * @return True if seeming conflict was resolved and there only remains\n     *    single accessor\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    },
+                    {
+                        "start_node": "POJOPropertiesCollector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_resolveFieldVsGetter"
+                    }
+                ],
+                "similarity": 0.10414181197199832,
+                "end_line": 1419,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector._resolveFieldVsGetter(List accessors): boolean"
+            },
+            {
+                "start_line": 435,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public JsonFormat.Value getFormatOverrides() {\n        if (_formatOverrides == null) {\n            JsonFormat.Value format = null;\n\n            // Let's check both per-type defaults and annotations;\n            // per-type defaults having higher precedence, so start with annotations\n            if (_annotationIntrospector != null) {\n                format = _annotationIntrospector.findFormat(_classDef);\n            }\n            JsonFormat.Value v = _config.getDefaultPropertyFormat(_type.getRawClass());\n            if (v != null) {\n                if (format == null) {\n                    format = v;\n                } else {\n                    format = format.withOverrides(v);\n                }\n            }\n            _formatOverrides = (format == null) ? JsonFormat.Value.empty() : format;\n        }\n        return _formatOverrides;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "getFormatOverrides",
+                "documentation": "/**\n     * @since 2.17\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    },
+                    {
+                        "start_node": "POJOPropertiesCollector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getFormatOverrides"
+                    }
+                ],
+                "similarity": 0.09411111877980868,
+                "end_line": 455,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector.getFormatOverrides(): JsonFormat"
+            },
+            {
+                "start_line": 1501,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected boolean _replaceCreatorProperty(POJOPropertyBuilder prop, List<POJOPropertyBuilder> creatorProperties) {\n        if (creatorProperties != null) {\n            final String intName = prop.getInternalName();\n            for (int i = 0, len = creatorProperties.size(); i < len; ++i) {\n                if (creatorProperties.get(i).getInternalName().equals(intName)) {\n                    creatorProperties.set(i, prop);\n                    return true;\n                }\n            }\n        }\n        return false;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_replaceCreatorProperty",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    },
+                    {
+                        "start_node": "POJOPropertiesCollector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_replaceCreatorProperty"
+                    }
+                ],
+                "similarity": 0.09225857307227268,
+                "end_line": 1512,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector._replaceCreatorProperty(POJOPropertyBuilder prop, List creatorProperties): boolean"
+            },
+            {
+                "start_line": 269,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public AnnotatedMember getJsonKeyAccessor() {\n        if (!_collected) {\n            collectAll();\n        }\n        // If @JsonKey defined, must have a single one\n        if (_jsonKeyAccessors != null) {\n            if (_jsonKeyAccessors.size() > 1) {\n                if (!_resolveFieldVsGetter(_jsonKeyAccessors)) {\n                    reportProblem(\"Multiple 'as-key' properties defined (%s vs %s)\",\n                            _jsonKeyAccessors.get(0),\n                            _jsonKeyAccessors.get(1));\n                }\n            }\n            // otherwise we won't greatly care\n            return _jsonKeyAccessors.get(0);\n        }\n        return null;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "getJsonKeyAccessor",
+                "documentation": "/**\n     * @since 2.12\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    },
+                    {
+                        "start_node": "POJOPropertiesCollector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getJsonKeyAccessor"
+                    }
+                ],
+                "similarity": 0.09171465165360373,
+                "end_line": 286,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector.getJsonKeyAccessor(): AnnotatedMember"
+            },
+            {
+                "start_line": 178,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected POJOPropertiesCollector(MapperConfig<?> config, boolean forSerialization,",
+                "distance": 1.0,
+                "title": null,
+                "name": "POJOPropertiesCollector",
+                "documentation": "/**\n     * @since 2.12\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    }
+                ],
+                "similarity": 0.07967018294131956,
+                "end_line": 178,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector(MapperConfig config, boolean forSerialization, JavaType type, AnnotatedClass classDef, AccessorNamingStrategy accessorNaming)"
+            },
+            {
+                "start_line": 206,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected POJOPropertiesCollector(MapperConfig<?> config, boolean forSerialization,",
+                "distance": 1.0,
+                "title": null,
+                "name": "POJOPropertiesCollector",
+                "documentation": "/**\n     * @deprecated Since 2.12\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    }
+                ],
+                "similarity": 0.07914029208125502,
+                "end_line": 206,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector(MapperConfig config, boolean forSerialization, JavaType type, AnnotatedClass classDef, String mutatorPrefix)"
+            },
+            {
+                "start_line": 318,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/jsontype/BasicPolymorphicTypeValidator.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "        public BasicPolymorphicTypeValidator build() {\n            return new BasicPolymorphicTypeValidator(_invalidBaseTypes,\n                    (_baseTypeMatchers == null) ? null : _baseTypeMatchers.toArray(new TypeMatcher[0]),\n                    (_subTypeNameMatchers == null) ? null : _subTypeNameMatchers.toArray(new NameMatcher[0]),\n                    (_subTypeClassMatchers == null) ? null : _subTypeClassMatchers.toArray(new TypeMatcher[0])\n            );\n        }",
+                "distance": 1.25,
+                "title": null,
+                "name": "build",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "build"
+                    }
+                ],
+                "similarity": 0.07867751434076588,
+                "end_line": 324,
+                "signature": "com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator.Builder.build(): BasicPolymorphicTypeValidator"
+            },
+            {
+                "start_line": 2571,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ObjectMapper configure(MapperFeature f, boolean state) {\n        _serializationConfig = state ?\n                _serializationConfig.with(f) : _serializationConfig.without(f);\n        _deserializationConfig = state ?\n                _deserializationConfig.with(f) : _deserializationConfig.without(f);\n        return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "configure",
+                "documentation": "/**\n     * @deprecated Since 2.13 use {@code JsonMapper.builder().configure(...)}\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getSerializationConfig"
+                    },
+                    {
+                        "start_node": "getSerializationConfig",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ObjectMapper"
+                    },
+                    {
+                        "start_node": "ObjectMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "configure"
+                    }
+                ],
+                "similarity": 0.0728710908538834,
+                "end_line": 2577,
+                "signature": "com.fasterxml.jackson.databind.ObjectMapper.configure(MapperFeature f, boolean state): ObjectMapper"
+            },
+            {
+                "start_line": 162,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/BeanDescription.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public abstract List<AnnotatedAndMetadata<AnnotatedConstructor, JsonCreator.Mode>> getConstructorsWithMode();",
+                "distance": 1.25,
+                "title": null,
+                "name": "getConstructorsWithMode",
+                "documentation": "/**\n     * Method similar to {@link #getConstructors()} except will also introspect\n     * {@code JsonCreator.Mode} and filter out ones marked as not applicable and\n     * include mode (or lack thereof) for remaining constructors.\n     *<p>\n     * Note that no other filtering (regarding visibility or other annotations)\n     * is performed\n     *\n     * @since 2.13\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "BeanDescription"
+                    },
+                    {
+                        "start_node": "BeanDescription",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getConstructorsWithMode"
+                    }
+                ],
+                "similarity": 0.07112575523026658,
+                "end_line": 162,
+                "signature": "com.fasterxml.jackson.databind.BeanDescription.getConstructorsWithMode(): List"
+            },
+            {
+                "start_line": 735,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private void _addCreatorParam(Map<String, POJOPropertyBuilder> props,",
+                "distance": 1.25,
+                "title": null,
+                "name": "_addCreatorParam",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    },
+                    {
+                        "start_node": "POJOPropertiesCollector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_addCreatorParam"
+                    }
+                ],
+                "similarity": 0.067565697050483,
+                "end_line": 735,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector._addCreatorParam(Map props, AnnotatedParameter param, String recordComponentName): void"
+            },
+            {
+                "start_line": 2810,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ObjectMapper configure(DatatypeFeature f, boolean state) {\n        if (state) {\n            _deserializationConfig = _deserializationConfig.with(f);\n            _serializationConfig = _serializationConfig.with(f);\n        } else {\n            _deserializationConfig = _deserializationConfig.without(f);\n            _serializationConfig = _serializationConfig.without(f);\n        }\n        return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "configure",
+                "documentation": "/**\n     * Method for changing state of an on/off datatype-specific feature for\n     * this object mapper.\n     * <p>\n     * Note: Changing the configuration of this {@link ObjectMapper} instance after its first use (read &amp; write) is\n     * not safe and should not be attempted. Instead, use {@code with()} and {@code without()} methods of\n     * {@link ObjectReader}/{@link ObjectWriter} which fully support reconfiguration as new instances are constructed.\n     * <p>\n     * <strong>This method will be removed in Jackson 3.0 due to unsafe usage.\n     * Configure using {@link MapperBuilder#configure(DatatypeFeature, boolean)} instead.</strong>\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getSerializationConfig"
+                    },
+                    {
+                        "start_node": "getSerializationConfig",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ObjectMapper"
+                    },
+                    {
+                        "start_node": "ObjectMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "configure"
+                    }
+                ],
+                "similarity": 0.06753517801687961,
+                "end_line": 2819,
+                "signature": "com.fasterxml.jackson.databind.ObjectMapper.configure(DatatypeFeature f, boolean state): ObjectMapper"
+            },
+            {
+                "start_line": 1709,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ObjectMapper setAnnotationIntrospector(AnnotationIntrospector ai) {\n        _serializationConfig = _serializationConfig.with(ai);\n        _deserializationConfig = _deserializationConfig.with(ai);\n        return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "setAnnotationIntrospector",
+                "documentation": "/**\n     * Method for setting {@link AnnotationIntrospector} used by this\n     * mapper instance for both serialization and deserialization.\n     * Note that doing this will replace the current introspector, which\n     * may lead to unavailability of core Jackson annotations.\n     * If you want to combine handling of multiple introspectors,\n     * have a look at {@link com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair}.\n     *\n     * @see com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getSerializationConfig"
+                    },
+                    {
+                        "start_node": "getSerializationConfig",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ObjectMapper"
+                    },
+                    {
+                        "start_node": "ObjectMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "setAnnotationIntrospector"
+                    }
+                ],
+                "similarity": 0.06739572657872776,
+                "end_line": 1713,
+                "signature": "com.fasterxml.jackson.databind.ObjectMapper.setAnnotationIntrospector(AnnotationIntrospector ai): ObjectMapper"
+            },
+            {
+                "start_line": 2306,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ObjectMapper setConstructorDetector(ConstructorDetector cd) {\n        _deserializationConfig = _deserializationConfig.with(cd);\n        return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "setConstructorDetector",
+                "documentation": "/**\n     * Method for specifying {@link ConstructorDetector} to use for\n     * determining some aspects of creator auto-detection (specifically\n     * auto-detection of constructor, and in particular behavior with\n     * single-argument constructors).\n     *\n     * @since 2.12\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getSerializationConfig"
+                    },
+                    {
+                        "start_node": "getSerializationConfig",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ObjectMapper"
+                    },
+                    {
+                        "start_node": "ObjectMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "setConstructorDetector"
+                    }
+                ],
+                "similarity": 0.06729072360498023,
+                "end_line": 2309,
+                "signature": "com.fasterxml.jackson.databind.ObjectMapper.setConstructorDetector(ConstructorDetector cd): ObjectMapper"
+            },
+            {
+                "start_line": 672,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void _addCreators(Map<String, POJOPropertyBuilder> props)",
+                "distance": 1.25,
+                "title": null,
+                "name": "_addCreators",
+                "documentation": "/**\n     * Method for collecting basic information on constructor(s) found\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    },
+                    {
+                        "start_node": "POJOPropertiesCollector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_addCreators"
+                    }
+                ],
+                "similarity": 0.06679203080007765,
+                "end_line": 672,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector._addCreators(Map props): void"
+            },
+            {
+                "start_line": 37,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/BeanDescription.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected BeanDescription(JavaType type) {\n        _type = type;\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "BeanDescription",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "BeanDescription"
+                    }
+                ],
+                "similarity": 0.06469265351288297,
+                "end_line": 39,
+                "signature": "com.fasterxml.jackson.databind.BeanDescription(JavaType type)"
+            },
+            {
+                "start_line": 366,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/BeanDescription.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public abstract Class<?> findPOJOBuilder();",
+                "distance": 1.25,
+                "title": null,
+                "name": "findPOJOBuilder",
+                "documentation": "/**\n     * Method for checking if the POJO type has annotations to\n     * indicate that a builder is to be used for instantiating\n     * instances and handling data binding, instead of standard\n     * bean deserializer.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "BeanDescription"
+                    },
+                    {
+                        "start_node": "BeanDescription",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findPOJOBuilder"
+                    }
+                ],
+                "similarity": 0.06452781652138462,
+                "end_line": 366,
+                "signature": "com.fasterxml.jackson.databind.BeanDescription.findPOJOBuilder(): Class"
+            },
+            {
+                "start_line": 1759,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ObjectMapper setAccessorNaming(AccessorNamingStrategy.Provider s) {\n        _serializationConfig = _serializationConfig.with(s);\n        _deserializationConfig = _deserializationConfig.with(s);\n        return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "setAccessorNaming",
+                "documentation": "/**\n     * Method for setting custom accessor naming strategy to use.\n     *\n     * @since 2.12\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getSerializationConfig"
+                    },
+                    {
+                        "start_node": "getSerializationConfig",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ObjectMapper"
+                    },
+                    {
+                        "start_node": "ObjectMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "setAccessorNaming"
+                    }
+                ],
+                "similarity": 0.06401542909639192,
+                "end_line": 1763,
+                "signature": "com.fasterxml.jackson.databind.ObjectMapper.setAccessorNaming(AccessorNamingStrategy s): ObjectMapper"
+            },
+            {
+                "start_line": 729,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void _addCreatorParam(Map<String, POJOPropertyBuilder> props,",
+                "distance": 1.25,
+                "title": null,
+                "name": "_addCreatorParam",
+                "documentation": "/**\n     * @since 2.4\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    },
+                    {
+                        "start_node": "POJOPropertiesCollector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_addCreatorParam"
+                    }
+                ],
+                "similarity": 0.06312095574767874,
+                "end_line": 729,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector._addCreatorParam(Map props, AnnotatedParameter param): void"
+            },
+            {
+                "start_line": 190,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/BeanDescription.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public abstract List<AnnotatedAndMetadata<AnnotatedMethod, JsonCreator.Mode>> getFactoryMethodsWithMode();",
+                "distance": 1.25,
+                "title": null,
+                "name": "getFactoryMethodsWithMode",
+                "documentation": "/**\n     * Method similar to {@link #getFactoryMethods()} but will return {@code JsonCreator.Mode}\n     * metadata along with qualifying factory method candidates.\n     *\n     * @since 2.13\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "BeanDescription"
+                    },
+                    {
+                        "start_node": "BeanDescription",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getFactoryMethodsWithMode"
+                    }
+                ],
+                "similarity": 0.0627511728361122,
+                "end_line": 190,
+                "signature": "com.fasterxml.jackson.databind.BeanDescription.getFactoryMethodsWithMode(): List"
+            },
+            {
+                "start_line": 61,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/deser/impl/ExternalTypeHandler.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public static Builder builder(JavaType beanType) {\n        return new Builder(beanType);\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "builder",
+                "documentation": "/**\n     * @since 2.9\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "builder"
+                    }
+                ],
+                "similarity": 0.0626601928131601,
+                "end_line": 63,
+                "signature": "com.fasterxml.jackson.databind.deser.impl.ExternalTypeHandler.builder(JavaType beanType): Builder"
+            },
+            {
+                "start_line": 976,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private String _checkRenameByField(String implName) {\n        if (_fieldRenameMappings != null) {\n            PropertyName p = _fieldRenameMappings.get(_propNameFromSimple(implName));\n            if (p != null) {\n                implName = p.getSimpleName();\n                return implName;\n\n            }\n        }\n        return implName;\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_checkRenameByField",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    },
+                    {
+                        "start_node": "POJOPropertiesCollector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_checkRenameByField"
+                    }
+                ],
+                "similarity": 0.06259725057370658,
+                "end_line": 986,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector._checkRenameByField(String implName): String"
+            },
+            {
+                "start_line": 270,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/JsonSerializer.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Iterator<PropertyWriter> properties() {\n        return ClassUtil.emptyIterator();\n    }",
+                "distance": 1.0,
+                "title": null,
+                "name": "properties",
+                "documentation": "/**\n     * Accessor for iterating over logical properties that the type\n     * handled by this serializer has, from serialization perspective.\n     * Actual type of properties, if any, will be\n     * {@link com.fasterxml.jackson.databind.ser.BeanPropertyWriter}.\n     * Of standard Jackson serializers, only {@link com.fasterxml.jackson.databind.ser.BeanSerializer}\n     * exposes properties.\n     *\n     * @since 2.6\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "properties"
+                    }
+                ],
+                "similarity": 0.06243737022525851,
+                "end_line": 272,
+                "signature": "com.fasterxml.jackson.databind.JsonSerializer.properties(): Iterator"
+            },
+            {
+                "start_line": 215,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    private static AccessorNamingStrategy _accessorNaming(MapperConfig<?> config, AnnotatedClass classDef,",
+                "distance": 1.25,
+                "title": null,
+                "name": "_accessorNaming",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    },
+                    {
+                        "start_node": "POJOPropertiesCollector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_accessorNaming"
+                    }
+                ],
+                "similarity": 0.062310263418888484,
+                "end_line": 215,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector._accessorNaming(MapperConfig config, AnnotatedClass classDef, String mutatorPrefix): AccessorNamingStrategy"
+            },
+            {
+                "start_line": 4438,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ObjectReader reader(FormatSchema schema) {\n        // NOTE: ok to have `null` for schema; means none used\n        _verifySchemaType(schema);\n        return _newReader(getDeserializationConfig(), null, null,\n                schema, _injectableValues);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "reader",
+                "documentation": "/**\n     * Factory method for constructing {@link ObjectReader} that will\n     * pass specific schema object to {@link JsonParser} used for\n     * reading content.\n     *\n     * @param schema Schema to pass to parser\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getSerializationConfig"
+                    },
+                    {
+                        "start_node": "getSerializationConfig",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ObjectMapper"
+                    },
+                    {
+                        "start_node": "ObjectMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "reader"
+                    }
+                ],
+                "similarity": 0.06224354245648439,
+                "end_line": 4443,
+                "signature": "com.fasterxml.jackson.databind.ObjectMapper.reader(FormatSchema schema): ObjectReader"
+            },
+            {
+                "start_line": 676,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ObjectMapper(JsonFactory jf,",
+                "distance": 1.5,
+                "title": null,
+                "name": "ObjectMapper",
+                "documentation": "/**\n     * Constructs instance that uses specified {@link JsonFactory}\n     * for constructing necessary {@link JsonParser}s and/or\n     * {@link JsonGenerator}s, and uses given providers for accessing\n     * serializers and deserializers.\n     *\n     * @param jf JsonFactory to use: if null, a new {@link MappingJsonFactory} will be constructed\n     * @param sp SerializerProvider to use: if null, a {@link SerializerProvider} will be constructed\n     * @param dc Blueprint deserialization context instance to use for creating\n     *    actual context objects; if null, will construct standard\n     *    {@link DeserializationContext}\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getSerializationConfig"
+                    },
+                    {
+                        "start_node": "getSerializationConfig",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ObjectMapper"
+                    },
+                    {
+                        "start_node": "ObjectMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "ObjectMapper"
+                    }
+                ],
+                "similarity": 0.061827713148040954,
+                "end_line": 676,
+                "signature": "com.fasterxml.jackson.databind.ObjectMapper(JsonFactory jf, DefaultSerializerProvider sp, DefaultDeserializationContext dc)"
+            },
+            {
+                "start_line": 2320,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ObjectMapper setCacheProvider(CacheProvider cacheProvider) {\n        _assertNotNull(\"cacheProvider\", cacheProvider);\n        _deserializationConfig = _deserializationConfig.with(cacheProvider);\n        _serializationConfig = _serializationConfig.with(cacheProvider);\n        _deserializationContext = _deserializationContext.withCaches(cacheProvider);\n        _serializerProvider = _serializerProvider.withCaches(cacheProvider);\n        _typeFactory = _typeFactory.withCache(cacheProvider.forTypeFactory());\n        return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "setCacheProvider",
+                "documentation": "/**\n     * Method for specifying {@link CacheProvider} instance, to provide Cache instances to be used in components downstream.\n     *\n     * @cacheProvider Cache provider for this mapper to use\n     *\n     * @throws IllegalArgumentException if given provider is null\n     *\n     * @since 2.16\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getSerializationConfig"
+                    },
+                    {
+                        "start_node": "getSerializationConfig",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ObjectMapper"
+                    },
+                    {
+                        "start_node": "ObjectMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "setCacheProvider"
+                    }
+                ],
+                "similarity": 0.06177710412346201,
+                "end_line": 2328,
+                "signature": "com.fasterxml.jackson.databind.ObjectMapper.setCacheProvider(CacheProvider cacheProvider): ObjectMapper"
+            },
+            {
+                "start_line": 428,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public Class<?> findPOJOBuilderClass() {\n        return _annotationIntrospector.findPOJOBuilder(_classDef);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "findPOJOBuilderClass",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    },
+                    {
+                        "start_node": "POJOPropertiesCollector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "findPOJOBuilderClass"
+                    }
+                ],
+                "similarity": 0.06123435682692275,
+                "end_line": 430,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector.findPOJOBuilderClass(): Class"
+            },
+            {
+                "start_line": 1497,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void _updateCreatorProperty(POJOPropertyBuilder prop, List<POJOPropertyBuilder> creatorProperties) {\n        _replaceCreatorProperty(prop, creatorProperties);\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_updateCreatorProperty",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    },
+                    {
+                        "start_node": "POJOPropertiesCollector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_updateCreatorProperty"
+                    }
+                ],
+                "similarity": 0.06110578745339773,
+                "end_line": 1499,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector._updateCreatorProperty(POJOPropertyBuilder prop, List creatorProperties): void"
+            },
+            {
+                "start_line": 1213,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void _renameWithWrappers(Map<String, POJOPropertyBuilder> props)",
+                "distance": 1.25,
+                "title": null,
+                "name": "_renameWithWrappers",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    },
+                    {
+                        "start_node": "POJOPropertiesCollector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_renameWithWrappers"
+                    }
+                ],
+                "similarity": 0.06108869967540932,
+                "end_line": 1213,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector._renameWithWrappers(Map props): void"
+            },
+            {
+                "start_line": 1730,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ObjectMapper setAnnotationIntrospectors(AnnotationIntrospector serializerAI,",
+                "distance": 1.5,
+                "title": null,
+                "name": "setAnnotationIntrospectors",
+                "documentation": "/**\n     * Method for changing {@link AnnotationIntrospector} instances used\n     * by this mapper instance for serialization and deserialization,\n     * specifying them separately so that different introspection can be\n     * used for different aspects\n     *\n     * @since 2.1\n     *\n     * @param serializerAI {@link AnnotationIntrospector} to use for configuring\n     *    serialization\n     * @param deserializerAI {@link AnnotationIntrospector} to use for configuring\n     *    deserialization\n     *\n     * @see com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getSerializationConfig"
+                    },
+                    {
+                        "start_node": "getSerializationConfig",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ObjectMapper"
+                    },
+                    {
+                        "start_node": "ObjectMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "setAnnotationIntrospectors"
+                    }
+                ],
+                "similarity": 0.06108505837794602,
+                "end_line": 1730,
+                "signature": "com.fasterxml.jackson.databind.ObjectMapper.setAnnotationIntrospectors(AnnotationIntrospector serializerAI, AnnotationIntrospector deserializerAI): ObjectMapper"
+            },
+            {
+                "start_line": 1740,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ObjectMapper setPropertyNamingStrategy(PropertyNamingStrategy s) {\n        _serializationConfig = _serializationConfig.with(s);\n        _deserializationConfig = _deserializationConfig.with(s);\n        return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "setPropertyNamingStrategy",
+                "documentation": "/**\n     * Method for setting custom property naming strategy to use.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getSerializationConfig"
+                    },
+                    {
+                        "start_node": "getSerializationConfig",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ObjectMapper"
+                    },
+                    {
+                        "start_node": "ObjectMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "setPropertyNamingStrategy"
+                    }
+                ],
+                "similarity": 0.06104885193617411,
+                "end_line": 1744,
+                "signature": "com.fasterxml.jackson.databind.ObjectMapper.setPropertyNamingStrategy(PropertyNamingStrategy s): ObjectMapper"
+            },
+            {
+                "start_line": 1085,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void _renameProperties(Map<String, POJOPropertyBuilder> props)",
+                "distance": 1.25,
+                "title": null,
+                "name": "_renameProperties",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    },
+                    {
+                        "start_node": "POJOPropertiesCollector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_renameProperties"
+                    }
+                ],
+                "similarity": 0.06101230171962088,
+                "end_line": 1085,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector._renameProperties(Map props): void"
+            },
+            {
+                "start_line": 1875,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ObjectMapper setDefaultSetterInfo(JsonSetter.Value v) {\n        _configOverrides.setDefaultSetterInfo(v);\n        return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "setDefaultSetterInfo",
+                "documentation": "/**\n     * Method for setting default Setter configuration, regarding things like\n     * merging, null-handling; used for properties for which there are\n     * no per-type or per-property overrides (via annotations or config overrides).\n     *\n     * @since 2.9\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getSerializationConfig"
+                    },
+                    {
+                        "start_node": "getSerializationConfig",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ObjectMapper"
+                    },
+                    {
+                        "start_node": "ObjectMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "setDefaultSetterInfo"
+                    }
+                ],
+                "similarity": 0.060744132509118094,
+                "end_line": 1878,
+                "signature": "com.fasterxml.jackson.databind.ObjectMapper.setDefaultSetterInfo(JsonSetter v): ObjectMapper"
+            },
+            {
+                "start_line": 2721,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ObjectMapper configure(DeserializationFeature f, boolean state) {\n        _deserializationConfig = state ?\n                _deserializationConfig.with(f) : _deserializationConfig.without(f);\n        return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "configure",
+                "documentation": "/**\n     * Method for changing state of an on/off deserialization feature for\n     * this object mapper.\n     * <p>\n     * Note: Changing the configuration of this {@link ObjectMapper} instance after its first use (read &amp; write) is\n     * not safe and should not be attempted. Instead, use {@code with()} and {@code without()} methods of\n     * {@link ObjectReader}/{@link ObjectWriter} which fully support reconfiguration as new instances are constructed.\n     * <p>\n     * <strong>This method will be removed in Jackson 3.0 due to unsafe usage.\n     * Configure using {@link MapperBuilder#configure(DeserializationFeature, boolean)}.</strong>\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getSerializationConfig"
+                    },
+                    {
+                        "start_node": "getSerializationConfig",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ObjectMapper"
+                    },
+                    {
+                        "start_node": "ObjectMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "configure"
+                    }
+                ],
+                "similarity": 0.06065914042560661,
+                "end_line": 2725,
+                "signature": "com.fasterxml.jackson.databind.ObjectMapper.configure(DeserializationFeature f, boolean state): ObjectMapper"
+            },
+            {
+                "start_line": 812,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void _addGetterMethod(Map<String, POJOPropertyBuilder> props,",
+                "distance": 1.25,
+                "title": null,
+                "name": "_addGetterMethod",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    },
+                    {
+                        "start_node": "POJOPropertiesCollector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_addGetterMethod"
+                    }
+                ],
+                "similarity": 0.060526840849113465,
+                "end_line": 812,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector._addGetterMethod(Map props, AnnotatedMethod m, AnnotationIntrospector ai): void"
+            },
+            {
+                "start_line": 1434,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected POJOPropertyBuilder _property(Map<String, POJOPropertyBuilder> props,",
+                "distance": 1.25,
+                "title": null,
+                "name": "_property",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    },
+                    {
+                        "start_node": "POJOPropertiesCollector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_property"
+                    }
+                ],
+                "similarity": 0.060476910331710924,
+                "end_line": 1434,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector._property(Map props, PropertyName name): POJOPropertyBuilder"
+            },
+            {
+                "start_line": 1447,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected POJOPropertyBuilder _property(Map<String, POJOPropertyBuilder> props,",
+                "distance": 1.25,
+                "title": null,
+                "name": "_property",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    },
+                    {
+                        "start_node": "POJOPropertiesCollector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_property"
+                    }
+                ],
+                "similarity": 0.060476910331710924,
+                "end_line": 1447,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector._property(Map props, String implName): POJOPropertyBuilder"
+            },
+            {
+                "start_line": 253,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public List<BeanPropertyDefinition> getProperties() {\n        // make sure we return a copy, so caller can remove entries if need be:\n        Map<String, POJOPropertyBuilder> props = getPropertyMap();\n        return new ArrayList<BeanPropertyDefinition>(props.values());\n    }",
+                "distance": 1.25,
+                "title": null,
+                "name": "getProperties",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    },
+                    {
+                        "start_node": "POJOPropertiesCollector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "getProperties"
+                    }
+                ],
+                "similarity": 0.05981689238016091,
+                "end_line": 257,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector.getProperties(): List"
+            },
+            {
+                "start_line": 896,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void _addSetterMethod(Map<String, POJOPropertyBuilder> props,",
+                "distance": 1.25,
+                "title": null,
+                "name": "_addSetterMethod",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    },
+                    {
+                        "start_node": "POJOPropertiesCollector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_addSetterMethod"
+                    }
+                ],
+                "similarity": 0.05961860524560503,
+                "end_line": 896,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector._addSetterMethod(Map props, AnnotatedMethod m, AnnotationIntrospector ai): void"
+            },
+            {
+                "start_line": 334,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/jsontype/BasicPolymorphicTypeValidator.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "        protected Builder _appendSubNameMatcher(NameMatcher matcher) {\n            if (_subTypeNameMatchers == null) {\n                _subTypeNameMatchers = new ArrayList<>();\n            }\n            _subTypeNameMatchers.add(matcher);\n            return this;\n        }",
+                "distance": 1.25,
+                "title": null,
+                "name": "_appendSubNameMatcher",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_appendSubNameMatcher"
+                    }
+                ],
+                "similarity": 0.05957083744635718,
+                "end_line": 340,
+                "signature": "com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator.Builder._appendSubNameMatcher(NameMatcher matcher): Builder"
+            },
+            {
+                "start_line": 252,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/jsontype/BasicPolymorphicTypeValidator.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "        public Builder allowIfSubType(final String prefixForSubType) {\n            return _appendSubNameMatcher(new NameMatcher() {\n                @Override\n                public boolean match(MapperConfig<?> config, String clazzName) {\n                    return clazzName.startsWith(prefixForSubType);\n                }\n            });\n        }",
+                "distance": 1.25,
+                "title": null,
+                "name": "allowIfSubType",
+                "documentation": "/**\n         * Method for appending matcher that will allow specific subtype (regardless\n         * of declared base type)\n         * in cases where subclass name starts with specified prefix\n         * For example, call to\n         *<pre>\n         *    builder.allowIfSubType(\"com.mycompany.\")\n         *</pre>\n         * would indicate that any polymorphic values in package {@code com.mycompany}\n         * would be allowed.\n         */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "allowIfSubType"
+                    }
+                ],
+                "similarity": 0.05929202995192645,
+                "end_line": 259,
+                "signature": "com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator.Builder.allowIfSubType(String prefixForSubType): Builder"
+            },
+            {
+                "start_line": 952,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void _doAddInjectable(JacksonInject.Value injectable, AnnotatedMember m)",
+                "distance": 1.25,
+                "title": null,
+                "name": "_doAddInjectable",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    },
+                    {
+                        "start_node": "POJOPropertiesCollector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_doAddInjectable"
+                    }
+                ],
+                "similarity": 0.059098315630551734,
+                "end_line": 952,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector._doAddInjectable(JacksonInject injectable, AnnotatedMember m): void"
+            },
+            {
+                "start_line": 290,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/jsontype/BasicPolymorphicTypeValidator.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "        public Builder allowIfSubTypeIsArray() {\n            return _appendSubClassMatcher(new TypeMatcher() {\n                @Override\n                public boolean match(MapperConfig<?> config, Class<?> clazz) {\n                    return clazz.isArray();\n                }\n            });\n        }",
+                "distance": 1.25,
+                "title": null,
+                "name": "allowIfSubTypeIsArray",
+                "documentation": "/**\n         * Method for appending matcher that will allow all subtypes that are Java arrays\n         * (regardless of element type). Note that this does NOT validate element type\n         * itself as long as Polymorphic Type handling is enabled for element type: this\n         * is the case with all standard \"Default Typing\" inclusion criteria as well as for\n         * annotation ({@code @JsonTypeInfo}) use case (since annotation only applies to element\n         * types, not container).\n         *<p>\n         * NOTE: not used with other Java collection types ({@link java.util.List}s,\n         *    {@link java.util.Collection}s), mostly since use of generic types as polymorphic\n         *    values is not (well) supported.\n         *\n         * @since 2.11\n         */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains method",
+                        "type": "RELATED",
+                        "end_node": "allowIfSubTypeIsArray"
+                    }
+                ],
+                "similarity": 0.05906855342392726,
+                "end_line": 297,
+                "signature": "com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator.Builder.allowIfSubTypeIsArray(): Builder"
+            },
+            {
+                "start_line": 150,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/jsontype/BasicPolymorphicTypeValidator.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "        public Builder allowIfBaseType(final String prefixForBase) {\n            return _appendBaseMatcher(new TypeMatcher() {\n                @Override\n                public boolean match(MapperConfig<?> config, Class<?> clazz) {\n                    return clazz.getName().startsWith(prefixForBase);\n                }\n            });\n        }",
+                "distance": 1.25,
+                "title": null,
+                "name": "allowIfBaseType",
+                "documentation": "/**\n         * Method for appending matcher that will allow all subtypes in cases where\n         * nominal base type's class name starts with specific prefix.\n         * For example, call to\n         *<pre>\n         *    builder.allowIfBaseType(\"com.mycompany.\")\n         *</pre>\n         * would indicate that any polymorphic properties where declared base type\n         * is in package {@code com.mycompany} would allow all legal (assignment-compatible)\n         * subtypes.\n         */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "Builder"
+                    },
+                    {
+                        "start_node": "Builder",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "allowIfBaseType"
+                    }
+                ],
+                "similarity": 0.058978648483786776,
+                "end_line": 157,
+                "signature": "com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator.Builder.allowIfBaseType(String prefixForBase): Builder"
+            },
+            {
+                "start_line": 2129,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ObjectMapper enableDefaultTypingAsProperty(DefaultTyping applicability, String propertyName) {\n        return activateDefaultTypingAsProperty(getPolymorphicTypeValidator(), applicability, propertyName);\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "enableDefaultTypingAsProperty",
+                "documentation": "/**\n     * @deprecated Since 2.10 use {@link #activateDefaultTypingAsProperty(PolymorphicTypeValidator,DefaultTyping,String)} instead\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getSerializationConfig"
+                    },
+                    {
+                        "start_node": "getSerializationConfig",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ObjectMapper"
+                    },
+                    {
+                        "start_node": "ObjectMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "enableDefaultTypingAsProperty"
+                    }
+                ],
+                "similarity": 0.058678988981497225,
+                "end_line": 2131,
+                "signature": "com.fasterxml.jackson.databind.ObjectMapper.enableDefaultTypingAsProperty(DefaultTyping applicability, String propertyName): ObjectMapper"
+            },
+            {
+                "start_line": 1500,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ObjectMapper setSerializerProvider(DefaultSerializerProvider p) {\n        _serializerProvider = p;\n        return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "setSerializerProvider",
+                "documentation": "/**\n     * Method for setting \"blueprint\" {@link SerializerProvider} instance\n     * to use as the base for actual provider instances to use for handling\n     * caching of {@link JsonSerializer} instances.\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getSerializationConfig"
+                    },
+                    {
+                        "start_node": "getSerializationConfig",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ObjectMapper"
+                    },
+                    {
+                        "start_node": "ObjectMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "setSerializerProvider"
+                    }
+                ],
+                "similarity": 0.05862332470885266,
+                "end_line": 1503,
+                "signature": "com.fasterxml.jackson.databind.ObjectMapper.setSerializerProvider(DefaultSerializerProvider p): ObjectMapper"
+            },
+            {
+                "start_line": 2624,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ObjectMapper configure(SerializationFeature f, boolean state) {\n        _serializationConfig = state ?\n                _serializationConfig.with(f) : _serializationConfig.without(f);\n        return this;\n    }",
+                "distance": 1.5,
+                "title": null,
+                "name": "configure",
+                "documentation": "/**\n     * Method for changing state of an on/off serialization feature for\n     * this object mapper.\n     * <p>\n     * Note: Changing the configuration of this {@link ObjectMapper} instance after its first use (read &amp; write) is\n     * not safe and should not be attempted. Instead, use {@code with()} and {@code without()} methods of\n     * {@link ObjectReader}/{@link ObjectWriter} which fully support reconfiguration as new instances are constructed.\n     * <p>\n     * <strong>This method will be removed in Jackson 3.0 due to unsafe usage.\n     * Configure using {@link MapperBuilder#configure(SerializationFeature, boolean)}.</strong>\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getSerializationConfig"
+                    },
+                    {
+                        "start_node": "getSerializationConfig",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ObjectMapper"
+                    },
+                    {
+                        "start_node": "ObjectMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "configure"
+                    }
+                ],
+                "similarity": 0.058554615054871716,
+                "end_line": 2628,
+                "signature": "com.fasterxml.jackson.databind.ObjectMapper.configure(SerializationFeature f, boolean state): ObjectMapper"
+            },
+            {
+                "start_line": 93,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/BeanDescription.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public abstract TypeBindings bindingsForBeanType();",
+                "distance": 1.25,
+                "title": null,
+                "name": "bindingsForBeanType",
+                "documentation": "/**\n     * Accessor for type bindings that may be needed to fully resolve\n     * types of member object, such as return and argument types of\n     * methods and constructors, and types of fields.\n     *\n     * @deprecated Since 2.7, should not need to access bindings directly\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "BeanDescription"
+                    },
+                    {
+                        "start_node": "BeanDescription",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "bindingsForBeanType"
+                    }
+                ],
+                "similarity": 0.058057335421616826,
+                "end_line": 93,
+                "signature": "com.fasterxml.jackson.databind.BeanDescription.bindingsForBeanType(): TypeBindings"
+            },
+            {
+                "start_line": 1156,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    protected void _renameUsing(Map<String, POJOPropertyBuilder> propMap,",
+                "distance": 1.25,
+                "title": null,
+                "name": "_renameUsing",
+                "documentation": "",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "POJOPropertiesCollector"
+                    },
+                    {
+                        "start_node": "POJOPropertiesCollector",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "_renameUsing"
+                    }
+                ],
+                "similarity": 0.057591915911991545,
+                "end_line": 1156,
+                "signature": "com.fasterxml.jackson.databind.introspect.POJOPropertiesCollector._renameUsing(Map propMap, PropertyNamingStrategy naming): void"
+            },
+            {
+                "start_line": 1674,
+                "file_path": "playground/fasterxml__jackson-databind/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java",
+                "issue_id": null,
+                "type": "method",
+                "content": null,
+                "source_code": "    public ObjectMapper setVisibility(PropertyAccessor forMethod, JsonAutoDetect.Visibility visibility)",
+                "distance": 1.5,
+                "title": null,
+                "name": "setVisibility",
+                "documentation": "/**\n     * Convenience method that allows changing configuration for\n     * underlying {@link VisibilityChecker}s, to change details of what kinds of\n     * properties are auto-detected.\n     * Basically short cut for doing:\n     *<pre>\n     *  mapper.setVisibilityChecker(\n     *     mapper.getVisibilityChecker().withVisibility(forMethod, visibility)\n     *  );\n     *</pre>\n     * one common use case would be to do:\n     *<pre>\n     *  mapper.setVisibility(JsonMethod.FIELD, Visibility.ANY);\n     *</pre>\n     * which would make all member fields serializable without further annotations,\n     * instead of just public fields (default setting).\n     *\n     * @param forMethod Type of property descriptor affected (field, getter/isGetter,\n     *     setter, creator)\n     * @param visibility Minimum visibility to require for the property descriptors of type\n     *\n     * @return Modified mapper instance (that is, \"this\"), to allow chaining\n     *    of configuration calls\n     */",
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "getSerializationConfig"
+                    },
+                    {
+                        "start_node": "getSerializationConfig",
+                        "description": "contained in method",
+                        "type": "RELATED",
+                        "end_node": "ObjectMapper"
+                    },
+                    {
+                        "start_node": "ObjectMapper",
+                        "description": "contains class",
+                        "type": "RELATED",
+                        "end_node": "setVisibility"
+                    }
+                ],
+                "similarity": 0.05743673553193172,
+                "end_line": 1674,
+                "signature": "com.fasterxml.jackson.databind.ObjectMapper.setVisibility(PropertyAccessor forMethod, JsonAutoDetect visibility): ObjectMapper"
+            }
+        ],
+        "classes": [],
+        "issues": [
+            {
+                "content": "If I have `ParameterNamesModule` and this data class:\r\n```\r\npublic class Data {\r\n  private final String foo;\r\n  private final Integer bar;\r\n\r\n  @JsonCreator(mode = JsonCreator.Mode.DELEGATING)\r\n  static Data fromBuilder(Builder builder) {\r\n    return new Data(builder.foo, builder.bar);\r\n  }\r\n\r\n  private Data(String foo, Integer bar) {\r\n    this.foo = foo;\r\n    this.bar = bar;\r\n  }\r\n\r\n  public String getFoo() {\r\n    return foo;\r\n  }\r\n\r\n  public Integer getBar() {\r\n    return bar;\r\n  }\r\n\r\n  public static class Builder {\r\n    private String foo;\r\n    private Integer bar;\r\n\r\n    @JsonProperty(\"foo\")\r\n    public Builder foo(String foo) {\r\n      this.foo = foo;\r\n      return this;\r\n    }\r\n\r\n    @JsonProperty(\"bar\")\r\n    public Builder bar(Integer bar) {\r\n      this.bar = bar;\r\n      return this;\r\n    }\r\n\r\n    public Data build() {\r\n      return Data.fromBuilder(this);\r\n    }\r\n  }\r\n}\r\n```\r\n\r\nThen running `objectMapper.getSerializationConfig().introspect(/* Data type */);` will return a `BeanDescription` that includes `builder` as a property.  \r\n\r\nThis happens because with `ParameterNamesModule` we are able to infer the name of the `JsonCreator` parameter [here](https://github.com/FasterXML/jackson-databind/blob/master/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java#L451) and when we are, we include this parameter in the properties.\r\n\r\nI think [here](https://github.com/FasterXML/jackson-databind/blob/master/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java#L438) we should be checking if the creator factory is a delegating kind that takes a complex value as an input. If maintainers of this repo agree, I will file a PR with the fix.\nIntrospection includes delegating ctor's only parameter as a property in `BeanDescription`\nIf I have `ParameterNamesModule` and this data class:\r\n```\r\npublic class Data {\r\n  private final String foo;\r\n  private final Integer bar;\r\n\r\n  @JsonCreator(mode = JsonCreator.Mode.DELEGATING)\r\n  static Data fromBuilder(Builder builder) {\r\n    return new Data(builder.foo, builder.bar);\r\n  }\r\n\r\n  private Data(String foo, Integer bar) {\r\n    this.foo = foo;\r\n    this.bar = bar;\r\n  }\r\n\r\n  public String getFoo() {\r\n    return foo;\r\n  }\r\n\r\n  public Integer getBar() {\r\n    return bar;\r\n  }\r\n\r\n  public static class Builder {\r\n    private String foo;\r\n    private Integer bar;\r\n\r\n    @JsonProperty(\"foo\")\r\n    public Builder foo(String foo) {\r\n      this.foo = foo;\r\n      return this;\r\n    }\r\n\r\n    @JsonProperty(\"bar\")\r\n    public Builder bar(Integer bar) {\r\n      this.bar = bar;\r\n      return this;\r\n    }\r\n\r\n    public Data build() {\r\n      return Data.fromBuilder(this);\r\n    }\r\n  }\r\n}\r\n```\r\n\r\nThen running `objectMapper.getSerializationConfig().introspect(/* Data type */);` will return a `BeanDescription` that includes `builder` as a property.  \r\n\r\nThis happens because with `ParameterNamesModule` we are able to infer the name of the `JsonCreator` parameter [here](https://github.com/FasterXML/jackson-databind/blob/master/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java#L451) and when we are, we include this parameter in the properties.\r\n\r\nI think [here](https://github.com/FasterXML/jackson-databind/blob/master/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java#L438) we should be checking if the creator factory is a delegating kind that takes a complex value as an input. If maintainers of this repo agree, I will file a PR with the fix.\n",
+                "distance": 0,
+                "title": "Introspection includes delegating ctor's only parameter as a property in `BeanDescription`",
+                "name": "root",
+                "path": [],
+                "issue_id": "root",
+                "similarity": 2.0,
+                "type": "issue"
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "4421",
+                "type": "issue",
+                "content": "(related to earlier issue #3538)\r\n\r\n### Describe the bug\r\n\r\nIf the field name is `pId`, the JSON data is not mapped to an object using `@RequestBody` annotation.\r\n\r\nLombok's `@Getter`, `@Setter` annotation, the naming becomes `getPId()`, `setPId()`, but if the getter, setter of IDE( IntelliJ), it becomes `getpId()`, `setpId()`\r\n\r\nIt seems to be an issue caused by the change in the basename returned according to the name of the getter/setter in the egacyManglePropertyName(final String basename, final int offset) method of the DefaultAccessorNamingStrategy class.\r\n(I think it's caused by different naming rules in JavaBeans, Lombok, Jackson)\r\n\r\n```java\r\nDefaultAccessorNamingStrategy class {\r\n  ...\r\n\r\nprotected String legacyManglePropertyName(final String basename, final int offset)\r\n    {\r\n        final int end = basename.length();\r\n        if (end == offset) { // empty name, nope\r\n            return null;\r\n        }\r\n        char c = basename.charAt(offset);\r\n        // 12-Oct-2020, tatu: Additional configurability; allow checking that\r\n        //    base name is acceptable (currently just by checking first character)\r\n        if (_baseNameValidator != null) {\r\n            if (!_baseNameValidator.accept(c, basename, offset)) {\r\n                return null;\r\n            }\r\n        }\r\n\r\n        // next check: is the first character upper case? If not, return as is\r\n        char d = Character.toLowerCase(c);\r\n        \r\n        if (c == d) {\r\n            return basename.substring(offset);\r\n        }\r\n        // otherwise, lower case initial chars. Common case first, just one char\r\n        StringBuilder sb = new StringBuilder(end - offset);\r\n        sb.append(d);\r\n        int i = offset+1;\r\n        for (; i < end; ++i) {\r\n            c = basename.charAt(i);\r\n            d = Character.toLowerCase(c);\r\n            if (c == d) {\r\n                sb.append(basename, i, end);\r\n                break;\r\n            }\r\n            sb.append(d);\r\n        }\r\n        return sb.toString();\r\n    }\r\n}\r\n\r\n```\r\n`filed name: private String pId;`\r\n\r\ncase 1. using Lombok : setPId()\r\n![image](https://github.com/FasterXML/jackson-databind/assets/50076031/ec269b49-41c6-4e98-b6e8-6dc57a9445db)\r\n\r\n<br>\r\n\r\ncase 2. using setter method : setpId()\r\n![image](https://github.com/FasterXML/jackson-databind/assets/50076031/0d08db0e-6ae2-49b7-be50-5490e5a697d3)\r\n\r\nAs in the comments on the #3538 issue, the problem is solved by not using Lombok, changing the field naming, or using `@JsonProperty`\r\n\r\nHowever, as you may know, many developers are using Lombok to remove the boilerplate code, and as the #3538 last cowtowncoder said, I wonder if you have any plans to improve this.\r\n\r\n\r\n### Version Information\r\n\r\n2.12.3 (maybe others)\r\n\r\n### Reproduction\r\n\r\n```java\r\n\r\nimport lombok.AllArgsConstructor;\r\nimport lombok.Getter;\r\nimport lombok.NoArgsConstructor;\r\nimport org.springframework.web.bind.annotation.PostMapping;\r\nimport org.springframework.web.bind.annotation.RequestBody;\r\nimport org.springframework.web.bind.annotation.RestController;\r\n\r\n@RestController\r\npublic class TestController {\r\n\r\n    @PostMapping(\"/api/v1/test\")\r\n    public void test(@RequestBody TestBody body) {\r\n        System.out.println(body.getPId()); // Lombok -> null\r\n        System.out.println(body.getpId()); // getter -> success binding\r\n    }\r\n\r\n    @Getter\r\n    @NoArgsConstructor\r\n    @AllArgsConstructor\r\n    public static class TestBody {\r\n        private String pId; // jackson to pid using Lombok getter (getPId())\r\n        private String poId; // jackson to poId\r\n\r\n        public String pId() {\r\n            return pId;\r\n        }\r\n    }\r\n\r\n}\r\n\r\n``` \r\n\r\n```http\r\n### Send POST request with json body\r\nPOST http://localhost:8080/api/v1/test\r\nContent-Type: application/json\r\n\r\n{\r\n  \"pId\": \"pId\",\r\n  \"poId\":  \"poId\"\r\n}\r\n```\r\n\r\n![image](https://github.com/FasterXML/jackson-databind/assets/50076031/12080be9-d4cf-453c-a995-b2eeca66e46b)\r\n\r\n\r\n\r\n### Expected behavior\r\n\r\n_No response_\r\n\r\n### Additional context\r\n\r\n_No response_\n\n\nComment by cowtowncoder:\nWe need a test reproduction that does not have 3rd party dependencies: here we at least 2 (Lombok, some REST framework (Spring?)) to show what change would be suggested, without external dependencies (use case may be to support such frameworks but Jackson itself has no and should not have dependency to f.ex \r\nLombok).\r\n\r\nI'll also change title to remove reference to another issue (it belongs in description not titla) \n\nComment by JuHyun419:\n@cowtowncoder this is reproduction code :)\r\n\r\n```java\r\n\r\nimport com.fasterxml.jackson.core.type.TypeReference;\r\nimport com.fasterxml.jackson.databind.JavaType;\r\nimport com.fasterxml.jackson.databind.ObjectMapper;\r\nimport com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;\r\nimport org.junit.jupiter.api.Test;\r\n\r\nimport java.io.ByteArrayInputStream;\r\nimport java.io.IOException;\r\nimport java.nio.charset.StandardCharsets;\r\n\r\nimport static org.assertj.core.api.Assertions.assertThat;\r\nimport static org.junit.jupiter.api.Assertions.assertThrows;\r\n\r\npublic class JacksonBindTest {\r\n\r\n    @Test\r\n    void exception() {\r\n        ObjectMapper objectMapper = new ObjectMapper();\r\n        JavaType javaType = objectMapper.constructType(new TypeReference<FailWithLombokRequest>() {\r\n        });\r\n        final String json = \"{\\\"pId\\\": \\\"pId\\\", \\\"poId\\\": \\\"poId\\\"}\";\r\n\r\n        assertThrows(UnrecognizedPropertyException.class, () -> objectMapper.readValue(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)), javaType));\r\n    }\r\n\r\n    @Test\r\n    void success() throws IOException {\r\n        ObjectMapper objectMapper = new ObjectMapper();\r\n        JavaType javaType = objectMapper.constructType(new TypeReference<SuccessRequest>() {\r\n        });\r\n        final String json = \"{\\\"pId\\\": \\\"pId\\\", \\\"poId\\\": \\\"poId\\\"}\";\r\n\r\n        final SuccessRequest failRequest = objectMapper.readValue(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)), javaType);\r\n\r\n        assertThat(failRequest.getpId()).isEqualTo(\"pId\");\r\n    }\r\n\r\n    public static class FailWithLombokRequest {\r\n        private String pId;\r\n        private String poId;\r\n\r\n        public String getPId() {\r\n            return pId;\r\n        }\r\n\r\n        public void setPId(String pId) {\r\n            this.pId = pId;\r\n        }\r\n\r\n        public String getPoId() {\r\n            return poId;\r\n        }\r\n\r\n        public void setPoId(String poId) {\r\n            this.poId = poId;\r\n        }\r\n    }\r\n\r\n    public static class SuccessRequest {\r\n        private String pId; // jackson to pid\r\n        private String poId; // jackson to poId\r\n\r\n        public String getpId() { // this is different from FailRequest\r\n            return pId;\r\n        }\r\n\r\n        public void setpId(String pId) { // this is different from FailRequest\r\n            this.pId = pId;\r\n        }\r\n\r\n        public String getPoId() {\r\n            return poId;\r\n        }\r\n\r\n        public void setPoId(String poId) {\r\n            this.poId = poId;\r\n        }\r\n    }\r\n\r\n}\r\n\r\n```",
+                "source_code": null,
+                "distance": 0.25,
+                "title": "Problem with property name on deserialization wrt non-standard property names",
+                "name": "issue#4421",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#4421"
+                    }
+                ],
+                "similarity": 0.37034287601972377,
+                "end_line": null,
+                "signature": null
+            },
+            {
+                "start_line": null,
+                "file_path": null,
+                "issue_id": "3538",
+                "type": "issue",
+                "content": "**Describe the bug**\r\nA clear and concise description of what the bug is.\r\nRequestBody annotation bean with double upper word,filed will change.\r\nfor example,bean with field name `qAExportFieldList`,when deserializing bean ,bean properity name find `qaexportFieldList` insdead of `qAExportFieldList`.\r\n\r\nex:\r\n`BeanDeserializer.class: SettableBeanProperty prop = _beanProperties.find(propName)`\r\n_beanProperties exists qaexportFieldList insdead of qAExportFieldList\r\n\r\n\r\n**Version information**\r\nWhich Jackson version(s) was this for?\r\n2.13.1\r\n**To Reproduce**\r\nIf you have a way to reproduce this with:\r\n\r\n1. Brief code sample/snippet: include here in preformatted/code section\r\n2. Longer example stored somewhere else (diff repo, snippet), add a link\r\n3. Textual explanation: include here\r\n\r\n**Expected behavior**\r\nIf reproduction itself needs further explanation, you may also add more details here.\r\n\r\n**Additional context**\r\nAdd any other context about the problem here.\r\n\n\n\nComment by cowtowncoder:\nThis is not enough to show a problem: a unit test would be needed -- and it must not depend on external frameworks or libraries.\r\n\r\nFrom description it appears that this might be related to Bean Name handling where capitalization matters, so reproduction is very important.\r\n\r\n\r\n\n\nComment by huanm:\n> This is not enough to show a problem: a unit test would be needed -- and it must not depend on external frameworks or libraries.\r\n> \r\n> From description it appears that this might be related to Bean Name handling where capitalization matters, so reproduction is very important.\r\n\r\n```\r\n@Test\r\n\tpublic void testBo() throws IOException {\r\n\t\t//{\"projectId\":\"projectId0001\",\"qAExportFieldList\":[\"{\\\"id\\\":\\\"Assignee\\\",\\\"name\\\":\\\"Assignee\\\"}\"]}\r\n\t\tWorkitemQAQueryBO bo = new WorkitemQAQueryBO();\r\n\t\tbo.setQAExportFieldList(Collections.singletonList(\"{\\\"id\\\":\\\"Assignee\\\",\\\"name\\\":\\\"Assignee\\\"}\"));\r\n\t\tbo.setProjectId(\"projectId0001\");\r\n\t\tHttpHeaders headers = new HttpHeaders();\r\n\t\theaders.setContentType(MediaType.APPLICATION_JSON);\r\n\t\tHttpEntity entity = new HttpEntity(bo,headers);\r\n\t\tString response = restTemplate.postForObject(\"http://localhost:9105/quality/test/testBo\", entity, String.class);\r\n\t\t//returns:{\"projectId\":\"projectId0001\",\"qaexportFieldList\":[\"{\\\"id\\\":\\\"Assignee\\\",\\\"name\\\":\\\"Assignee\\\"}\"]}\r\n\t\tSystem.out.println(response);\r\n\t}\r\n```\r\n\r\n* controller\r\n```\r\n@Controller\r\n@RequestMapping(\"/test\")\r\npublic class TestController {\r\n    @PostMapping(\"/testBo\")\r\n    @ResponseBody\r\n    public WorkitemQAQueryBO exportQA(@RequestBody WorkitemQAQueryBO queryBO){\r\n        return queryBO;\r\n    }\r\n}\r\n```\r\n\r\n* WorkitemQAQueryBO\r\n```\r\n@Data\r\npublic class WorkitemQAQueryBO implements Serializable {\r\n    private final static Long serialVersionUID = 1L;\r\n    private String projectId;\r\n    private List<String> qAExportFieldList;\r\n\r\n}\r\n```\n\nComment by huanm:\n> \r\nrun with\r\n```\r\nObjectMapper objectMapper = new ObjectMapper();\r\n        JavaType javaType = objectMapper.constructType(new TypeReference<WorkitemQAQueryBO>() {\r\n        });\r\n        String jsonStr =\"{\\\"projectId\\\":\\\"projectId0001\\\",\\\"qAExportFieldList\\\":[\\\"{\\\\\\\"id\\\\\\\":\\\\\\\"Assignee\\\\\\\",\\\\\\\"name\\\\\\\":\\\\\\\"Assignee\\\\\\\"}\\\"]}\";\r\n        WorkitemQAQueryBO bo = objectMapper.readValue(new ByteArrayInputStream(jsonStr.getBytes(StandardCharsets.UTF_8)), javaType);\r\n```\r\n\r\nthrows exception:\r\n```\r\ncom.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field \"qAExportFieldList\" (class WorkitemQAQueryBO), not marked as ignorable (2 known properties: \"projectId\", \"qaexportFieldList\"])\r\n at [Source: (ByteArrayInputStream); line: 1, column: 51] (through reference chain: com.desv.es.bean.WorkitemQAQueryBO[\"qAExportFieldList\"])\r\n\tat com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException.from(UnrecognizedPropertyException.java:61)\r\n\tat com.fasterxml.jackson.databind.DeserializationContext.handleUnknownProperty(DeserializationContext.java:1127)\r\n\tat com.fasterxml.jackson.databind.deser.std.StdDeserializer.handleUnknownProperty(StdDeserializer.java:1989)\r\n\tat com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownProperty(BeanDeserializerBase.java:1700)\r\n\tat com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownVanilla(BeanDeserializerBase.java:1678)\r\n\tat com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:319)\r\n\tat com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:176)\r\n\tat com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:322)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:4674)\r\n\tat com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3682)\r\n```\n\nComment by huanm:\n> This is not enough to show a problem: a unit test would be needed -- and it must not depend on external frameworks or libraries.\r\n> \r\n> From description it appears that this might be related to Bean Name handling where capitalization matters, so reproduction is very important.\r\n\r\ncause:\r\nDefaultAccessorNamingStrategy#legacyManglePropertyName\r\n```\r\nfor (; i < end; ++i) {\r\n            c = basename.charAt(i);\r\n            d = Character.toLowerCase(c);\r\n            if (c == d) {\r\n                sb.append(basename, i, end);\r\n                break;\r\n            }\r\n            sb.append(d);\r\n        }\r\n```\r\nit will find the first lower char, and transfer to lower...\n\nComment by yawkat:\nyour test case still requires lombok. please make a test case *without* other dependencies. i suspect lombok is generating a different getter name, but it's hard to tell with your test case.\r\n\r\nthe code you show in legacyManglePropertyName is not supposed to be hit because the property name begins with a lowercase character (there's a check further up). you can try `USE_STD_BEAN_NAMING` if you want, but i doubt it's going to work\n\nComment by cowtowncoder:\n@huanm Like @yawkat what we need is a reproduction, not a claim on where something is allegedly wrong.\r\n\r\nBased on past experiences it is very likely the case of Lombok creating getters/setters that will produce property names (by Jackson Bean name handling) that are different from your expectations. This in itself is not often a bug from Jackson perspective but rather difference in processing by frameworks.\r\n\r\nSolution is usually adding a `@JsonProperty` annotation (or in rare cases, 2) to indicate how Field and accessors are related to each other (or just override logical property name for accessors).\r\n\r\nBut it is easier to explain this with actual POJO definition.\r\n\r\n\n\nComment by cowtowncoder:\nNo full reproduction, closing. But I am 95% certain that in this case user needs to use an annotation to connect somewhat non-standard (wrt Bean naming) field name and getter/setter, to get Jackson to use and recognize specific JSON property name.\r\n",
+                "source_code": null,
+                "distance": 0.5,
+                "title": "field name changed when deserializing bean",
+                "name": "issue#3538",
+                "documentation": null,
+                "path": [
+                    {
+                        "start_node": "root",
+                        "description": "points to issue",
+                        "type": "RELATED",
+                        "end_node": "issue#4421"
+                    },
+                    {
+                        "start_node": "issue#4421",
+                        "description": "referenced by issue",
+                        "type": "RELATED",
+                        "end_node": "issue#3538"
+                    }
+                ],
+                "similarity": 0.32664731505618577,
+                "end_line": null,
+                "signature": null
+            }
+        ]
+    },
+    "artifact_stats": {
+        "skipped_due_to_time": 6,
+        "valid_related_items": 21
+    }
+}

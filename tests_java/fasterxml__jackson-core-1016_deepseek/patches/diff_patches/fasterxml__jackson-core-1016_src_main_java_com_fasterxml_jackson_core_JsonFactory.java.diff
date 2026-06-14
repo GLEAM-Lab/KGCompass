@@ -1,0 +1,11 @@
+--- a/src/main/java/com/fasterxml/jackson/core/JsonFactory.java
++++ b/src/main/java/com/fasterxml/jackson/core/JsonFactory.java
+@@ -1777,7 +1777,7 @@
+      */
+     protected JsonParser _createParser(Reader r, IOContext ctxt) throws IOException {
+         return new ReaderBasedJsonParser(ctxt, _parserFeatures, r, _objectCodec,
+-                _rootCharSymbols.makeChild(_factoryFeatures));
++                _rootCharSymbols.makeChildOrPlaceholder(_factoryFeatures));
+     }
+ 
+     /**
