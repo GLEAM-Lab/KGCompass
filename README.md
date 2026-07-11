@@ -1,21 +1,24 @@
-# KGCompass
+# MURAL
 
-KGCompass is a fixed-budget function-level repair-context system for
-issue-driven repository repair. It builds a time-safe repository knowledge
-graph, mines file-local paths inside grounded files, and exports compact
-candidate windows with typed issue-to-code paths.
+MURAL (Multi-source Unification of Retrieval And Localization) is a
+fixed-budget repair-context system for issue-driven repository repair. It
+passes BM25 and typed-knowledge-graph file rankings through the same
+source-agnostic local selector, fuses the resulting entity rankings, and can
+fill the unused tail of an existing localizer's context window.
 
-This repository is the public artifact branch for the KGCompass manuscript. It
-keeps the demo, core scripts, and the paper-facing ledgers needed to audit the
-reported RQ1-RQ4 claims. Older diagnostics, unreported ablations, and partial
+This repository is the public artifact for the MURAL manuscript. It keeps the
+demo, core scripts, and paper-facing ledgers needed to audit the reported
+RQ1-RQ4 claims. Older diagnostics, unreported ablations, and partial
 intermediate results are intentionally omitted from `artifacts/results/`.
+The `kgcompass/` package name and frozen `KGCompass` result labels are retained
+for compatibility; the artifact notes map them to the manuscript terminology.
 
 ## Repository Layout
 
 | Path | Purpose |
 | --- | --- |
 | `app.py`, `demo_web.py`, `static/`, `templates/` | Local web demo. |
-| `kgcompass/` | Core KGCompass localization and repair modules. |
+| `kgcompass/` | Core localization and repair modules (legacy package name). |
 | `scripts/` | Workspace scripts used to build localization and summary ledgers. |
 | `artifacts/` | Paper-facing result ledgers, prompts, audit notes, and verifier. |
 | `artifacts/results/` | Small committed ledgers aligned with manuscript tables and claims. |

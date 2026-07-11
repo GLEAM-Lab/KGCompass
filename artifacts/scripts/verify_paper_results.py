@@ -2,7 +2,7 @@
 """Verify manuscript-facing numbers from paper-side artifact ledgers.
 
 This checker reads only committed files under artifacts/results/ and validates
-the quantitative values used by the current KGCompass manuscript. It also
+the quantitative values used by the current MURAL manuscript. It also
 checks that the result directory does not contain unreported legacy ledgers.
 """
 
@@ -624,7 +624,7 @@ def verify_rq4_and_boundary() -> None:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Verify KGCompass paper-facing artifact values.")
+    parser = argparse.ArgumentParser(description="Verify MURAL paper-facing artifact values.")
     parser.add_argument(
         "--rq",
         choices=("all", "setup", "rq1", "rq2", "rq3", "rq4"),

@@ -1,9 +1,15 @@
 # Result Traceability
 
-This note maps the current KGCompass manuscript claims to the committed
+This note maps the current MURAL manuscript claims to the committed
 paper-side ledgers. It intentionally excludes older diagnostics and unreported
 ablations so reviewers do not have to reconcile artifact-only results with the
 paper text.
+
+The implementation workspace and frozen ledgers retain historical `KGCompass`
+labels. In the current manuscript, those rows are the `KG-local` source controls. Standalone
+`BM25+KG RRF file-local` is MURAL, and `GLM-5 + BM25+KG RRF file-local` is the
+GLM-5+MURAL fixed-prefix configuration. The mapping changes terminology only;
+all recorded candidates and metric values are unchanged.
 
 ## Evaluation Scope
 
@@ -37,9 +43,9 @@ The verifier checks the paper-facing values for:
 - RQ1 controlled Top-20 context-window rows;
 - RQ1/RQ2 source-swapped and equal-weight RRF file-local controls, paired
   tests, and budget curves;
-- RQ2 LLM+KGCompass, GLM-5 tail-control, released-localizer, and local
+- RQ2 LLM+KG-local, GLM-5 tail-control, released-localizer, and local
   open-model rows;
-- GLM-5/KGCompass overlap and paired statistics;
+- GLM-5/KG-local overlap and paired statistics;
 - RQ3 file-local path-mining mechanism counts;
 - RQ3 patch-derived repair-context coverage;
 - RQ4 full-500 ClaudeCode repair outcomes; and
@@ -52,10 +58,10 @@ The verifier checks the paper-facing values for:
 - RQ1 controlled context windows:
   `artifacts/results/path_mining_file_expansion_ablation_20260531.tsv`.
   This file is trimmed to the manuscript rows: BM25, BLUiR, CodeGraph,
-  KGCompass without file-local paths, and full KGCompass.
+  graph-only KG and KG rank union (historical `KGCompass` labels).
 - RQ1/RQ3 paired full-vs-without-file-local accounting:
   `artifacts/results/rq1_pathmined_paired_stats_20260531.tsv`.
-- RQ2 LLM issue-only and LLM+KGCompass rows:
+- RQ2 LLM issue-only and LLM+KG-local rows:
   `artifacts/results/llm_pathmined_kg_ht10_20260531.tsv`.
 - RQ2 GLM-5 fixed-prefix tail controls:
   `artifacts/results/glm5_baseline_fusion_controls_top10_20260614.tsv`.
@@ -70,11 +76,11 @@ The verifier checks the paper-facing values for:
   `artifacts/results/ranked_file_source_paired_20260711.tsv`.
 - RQ2 released Qwen2.5-32B localizer rows:
   `artifacts/results/external_verified_loc_baselines_cosil_release_20260601.tsv`.
-- RQ2 CoSIL-Qwen2.5-32B+KGCompass row:
+- RQ2 CoSIL-Qwen2.5-32B+KG-local row:
   `artifacts/results/qwen25_32b_kgcompass_fusion_20260601.tsv`.
 - RQ2 local open-model Top-10 stress rows:
   `artifacts/results/local_open_models_pathmined_top10_5p5_summary.tsv`.
-- RQ2 GLM-5/KGCompass overlap and 58-win evidence accounting:
+- RQ2 GLM-5/KG-local overlap and 58-win evidence accounting:
   `artifacts/results/glm5_pathmined_kg_complementarity_20260531.json`,
   `artifacts/results/glm5_pathmined_kg_complementarity_20260531.tsv`,
   `artifacts/results/glm5_pathmined_rescued_instances_20260531.tsv`, and
@@ -98,9 +104,10 @@ The verifier checks the paper-facing values for:
 
 ## Reproduction Commands
 
-The commands below are intended for the full KGCompass experiment workspace,
-where SWE-bench Verified caches, base-commit repositories, and per-instance run
-directories are available. The mirrored scripts under `artifacts/scripts/` are
+The commands below are intended for the full experiment workspace, where
+historical package paths retain the original KGCompass name and SWE-bench
+Verified caches, base-commit repositories, and per-instance run directories
+are available. The mirrored scripts under `artifacts/scripts/` are
 source-inspection snapshots.
 
 Final leakage audit:
@@ -112,7 +119,7 @@ python3 scripts/audit_kg_leakage.py \
   --fail-on-issue
 ```
 
-Path-mined KGCompass export and RQ1/RQ3 context-window ledgers:
+Path-mined KG-source export and RQ1/RQ3 context-window ledgers:
 
 ```bash
 PATH_MINED_INTERMEDIATE=runs/kg_verified_evidence_graph/tse_timesafe_main_20260531_filelocal_intermediate

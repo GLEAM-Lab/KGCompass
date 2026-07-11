@@ -1,9 +1,15 @@
-# KGCompass Paper Artifacts
+# MURAL Paper Artifacts
 
 This directory contains the submission-side files that directly support the
-current KGCompass manuscript. The result ledgers under `artifacts/results/` are
+current MURAL manuscript. The result ledgers under `artifacts/results/` are
 trimmed to paper-facing rows only: unreported diagnostics, legacy audits,
 obsolete ablations, and partial shard metrics are not included.
+
+The implementation package and several frozen result-row names predate the
+MURAL framing. In those ledgers, `KGCompass` denotes the manuscript's current
+`KG-local` source, `BM25+KG RRF file-local` denotes standalone MURAL, and
+`GLM-5 + BM25+KG RRF file-local` denotes GLM-5+MURAL. These historical labels
+are preserved so archived commands, checksums, and the verifier remain stable.
 
 ## Top-Level Files
 
@@ -36,17 +42,17 @@ obsolete ablations, and partial shard metrics are not included.
 - `tse_gt_mapping_v6.tsv`: ground-truth target mapping summary used in the
   experimental setup table.
 - `path_mining_file_expansion_ablation_20260531.tsv`: RQ1/RQ3 context-window
-  rows reported in the manuscript: BM25, BLUiR, CodeGraph, KGCompass without
-  file-local paths, and full KGCompass.
+  source-control rows reported in the manuscript: BM25, BLUiR, CodeGraph,
+  graph-only KG, and KG rank union (historically labeled `KGCompass`).
 - `path_mining_full500_summary.tsv`: compact full/KG-only summary
   used for RQ3 hit-count accounting.
 - `rq1_pathmined_paired_stats_20260531.tsv`: paired full-vs-KG-without-file-local
   statistics used for the +65 net Hit@20 gain and 67/2 win/loss claim.
-- `llm_pathmined_kg_ht10_20260531.tsv`: issue-only and LLM+KGCompass rows for
+- `llm_pathmined_kg_ht10_20260531.tsv`: issue-only and LLM+KG-local rows for
   GLM-5, Qwen3-Coder-Next, Kimi-K2.5, and Claude-4.6 Sonnet, plus standalone
-  KGCompass.
+  KG-local.
 - `glm5_baseline_fusion_controls_top10_20260614.tsv`: focused GLM-5 fixed-prefix
-  tail controls for CodeGraph and KGCompass.
+  tail controls for CodeGraph and KG-local.
 - `retrieve_then_localize_top20_20260711.tsv`: matched Top-20 rows for BM25 and
   KG file sources, the unchanged file-local miner, their untuned equal-weight
   RRF combination, and GLM-5 fixed-prefix fusion with each tail.
@@ -67,14 +73,14 @@ obsolete ablations, and partial shard metrics are not included.
   SWE-bench Verified Qwen2.5-32B localizer rows reported in the unified
   strong-baseline table.
 - `qwen25_32b_kgcompass_fusion_20260601.tsv`: CoSIL-Qwen2.5-32B and
-  CoSIL-Qwen2.5-32B+KGCompass rows.
+  CoSIL-Qwen2.5-32B+KG-local rows.
 - `local_open_models_pathmined_top10_5p5_summary.tsv`: local Qwen3-Coder-30B and
-  DeepSeek-Coder-V2-Lite Top-10 issue-only and 5+5 KGCompass rows.
-- `glm5_pathmined_kg_complementarity_20260531.json` and `.tsv`: GLM-5/KGCompass
+  DeepSeek-Coder-V2-Lite Top-10 issue-only and 5+5 KG-local rows.
+- `glm5_pathmined_kg_complementarity_20260531.json` and `.tsv`: GLM-5/KG-local
   overlap and rescued-instance aggregate accounting.
 - `glm5_pathmined_rescued_instances_20260531.tsv`: per-instance ledger for the
   58 GLM-5 fusion wins.
-- `tse_paired_stats_pathmined_20260531.tsv`: GLM-5 issue-only vs KGCompass
+- `tse_paired_stats_pathmined_20260531.tsv`: GLM-5 issue-only vs KG-local
   paired statistics.
 - `kg_clean_tse_timesafe_main_20260529_v6_rq3.json` and `.tsv`: KG-only evidence
   path and rank summaries used by the mechanism analysis.
