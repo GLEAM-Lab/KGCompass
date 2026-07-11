@@ -44,6 +44,13 @@ EXPECTED_RESULT_FILES = {
     "patch_derived_context_summary_20260702.tsv",
     "patch_derived_context_targets_20260702.json",
     "qwen25_32b_kgcompass_fusion_20260601.tsv",
+    "ranked_file_source_coverage_20260711.tsv",
+    "ranked_file_source_paired_20260711.tsv",
+    "retrieve_then_localize_budget_curve_20260711.tsv",
+    "retrieve_then_localize_budget_paired_20260711.tsv",
+    "retrieve_then_localize_disagreements_20260711.tsv",
+    "retrieve_then_localize_paired_20260711.tsv",
+    "retrieve_then_localize_top20_20260711.tsv",
     "rq1_pathmined_paired_stats_20260531.tsv",
     "rq3_file_local_path_mining_summary.tsv",
     "time_boundary_external_artifact_sensitivity_20260531.tsv",
@@ -123,7 +130,7 @@ def expect_metric_row(source: str, row: dict[str, str], expected: tuple[float, f
         pct(row["file_rate"]),
         pct(row["method_or_entity_rate"]),
         pct(row["mrr"]),
-        pct(row.get("top20_hit_rate", row.get("hit@20", "nan"))),
+        pct(row.get("top20_hit_rate", row.get("hit@20", row.get("hit_rate", "nan")))),
     )
     for metric, obs, exp in zip(("file", "method", "mrr", "hit"), observed, expected):
         expect_close(f"{prefix} {metric}", obs, exp, source)
@@ -196,6 +203,165 @@ def verify_rq1() -> None:
     expect_close("RQ1 hit delta vs without file-local paths", float(hit["delta_pp"]), 13.0, paired_source)
     expect_equal("RQ1 hit wins vs without file-local paths", int(hit["wins"]), 67, paired_source)
     expect_equal("RQ1 hit losses vs without file-local paths", int(hit["losses"]), 2, paired_source)
+
+    verify_retrieve_then_localize_controls()
+
+
+def verify_retrieve_then_localize_controls() -> None:
+    file_source = "ranked_file_source_coverage_20260711.tsv"
+    file_rows = read_tsv(file_source)
+    expect_row_set(
+        "Ranked file-source row set",
+        file_rows,
+        "name",
+        ["KG_grounded_files", "BM25_ranked_files"],
+        file_source,
+    )
+    for name, hits, coverage in [
+        ("KG_grounded_files", 291, 58.2),
+        ("BM25_ranked_files", 402, 80.4),
+    ]:
+        row = row_by(file_rows, "name", name)
+        expect_equal(f"Ranked file source {name} hits", int(row["file_hits"]), hits, file_source)
+        expect_close(f"Ranked file source {name} coverage", pct(row["file_coverage"]), coverage, file_source)
+
+    file_paired_source = "ranked_file_source_paired_20260711.tsv"
+    file_paired = read_tsv(file_paired_source)[0]
+    expect_close("Ranked file source BM25-KG delta", pct(file_paired["delta"]), 22.2, file_paired_source)
+    expect_equal("Ranked file source BM25 wins", int(file_paired["wins"]), 144, file_paired_source)
+    expect_equal("Ranked file source BM25 losses", int(file_paired["losses"]), 33, file_paired_source)
+    expect_close(
+        "Ranked file source exact p",
+        float(file_paired["exact_mcnemar_p"]),
+        9.79369029978302e-18,
+        file_paired_source,
+        tol=1e-20,
+    )
+
+    source = "retrieve_then_localize_top20_20260711.tsv"
+    rows = read_tsv(source)
+    expected_rows = [
+        "BM25",
+        "KG_grounded",
+        "BM25_filelocal",
+        "KG_filelocal",
+        "BM25_KG_RRF_filelocal",
+        "GLM5_issue",
+        "GLM5_KG_filelocal",
+        "GLM5_BM25_filelocal",
+        "GLM5_BM25_KG_RRF_filelocal",
+    ]
+    expect_row_set("Retrieve-then-localize Top-20 row set", rows, "name", expected_rows, source)
+    expected = {
+        "BM25": (77.0, 39.2, 25.3, 46.0),
+        "KG_grounded": (55.6, 33.8, 22.2, 37.8),
+        "BM25_filelocal": (73.6, 50.1, 28.6, 57.0),
+        "KG_filelocal": (59.2, 45.4, 26.3, 50.8),
+        "BM25_KG_RRF_filelocal": (77.0, 55.3, 32.0, 62.8),
+        "GLM5_issue": (87.4, 53.0, 51.2, 62.4),
+        "GLM5_KG_filelocal": (93.2, 65.5, 53.7, 74.0),
+        "GLM5_BM25_filelocal": (94.2, 69.2, 54.4, 78.0),
+        "GLM5_BM25_KG_RRF_filelocal": (94.6, 70.9, 54.7, 79.0),
+    }
+    for name, values in expected.items():
+        expect_metric_row(source, row_by(rows, "name", name), values, f"Retrieve/localize {name}")
+
+    paired_source = "retrieve_then_localize_paired_20260711.tsv"
+    paired = read_tsv(paired_source)
+    comparisons = {
+        ("BM25", "BM25_filelocal"): (11.0, 100, 45, 5.72317416461909e-06),
+        ("KG_grounded", "KG_filelocal"): (13.0, 67, 2, 8.185726402265558e-18),
+        ("KG_filelocal", "BM25_filelocal"): (6.2, 90, 59, 0.013712033079849216),
+        ("BM25_filelocal", "BM25_KG_RRF_filelocal"): (5.8, 43, 14, 0.00015388902244434233),
+        ("KG_filelocal", "BM25_KG_RRF_filelocal"): (12.0, 80, 20, 1.1159089057251951e-09),
+        ("GLM5_issue", "GLM5_KG_filelocal"): (11.6, 58, 0, 6.938893903907228e-18),
+        ("GLM5_issue", "GLM5_BM25_filelocal"): (15.6, 78, 0, 6.617444900424222e-24),
+        ("GLM5_issue", "GLM5_BM25_KG_RRF_filelocal"): (16.6, 83, 0, 2.0679515313825692e-25),
+        ("GLM5_KG_filelocal", "GLM5_BM25_filelocal"): (4.0, 39, 19, 0.011928139715763175),
+        ("GLM5_BM25_filelocal", "GLM5_BM25_KG_RRF_filelocal"): (1.0, 17, 12, 0.45825831964612007),
+        ("GLM5_KG_filelocal", "GLM5_BM25_KG_RRF_filelocal"): (5.0, 31, 6, 4.12575900554657e-05),
+    }
+    for (baseline, treatment), (delta, wins, losses, p_value) in comparisons.items():
+        row = next(
+            item
+            for item in paired
+            if item["baseline"] == baseline and item["treatment"] == treatment and item["metric"] == "hit"
+        )
+        prefix = f"Retrieve/localize {baseline}->{treatment}"
+        expect_close(f"{prefix} Hit delta", pct(row["delta"]), delta, paired_source)
+        expect_equal(f"{prefix} wins", int(row["wins"]), wins, paired_source)
+        expect_equal(f"{prefix} losses", int(row["losses"]), losses, paired_source)
+        expect_close(f"{prefix} exact p", float(row["exact_mcnemar_p"]), p_value, paired_source, tol=1e-15)
+
+    budget_source = "retrieve_then_localize_budget_curve_20260711.tsv"
+    budget_rows = read_tsv(budget_source)
+    expected_hits = {
+        "GLM5_issue_b5": 60.4,
+        "GLM5_KG_filelocal_b5": 65.0,
+        "GLM5_BM25_filelocal_b5": 66.2,
+        "GLM5_BM25_KG_RRF_b5": 66.6,
+        "GLM5_issue_b10": 62.4,
+        "GLM5_KG_filelocal_b10": 70.0,
+        "GLM5_BM25_filelocal_b10": 72.4,
+        "GLM5_BM25_KG_RRF_b10": 73.4,
+        "GLM5_issue_b20": 62.4,
+        "GLM5_KG_filelocal_b20": 74.0,
+        "GLM5_BM25_filelocal_b20": 78.0,
+        "GLM5_BM25_KG_RRF_b20": 79.0,
+        "GLM5_issue_b40": 62.4,
+        "GLM5_KG_filelocal_b40": 76.8,
+        "GLM5_BM25_filelocal_b40": 81.6,
+        "GLM5_BM25_KG_RRF_b40": 83.8,
+    }
+    expect_row_set("Retrieve/localize budget row set", budget_rows, "name", list(expected_hits), budget_source)
+    for name, expected_hit in expected_hits.items():
+        expect_close(
+            f"Retrieve/localize budget {name} Hit",
+            pct(row_by(budget_rows, "name", name)["hit_rate"]),
+            expected_hit,
+            budget_source,
+        )
+
+    budget_paired_source = "retrieve_then_localize_budget_paired_20260711.tsv"
+    budget_paired = read_tsv(budget_paired_source)
+    b40_hybrid = next(
+        row
+        for row in budget_paired
+        if row["baseline"] == "GLM5_BM25_filelocal_b40"
+        and row["treatment"] == "GLM5_BM25_KG_RRF_b40"
+        and row["metric"] == "hit"
+    )
+    expect_close("Hybrid B40 Hit delta over BM25", pct(b40_hybrid["delta"]), 2.2, budget_paired_source)
+    expect_equal("Hybrid B40 Hit wins over BM25", int(b40_hybrid["wins"]), 17, budget_paired_source)
+    expect_equal("Hybrid B40 Hit losses over BM25", int(b40_hybrid["losses"]), 6, budget_paired_source)
+    expect_close(
+        "Hybrid B40 exact p over BM25",
+        float(b40_hybrid["exact_mcnemar_p"]),
+        0.03468966484069824,
+        budget_paired_source,
+        tol=1e-15,
+    )
+
+    disagreement_source = "retrieve_then_localize_disagreements_20260711.tsv"
+    disagreements = read_tsv(disagreement_source)
+    key_rows = [
+        row
+        for row in disagreements
+        if row["baseline"] == "GLM5_KG_filelocal" and row["treatment"] == "GLM5_BM25_filelocal"
+    ]
+    expect_equal("Retrieve/localize KG-vs-BM25 disagreement count", len(key_rows), 58, disagreement_source)
+    expect_equal(
+        "Retrieve/localize KG-vs-BM25 treatment-only count",
+        sum(row["direction"] == "treatment_only" for row in key_rows),
+        39,
+        disagreement_source,
+    )
+    expect_equal(
+        "Retrieve/localize KG-vs-BM25 baseline-only count",
+        sum(row["direction"] == "baseline_only" for row in key_rows),
+        19,
+        disagreement_source,
+    )
 
 
 def verify_rq2() -> None:
@@ -365,6 +531,10 @@ def verify_patch_derived_context() -> None:
         "GLM-5 issue-only",
         "GLM-5+CodeGraph",
         "GLM-5+KGCompass",
+        "BM25 files + file-local",
+        "BM25+KG RRF file-local",
+        "GLM-5 + BM25 files + file-local",
+        "GLM-5 + BM25+KG RRF file-local",
     ]
     expect_row_set("Patch-derived context row set", rows, "name", expected_rows, source)
     expected = {
@@ -376,6 +546,10 @@ def verify_patch_derived_context() -> None:
         "GLM-5 issue-only": (500, 473, 241, 53.0, 46.2, 62.4, 11.0, 40.9),
         "GLM-5+CodeGraph": (500, 500, 241, 60.9, 53.8, 69.6, 20.4, 49.3),
         "GLM-5+KGCompass": (500, 498, 241, 65.5, 58.8, 74.0, 23.1, 53.6),
+        "BM25 files + file-local": (500, 500, 241, 50.1, 44.6, 57.0, 19.0, 41.9),
+        "BM25+KG RRF file-local": (500, 500, 241, 55.3, 49.0, 62.8, 21.8, 45.9),
+        "GLM-5 + BM25 files + file-local": (500, 500, 241, 69.2, 62.2, 78.0, 23.7, 56.7),
+        "GLM-5 + BM25+KG RRF file-local": (500, 500, 241, 70.9, 64.2, 79.0, 25.0, 58.0),
     }
     for name, values in expected.items():
         row = row_by(rows, "name", name)

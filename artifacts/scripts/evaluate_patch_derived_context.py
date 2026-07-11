@@ -150,7 +150,22 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--top-k", type=int, default=20)
     parser.add_argument("--primary-head", type=int, default=10)
     parser.add_argument("--kg-head", type=int, default=20)
+    parser.add_argument(
+        "--row",
+        action="append",
+        default=[],
+        metavar="NAME=FAMILY=DIR",
+        help="Append a directory-backed evaluation row without changing the built-in paper rows.",
+    )
     return parser.parse_args()
+
+
+def parse_extra_row(raw: str) -> tuple[str, str, str, str]:
+    parts = raw.split("=", 2)
+    if len(parts) != 3 or not all(part.strip() for part in parts):
+        raise ValueError(f"Invalid --row value {raw!r}; expected NAME=FAMILY=DIR")
+    name, family, source = (part.strip() for part in parts)
+    return name, family, "dir", source
 
 
 def load_ids(path: Path) -> list[str]:
@@ -615,7 +630,12 @@ def main() -> int:
     targets = build_support_targets(ids, gt_map, args.support_cache)
 
     row_payloads: list[dict] = []
-    for name, family, source_kind, source in DEFAULT_ROWS:
+    configured_rows = [*DEFAULT_ROWS, *(parse_extra_row(raw) for raw in args.row)]
+    seen_names: set[str] = set()
+    for name, family, source_kind, source in configured_rows:
+        if name in seen_names:
+            raise ValueError(f"Duplicate evaluation row name: {name}")
+        seen_names.add(name)
         if source_kind != "dir":
             raise ValueError(f"Unsupported source kind: {source_kind}")
         path = Path(source)

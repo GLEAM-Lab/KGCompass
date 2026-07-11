@@ -17,6 +17,19 @@ obsolete ablations, and partial shard metrics are not included.
 - `scripts/evaluate_patch_derived_context.py`: reproduces the patch-derived
   repair-context coverage ledger from official SWE-bench Verified patches,
   cached target mappings, and ranked context-window outputs.
+- `scripts/export_ranked_file_seeds.py`: converts BM25 method output into a
+  ranked file input for the unchanged file-local miner. Each file record keeps
+  its best BM25 method rank and the number of retrieved BM25 candidates in that
+  file as a label-free source-support signal.
+- `scripts/export_fixed_prefix_fusion.py`: builds the fixed-budget
+  localizer-prefix plus file-local-tail windows.
+- `scripts/export_equal_rrf_fusion.py`: deterministically combines two
+  file-local rankings with equal-weight reciprocal-rank fusion (RRF), using
+  the stronger source as the declared tie-break only when RRF scores tie.
+- `scripts/analyze_retrieve_localize_controls.py`: reports aggregate metrics,
+  paired bootstrap intervals, exact McNemar tests, and disagreement instances.
+- `scripts/analyze_ranked_file_sources.py`: evaluates the first-stage Top-$N$
+  unique file lists before file-local mining.
 
 ## Result Ledgers
 
@@ -34,6 +47,22 @@ obsolete ablations, and partial shard metrics are not included.
   KGCompass.
 - `glm5_baseline_fusion_controls_top10_20260614.tsv`: focused GLM-5 fixed-prefix
   tail controls for CodeGraph and KGCompass.
+- `retrieve_then_localize_top20_20260711.tsv`: matched Top-20 rows for BM25 and
+  KG file sources, the unchanged file-local miner, their untuned equal-weight
+  RRF combination, and GLM-5 fixed-prefix fusion with each tail.
+- `retrieve_then_localize_paired_20260711.tsv`: paired metric deltas,
+  bootstrap intervals, win/loss counts, and exact tests for the main source and
+  fusion comparisons.
+- `retrieve_then_localize_disagreements_20260711.tsv`: per-instance Hit@20
+  disagreement ledger, including the 39 BM25-tail-only and 19 KG-tail-only
+  GLM-5 cases.
+- `retrieve_then_localize_budget_curve_20260711.tsv` and
+  `retrieve_then_localize_budget_paired_20260711.tsv`: fixed-prefix results and
+  paired statistics for KG, BM25, and equal-weight RRF tails at total budgets
+  5, 10, 20, and 40.
+- `ranked_file_source_coverage_20260711.tsv` and
+  `ranked_file_source_paired_20260711.tsv`: direct first-stage Top-20 file
+  coverage for KG and BM25, including paired uncertainty and exact testing.
 - `external_verified_loc_baselines_cosil_release_20260601.tsv`: released
   SWE-bench Verified Qwen2.5-32B localizer rows reported in the unified
   strong-baseline table.
@@ -54,7 +83,8 @@ obsolete ablations, and partial shard metrics are not included.
 - `patch_derived_context_summary_20260702.tsv` and `.json`: RQ3
   patch-derived repair-context coverage table. It reports edit-target recall,
   complete edit-target coverage, support-context recall, and context
-  completeness for the controlled rows and GLM-5 fixed-prefix rows.
+  completeness for the controlled rows and GLM-5 fixed-prefix rows, including
+  BM25-file-local and BM25+KG RRF standalone and fused controls.
 - `patch_derived_context_targets_20260702.json`: deterministic edit/support
   target cache used by the patch-derived context evaluation. Support targets
   are non-edited functions or assignments in patched files whose simple names

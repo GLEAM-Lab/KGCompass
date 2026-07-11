@@ -35,6 +35,8 @@ The verifier checks the paper-facing values for:
 
 - the ground-truth mapping table;
 - RQ1 controlled Top-20 context-window rows;
+- RQ1/RQ2 source-swapped and equal-weight RRF file-local controls, paired
+  tests, and budget curves;
 - RQ2 LLM+KGCompass, GLM-5 tail-control, released-localizer, and local
   open-model rows;
 - GLM-5/KGCompass overlap and paired statistics;
@@ -57,6 +59,15 @@ The verifier checks the paper-facing values for:
   `artifacts/results/llm_pathmined_kg_ht10_20260531.tsv`.
 - RQ2 GLM-5 fixed-prefix tail controls:
   `artifacts/results/glm5_baseline_fusion_controls_top10_20260614.tsv`.
+- Source-swapped and equal-weight RRF retrieve-then-localize controls:
+  `artifacts/results/retrieve_then_localize_top20_20260711.tsv`,
+  `artifacts/results/retrieve_then_localize_paired_20260711.tsv`,
+  `artifacts/results/retrieve_then_localize_disagreements_20260711.tsv`,
+  `artifacts/results/retrieve_then_localize_budget_curve_20260711.tsv`, and
+  `artifacts/results/retrieve_then_localize_budget_paired_20260711.tsv`.
+- First-stage ranked-file coverage:
+  `artifacts/results/ranked_file_source_coverage_20260711.tsv` and
+  `artifacts/results/ranked_file_source_paired_20260711.tsv`.
 - RQ2 released Qwen2.5-32B localizer rows:
   `artifacts/results/external_verified_loc_baselines_cosil_release_20260601.tsv`.
 - RQ2 CoSIL-Qwen2.5-32B+KGCompass row:
@@ -145,7 +156,100 @@ python3 artifacts/scripts/evaluate_patch_derived_context.py \
   --support-cache artifacts/results/patch_derived_context_targets_20260702.json \
   --output-tsv logs/comparison_current/patch_derived_context_summary_20260702.tsv \
   --output-json logs/comparison_current/patch_derived_context_summary_20260702.json \
+  --row "BM25 files + file-local=bm25_filelocal=temp_run/bm25_filelocal" \
+  --row "BM25+KG RRF file-local=bm25_kg_rrf_filelocal=temp_run/bm25_kg_rrf_filelocal" \
+  --row "GLM-5 + BM25 files + file-local=glm5_bm25_filelocal=temp_run/glm5_bm25_filelocal_b20" \
+  --row "GLM-5 + BM25+KG RRF file-local=glm5_bm25_kg_rrf_filelocal=temp_run/glm5_bm25_kg_rrf_b20" \
   --top-k 20
+```
+
+BM25 files through the unchanged file-local miner:
+
+```bash
+BM25_METHODS=runs/text_baselines_nohints/2000
+BM25_SEEDS=temp_run/bm25_top20_file_seeds
+BM25_FILELOCAL=temp_run/bm25_filelocal
+KG_FILELOCAL=runs/kg_verified_evidence_graph/tse_timesafe_main_20260531_pathunion_v1
+RRF_FILELOCAL=temp_run/bm25_kg_rrf_filelocal
+
+python3 artifacts/scripts/export_ranked_file_seeds.py \
+  --input-dir "$BM25_METHODS" \
+  --output-dir "$BM25_SEEDS" \
+  --ids-file temp_run/SWE-bench_Verified_ids.jsonl \
+  --max-files 20 \
+  --support-mode count
+
+python3 artifacts/scripts/export_path_mined_filelocal.py \
+  --input-dir "$BM25_SEEDS" \
+  --output-dir "$BM25_FILELOCAL" \
+  --ids-file temp_run/SWE-bench_Verified_ids.jsonl \
+  --limit 50
+
+python3 artifacts/scripts/export_equal_rrf_fusion.py \
+  --primary-dir "$BM25_FILELOCAL" \
+  --secondary-dir "$KG_FILELOCAL" \
+  --output-dir "$RRF_FILELOCAL" \
+  --top-k 50 \
+  --rrf-k 60 \
+  --force
+```
+
+Direct first-stage ranked-file coverage:
+
+```bash
+python3 artifacts/scripts/analyze_ranked_file_sources.py \
+  --ids-file temp_run/SWE-bench_Verified_ids.jsonl \
+  --gt-cache temp_run/output/gt_eval_cache_verified_v3_entities.json \
+  --group KG_grounded_files=runs/kg_verified_evidence_graph/tse_timesafe_main_20260529_v6 \
+  --group BM25_ranked_files=runs/text_baselines_nohints/2000 \
+  --compare KG_grounded_files=BM25_ranked_files \
+  --top-files 20 \
+  --output-summary logs/comparison_current/ranked_file_source_coverage_20260711.tsv \
+  --output-paired logs/comparison_current/ranked_file_source_paired_20260711.tsv
+```
+
+Fixed-prefix GLM-5 fusion and the paired Top-20 ledger:
+
+```bash
+python3 artifacts/scripts/export_fixed_prefix_fusion.py \
+  --primary-dir temp_run/eval_aliyun_glm5_issueonly \
+  --secondary-dir "$BM25_FILELOCAL" \
+  --output-dir temp_run/glm5_bm25_filelocal_b20 \
+  --budget 20 \
+  --primary-prefix 10 \
+  --secondary-pool 20 \
+  --force
+
+python3 artifacts/scripts/export_fixed_prefix_fusion.py \
+  --primary-dir temp_run/eval_aliyun_glm5_issueonly \
+  --secondary-dir "$RRF_FILELOCAL" \
+  --output-dir temp_run/glm5_bm25_kg_rrf_b20 \
+  --budget 20 \
+  --primary-prefix 10 \
+  --secondary-pool 20 \
+  --force
+
+python3 artifacts/scripts/analyze_retrieve_localize_controls.py \
+  --ids-file temp_run/SWE-bench_Verified_ids.jsonl \
+  --gt-cache temp_run/output/gt_eval_cache_verified_v3_entities.json \
+  --top-k 20 \
+  --group KG_filelocal="$KG_FILELOCAL" \
+  --group BM25_filelocal="$BM25_FILELOCAL" \
+  --group BM25_KG_RRF_filelocal="$RRF_FILELOCAL" \
+  --group GLM5_issue=temp_run/eval_aliyun_glm5_issueonly \
+  --group GLM5_KG_filelocal=temp_run/fusions_glm5_baseline_controls_20260614_head10/GLM5_KGCompass_ht10 \
+  --group GLM5_BM25_filelocal=temp_run/glm5_bm25_filelocal_b20 \
+  --group GLM5_BM25_KG_RRF_filelocal=temp_run/glm5_bm25_kg_rrf_b20 \
+  --compare KG_filelocal=BM25_filelocal \
+  --compare BM25_filelocal=BM25_KG_RRF_filelocal \
+  --compare GLM5_issue=GLM5_KG_filelocal \
+  --compare GLM5_issue=GLM5_BM25_filelocal \
+  --compare GLM5_issue=GLM5_BM25_KG_RRF_filelocal \
+  --compare GLM5_KG_filelocal=GLM5_BM25_filelocal \
+  --compare GLM5_BM25_filelocal=GLM5_BM25_KG_RRF_filelocal \
+  --output-summary logs/comparison_current/retrieve_then_localize_top20_20260711.tsv \
+  --output-paired logs/comparison_current/retrieve_then_localize_paired_20260711.tsv \
+  --output-disagreements logs/comparison_current/retrieve_then_localize_disagreements_20260711.tsv
 ```
 
 RQ2 GLM-5 fixed-prefix tail controls:
