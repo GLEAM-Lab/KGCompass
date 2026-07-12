@@ -1,124 +1,79 @@
 {
   "top_k": 20,
   "target_cache": "artifacts/results/patch_derived_context_targets_20260702.json",
-  "support_definition": "non-edited function or assignment in an official patched file whose simple name appears in the official patch hunk text",
+  "target_definition": "base-commit functions, methods, assignments, or classes mapped from official patch lines; patched-file fallback when no entity can be mapped",
   "rows": {
     "BM25": {
       "name": "BM25",
       "family": "controlled",
       "source": "runs/text_baselines_nohints/2000",
       "N": 500,
-      "ranked_nonempty": 500,
-      "support_bearing_N": 241,
       "edit_target_recall": 0.3920462481962482,
-      "complete_edit_target_rate": 0.35,
-      "edit_target_hit_rate": 0.46,
-      "support_proxy_recall": 0.09462064798844022,
-      "joint_proxy_coverage": 0.3279974926201218
+      "complete_edit_target_rate": 0.35
     },
     "KGCompass w/o file-local paths": {
       "name": "KGCompass w/o file-local paths",
       "family": "controlled",
       "source": "runs/kg_verified_evidence_graph/tse_timesafe_main_20260529_v6",
       "N": 500,
-      "ranked_nonempty": 430,
-      "support_bearing_N": 241,
       "edit_target_recall": 0.3377373737373737,
-      "complete_edit_target_rate": 0.308,
-      "edit_target_hit_rate": 0.378,
-      "support_proxy_recall": 0.14217317951757785,
-      "joint_proxy_coverage": 0.2791292783655079
+      "complete_edit_target_rate": 0.308
     },
     "KGCompass": {
       "name": "KGCompass",
       "family": "controlled",
       "source": "runs/kg_verified_evidence_graph/tse_timesafe_main_20260531_pathunion_v1",
       "N": 500,
-      "ranked_nonempty": 430,
-      "support_bearing_N": 241,
       "edit_target_recall": 0.4542596681096681,
-      "complete_edit_target_rate": 0.414,
-      "edit_target_hit_rate": 0.508,
-      "support_proxy_recall": 0.1937652375361517,
-      "joint_proxy_coverage": 0.3728239713150262
+      "complete_edit_target_rate": 0.414
     },
     "GLM-5 issue-only": {
       "name": "GLM-5 issue-only",
       "family": "fusion",
       "source": "temp_run/eval_aliyun_glm5_issueonly",
       "N": 500,
-      "ranked_nonempty": 473,
-      "support_bearing_N": 241,
       "edit_target_recall": 0.529893573093573,
-      "complete_edit_target_rate": 0.462,
-      "edit_target_hit_rate": 0.624,
-      "support_proxy_recall": 0.1104111338080386,
-      "joint_proxy_coverage": 0.40860214387179655
+      "complete_edit_target_rate": 0.462
     },
     "GLM-5+KGCompass": {
       "name": "GLM-5+KGCompass",
       "family": "fusion",
       "source": "temp_run/fusions_glm5_baseline_controls_20260614_head10/GLM5_KGCompass_ht10",
       "N": 500,
-      "ranked_nonempty": 498,
-      "support_bearing_N": 241,
       "edit_target_recall": 0.6547932484182485,
-      "complete_edit_target_rate": 0.588,
-      "edit_target_hit_rate": 0.74,
-      "support_proxy_recall": 0.23124430630932785,
-      "joint_proxy_coverage": 0.5362696227929858
+      "complete_edit_target_rate": 0.588
     },
     "BM25 files + file-local": {
       "name": "BM25 files + file-local",
       "family": "bm25_filelocal",
       "source": "temp_run/private_bm25_filelocal_20260704/bm25_top20_files_filelocal",
       "N": 500,
-      "ranked_nonempty": 500,
-      "support_bearing_N": 241,
       "edit_target_recall": 0.5007613275613275,
-      "complete_edit_target_rate": 0.446,
-      "edit_target_hit_rate": 0.57,
-      "support_proxy_recall": 0.19020724134754624,
-      "joint_proxy_coverage": 0.41947980122235606
+      "complete_edit_target_rate": 0.446
     },
     "BM25+KG RRF file-local": {
       "name": "BM25+KG RRF file-local",
       "family": "bm25_kg_rrf_filelocal",
       "source": "temp_run/private_bm25_filelocal_20260704/hybrid_rrf/BM25_KG_deterministic_rrf",
       "N": 500,
-      "ranked_nonempty": 500,
-      "support_bearing_N": 241,
       "edit_target_recall": 0.5528888888888888,
-      "complete_edit_target_rate": 0.49,
-      "edit_target_hit_rate": 0.628,
-      "support_proxy_recall": 0.21847457150294788,
-      "joint_proxy_coverage": 0.4594350341939645
+      "complete_edit_target_rate": 0.49
     },
     "GLM-5 + BM25 files + file-local": {
       "name": "GLM-5 + BM25 files + file-local",
       "family": "glm5_bm25_filelocal",
       "source": "temp_run/private_bm25_filelocal_20260704/budget_fusions/GLM5_BM25FileLocal_b20_p10",
       "N": 500,
-      "ranked_nonempty": 500,
-      "support_bearing_N": 241,
       "edit_target_recall": 0.6922465312465312,
-      "complete_edit_target_rate": 0.622,
-      "edit_target_hit_rate": 0.78,
-      "support_proxy_recall": 0.2368505463986727,
-      "joint_proxy_coverage": 0.5666508460301003
+      "complete_edit_target_rate": 0.622
     },
     "GLM-5 + BM25+KG RRF file-local": {
       "name": "GLM-5 + BM25+KG RRF file-local",
       "family": "glm5_bm25_kg_rrf_filelocal",
       "source": "temp_run/private_bm25_filelocal_20260704/hybrid_rrf/deterministic_budget_fusions/GLM5_Hybrid_b20_p10",
       "N": 500,
-      "ranked_nonempty": 500,
-      "support_bearing_N": 241,
       "edit_target_recall": 0.7086232267732268,
-      "complete_edit_target_rate": 0.642,
-      "edit_target_hit_rate": 0.79,
-      "support_proxy_recall": 0.25004591807372906,
-      "joint_proxy_coverage": 0.5798631998570437
+      "complete_edit_target_rate": 0.642
     }
   }
 }

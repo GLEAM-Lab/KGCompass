@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Verify manuscript-facing numbers from paper-side artifact ledgers.
+"""Verify submission-facing numbers from retained artifact ledgers.
 
 This checker reads only committed files under artifacts/results/ and validates
-the quantitative values used by the current MURAL manuscript. It also
-checks that the result directory does not contain unreported legacy ledgers.
+the quantitative values used by the MURAL manuscript and supplementary
+material. It also checks that the result directory does not contain unreported
+legacy ledgers.
 """
 
 from __future__ import annotations
@@ -21,23 +22,12 @@ ROOT = Path(__file__).resolve().parents[2]
 RESULTS = ROOT / "artifacts" / "results"
 
 EXPECTED_RESULT_FILES = {
-    "claudecode_context_probe_glm5_20260531.tsv",
-    "claudecode_context_probe_glm5_20260531/full500_kg_official_results.jsonl",
-    "claudecode_context_probe_glm5_20260531/full500_kg_summary.json",
-    "claudecode_context_probe_glm5_20260531/full500_nokg_official_results.jsonl",
-    "claudecode_context_probe_glm5_20260531/full500_nokg_summary.json",
-    "claudecode_context_probe_glm5_20260531/paired_stats.json",
-    "claudecode_context_probe_glm5_20260531/rq4_case_sphinx_10673.json",
-    "external_verified_loc_baselines_cosil_release_20260601.tsv",
     "glm5_baseline_fusion_controls_top10_20260614.tsv",
     "kg_evidence_graph_tse_timesafe_main_20260529_v6_audit_final.json",
-    "llm_pathmined_kg_ht10_20260531.tsv",
-    "local_open_models_pathmined_top10_5p5_summary.tsv",
     "path_mining_file_expansion_ablation_20260531.tsv",
     "patch_derived_context_summary_20260702.json",
     "patch_derived_context_summary_20260702.tsv",
     "patch_derived_context_targets_20260702.json",
-    "qwen25_32b_kgcompass_fusion_20260601.tsv",
     "ranked_file_source_coverage_20260711.tsv",
     "ranked_file_source_paired_20260711.tsv",
     "retrieve_then_localize_budget_curve_20260711.tsv",
@@ -45,10 +35,8 @@ EXPECTED_RESULT_FILES = {
     "retrieve_then_localize_disagreements_20260711.tsv",
     "retrieve_then_localize_paired_20260711.tsv",
     "retrieve_then_localize_top20_20260711.tsv",
-    "rq1_pathmined_paired_stats_20260531.tsv",
     "time_boundary_external_artifact_sensitivity_20260531.tsv",
     "tse_gt_mapping_v6.tsv",
-    "tse_paired_stats_pathmined_20260531.tsv",
 }
 
 checks: list[dict[str, Any]] = []
@@ -66,27 +54,11 @@ def read_json(name: str) -> Any:
         return json.load(handle)
 
 
-def read_jsonl(name: str) -> list[dict[str, Any]]:
-    rows: list[dict[str, Any]] = []
-    with (RESULTS / name).open(encoding="utf-8") as handle:
-        for line in handle:
-            if line.strip():
-                rows.append(json.loads(line))
-    return rows
-
-
 def row_by(rows: list[dict[str, str]], key: str, value: str) -> dict[str, str]:
     for row in rows:
         if row.get(key) == value:
             return row
     raise AssertionError(f"row not found: {key}={value}")
-
-
-def row_by_two(rows: list[dict[str, str]], key1: str, value1: str, key2: str, value2: str) -> dict[str, str]:
-    for row in rows:
-        if row.get(key1) == value1 and row.get(key2) == value2:
-            return row
-    raise AssertionError(f"row not found: {key1}={value1}, {key2}={value2}")
 
 
 def pct(value: str | float) -> float:
@@ -136,7 +108,7 @@ def verify_result_inventory() -> None:
         if path.is_file()
     }
     expect_equal(
-        "Paper-facing result file inventory",
+        "Submission-facing result file inventory",
         sorted(observed),
         sorted(EXPECTED_RESULT_FILES),
         "artifacts/results",
@@ -181,21 +153,6 @@ def verify_rq1() -> None:
     }
     for name, values in expected.items():
         expect_metric_row(source, row_by(rows, "name", name), values, f"RQ1 {name}")
-
-    paired_source = "rq1_pathmined_paired_stats_20260531.tsv"
-    paired = read_tsv(paired_source)
-    expect_equal(
-        "RQ1 paired baseline set",
-        sorted({row["baseline"] for row in paired}),
-        ["strict_kg_ablation"],
-        paired_source,
-    )
-    method = row_by_two(paired, "baseline", "strict_kg_ablation", "metric", "method")
-    hit = row_by_two(paired, "baseline", "strict_kg_ablation", "metric", "hit")
-    expect_close("RQ1 method delta vs without file-local paths", float(method["delta_pp"]), 11.652, paired_source)
-    expect_close("RQ1 hit delta vs without file-local paths", float(hit["delta_pp"]), 13.0, paired_source)
-    expect_equal("RQ1 hit wins vs without file-local paths", int(hit["wins"]), 67, paired_source)
-    expect_equal("RQ1 hit losses vs without file-local paths", int(hit["losses"]), 2, paired_source)
 
     verify_retrieve_then_localize_controls()
 
@@ -358,30 +315,13 @@ def verify_retrieve_then_localize_controls() -> None:
 
 
 def verify_rq2() -> None:
-    source = "llm_pathmined_kg_ht10_20260531.tsv"
+    source = "retrieve_then_localize_top20_20260711.tsv"
     rows = read_tsv(source)
-    expected_rows = [
-        "Sonnet46_issue_only",
-        "Sonnet46_KG_pathmined_ht10",
-        "GLM5_issue_only",
-        "GLM5_KG_pathmined_ht10",
-        "Qwen3CoderNext_issue_only",
-        "Qwen3CoderNext_KG_pathmined_ht10",
-        "MoonshotKimiK25_issue_only",
-        "MoonshotKimiK25_KG_pathmined_ht10",
-        "KGCompass",
-    ]
-    expect_row_set("RQ2 LLM row set", rows, "name", expected_rows, source)
     expected = {
-        "Sonnet46_issue_only": (82.6, 58.9, 57.7, 68.6),
-        "Sonnet46_KG_pathmined_ht10": (90.6, 70.0, 61.0, 78.4),
-        "GLM5_issue_only": (87.4, 53.0, 51.2, 62.4),
-        "GLM5_KG_pathmined_ht10": (93.4, 65.5, 53.7, 74.0),
-        "Qwen3CoderNext_issue_only": (76.2, 38.8, 39.8, 46.2),
-        "Qwen3CoderNext_KG_pathmined_ht10": (86.8, 56.5, 43.7, 63.6),
-        "MoonshotKimiK25_issue_only": (51.6, 36.8, 38.0, 41.8),
-        "MoonshotKimiK25_KG_pathmined_ht10": (76.4, 57.5, 46.8, 64.4),
-        "KGCompass": (59.2, 45.4, 26.3, 50.8),
+        "GLM5_issue": (87.4, 53.0, 51.2, 62.4),
+        "GLM5_KG_filelocal": (93.2, 65.5, 53.7, 74.0),
+        "GLM5_BM25_filelocal": (94.2, 69.2, 54.4, 78.0),
+        "GLM5_BM25_KG_RRF_filelocal": (94.6, 70.9, 54.7, 79.0),
     }
     for name, values in expected.items():
         expect_metric_row(source, row_by(rows, "name", name), values, f"RQ2 {name}")
@@ -391,67 +331,17 @@ def verify_rq2() -> None:
     control_rows = [
         "GLM5_issue_only",
         "GLM5_CodeGraph_ht10",
-        "GLM5_KGCompass_ht10",
     ]
     expect_row_set("RQ2 GLM-5 tail-control row set", controls, "name", control_rows, controls_source)
     control_expected = {
         "GLM5_issue_only": (87.4, 53.0, 51.2, 62.4, 0, 0),
         "GLM5_CodeGraph_ht10": (93.6, 60.9, 53.0, 69.6, 36, 0),
-        "GLM5_KGCompass_ht10": (93.4, 65.5, 53.7, 74.0, 58, 0),
     }
     for name, values in control_expected.items():
         row = row_by(controls, "name", name)
         expect_metric_row(controls_source, row, values[:4], f"RQ2 GLM tail {name}")
         expect_equal(f"RQ2 GLM tail {name} hit wins", int(row["hit_wins_vs_issue"]), values[4], controls_source)
         expect_equal(f"RQ2 GLM tail {name} hit losses", int(row["hit_losses_vs_issue"]), values[5], controls_source)
-
-    released_source = "external_verified_loc_baselines_cosil_release_20260601.tsv"
-    released = read_tsv(released_source)
-    released_rows = ["CoSIL/CoSIL_qwen_coder_32b_func.jsonl"]
-    expect_row_set("RQ2 released Qwen2.5 row set", released, "name", released_rows, released_source)
-    released_expected = {
-        "CoSIL/CoSIL_qwen_coder_32b_func.jsonl": (85.0, 55.9, 52.0, 65.6),
-    }
-    for name, values in released_expected.items():
-        expect_metric_row(released_source, row_by(released, "name", name), values, f"RQ2 released {name}")
-
-    qwen_source = "qwen25_32b_kgcompass_fusion_20260601.tsv"
-    qwen = read_tsv(qwen_source)
-    expect_row_set(
-        "RQ2 CoSIL-Qwen2.5 fusion row set",
-        qwen,
-        "name",
-        ["CoSIL-Qwen2.5-32B+KGCompass", "CoSIL-Qwen2.5-32B"],
-        qwen_source,
-    )
-    expect_metric_row(qwen_source, row_by(qwen, "name", "CoSIL-Qwen2.5-32B+KGCompass"), (90.6, 65.8, 53.2, 74.6), "RQ2 CoSIL+KG")
-    expect_metric_row(qwen_source, row_by(qwen, "name", "CoSIL-Qwen2.5-32B"), (85.0, 55.9, 52.0, 65.6), "RQ2 CoSIL")
-
-    local_source = "local_open_models_pathmined_top10_5p5_summary.tsv"
-    local = read_tsv(local_source)
-    local_rows = [
-        "LocalQwen3Coder30B_KG_pathmined_5p5",
-        "LocalQwen3Coder30B_issue_top10",
-        "LocalDeepSeekCoderV2Lite_KG_pathmined_5p5",
-        "LocalDeepSeekCoderV2Lite_issue_top10",
-    ]
-    expect_row_set("RQ2 local open row set", local, "name", local_rows, local_source)
-    local_expected = {
-        "LocalQwen3Coder30B_KG_pathmined_5p5": (70.8, 40.4, 28.4, 46.6),
-        "LocalQwen3Coder30B_issue_top10": (51.4, 25.9, 25.8, 30.0),
-        "LocalDeepSeekCoderV2Lite_KG_pathmined_5p5": (64.0, 38.8, 24.0, 45.0),
-        "LocalDeepSeekCoderV2Lite_issue_top10": (27.8, 12.9, 13.7, 15.6),
-    }
-    for name, values in local_expected.items():
-        expect_metric_row(local_source, row_by(local, "name", name), values, f"RQ2 local {name}")
-
-    paired_source = "tse_paired_stats_pathmined_20260531.tsv"
-    paired = read_tsv(paired_source)
-    hit = row_by(paired, "metric", "Hit@20")
-    expect_close("RQ2 GLM5 Hit@20 delta", float(hit["delta"]), 11.6, paired_source)
-    expect_equal("RQ2 GLM5 Hit@20 wins", int(hit["wins"]), 58, paired_source)
-    expect_equal("RQ2 GLM5 Hit@20 losses", int(hit["losses"]), 0, paired_source)
-    expect_close("RQ2 GLM5 Hit@20 p-value", float(hit["p_value"]), 6.94e-18, paired_source, tol=1e-20)
 
 def verify_patch_derived_context() -> None:
     source = "patch_derived_context_summary_20260702.tsv"
@@ -469,71 +359,51 @@ def verify_patch_derived_context() -> None:
     ]
     expect_row_set("Patch-derived context row set", rows, "name", expected_rows, source)
     expected = {
-        "BM25": (500, 500, 241, 39.2, 35.0, 46.0, 9.5, 32.8),
-        "KGCompass w/o file-local paths": (500, 430, 241, 33.8, 30.8, 37.8, 14.2, 27.9),
-        "KGCompass": (500, 430, 241, 45.4, 41.4, 50.8, 19.4, 37.3),
-        "GLM-5 issue-only": (500, 473, 241, 53.0, 46.2, 62.4, 11.0, 40.9),
-        "GLM-5+KGCompass": (500, 498, 241, 65.5, 58.8, 74.0, 23.1, 53.6),
-        "BM25 files + file-local": (500, 500, 241, 50.1, 44.6, 57.0, 19.0, 41.9),
-        "BM25+KG RRF file-local": (500, 500, 241, 55.3, 49.0, 62.8, 21.8, 45.9),
-        "GLM-5 + BM25 files + file-local": (500, 500, 241, 69.2, 62.2, 78.0, 23.7, 56.7),
-        "GLM-5 + BM25+KG RRF file-local": (500, 500, 241, 70.9, 64.2, 79.0, 25.0, 58.0),
+        "BM25": (500, 39.2, 35.0),
+        "KGCompass w/o file-local paths": (500, 33.8, 30.8),
+        "KGCompass": (500, 45.4, 41.4),
+        "GLM-5 issue-only": (500, 53.0, 46.2),
+        "GLM-5+KGCompass": (500, 65.5, 58.8),
+        "BM25 files + file-local": (500, 50.1, 44.6),
+        "BM25+KG RRF file-local": (500, 55.3, 49.0),
+        "GLM-5 + BM25 files + file-local": (500, 69.2, 62.2),
+        "GLM-5 + BM25+KG RRF file-local": (500, 70.9, 64.2),
     }
     for name, values in expected.items():
         row = row_by(rows, "name", name)
-        n, ranked_nonempty, support_bearing, edit_recall, complete_edit, edit_hit, support_recall, joint_coverage = values
+        n, edit_recall, complete_edit = values
         expect_equal(f"Patch context {name} N", int(row["N"]), n, source)
-        expect_equal(f"Patch context {name} ranked nonempty", int(row["ranked_nonempty"]), ranked_nonempty, source)
-        expect_equal(f"Patch context {name} support-bearing N", int(row["support_bearing_N"]), support_bearing, source)
         expect_close(f"Patch context {name} edit target recall", pct(row["edit_target_recall"]), edit_recall, source)
         expect_close(f"Patch context {name} complete edit target", pct(row["complete_edit_target_rate"]), complete_edit, source)
-        expect_close(f"Patch context {name} edit target hit", pct(row["edit_target_hit_rate"]), edit_hit, source)
-        expect_close(f"Patch context {name} support-proxy recall", pct(row["support_proxy_recall"]), support_recall, source)
-        expect_close(f"Patch context {name} joint proxy coverage", pct(row["joint_proxy_coverage"]), joint_coverage, source)
+
+    json_source = "patch_derived_context_summary_20260702.json"
+    json_rows = read_json(json_source)["rows"]
+    expect_equal("Patch context JSON row set", sorted(json_rows), sorted(expected), json_source)
+    for name, (_, edit_recall, complete_edit) in expected.items():
+        expect_close(f"Patch context JSON {name} edit target recall", pct(json_rows[name]["edit_target_recall"]), edit_recall, json_source)
+        expect_close(f"Patch context JSON {name} complete edit target", pct(json_rows[name]["complete_edit_target_rate"]), complete_edit, json_source)
 
     target_source = "patch_derived_context_targets_20260702.json"
     targets = read_json(target_source)
     items = targets["items"]
-    support_counts = [int(item["support_entities_n"]) for item in items.values()]
+    expect_equal("Patch context target cache version", targets["_meta"]["cache_version"], 3, target_source)
     expect_equal("Patch context target cache size", targets["_meta"]["n"], 500, target_source)
-    expect_equal("Patch context support-bearing instances", sum(1 for count in support_counts if count > 0), 241, target_source)
-    expect_equal("Patch context support entity total", sum(support_counts), 1251, target_source)
+    expect_equal("Patch context target item count", len(items), 500, target_source)
+    expect_equal(
+        "Patch context file-fallback instances",
+        sum(int(item["fallback_file_target"]) for item in items.values()),
+        9,
+        target_source,
+    )
+    expect_equal(
+        "Patch context retired proxy fields",
+        sum(any(key.startswith("support_") for key in item) for item in items.values()),
+        0,
+        target_source,
+    )
 
 
-def verify_rq4_and_boundary() -> None:
-    source = "claudecode_context_probe_glm5_20260531.tsv"
-    rows = read_tsv(source)
-    expect_equal("RQ4 retained slice set", sorted({row["slice"] for row in rows}), ["full500"], source)
-    no_kg = row_by_two(rows, "slice", "full500", "context", "noKG")
-    kg = row_by_two(rows, "slice", "full500", "context", "KGCompass")
-    for label, row, expected in [
-        ("RQ4 issue-only nonempty", no_kg, 425),
-        ("RQ4 issue-only applied", no_kg, 412),
-        ("RQ4 issue-only resolved", no_kg, 266),
-        ("RQ4 KG nonempty", kg, 460),
-        ("RQ4 KG applied", kg, 446),
-        ("RQ4 KG resolved", kg, 289),
-    ]:
-        field = {
-            "nonempty": "nonempty_patches",
-            "applied": "applied_patches",
-            "resolved": "resolved",
-        }[label.split()[-1]]
-        expect_equal(label, int(row[field]), expected, source)
-
-    paired_source = "claudecode_context_probe_glm5_20260531/paired_stats.json"
-    paired = read_json(paired_source)
-    expect_equal("RQ4 paired stats key set", sorted(paired.keys()), ["full500", "notes"], paired_source)
-    full = paired["full500"]
-    expect_equal("RQ4 paired instances", full["paired_instances"], 500, paired_source)
-    expect_equal("RQ4 paired wins", full["wins"], 41, paired_source)
-    expect_equal("RQ4 paired losses", full["losses"], 18, paired_source)
-    expect_close("RQ4 exact McNemar p", float(full["exact_mcnemar_p"]), 0.0037937056353716074, paired_source, tol=1e-15)
-
-    for context in ("nokg", "kg"):
-        full500 = read_jsonl(f"claudecode_context_probe_glm5_20260531/full500_{context}_official_results.jsonl")
-        expect_equal(f"RQ4 {context} full500 row count", len(full500), 500, f"claudecode_context_probe_glm5_20260531/full500_{context}_official_results.jsonl")
-
+def verify_boundary() -> None:
     audit_source = "kg_evidence_graph_tse_timesafe_main_20260529_v6_audit_final.json"
     audit = read_json(audit_source)["summary"]
     expect_equal("Boundary audit ok instances", audit["ok"], 500, audit_source)
@@ -552,10 +422,10 @@ def verify_rq4_and_boundary() -> None:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Verify MURAL paper-facing artifact values.")
+    parser = argparse.ArgumentParser(description="Verify MURAL submission-facing artifact values.")
     parser.add_argument(
         "--rq",
-        choices=("all", "setup", "rq1", "rq2", "rq3", "rq4"),
+        choices=("all", "setup", "rq1", "rq2", "rq3", "boundary"),
         default="all",
         help="Restrict checks to one section. Default: all.",
     )
@@ -569,7 +439,7 @@ def main() -> int:
         "rq1": verify_rq1,
         "rq2": verify_rq2,
         "rq3": verify_patch_derived_context,
-        "rq4": verify_rq4_and_boundary,
+        "boundary": verify_boundary,
     }
     try:
         verify_result_inventory()
