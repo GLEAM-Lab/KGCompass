@@ -20,14 +20,14 @@ all recorded candidates and metric values are unchanged.
   `runs/kg_verified_evidence_graph/tse_timesafe_main_20260531_pathunion_v1/`.
 - Shared input boundary: original issue title/body plus base-commit repository
   code.
-- Excluded inputs: benchmark hints, issue/PR comments, target fixing pull
-  request evidence, pull-request patch diffs, linked commits, and future fixing
-  artifacts.
+- Excluded inputs: benchmark hints, issue/PR comments, evidence from the pull
+  request associated with the target repair, pull-request patch diffs, linked
+  commits, and future repair artifacts.
 
 The final leakage audit is copied to
 `artifacts/results/kg_evidence_graph_tse_timesafe_main_20260529_v6_audit_final.json`.
-It reports 500/500 valid instances, zero target-PR hits, zero future-fix trace
-hits, and no content, structural, or metadata failures.
+It reports 500/500 valid instances, zero target-PR hits, zero trace hits from
+future repair artifacts, and no content, structural, or metadata violations.
 
 ## Paper-Side Verification
 
