@@ -1,28 +1,23 @@
-# MURAL
+# KGCompass
 
-MURAL (Multi-source Unification of Retrieval And Localization) is a
-fixed-budget repair-context system for issue-driven repository repair. It
-passes BM25 and typed-knowledge-graph file rankings through the same
-source-agnostic local selector, fuses the resulting entity rankings, and can
-fill the unused tail of an existing localizer's context window.
+KGCompass is a fixed-budget function-level repair-context system for
+issue-driven repository repair. It builds a time-safe repository knowledge
+graph, mines file-local paths inside grounded files, and exports compact
+candidate windows with typed issue-to-code paths.
 
-This repository is the public artifact for the MURAL manuscript. It keeps the
-demo, core scripts, and submission-facing ledgers needed to audit the three
-main research questions and the separately compiled supplementary material.
-Older diagnostics, unreported ablations, partial intermediate results, and the
-retired KG-only downstream repair study are intentionally omitted from
-`artifacts/results/`.
-The `kgcompass/` package name and frozen `KGCompass` result labels are retained
-for compatibility; the artifact notes map them to the manuscript terminology.
+This repository is the public artifact branch for the KGCompass manuscript. It
+keeps the demo, core scripts, and the paper-facing ledgers needed to audit the
+reported RQ1-RQ4 claims. Older diagnostics, unreported ablations, and partial
+intermediate results are intentionally omitted from `artifacts/results/`.
 
 ## Repository Layout
 
 | Path | Purpose |
 | --- | --- |
 | `app.py`, `demo_web.py`, `static/`, `templates/` | Local web demo. |
-| `kgcompass/` | Core localization and repair modules (legacy package name). |
+| `kgcompass/` | Core KGCompass localization and repair modules. |
 | `scripts/` | Workspace scripts used to build localization and summary ledgers. |
-| `artifacts/` | Submission-facing result ledgers, prompts, audit notes, and verifier. |
+| `artifacts/` | Paper-facing result ledgers, prompts, audit notes, and verifier. |
 | `artifacts/results/` | Small committed ledgers aligned with manuscript tables and claims. |
 | `artifacts/RESULT_TRACEABILITY.md` | Mapping from manuscript claims to artifact files and rerun commands. |
 
@@ -36,7 +31,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Run the submission-side verifier:
+Run the paper-side verifier:
 
 ```bash
 python3 artifacts/scripts/verify_paper_results.py
@@ -53,21 +48,26 @@ Expected result:
 ```
 
 The verifier reads only files committed under `artifacts/results/` and checks
-the ground-truth mapping, controlled context windows, fixed-prefix fusion,
-supplementary budget sensitivity, mapped edit-target coverage, and
-leakage/sensitivity statements.
+the manuscript-facing values for the ground-truth mapping, RQ1 controlled
+context windows, RQ2 LLM and released-localizer fusion rows, RQ3
+patch-derived repair-context coverage and mechanism accounting, RQ4 full-500
+repair outcomes, and leakage/sensitivity statements.
 
-## Submission-Facing Results
+## Paper-Facing Results
 
 The main ledgers are:
 
 - `artifacts/results/tse_gt_mapping_v6.tsv`
 - `artifacts/results/path_mining_file_expansion_ablation_20260531.tsv`
-- `artifacts/results/retrieve_then_localize_top20_20260711.tsv`
-- `artifacts/results/retrieve_then_localize_paired_20260711.tsv`
-- `artifacts/results/retrieve_then_localize_budget_curve_20260711.tsv`
+- `artifacts/results/llm_pathmined_kg_ht10_20260531.tsv`
 - `artifacts/results/glm5_baseline_fusion_controls_top10_20260614.tsv`
+- `artifacts/results/external_verified_loc_baselines_cosil_release_20260601.tsv`
+- `artifacts/results/qwen25_32b_kgcompass_fusion_20260601.tsv`
+- `artifacts/results/local_open_models_pathmined_top10_5p5_summary.tsv`
+- `artifacts/results/glm5_pathmined_kg_complementarity_20260531.json`
+- `artifacts/results/rq3_file_local_path_mining_summary.tsv`
 - `artifacts/results/patch_derived_context_summary_20260702.tsv`
+- `artifacts/results/claudecode_context_probe_glm5_20260531.tsv`
 
 See `artifacts/RESULT_TRACEABILITY.md` for the complete file-to-claim mapping
 and the full-workspace commands used to produce the ledgers.

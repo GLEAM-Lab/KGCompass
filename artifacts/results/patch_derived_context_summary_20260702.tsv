@@ -1,10 +1,13 @@
-name	family	N	edit_target_recall	complete_edit_target_rate	source
-BM25	controlled	500	0.392046	0.350000	runs/text_baselines_nohints/2000
-KGCompass w/o file-local paths	controlled	500	0.337737	0.308000	runs/kg_verified_evidence_graph/tse_timesafe_main_20260529_v6
-KGCompass	controlled	500	0.454260	0.414000	runs/kg_verified_evidence_graph/tse_timesafe_main_20260531_pathunion_v1
-GLM-5 issue-only	fusion	500	0.529894	0.462000	temp_run/eval_aliyun_glm5_issueonly
-GLM-5+KGCompass	fusion	500	0.654793	0.588000	temp_run/fusions_glm5_baseline_controls_20260614_head10/GLM5_KGCompass_ht10
-BM25 files + file-local	bm25_filelocal	500	0.500761	0.446000	temp_run/private_bm25_filelocal_20260704/bm25_top20_files_filelocal
-BM25+KG RRF file-local	bm25_kg_rrf_filelocal	500	0.552889	0.490000	temp_run/private_bm25_filelocal_20260704/hybrid_rrf/BM25_KG_deterministic_rrf
-GLM-5 + BM25 files + file-local	glm5_bm25_filelocal	500	0.692247	0.622000	temp_run/private_bm25_filelocal_20260704/budget_fusions/GLM5_BM25FileLocal_b20_p10
-GLM-5 + BM25+KG RRF file-local	glm5_bm25_kg_rrf_filelocal	500	0.708623	0.642000	temp_run/private_bm25_filelocal_20260704/hybrid_rrf/deterministic_budget_fusions/GLM5_Hybrid_b20_p10
+name	family	N	ranked_nonempty	support_bearing_N	edit_target_recall	complete_edit_target_rate	edit_target_hit_rate	support_context_recall	context_completeness	context_waste	source
+BM25	controlled	500	500	241	0.392046	0.350000	0.460000	0.094621	0.327997	0.964200	runs/text_baselines_nohints/2000
+BLUiR	controlled	500	500	241	0.385940	0.346000	0.434000	0.173978	0.331007	0.934300	runs/text_baselines_bluir/2300
+CodeGraph	controlled	500	500	241	0.351665	0.312000	0.410000	0.134213	0.296781	0.947800	runs/codegraph_anchor/tse_timesafe_main_20260531_v2
+KGCompass w/o file-local paths	controlled	500	430	241	0.337737	0.308000	0.378000	0.142173	0.279129	0.808871	runs/kg_verified_evidence_graph/tse_timesafe_main_20260529_v6
+KGCompass	controlled	500	430	241	0.454260	0.414000	0.508000	0.193765	0.372824	0.792733	runs/kg_verified_evidence_graph/tse_timesafe_main_20260531_pathunion_v1
+GLM-5 issue-only	fusion	500	473	241	0.529894	0.462000	0.624000	0.110411	0.408602	0.681936	temp_run/eval_aliyun_glm5_issueonly
+GLM-5+CodeGraph	fusion	500	500	241	0.608862	0.538000	0.696000	0.203974	0.493104	0.921851	temp_run/fusions_glm5_baseline_controls_20260614_head10/GLM5_CodeGraph_ht10
+GLM-5+KGCompass	fusion	500	498	241	0.654793	0.588000	0.740000	0.231244	0.536270	0.893700	temp_run/fusions_glm5_baseline_controls_20260614_head10/GLM5_KGCompass_ht10
+BM25 files + file-local	bm25_filelocal	500	500	241	0.500761	0.446000	0.570000	0.190207	0.419480	0.932700	temp_run/private_bm25_filelocal_20260704/bm25_top20_files_filelocal
+BM25+KG RRF file-local	bm25_kg_rrf_filelocal	500	500	241	0.552889	0.490000	0.628000	0.218475	0.459435	0.921200	temp_run/private_bm25_filelocal_20260704/hybrid_rrf/BM25_KG_deterministic_rrf
+GLM-5 + BM25 files + file-local	glm5_bm25_filelocal	500	500	241	0.692247	0.622000	0.780000	0.236851	0.566651	0.916000	temp_run/private_bm25_filelocal_20260704/budget_fusions/GLM5_BM25FileLocal_b20_p10
+GLM-5 + BM25+KG RRF file-local	glm5_bm25_kg_rrf_filelocal	500	500	241	0.708623	0.642000	0.790000	0.250046	0.579863	0.907700	temp_run/private_bm25_filelocal_20260704/hybrid_rrf/deterministic_budget_fusions/GLM5_Hybrid_b20_p10

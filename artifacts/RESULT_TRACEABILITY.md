@@ -1,34 +1,29 @@
 # Result Traceability
 
-This note maps every retained result ledger to either the MURAL main manuscript
-or its separately compiled supplementary material. Files for unreported
-diagnostics, obsolete ablations, partial shards, and the retired KG-only
-downstream repair study are intentionally absent.
-
-Frozen ledgers retain historical `KGCompass` labels. In the submitted
-documents, `KGCompass` is `KG-local`, `BM25+KG RRF file-local` is standalone
-MURAL, and `GLM-5 + BM25+KG RRF file-local` is GLM-5+MURAL. This mapping changes
-terminology only; candidate rankings and metric values are unchanged.
+This note maps the current KGCompass manuscript claims to the committed
+paper-side ledgers. It intentionally excludes older diagnostics and unreported
+ablations so reviewers do not have to reconcile artifact-only results with the
+paper text.
 
 ## Evaluation Scope
 
 - Benchmark: all 500 SWE-bench Verified instances.
-- Structural source:
+- KG-only time-safe artifact:
   `runs/kg_verified_evidence_graph/tse_timesafe_main_20260529_v6/`.
-- KG-local rank union:
+- Main path-mined selector:
   `runs/kg_verified_evidence_graph/tse_timesafe_main_20260531_pathunion_v1/`.
-- Shared input boundary: original issue title/body plus base-commit code.
-- Excluded inputs: benchmark hints, issue/PR comments, evidence from the pull
-  request associated with the target repair, patch text, linked repair commits,
-  and future artifacts.
-- Evaluator-only data: official patches and all derived target mappings.
+- Shared input boundary: original issue title/body plus base-commit repository
+  code.
+- Excluded inputs: benchmark hints, issue/PR comments, target fixing pull
+  request evidence, pull-request patch diffs, linked commits, and future fixing
+  artifacts.
 
 The final leakage audit is copied to
 `artifacts/results/kg_evidence_graph_tse_timesafe_main_20260529_v6_audit_final.json`.
-It reports 500/500 valid instances, zero target-PR hits, zero trace hits from
-future repair artifacts, and no content, structural, or metadata violations.
+It reports 500/500 valid instances, zero target-PR hits, zero future-fix trace
+hits, and no content, structural, or metadata failures.
 
-## Submission-Side Verification
+## Paper-Side Verification
 
 Run:
 
@@ -36,95 +31,104 @@ Run:
 python3 artifacts/scripts/verify_paper_results.py
 ```
 
-The verifier checks:
+The verifier checks the paper-facing values for:
 
-- the exact result-file inventory;
-- the target-mapping table;
-- RQ-1 controlled source, selector, fusion, and paired statistics;
-- RQ-2 fixed-prefix controls and paired statistics;
-- RQ-3 mapped edit-target coverage;
-- supplementary budget-sensitivity values; and
+- the ground-truth mapping table;
+- RQ1 controlled Top-20 context-window rows;
+- RQ1/RQ2 source-swapped and equal-weight RRF file-local controls, paired
+  tests, and budget curves;
+- RQ2 LLM+KGCompass, GLM-5 tail-control, released-localizer, and local
+  open-model rows;
+- GLM-5/KGCompass overlap and paired statistics;
+- RQ3 file-local path-mining mechanism counts;
+- RQ3 patch-derived repair-context coverage;
+- RQ4 full-500 ClaudeCode repair outcomes; and
 - leakage and external-artifact sensitivity statements.
 
-## Main-Manuscript Mapping
-
-### Experimental Setup
+## Manuscript Mapping
 
 - Ground-truth mapping:
   `artifacts/results/tse_gt_mapping_v6.tsv`.
-- Input-boundary record:
-  `artifacts/issue_comment_boundary.json`.
-
-### RQ-1: Controlled Context Windows
-
-- BM25, BLUiR, CodeGraph, graph-only KG, and KG-local:
+- RQ1 controlled context windows:
   `artifacts/results/path_mining_file_expansion_ablation_20260531.tsv`.
-- Matched BM25/KG file-local and MURAL rows:
-  `artifacts/results/retrieve_then_localize_top20_20260711.tsv`.
-- Bootstrap intervals, win/loss counts, and exact tests:
-  `artifacts/results/retrieve_then_localize_paired_20260711.tsv`.
-- Per-instance Hit@20 disagreements:
-  `artifacts/results/retrieve_then_localize_disagreements_20260711.tsv`.
-- First-stage Top-20 file coverage:
+  This file is trimmed to the manuscript rows: BM25, BLUiR, CodeGraph,
+  KGCompass without file-local paths, and full KGCompass.
+- RQ1/RQ3 paired full-vs-without-file-local accounting:
+  `artifacts/results/rq1_pathmined_paired_stats_20260531.tsv`.
+- RQ2 LLM issue-only and LLM+KGCompass rows:
+  `artifacts/results/llm_pathmined_kg_ht10_20260531.tsv`.
+- RQ2 GLM-5 fixed-prefix tail controls:
+  `artifacts/results/glm5_baseline_fusion_controls_top10_20260614.tsv`.
+- Source-swapped and equal-weight RRF retrieve-then-localize controls:
+  `artifacts/results/retrieve_then_localize_top20_20260711.tsv`,
+  `artifacts/results/retrieve_then_localize_paired_20260711.tsv`,
+  `artifacts/results/retrieve_then_localize_disagreements_20260711.tsv`,
+  `artifacts/results/retrieve_then_localize_budget_curve_20260711.tsv`, and
+  `artifacts/results/retrieve_then_localize_budget_paired_20260711.tsv`.
+- First-stage ranked-file coverage:
   `artifacts/results/ranked_file_source_coverage_20260711.tsv` and
   `artifacts/results/ranked_file_source_paired_20260711.tsv`.
-
-### RQ-2: Fixed-Prefix LLM Fusion
-
-- GLM-5 issue-only, KG-local, BM25-local, and MURAL rows:
-  `artifacts/results/retrieve_then_localize_top20_20260711.tsv`.
-- CodeGraph fixed-prefix control:
-  `artifacts/results/glm5_baseline_fusion_controls_top10_20260614.tsv`.
-- Paired source and fusion statistics:
-  `artifacts/results/retrieve_then_localize_paired_20260711.tsv`.
-
-### RQ-3: Complete Edit-Target Coverage
-
-- Aggregate edit-target recall and complete coverage:
-  `artifacts/results/patch_derived_context_summary_20260702.tsv` and `.json`.
-- Deterministic mapped targets:
+- RQ2 released Qwen2.5-32B localizer rows:
+  `artifacts/results/external_verified_loc_baselines_cosil_release_20260601.tsv`.
+- RQ2 CoSIL-Qwen2.5-32B+KGCompass row:
+  `artifacts/results/qwen25_32b_kgcompass_fusion_20260601.tsv`.
+- RQ2 local open-model Top-10 stress rows:
+  `artifacts/results/local_open_models_pathmined_top10_5p5_summary.tsv`.
+- RQ2 GLM-5/KGCompass overlap and 58-win evidence accounting:
+  `artifacts/results/glm5_pathmined_kg_complementarity_20260531.json`,
+  `artifacts/results/glm5_pathmined_kg_complementarity_20260531.tsv`,
+  `artifacts/results/glm5_pathmined_rescued_instances_20260531.tsv`, and
+  `artifacts/results/tse_paired_stats_pathmined_20260531.tsv`.
+- RQ3 KG-only path and rank summaries:
+  `artifacts/results/kg_clean_tse_timesafe_main_20260529_v6_rq3.json` and
+  `artifacts/results/kg_clean_tse_timesafe_main_20260529_v6_rq3.tsv`.
+- RQ3 file-local path-mining aggregate:
+  `artifacts/results/rq3_file_local_path_mining_summary.tsv`.
+- RQ3 patch-derived repair-context coverage:
+  `artifacts/results/patch_derived_context_summary_20260702.tsv`,
+  `artifacts/results/patch_derived_context_summary_20260702.json`, and
   `artifacts/results/patch_derived_context_targets_20260702.json`.
-
-### Threats to Validity
-
-- Leakage-sentinel audit:
-  `artifacts/results/kg_evidence_graph_tse_timesafe_main_20260529_v6_audit_final.json`.
-- External-artifact sensitivity:
+- Threats-to-validity external-artifact sensitivity:
   `artifacts/results/time_boundary_external_artifact_sensitivity_20260531.tsv`.
-
-## Supplementary-Material Mapping
-
-### Budget Sensitivity
-
-- Four-budget aggregate rows:
-  `artifacts/results/retrieve_then_localize_budget_curve_20260711.tsv`.
-- Four-budget paired statistics:
-  `artifacts/results/retrieve_then_localize_budget_paired_20260711.tsv`.
-
-### Reproduction Settings
-
-- Exact localization prompt:
-  `artifacts/prompts/llm_fault_location_prompt.md`.
+- RQ4 full-500 ClaudeCode repair check:
+  `artifacts/results/claudecode_context_probe_glm5_20260531.tsv`,
+  the `full500_*` official result ledgers and summary JSON files under
+  `artifacts/results/claudecode_context_probe_glm5_20260531/`,
+  `paired_stats.json`, and `rq4_case_sphinx_10673.json`.
 
 ## Reproduction Commands
 
-The commands below target the full experiment workspace, where benchmark
-checkouts, cached mappings, and per-instance run directories are available.
-Scripts mirrored under `artifacts/scripts/` are source-inspection snapshots.
+The commands below are intended for the full KGCompass experiment workspace,
+where SWE-bench Verified caches, base-commit repositories, and per-instance run
+directories are available. The mirrored scripts under `artifacts/scripts/` are
+source-inspection snapshots.
 
-### Leakage Audit
+Final leakage audit:
 
 ```bash
-python3 artifacts/scripts/audit_kg_leakage.py \
+python3 scripts/audit_kg_leakage.py \
   runs/kg_verified_evidence_graph/tse_timesafe_main_20260529_v6 \
   --output-json logs/kg_evidence_graph_tse_timesafe_main_20260529_v6_audit_final.json \
   --fail-on-issue
 ```
 
-### Controlled Source Rows
+Path-mined KGCompass export and RQ1/RQ3 context-window ledgers:
 
 ```bash
-python3 artifacts/scripts/eval_controls_v3.py \
+PATH_MINED_INTERMEDIATE=runs/kg_verified_evidence_graph/tse_timesafe_main_20260531_filelocal_intermediate
+
+python3 scripts/export_path_mined_filelocal.py \
+  --input-dir runs/kg_verified_evidence_graph/tse_timesafe_main_20260529_v6 \
+  --output-dir "$PATH_MINED_INTERMEDIATE" \
+  --limit 50
+
+python3 scripts/fuse_path_mined_with_kg.py \
+  --kg-dir runs/kg_verified_evidence_graph/tse_timesafe_main_20260529_v6 \
+  --path-mined-dir "$PATH_MINED_INTERMEDIATE" \
+  --output-dir runs/kg_verified_evidence_graph/tse_timesafe_main_20260531_pathunion_v1 \
+  --limit 50
+
+python3 scripts/eval_controls_v3.py \
   --group full_pathmined=runs/kg_verified_evidence_graph/tse_timesafe_main_20260531_pathunion_v1 \
   --group strict_kg_ablation=runs/kg_verified_evidence_graph/tse_timesafe_main_20260529_v6 \
   --group bm25_nohint=runs/text_baselines_nohints/2000 \
@@ -134,7 +138,32 @@ python3 artifacts/scripts/eval_controls_v3.py \
   --top-k 20
 ```
 
-### BM25 File-Local Selection and MURAL
+RQ1/RQ3 paired full-vs-without-file-local statistics:
+
+```bash
+python3 scripts/analyze_rq1_paired_stats.py \
+  --main full_pathmined=runs/kg_verified_evidence_graph/tse_timesafe_main_20260531_pathunion_v1 \
+  --baseline strict_kg_ablation=runs/kg_verified_evidence_graph/tse_timesafe_main_20260529_v6 \
+  --output-tsv logs/comparison_current/rq1_pathmined_paired_stats_20260531.tsv
+```
+
+RQ3 patch-derived repair-context coverage:
+
+```bash
+python3 artifacts/scripts/evaluate_patch_derived_context.py \
+  --ids-file temp_run/SWE-bench_Verified_ids.jsonl \
+  --gt-cache temp_run/output/gt_eval_cache_verified_v3_entities.json \
+  --support-cache artifacts/results/patch_derived_context_targets_20260702.json \
+  --output-tsv logs/comparison_current/patch_derived_context_summary_20260702.tsv \
+  --output-json logs/comparison_current/patch_derived_context_summary_20260702.json \
+  --row "BM25 files + file-local=bm25_filelocal=temp_run/bm25_filelocal" \
+  --row "BM25+KG RRF file-local=bm25_kg_rrf_filelocal=temp_run/bm25_kg_rrf_filelocal" \
+  --row "GLM-5 + BM25 files + file-local=glm5_bm25_filelocal=temp_run/glm5_bm25_filelocal_b20" \
+  --row "GLM-5 + BM25+KG RRF file-local=glm5_bm25_kg_rrf_filelocal=temp_run/glm5_bm25_kg_rrf_b20" \
+  --top-k 20
+```
+
+BM25 files through the unchanged file-local miner:
 
 ```bash
 BM25_METHODS=runs/text_baselines_nohints/2000
@@ -165,7 +194,21 @@ python3 artifacts/scripts/export_equal_rrf_fusion.py \
   --force
 ```
 
-### Fixed-Prefix Top-20 Controls
+Direct first-stage ranked-file coverage:
+
+```bash
+python3 artifacts/scripts/analyze_ranked_file_sources.py \
+  --ids-file temp_run/SWE-bench_Verified_ids.jsonl \
+  --gt-cache temp_run/output/gt_eval_cache_verified_v3_entities.json \
+  --group KG_grounded_files=runs/kg_verified_evidence_graph/tse_timesafe_main_20260529_v6 \
+  --group BM25_ranked_files=runs/text_baselines_nohints/2000 \
+  --compare KG_grounded_files=BM25_ranked_files \
+  --top-files 20 \
+  --output-summary logs/comparison_current/ranked_file_source_coverage_20260711.tsv \
+  --output-paired logs/comparison_current/ranked_file_source_paired_20260711.tsv
+```
+
+Fixed-prefix GLM-5 fusion and the paired Top-20 ledger:
 
 ```bash
 python3 artifacts/scripts/export_fixed_prefix_fusion.py \
@@ -199,6 +242,7 @@ python3 artifacts/scripts/analyze_retrieve_localize_controls.py \
   --group GLM5_BM25_KG_RRF_filelocal=temp_run/glm5_bm25_kg_rrf_b20 \
   --compare KG_filelocal=BM25_filelocal \
   --compare BM25_filelocal=BM25_KG_RRF_filelocal \
+  --compare GLM5_issue=GLM5_KG_filelocal \
   --compare GLM5_issue=GLM5_BM25_filelocal \
   --compare GLM5_issue=GLM5_BM25_KG_RRF_filelocal \
   --compare GLM5_KG_filelocal=GLM5_BM25_filelocal \
@@ -208,22 +252,45 @@ python3 artifacts/scripts/analyze_retrieve_localize_controls.py \
   --output-disagreements logs/comparison_current/retrieve_then_localize_disagreements_20260711.tsv
 ```
 
-### Patch-Derived Coverage
+RQ2 GLM-5 fixed-prefix tail controls:
 
 ```bash
-python3 artifacts/scripts/evaluate_patch_derived_context.py \
+OUT_ROOT=temp_run/fusions_glm5_baseline_controls_20260614_head10
+PRIMARY=temp_run/eval_aliyun_glm5_issueonly
+
+while IFS="|" read -r name dir; do
+  python3 temp_run/export_two_way_fusion.py \
+    --primary-dir "$PRIMARY" \
+    --secondary-dir "$dir" \
+    --output-dir "$OUT_ROOT/$name" \
+    --mode intersection \
+    --strategy head_tail \
+    --top-k 50 \
+    --primary-head 10 \
+    --secondary-head 10 \
+    --force
+done <<'EOF'
+GLM5_CodeGraph_ht10|runs/codegraph_anchor/tse_timesafe_main_20260531_v2
+GLM5_KGCompass_ht10|runs/kg_verified_evidence_graph/tse_timesafe_main_20260531_pathunion_v1
+EOF
+
+python3 artifacts/scripts/analyze_glm5_baseline_fusion_controls.py \
   --ids-file temp_run/SWE-bench_Verified_ids.jsonl \
-  --gt-cache temp_run/output/gt_eval_cache_verified_v3_entities.json \
-  --target-cache artifacts/results/patch_derived_context_targets_20260702.json \
-  --output-tsv logs/comparison_current/patch_derived_context_summary_20260702.tsv \
-  --output-json logs/comparison_current/patch_derived_context_summary_20260702.json \
-  --row "BM25 files + file-local=bm25_filelocal=temp_run/private_bm25_filelocal_20260704/bm25_top20_files_filelocal" \
-  --row "BM25+KG RRF file-local=bm25_kg_rrf_filelocal=temp_run/private_bm25_filelocal_20260704/hybrid_rrf/BM25_KG_deterministic_rrf" \
-  --row "GLM-5 + BM25 files + file-local=glm5_bm25_filelocal=temp_run/private_bm25_filelocal_20260704/budget_fusions/GLM5_BM25FileLocal_b20_p10" \
-  --row "GLM-5 + BM25+KG RRF file-local=glm5_bm25_kg_rrf_filelocal=temp_run/private_bm25_filelocal_20260704/hybrid_rrf/deterministic_budget_fusions/GLM5_Hybrid_b20_p10" \
+  --issue-dir temp_run/eval_aliyun_glm5_issueonly \
+  --group GLM5_CodeGraph_ht10=$OUT_ROOT/GLM5_CodeGraph_ht10 \
+  --group GLM5_KGCompass_ht10=$OUT_ROOT/GLM5_KGCompass_ht10 \
+  --output-tsv logs/comparison_current/glm5_baseline_fusion_controls_top10_20260614_paired.tsv \
   --top-k 20
 ```
 
-The exact GLM-5 endpoint identifier, evaluation snapshot, and frozen
-localization prompt are reported in the supplementary material and under
-`artifacts/prompts/`.
+Released Qwen2.5-32B plus KGCompass fusion:
+
+```bash
+python3 scripts/eval_external_qwen25_kg_fusion.py \
+  --kg-dir runs/kg_verified_evidence_graph/tse_timesafe_main_20260531_pathunion_v1 \
+  --external-root /tmp/kgc_external_baselines/CoSIL/loc_to_patch_verified \
+  --output-tsv logs/comparison_current/qwen25_32b_kgcompass_fusion_20260601.tsv \
+  --output-json logs/comparison_current/qwen25_32b_kgcompass_fusion_20260601.json
+```
+
+The paper-side ledgers retain only the rows reported in the manuscript.

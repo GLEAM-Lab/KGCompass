@@ -1,0 +1,44 @@
+{
+  "instance_id": "sphinx-doc__sphinx-10673",
+  "rq": "RQ-4 downstream repair case study",
+  "source_runs": {
+    "issue_only_run": "temp_run/claudecode_compare_subset100_glm5_claudecode_agentic_remaining400_prompt_v1/repair/claudecode_original/runs/sphinx-doc__sphinx-10673",
+    "kgcompass_run": "temp_run/claudecode_compare_subset100_glm5_claudecode_agentic_remaining400_prompt_v1/repair/claudecode_kg/runs/sphinx-doc__sphinx-10673"
+  },
+  "official_results": {
+    "issue_only": {
+      "patch_chars": 0,
+      "patch_successfully_applied": false,
+      "resolved": false,
+      "error": "missing_report"
+    },
+    "issue_only_plus_kgcompass": {
+      "patch_chars": 3675,
+      "patch_successfully_applied": true,
+      "resolved": true,
+      "fail_to_pass_success": 1,
+      "pass_to_pass_success": 9
+    }
+  },
+  "kgcompass_suspect_context": [
+    {
+      "file": "sphinx/directives/other.py",
+      "functions": [
+        "TocTree.parse_content",
+        "TocTree.run"
+      ]
+    },
+    {
+      "file": "sphinx/environment/adapters/toctree.py",
+      "functions": [
+        "TocTree.note",
+        "TocTree.get_toctree_for",
+        "TocTree.get_toc_for"
+      ]
+    }
+  ],
+  "patch_summary": [
+    "sphinx/directives/other.py: treat genindex, modindex, and search as special generated pages during toctree parsing.",
+    "sphinx/environment/adapters/toctree.py: create internal references for genindex, modindex, and search during toctree resolution."
+  ]
+}
