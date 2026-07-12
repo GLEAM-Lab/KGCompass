@@ -2,11 +2,10 @@
 """Evaluate patch-derived repair-context coverage for ranked context windows.
 
 The existing paper metrics evaluate whether a Top-K window covers official
-patch edit targets.  This script keeps that definition and adds a conservative
-support-context set derived from the official patch itself: non-edited
-functions or assignments in patched files whose simple names are referenced by
-the patch hunk text.  This makes the "repair context" target reproducible and
-keeps it tied to the developer patch rather than subjective annotation.
+patch edit targets. This script also derives a deterministic patch-linked
+support proxy: non-edited functions or assignments in patched files whose
+simple names are referenced by the patch hunk text. The proxy is reproducible
+and patch-relative; it is not a minimal necessary context set.
 """
 
 from __future__ import annotations
@@ -38,18 +37,6 @@ DEFAULT_ROWS = [
         "runs/text_baselines_nohints/2000",
     ),
     (
-        "BLUiR",
-        "controlled",
-        "dir",
-        "runs/text_baselines_bluir/2300",
-    ),
-    (
-        "CodeGraph",
-        "controlled",
-        "dir",
-        "runs/codegraph_anchor/tse_timesafe_main_20260531_v2",
-    ),
-    (
         "KGCompass w/o file-local paths",
         "controlled",
         "dir",
@@ -66,12 +53,6 @@ DEFAULT_ROWS = [
         "fusion",
         "dir",
         "temp_run/eval_aliyun_glm5_issueonly",
-    ),
-    (
-        "GLM-5+CodeGraph",
-        "fusion",
-        "dir",
-        "temp_run/fusions_glm5_baseline_controls_20260614_head10/GLM5_CodeGraph_ht10",
     ),
     (
         "GLM-5+KGCompass",
@@ -536,8 +517,7 @@ def evaluate_candidates(
     complete_edit = 0
     edit_hit = 0
     support_recall_sum = 0.0
-    context_completeness_sum = 0.0
-    context_waste_sum = 0.0
+    joint_proxy_coverage_sum = 0.0
 
     for iid in ids:
         targets = targets_by_id[iid]
@@ -549,15 +529,11 @@ def evaluate_candidates(
         matched_edit: set[str] = set()
         matched_support: set[str] = set()
         fallback_hit = 0
-        waste_slots = 0
         for candidate in ranked:
             edit_delta, support_delta, fallback_delta = match_candidate(candidate, targets)
-            matched_before = bool(edit_delta or support_delta or fallback_delta)
             matched_edit.update(edit_delta)
             matched_support.update(support_delta)
             fallback_hit = max(fallback_hit, fallback_delta)
-            if not matched_before:
-                waste_slots += 1
 
         edit_den = max(1, int(targets["gt_entities_n"]))
         edit_found = fallback_hit if targets["fallback_file_target"] else len(matched_edit)
@@ -569,12 +545,10 @@ def evaluate_candidates(
         edit_recall_sum += edit_found / edit_den
         edit_hit += 1 if edit_found > 0 else 0
         complete_edit += 1 if edit_found >= edit_den else 0
-        context_completeness_sum += total_found / max(1, total_den)
+        joint_proxy_coverage_sum += total_found / max(1, total_den)
         if support_den > 0:
             support_bearing_n += 1
             support_recall_sum += support_found / support_den
-        if ranked:
-            context_waste_sum += waste_slots / len(ranked)
 
     return {
         "N": n,
@@ -583,9 +557,8 @@ def evaluate_candidates(
         "edit_target_recall": edit_recall_sum / n if n else 0.0,
         "complete_edit_target_rate": complete_edit / n if n else 0.0,
         "edit_target_hit_rate": edit_hit / n if n else 0.0,
-        "support_context_recall": support_recall_sum / support_bearing_n if support_bearing_n else 0.0,
-        "context_completeness": context_completeness_sum / n if n else 0.0,
-        "context_waste": context_waste_sum / n if n else 0.0,
+        "support_proxy_recall": support_recall_sum / support_bearing_n if support_bearing_n else 0.0,
+        "joint_proxy_coverage": joint_proxy_coverage_sum / n if n else 0.0,
     }
 
 
@@ -676,9 +649,8 @@ def main() -> int:
         "edit_target_recall",
         "complete_edit_target_rate",
         "edit_target_hit_rate",
-        "support_context_recall",
-        "context_completeness",
-        "context_waste",
+        "support_proxy_recall",
+        "joint_proxy_coverage",
         "source",
     ]
     with args.output_tsv.open("w", newline="", encoding="utf-8") as handle:
@@ -690,9 +662,8 @@ def main() -> int:
                 "edit_target_recall",
                 "complete_edit_target_rate",
                 "edit_target_hit_rate",
-                "support_context_recall",
-                "context_completeness",
-                "context_waste",
+                "support_proxy_recall",
+                "joint_proxy_coverage",
             ):
                 out[key] = f"{out[key]:.6f}"
             writer.writerow(out)

@@ -30,16 +30,10 @@ EXPECTED_RESULT_FILES = {
     "claudecode_context_probe_glm5_20260531/rq4_case_sphinx_10673.json",
     "external_verified_loc_baselines_cosil_release_20260601.tsv",
     "glm5_baseline_fusion_controls_top10_20260614.tsv",
-    "glm5_pathmined_kg_complementarity_20260531.json",
-    "glm5_pathmined_kg_complementarity_20260531.tsv",
-    "glm5_pathmined_rescued_instances_20260531.tsv",
-    "kg_clean_tse_timesafe_main_20260529_v6_rq3.json",
-    "kg_clean_tse_timesafe_main_20260529_v6_rq3.tsv",
     "kg_evidence_graph_tse_timesafe_main_20260529_v6_audit_final.json",
     "llm_pathmined_kg_ht10_20260531.tsv",
     "local_open_models_pathmined_top10_5p5_summary.tsv",
     "path_mining_file_expansion_ablation_20260531.tsv",
-    "path_mining_full500_summary.tsv",
     "patch_derived_context_summary_20260702.json",
     "patch_derived_context_summary_20260702.tsv",
     "patch_derived_context_targets_20260702.json",
@@ -52,7 +46,6 @@ EXPECTED_RESULT_FILES = {
     "retrieve_then_localize_paired_20260711.tsv",
     "retrieve_then_localize_top20_20260711.tsv",
     "rq1_pathmined_paired_stats_20260531.tsv",
-    "rq3_file_local_path_mining_summary.tsv",
     "time_boundary_external_artifact_sensitivity_20260531.tsv",
     "tse_gt_mapping_v6.tsv",
     "tse_paired_stats_pathmined_20260531.tsv",
@@ -414,18 +407,10 @@ def verify_rq2() -> None:
 
     released_source = "external_verified_loc_baselines_cosil_release_20260601.tsv"
     released = read_tsv(released_source)
-    released_rows = [
-        "CoSIL/CoSIL_qwen_coder_32b_func.jsonl",
-        "locagent/locagent_qwen_coder_32b_func.jsonl",
-        "agentless/agentless_qwen_coder_32b_func.jsonl",
-        "orcaloca/orcaloca_qwen_coder_32b_func.jsonl",
-    ]
+    released_rows = ["CoSIL/CoSIL_qwen_coder_32b_func.jsonl"]
     expect_row_set("RQ2 released Qwen2.5 row set", released, "name", released_rows, released_source)
     released_expected = {
         "CoSIL/CoSIL_qwen_coder_32b_func.jsonl": (85.0, 55.9, 52.0, 65.6),
-        "locagent/locagent_qwen_coder_32b_func.jsonl": (76.2, 52.0, 53.0, 61.2),
-        "agentless/agentless_qwen_coder_32b_func.jsonl": (81.4, 48.3, 43.2, 57.8),
-        "orcaloca/orcaloca_qwen_coder_32b_func.jsonl": (69.0, 17.6, 16.8, 21.4),
     }
     for name, values in released_expected.items():
         expect_metric_row(released_source, row_by(released, "name", name), values, f"RQ2 released {name}")
@@ -468,68 +453,14 @@ def verify_rq2() -> None:
     expect_equal("RQ2 GLM5 Hit@20 losses", int(hit["losses"]), 0, paired_source)
     expect_close("RQ2 GLM5 Hit@20 p-value", float(hit["p_value"]), 6.94e-18, paired_source, tol=1e-20)
 
-    comp_source = "glm5_pathmined_kg_complementarity_20260531.json"
-    comp = read_json(comp_source)
-    overlap = comp["kg_only_vs_glm_issue_only"]
-    expect_equal("RQ2 overlap GLM hit and KG hit", overlap["both_hit"], 190, comp_source)
-    expect_equal("RQ2 overlap GLM hit and KG miss", overlap["glm_hits_missed_by_kg"], 122, comp_source)
-    expect_equal("RQ2 overlap GLM miss and KG hit", overlap["kg_hits_missed_by_glm"], 64, comp_source)
-    expect_equal("RQ2 overlap GLM miss and KG miss", 500 - overlap["union_hit_ceiling"], 124, comp_source)
-    expect_equal("RQ2 GLM/KG union ceiling", overlap["union_hit_ceiling"], 376, comp_source)
-    expect_equal("RQ2 fixed 10+10 fusion hits", comp["top20_hit"]["llm_kg_hit"], 370, comp_source)
-    rescued = comp["rescued_method_instances"]
-    expect_equal("RQ2 rescued method wins", rescued["count"], 58, comp_source)
-    expect_equal("RQ2 rescued wins with KG evidence path", rescued["kg_evidence_hit_count"], 58, comp_source)
-    expect_equal("RQ2 rescued rank <= 5", rescued["fusion_rank_buckets"]["fusion_rank_le_5"], 21, comp_source)
-    expect_equal("RQ2 rescued rank <= 10", rescued["fusion_rank_buckets"]["fusion_rank_le_10"], 39, comp_source)
-    expect_equal("RQ2 rescued two-hop paths", rescued["path_lengths"]["2"], 21, comp_source)
-    expect_equal("RQ2 rescued three-hop paths", rescued["path_lengths"]["3"], 37, comp_source)
-
-
-def verify_rq3() -> None:
-    rq3_source = "kg_clean_tse_timesafe_main_20260529_v6_rq3.json"
-    rq3 = read_json(rq3_source)
-    expect_equal("RQ3 KG-only method-hit instances", rq3["method_hit_instances"], 189, rq3_source)
-    expect_equal("RQ3 KG-only path observations", rq3["path_summary"]["path_observations"], 252, rq3_source)
-    expect_equal("RQ3 KG-only length-2 paths", rq3["path_length_counts"]["2"], 251, rq3_source)
-    expect_equal("RQ3 KG-only length-3 paths", rq3["path_length_counts"]["3"], 1, rq3_source)
-    expect_equal("RQ3 KG-only file intermediate count", rq3["entity_type_counts"]["file"], 252, rq3_source)
-
-    full_source = "path_mining_full500_summary.tsv"
-    rows = read_tsv(full_source)
-    expect_row_set("RQ3 compact summary row set", rows, "name", ["pathunion_v1", "kg_clean"], full_source)
-    full_hits = round(float(row_by(rows, "name", "pathunion_v1")["top20_hit_rate"]) * 500)
-    strict_hits = round(float(row_by(rows, "name", "kg_clean")["top20_hit_rate"]) * 500)
-    expect_equal("RQ3 full path-mined hits", full_hits, 254, full_source)
-    expect_equal("RQ3 without-file-local hits", strict_hits, 189, full_source)
-    expect_equal("RQ3 net Hit@20 gain", full_hits - strict_hits, 65, full_source)
-
-    mechanism_source = "rq3_file_local_path_mining_summary.tsv"
-    mechanism = {row["metric"]: row["value"] for row in read_tsv(mechanism_source)}
-    expected = {
-        "kg_without_file_local_paths_hit_instances": "189",
-        "kgcompass_hit_instances": "254",
-        "net_hit20_gain_instances": "65",
-        "paired_gross_wins": "67",
-        "paired_regressions": "2",
-        "gross_wins_length2_paths": "12",
-        "gross_wins_length3_paths": "55",
-        "gross_wins_length3_percent": "82.1",
-    }
-    expect_equal("RQ3 file-local mechanism summary", mechanism, expected, mechanism_source)
-
-
 def verify_patch_derived_context() -> None:
     source = "patch_derived_context_summary_20260702.tsv"
     rows = read_tsv(source)
     expected_rows = [
         "BM25",
-        "BLUiR",
-        "CodeGraph",
         "KGCompass w/o file-local paths",
         "KGCompass",
         "GLM-5 issue-only",
-        "GLM-5+CodeGraph",
         "GLM-5+KGCompass",
         "BM25 files + file-local",
         "BM25+KG RRF file-local",
@@ -539,12 +470,9 @@ def verify_patch_derived_context() -> None:
     expect_row_set("Patch-derived context row set", rows, "name", expected_rows, source)
     expected = {
         "BM25": (500, 500, 241, 39.2, 35.0, 46.0, 9.5, 32.8),
-        "BLUiR": (500, 500, 241, 38.6, 34.6, 43.4, 17.4, 33.1),
-        "CodeGraph": (500, 500, 241, 35.2, 31.2, 41.0, 13.4, 29.7),
         "KGCompass w/o file-local paths": (500, 430, 241, 33.8, 30.8, 37.8, 14.2, 27.9),
         "KGCompass": (500, 430, 241, 45.4, 41.4, 50.8, 19.4, 37.3),
         "GLM-5 issue-only": (500, 473, 241, 53.0, 46.2, 62.4, 11.0, 40.9),
-        "GLM-5+CodeGraph": (500, 500, 241, 60.9, 53.8, 69.6, 20.4, 49.3),
         "GLM-5+KGCompass": (500, 498, 241, 65.5, 58.8, 74.0, 23.1, 53.6),
         "BM25 files + file-local": (500, 500, 241, 50.1, 44.6, 57.0, 19.0, 41.9),
         "BM25+KG RRF file-local": (500, 500, 241, 55.3, 49.0, 62.8, 21.8, 45.9),
@@ -553,15 +481,15 @@ def verify_patch_derived_context() -> None:
     }
     for name, values in expected.items():
         row = row_by(rows, "name", name)
-        n, ranked_nonempty, support_bearing, edit_recall, complete_edit, edit_hit, support_recall, completeness = values
+        n, ranked_nonempty, support_bearing, edit_recall, complete_edit, edit_hit, support_recall, joint_coverage = values
         expect_equal(f"Patch context {name} N", int(row["N"]), n, source)
         expect_equal(f"Patch context {name} ranked nonempty", int(row["ranked_nonempty"]), ranked_nonempty, source)
         expect_equal(f"Patch context {name} support-bearing N", int(row["support_bearing_N"]), support_bearing, source)
         expect_close(f"Patch context {name} edit target recall", pct(row["edit_target_recall"]), edit_recall, source)
         expect_close(f"Patch context {name} complete edit target", pct(row["complete_edit_target_rate"]), complete_edit, source)
         expect_close(f"Patch context {name} edit target hit", pct(row["edit_target_hit_rate"]), edit_hit, source)
-        expect_close(f"Patch context {name} support context recall", pct(row["support_context_recall"]), support_recall, source)
-        expect_close(f"Patch context {name} context completeness", pct(row["context_completeness"]), completeness, source)
+        expect_close(f"Patch context {name} support-proxy recall", pct(row["support_proxy_recall"]), support_recall, source)
+        expect_close(f"Patch context {name} joint proxy coverage", pct(row["joint_proxy_coverage"]), joint_coverage, source)
 
     target_source = "patch_derived_context_targets_20260702.json"
     targets = read_json(target_source)
@@ -640,7 +568,7 @@ def main() -> int:
         "setup": verify_setup,
         "rq1": verify_rq1,
         "rq2": verify_rq2,
-        "rq3": lambda: (verify_rq3(), verify_patch_derived_context()),
+        "rq3": verify_patch_derived_context,
         "rq4": verify_rq4_and_boundary,
     }
     try:

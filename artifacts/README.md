@@ -44,8 +44,6 @@ are preserved so archived commands, checksums, and the verifier remain stable.
 - `path_mining_file_expansion_ablation_20260531.tsv`: RQ1/RQ3 context-window
   source-control rows reported in the manuscript: BM25, BLUiR, CodeGraph,
   graph-only KG, and KG rank union (historically labeled `KGCompass`).
-- `path_mining_full500_summary.tsv`: compact full/KG-only summary
-  used for RQ3 hit-count accounting.
 - `rq1_pathmined_paired_stats_20260531.tsv`: paired full-vs-KG-without-file-local
   statistics used for the +65 net Hit@20 gain and 67/2 win/loss claim.
 - `llm_pathmined_kg_ht10_20260531.tsv`: issue-only and LLM+KG-local rows for
@@ -70,26 +68,17 @@ are preserved so archived commands, checksums, and the verifier remain stable.
   `ranked_file_source_paired_20260711.tsv`: direct first-stage Top-20 file
   coverage for KG and BM25, including paired uncertainty and exact testing.
 - `external_verified_loc_baselines_cosil_release_20260601.tsv`: released
-  SWE-bench Verified Qwen2.5-32B localizer rows reported in the unified
-  strong-baseline table.
+  CoSIL-Qwen2.5-32B localization row used in the same-backbone check.
 - `qwen25_32b_kgcompass_fusion_20260601.tsv`: CoSIL-Qwen2.5-32B and
   CoSIL-Qwen2.5-32B+KG-local rows.
 - `local_open_models_pathmined_top10_5p5_summary.tsv`: local Qwen3-Coder-30B and
   DeepSeek-Coder-V2-Lite Top-10 issue-only and 5+5 KG-local rows.
-- `glm5_pathmined_kg_complementarity_20260531.json` and `.tsv`: GLM-5/KG-local
-  overlap and rescued-instance aggregate accounting.
-- `glm5_pathmined_rescued_instances_20260531.tsv`: per-instance ledger for the
-  58 GLM-5 fusion wins.
 - `tse_paired_stats_pathmined_20260531.tsv`: GLM-5 issue-only vs KG-local
   paired statistics.
-- `kg_clean_tse_timesafe_main_20260529_v6_rq3.json` and `.tsv`: KG-only evidence
-  path and rank summaries used by the mechanism analysis.
-- `rq3_file_local_path_mining_summary.tsv`: RQ3 file-local path-mining aggregate
-  counts, including the 67 gross wins, 2 regressions, and 55 three-hop wins.
 - `patch_derived_context_summary_20260702.tsv` and `.json`: RQ3
   patch-derived repair-context coverage table. It reports edit-target recall,
-  complete edit-target coverage, support-context recall, and context
-  completeness for the controlled rows and GLM-5 fixed-prefix rows, including
+  complete edit-target coverage, support-proxy recall, and joint proxy
+  coverage for the controlled rows and GLM-5 fixed-prefix rows, including
   BM25-file-local and BM25+KG RRF standalone and fused controls.
 - `patch_derived_context_targets_20260702.json`: deterministic edit/support
   target cache used by the patch-derived context evaluation. Support targets

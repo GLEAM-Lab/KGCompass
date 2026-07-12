@@ -53,7 +53,7 @@ Expected result:
 The verifier reads only files committed under `artifacts/results/` and checks
 the manuscript-facing values for the ground-truth mapping, RQ1 controlled
 context windows, RQ2 LLM and released-localizer fusion rows, RQ3
-patch-derived repair-context coverage and mechanism accounting, RQ4 full-500
+patch-derived repair-context coverage, RQ4 full-500
 repair outcomes, and leakage/sensitivity statements.
 
 ## Paper-Facing Results
@@ -67,8 +67,6 @@ The main ledgers are:
 - `artifacts/results/external_verified_loc_baselines_cosil_release_20260601.tsv`
 - `artifacts/results/qwen25_32b_kgcompass_fusion_20260601.tsv`
 - `artifacts/results/local_open_models_pathmined_top10_5p5_summary.tsv`
-- `artifacts/results/glm5_pathmined_kg_complementarity_20260531.json`
-- `artifacts/results/rq3_file_local_path_mining_summary.tsv`
 - `artifacts/results/patch_derived_context_summary_20260702.tsv`
 - `artifacts/results/claudecode_context_probe_glm5_20260531.tsv`
 

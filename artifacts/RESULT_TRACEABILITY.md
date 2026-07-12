@@ -74,22 +74,14 @@ The verifier checks the paper-facing values for:
 - First-stage ranked-file coverage:
   `artifacts/results/ranked_file_source_coverage_20260711.tsv` and
   `artifacts/results/ranked_file_source_paired_20260711.tsv`.
-- RQ2 released Qwen2.5-32B localizer rows:
+- RQ2 released CoSIL-Qwen2.5-32B localizer row:
   `artifacts/results/external_verified_loc_baselines_cosil_release_20260601.tsv`.
 - RQ2 CoSIL-Qwen2.5-32B+KG-local row:
   `artifacts/results/qwen25_32b_kgcompass_fusion_20260601.tsv`.
 - RQ2 local open-model Top-10 stress rows:
   `artifacts/results/local_open_models_pathmined_top10_5p5_summary.tsv`.
-- RQ2 GLM-5/KG-local overlap and 58-win evidence accounting:
-  `artifacts/results/glm5_pathmined_kg_complementarity_20260531.json`,
-  `artifacts/results/glm5_pathmined_kg_complementarity_20260531.tsv`,
-  `artifacts/results/glm5_pathmined_rescued_instances_20260531.tsv`, and
+- RQ2 GLM-5/KG-local paired statistics:
   `artifacts/results/tse_paired_stats_pathmined_20260531.tsv`.
-- RQ3 KG-only path and rank summaries:
-  `artifacts/results/kg_clean_tse_timesafe_main_20260529_v6_rq3.json` and
-  `artifacts/results/kg_clean_tse_timesafe_main_20260529_v6_rq3.tsv`.
-- RQ3 file-local path-mining aggregate:
-  `artifacts/results/rq3_file_local_path_mining_summary.tsv`.
 - RQ3 patch-derived repair-context coverage:
   `artifacts/results/patch_derived_context_summary_20260702.tsv`,
   `artifacts/results/patch_derived_context_summary_20260702.json`, and
